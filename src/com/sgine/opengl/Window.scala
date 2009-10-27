@@ -12,7 +12,7 @@ import com.sgine.work._;
 import GLContext._;
 import generated.OpenGL2._;
 
-class Window (val title:String, val width:Int, val height:Int) extends GLEventListener with WindowListener {
+class Window (val title:String, val width:Int, val height:Int, val workManager:WorkManager = DefaultWorkManager) extends GLEventListener with WindowListener {
 	import com.sgine.util.JavaConversions.clq2iterable;
 	
 	private var glWindow:GLWindow = _;
@@ -21,7 +21,7 @@ class Window (val title:String, val width:Int, val height:Int) extends GLEventLi
 	val displayables = new ConcurrentLinkedQueue[(Double) => Unit]();
 	
 	def start() = {
-		DefaultWorkManager += run;
+		workManager += run;
 		// TODO: wait until first render before returning
 	}
 	

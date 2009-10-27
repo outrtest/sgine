@@ -18,7 +18,7 @@ class Shape(val shapeType:Int, val vertices:Point3D*) extends Function1[Double, 
 }
 
 object Shape {
-	def apply(shapeType:Int)(vertices:Point3D*) = {
+	def apply(shapeType:Int, vertices:Point3D*) = {
 		println(vertices.length);
 		new Shape(shapeType, vertices:_*);
 	}
