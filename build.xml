@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="opengl" basedir="." default="run-opengl-test">
+	<property environment="env"/>
+	
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/>
+    <property name="lib" location="lib"/>
+    <property name="jar" value="${ant.project.name}.jar"/>
+	<property name="scala.home" location="${env.SCALA_HOME}"/>
+	
+    <path id="cp">
+    	<fileset dir="${lib}">
+    		<include name="*.jar"/>
+    	</fileset>
+        <fileset dir="${scala.home}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    	<fileset dir="${dist}">
+    		<include name="*.jar"/>
+    	</fileset>
+    </path>
+	
+	<taskdef resource="scala/tools/ant/antlib.xml" classpathref="cp"/>
+
+    <target name="compile">
+        <delete dir="${build}"/>
+        <mkdir dir="${build}"/>
+    	<mkdir dir="${dist}"/>
+    	<fsc srcdir="${src}" destdir="${build}" classpathref="cp"/>
+    </target>
+	
+    <target name="jar" depends="compile">
+        <jar destfile="${dist}/${jar}" basedir="${build}" index="true"/>
+    </target>
+	
+	<target name="run-generator" depends="jar">
+		<java classpathref="cp" classname="com.sgine.opengl.generator.OpenGLGenerator"/>
+	</target>
+	
+	<target name="run-opengl-test" depends="jar">
+		<java classpathref="cp" classname="com.sgine.opengl.RunTest" fork="true" jvmargs="-Djava.library.path=Z:/programming/work/workspace_idea/scalagl/lib/native/win64"/>
+	</target>
+	
+	<target name="run-work-test" depends="jar">
+		<java classpathref="cp" classname="com.sgine.work.TestPerformance"/>
+	</target>
+</project>
