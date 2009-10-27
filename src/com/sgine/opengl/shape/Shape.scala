@@ -5,14 +5,19 @@ import com.sgine.opengl._;
 import com.sgine.opengl.GLContext._;
 import com.sgine.opengl.generated.OpenGL2._;
 
-class Shape(val shapeType:Int, val vertices:Point3D*) extends Function1[Double, Unit] {
+class Shape(val shapeType:Int, val points:Point3D*) extends Function1[Double, Unit] {
+	lazy val vertices = points zipWithIndex;
+	val texture = null;
+	val textureCoordinates = new TextureCoordinates(vertices.length);
+	
 	def apply(time:Double) = {
 		glBegin(shapeType);
-		vertices.foreach(drawVertex);
+		vertices.foreach(Function.tupled(drawVertex));
 		glEnd();
 	}
 	
-	private def drawVertex(vertex:Point3D) = {
+	private def drawVertex(vertex:Point3D, index:Int) = {
+		textureCoordinates(index);
 		glVertex3d(vertex.x, vertex.y, vertex.z);
 	}
 }
