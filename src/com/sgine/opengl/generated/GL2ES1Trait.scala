@@ -146,6 +146,9 @@ trait GL2ES1Trait {
 	def glPointParameterfv(arg0:Int, arg1:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es1.glPointParameterfv(arg0, arg1);
 	}
+	def glPointParameterfv(arg0:Int, arg1:Array[Float], arg2:Int):Unit = {
+		GLContext.gl2es1.glPointParameterfv(arg0, arg1, arg2);
+	}
 	def glPointSize(arg0:Float):Unit = {
 		GLContext.gl2es1.glPointSize(arg0);
 	}
@@ -167,29 +170,53 @@ trait GL2ES1Trait {
 	def glFogfv(arg0:Int, arg1:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es1.glFogfv(arg0, arg1);
 	}
+	def glFogfv(arg0:Int, arg1:Array[Float], arg2:Int):Unit = {
+		GLContext.gl2es1.glFogfv(arg0, arg1, arg2);
+	}
 	def glGetLightfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
 		GLContext.gl2es1.glGetLightfv(arg0, arg1, arg2, arg3);
+	}
+	def glGetLightfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es1.glGetLightfv(arg0, arg1, arg2);
 	}
 	def glGetMaterialfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es1.glGetMaterialfv(arg0, arg1, arg2);
 	}
+	def glGetMaterialfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
+		GLContext.gl2es1.glGetMaterialfv(arg0, arg1, arg2, arg3);
+	}
 	def glGetTexEnvfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es1.glGetTexEnvfv(arg0, arg1, arg2);
+	}
+	def glGetTexEnvfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
+		GLContext.gl2es1.glGetTexEnvfv(arg0, arg1, arg2, arg3);
 	}
 	def glGetTexEnviv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl2es1.glGetTexEnviv(arg0, arg1, arg2, arg3);
 	}
+	def glGetTexEnviv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl2es1.glGetTexEnviv(arg0, arg1, arg2);
+	}
 	def glGetTexGenfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es1.glGetTexGenfv(arg0, arg1, arg2);
 	}
+	def glGetTexGenfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
+		GLContext.gl2es1.glGetTexGenfv(arg0, arg1, arg2, arg3);
+	}
 	def glGetTexGeniv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl2es1.glGetTexGeniv(arg0, arg1, arg2, arg3);
+	}
+	def glGetTexGeniv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl2es1.glGetTexGeniv(arg0, arg1, arg2);
 	}
 	def glLightModelf(arg0:Int, arg1:Float):Unit = {
 		GLContext.gl2es1.glLightModelf(arg0, arg1);
 	}
 	def glLightModelfv(arg0:Int, arg1:Array[Float], arg2:Int):Unit = {
 		GLContext.gl2es1.glLightModelfv(arg0, arg1, arg2);
+	}
+	def glLightModelfv(arg0:Int, arg1:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es1.glLightModelfv(arg0, arg1);
 	}
 	def glLightf(arg0:Int, arg1:Int, arg2:Float):Unit = {
 		GLContext.gl2es1.glLightf(arg0, arg1, arg2);
@@ -209,11 +236,17 @@ trait GL2ES1Trait {
 	def glTexEnvfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
 		GLContext.gl2es1.glTexEnvfv(arg0, arg1, arg2, arg3);
 	}
+	def glTexEnvfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es1.glTexEnvfv(arg0, arg1, arg2);
+	}
 	def glTexEnvi(arg0:Int, arg1:Int, arg2:Int):Unit = {
 		GLContext.gl2es1.glTexEnvi(arg0, arg1, arg2);
 	}
 	def glTexEnviv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl2es1.glTexEnviv(arg0, arg1, arg2, arg3);
+	}
+	def glTexEnviv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl2es1.glTexEnviv(arg0, arg1, arg2);
 	}
 	def glTexGenf(arg0:Int, arg1:Int, arg2:Float):Unit = {
 		GLContext.gl2es1.glTexGenf(arg0, arg1, arg2);
@@ -221,11 +254,17 @@ trait GL2ES1Trait {
 	def glTexGenfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es1.glTexGenfv(arg0, arg1, arg2);
 	}
+	def glTexGenfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
+		GLContext.gl2es1.glTexGenfv(arg0, arg1, arg2, arg3);
+	}
 	def glTexGeni(arg0:Int, arg1:Int, arg2:Int):Unit = {
 		GLContext.gl2es1.glTexGeni(arg0, arg1, arg2);
 	}
 	def glTexGeniv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl2es1.glTexGeniv(arg0, arg1, arg2, arg3);
+	}
+	def glTexGeniv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl2es1.glTexGeniv(arg0, arg1, arg2);
 	}
 	def glWeightPointer(arg0:Int, arg1:Int, arg2:Int, arg3:java.nio.Buffer):Unit = {
 		GLContext.gl2es1.glWeightPointer(arg0, arg1, arg2, arg3);

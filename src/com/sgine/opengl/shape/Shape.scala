@@ -8,10 +8,11 @@ import com.sgine.opengl.generated.OpenGL2._;
 
 class Shape(val shapeType:Int, val points:Point3D*) extends Function1[Double, Unit] {
 	lazy val vertices = points zipWithIndex;
-	val texture = null;
+	val texture = new Texture();
 	val textureCoordinates = new TextureCoordinates(vertices.length);
 	
 	def apply(time:Double) = {
+		texture.draw();
 		glBegin(shapeType);
 		vertices.foreach(Function.tupled(drawVertex));
 		glEnd();

@@ -11,4 +11,7 @@ trait GLES2Trait {
 	def glGetShaderPrecisionFormat(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer, arg3:java.nio.IntBuffer):Unit = {
 		GLContext.gles2.glGetShaderPrecisionFormat(arg0, arg1, arg2, arg3);
 	}
+	def glGetShaderPrecisionFormat(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int, arg4:Array[Int], arg5:Int):Unit = {
+		GLContext.gles2.glGetShaderPrecisionFormat(arg0, arg1, arg2, arg3, arg4, arg5);
+	}
 }

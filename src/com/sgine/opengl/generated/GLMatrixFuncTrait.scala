@@ -16,8 +16,14 @@ trait GLMatrixFuncTrait {
 	def glGetFloatv(arg0:Int, arg1:Array[Float], arg2:Int):Unit = {
 		GLContext.glmatrixfunc.glGetFloatv(arg0, arg1, arg2);
 	}
+	def glGetFloatv(arg0:Int, arg1:java.nio.FloatBuffer):Unit = {
+		GLContext.glmatrixfunc.glGetFloatv(arg0, arg1);
+	}
 	def glGetIntegerv(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
 		GLContext.glmatrixfunc.glGetIntegerv(arg0, arg1, arg2);
+	}
+	def glGetIntegerv(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
+		GLContext.glmatrixfunc.glGetIntegerv(arg0, arg1);
 	}
 	def glMatrixMode(arg0:Int):Unit = {
 		GLContext.glmatrixfunc.glMatrixMode(arg0);
@@ -34,8 +40,14 @@ trait GLMatrixFuncTrait {
 	def glLoadMatrixf(arg0:java.nio.FloatBuffer):Unit = {
 		GLContext.glmatrixfunc.glLoadMatrixf(arg0);
 	}
+	def glLoadMatrixf(arg0:Array[Float], arg1:Int):Unit = {
+		GLContext.glmatrixfunc.glLoadMatrixf(arg0, arg1);
+	}
 	def glMultMatrixf(arg0:Array[Float], arg1:Int):Unit = {
 		GLContext.glmatrixfunc.glMultMatrixf(arg0, arg1);
+	}
+	def glMultMatrixf(arg0:java.nio.FloatBuffer):Unit = {
+		GLContext.glmatrixfunc.glMultMatrixf(arg0);
 	}
 	def glTranslatef(arg0:Float, arg1:Float, arg2:Float):Unit = {
 		GLContext.glmatrixfunc.glTranslatef(arg0, arg1, arg2);

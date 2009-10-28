@@ -124,29 +124,53 @@ trait GL3Trait {
 	def glGetActiveUniformBlockName(arg0:Int, arg1:Int, arg2:Int, arg3:java.nio.IntBuffer, arg4:java.nio.ByteBuffer):Unit = {
 		GLContext.gl3.glGetActiveUniformBlockName(arg0, arg1, arg2, arg3, arg4);
 	}
+	def glGetActiveUniformBlockName(arg0:Int, arg1:Int, arg2:Int, arg3:Array[Int], arg4:Int, arg5:Array[Byte], arg6:Int):Unit = {
+		GLContext.gl3.glGetActiveUniformBlockName(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	}
 	def glGetActiveUniformBlockiv(arg0:Int, arg1:Int, arg2:Int, arg3:Array[Int], arg4:Int):Unit = {
 		GLContext.gl3.glGetActiveUniformBlockiv(arg0, arg1, arg2, arg3, arg4);
+	}
+	def glGetActiveUniformBlockiv(arg0:Int, arg1:Int, arg2:Int, arg3:java.nio.IntBuffer):Unit = {
+		GLContext.gl3.glGetActiveUniformBlockiv(arg0, arg1, arg2, arg3);
 	}
 	def glGetActiveUniformName(arg0:Int, arg1:Int, arg2:Int, arg3:Array[Int], arg4:Int, arg5:Array[Byte], arg6:Int):Unit = {
 		GLContext.gl3.glGetActiveUniformName(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
 	}
+	def glGetActiveUniformName(arg0:Int, arg1:Int, arg2:Int, arg3:java.nio.IntBuffer, arg4:java.nio.ByteBuffer):Unit = {
+		GLContext.gl3.glGetActiveUniformName(arg0, arg1, arg2, arg3, arg4);
+	}
 	def glGetActiveUniformsiv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int, arg4:Int, arg5:Array[Int], arg6:Int):Unit = {
 		GLContext.gl3.glGetActiveUniformsiv(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	}
+	def glGetActiveUniformsiv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer, arg3:Int, arg4:java.nio.IntBuffer):Unit = {
+		GLContext.gl3.glGetActiveUniformsiv(arg0, arg1, arg2, arg3, arg4);
 	}
 	def glGetInteger64v(arg0:Int, arg1:com.sun.gluegen.runtime.PointerBuffer):Unit = {
 		GLContext.gl3.glGetInteger64v(arg0, arg1);
 	}
+	def glGetInteger64v(arg0:Int, arg1:Array[Long], arg2:Int):Unit = {
+		GLContext.gl3.glGetInteger64v(arg0, arg1, arg2);
+	}
 	def glGetMultisamplefv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
 		GLContext.gl3.glGetMultisamplefv(arg0, arg1, arg2, arg3);
 	}
+	def glGetMultisamplefv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
+		GLContext.gl3.glGetMultisamplefv(arg0, arg1, arg2);
+	}
 	def glGetSynciv(arg0:Long, arg1:Int, arg2:Int, arg3:Array[Int], arg4:Int, arg5:Array[Int], arg6:Int):Unit = {
 		GLContext.gl3.glGetSynciv(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	}
+	def glGetSynciv(arg0:Long, arg1:Int, arg2:Int, arg3:java.nio.IntBuffer, arg4:java.nio.IntBuffer):Unit = {
+		GLContext.gl3.glGetSynciv(arg0, arg1, arg2, arg3, arg4);
 	}
 	def glGetUniformBlockIndex(arg0:Int, arg1:java.lang.String):Int = {
 		GLContext.gl3.glGetUniformBlockIndex(arg0, arg1);
 	}
 	def glGetUniformIndices(arg0:Int, arg1:Int, arg2:Array[String], arg3:Array[Int], arg4:Int):Unit = {
 		GLContext.gl3.glGetUniformIndices(arg0, arg1, arg2, arg3, arg4);
+	}
+	def glGetUniformIndices(arg0:Int, arg1:Int, arg2:Array[String], arg3:java.nio.IntBuffer):Unit = {
+		GLContext.gl3.glGetUniformIndices(arg0, arg1, arg2, arg3);
 	}
 	def glIsSync(arg0:Long):Boolean = {
 		GLContext.gl3.glIsSync(arg0);

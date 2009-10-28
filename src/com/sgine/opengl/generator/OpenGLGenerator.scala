@@ -116,12 +116,15 @@ object OpenGLGenerator {
 		var exists = false;
 		for (cm <- methods) {
 			if (cm.getName() == m.getName()) {
-				exists = true;
-//				for ((p1, p2) <- cm.getParameterTypes() zip m.getParameterTypes()) {
-//					if (p1 != p2) {
-//						exists = false;
-//					}
-//				}
+				var foundMatch = true;
+				for ((p1, p2) <- cm.getParameterTypes() zip m.getParameterTypes()) {
+					if (p1 != p2) {
+						foundMatch = false;
+					}
+				}
+				if (foundMatch) {
+					exists = true;
+				}
 			}
 		}
 		if (!exists) {

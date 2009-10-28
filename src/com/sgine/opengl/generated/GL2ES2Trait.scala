@@ -117,11 +117,20 @@ trait GL2ES2Trait {
 	def glGetActiveAttrib(arg0:Int, arg1:Int, arg2:Int, arg3:Array[Int], arg4:Int, arg5:Array[Int], arg6:Int, arg7:Array[Int], arg8:Int, arg9:Array[Byte], arg10:Int):Unit = {
 		GLContext.gl2es2.glGetActiveAttrib(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
 	}
+	def glGetActiveAttrib(arg0:Int, arg1:Int, arg2:Int, arg3:java.nio.IntBuffer, arg4:java.nio.IntBuffer, arg5:java.nio.IntBuffer, arg6:java.nio.ByteBuffer):Unit = {
+		GLContext.gl2es2.glGetActiveAttrib(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	}
 	def glGetActiveUniform(arg0:Int, arg1:Int, arg2:Int, arg3:Array[Int], arg4:Int, arg5:Array[Int], arg6:Int, arg7:Array[Int], arg8:Int, arg9:Array[Byte], arg10:Int):Unit = {
 		GLContext.gl2es2.glGetActiveUniform(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
 	}
+	def glGetActiveUniform(arg0:Int, arg1:Int, arg2:Int, arg3:java.nio.IntBuffer, arg4:java.nio.IntBuffer, arg5:java.nio.IntBuffer, arg6:java.nio.ByteBuffer):Unit = {
+		GLContext.gl2es2.glGetActiveUniform(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	}
 	def glGetAttachedShaders(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer, arg3:java.nio.IntBuffer):Unit = {
 		GLContext.gl2es2.glGetAttachedShaders(arg0, arg1, arg2, arg3);
+	}
+	def glGetAttachedShaders(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int, arg4:Array[Int], arg5:Int):Unit = {
+		GLContext.gl2es2.glGetAttachedShaders(arg0, arg1, arg2, arg3, arg4, arg5);
 	}
 	def glGetAttribLocation(arg0:Int, arg1:java.lang.String):Int = {
 		GLContext.gl2es2.glGetAttribLocation(arg0, arg1);
@@ -129,17 +138,32 @@ trait GL2ES2Trait {
 	def glGetProgramInfoLog(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int, arg4:Array[Byte], arg5:Int):Unit = {
 		GLContext.gl2es2.glGetProgramInfoLog(arg0, arg1, arg2, arg3, arg4, arg5);
 	}
+	def glGetProgramInfoLog(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer, arg3:java.nio.ByteBuffer):Unit = {
+		GLContext.gl2es2.glGetProgramInfoLog(arg0, arg1, arg2, arg3);
+	}
 	def glGetProgramiv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl2es2.glGetProgramiv(arg0, arg1, arg2, arg3);
+	}
+	def glGetProgramiv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl2es2.glGetProgramiv(arg0, arg1, arg2);
 	}
 	def glGetShaderInfoLog(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int, arg4:Array[Byte], arg5:Int):Unit = {
 		GLContext.gl2es2.glGetShaderInfoLog(arg0, arg1, arg2, arg3, arg4, arg5);
 	}
+	def glGetShaderInfoLog(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer, arg3:java.nio.ByteBuffer):Unit = {
+		GLContext.gl2es2.glGetShaderInfoLog(arg0, arg1, arg2, arg3);
+	}
 	def glGetShaderSource(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer, arg3:java.nio.ByteBuffer):Unit = {
 		GLContext.gl2es2.glGetShaderSource(arg0, arg1, arg2, arg3);
 	}
+	def glGetShaderSource(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int, arg4:Array[Byte], arg5:Int):Unit = {
+		GLContext.gl2es2.glGetShaderSource(arg0, arg1, arg2, arg3, arg4, arg5);
+	}
 	def glGetShaderiv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
 		GLContext.gl2es2.glGetShaderiv(arg0, arg1, arg2);
+	}
+	def glGetShaderiv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
+		GLContext.gl2es2.glGetShaderiv(arg0, arg1, arg2, arg3);
 	}
 	def glGetUniformLocation(arg0:Int, arg1:java.lang.String):Int = {
 		GLContext.gl2es2.glGetUniformLocation(arg0, arg1);
@@ -147,14 +171,26 @@ trait GL2ES2Trait {
 	def glGetUniformfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es2.glGetUniformfv(arg0, arg1, arg2);
 	}
+	def glGetUniformfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
+		GLContext.gl2es2.glGetUniformfv(arg0, arg1, arg2, arg3);
+	}
 	def glGetUniformiv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl2es2.glGetUniformiv(arg0, arg1, arg2, arg3);
+	}
+	def glGetUniformiv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl2es2.glGetUniformiv(arg0, arg1, arg2);
 	}
 	def glGetVertexAttribfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
 		GLContext.gl2es2.glGetVertexAttribfv(arg0, arg1, arg2, arg3);
 	}
+	def glGetVertexAttribfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es2.glGetVertexAttribfv(arg0, arg1, arg2);
+	}
 	def glGetVertexAttribiv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
 		GLContext.gl2es2.glGetVertexAttribiv(arg0, arg1, arg2);
+	}
+	def glGetVertexAttribiv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
+		GLContext.gl2es2.glGetVertexAttribiv(arg0, arg1, arg2, arg3);
 	}
 	def glIsProgram(arg0:Int):Boolean = {
 		GLContext.gl2es2.glIsProgram(arg0);
@@ -171,8 +207,14 @@ trait GL2ES2Trait {
 	def glShaderBinary(arg0:Int, arg1:java.nio.IntBuffer, arg2:Int, arg3:java.nio.Buffer, arg4:Int):Unit = {
 		GLContext.gl2es2.glShaderBinary(arg0, arg1, arg2, arg3, arg4);
 	}
+	def glShaderBinary(arg0:Int, arg1:Array[Int], arg2:Int, arg3:Int, arg4:java.nio.Buffer, arg5:Int):Unit = {
+		GLContext.gl2es2.glShaderBinary(arg0, arg1, arg2, arg3, arg4, arg5);
+	}
 	def glShaderSource(arg0:Int, arg1:Int, arg2:Array[String], arg3:Array[Int], arg4:Int):Unit = {
 		GLContext.gl2es2.glShaderSource(arg0, arg1, arg2, arg3, arg4);
+	}
+	def glShaderSource(arg0:Int, arg1:Int, arg2:Array[String], arg3:java.nio.IntBuffer):Unit = {
+		GLContext.gl2es2.glShaderSource(arg0, arg1, arg2, arg3);
 	}
 	def glStencilFuncSeparate(arg0:Int, arg1:Int, arg2:Int, arg3:Int):Unit = {
 		GLContext.gl2es2.glStencilFuncSeparate(arg0, arg1, arg2, arg3);
@@ -189,11 +231,17 @@ trait GL2ES2Trait {
 	def glUniform1fv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
 		GLContext.gl2es2.glUniform1fv(arg0, arg1, arg2, arg3);
 	}
+	def glUniform1fv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es2.glUniform1fv(arg0, arg1, arg2);
+	}
 	def glUniform1i(arg0:Int, arg1:Int):Unit = {
 		GLContext.gl2es2.glUniform1i(arg0, arg1);
 	}
 	def glUniform1iv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl2es2.glUniform1iv(arg0, arg1, arg2, arg3);
+	}
+	def glUniform1iv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl2es2.glUniform1iv(arg0, arg1, arg2);
 	}
 	def glUniform2f(arg0:Int, arg1:Float, arg2:Float):Unit = {
 		GLContext.gl2es2.glUniform2f(arg0, arg1, arg2);
@@ -201,11 +249,17 @@ trait GL2ES2Trait {
 	def glUniform2fv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es2.glUniform2fv(arg0, arg1, arg2);
 	}
+	def glUniform2fv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
+		GLContext.gl2es2.glUniform2fv(arg0, arg1, arg2, arg3);
+	}
 	def glUniform2i(arg0:Int, arg1:Int, arg2:Int):Unit = {
 		GLContext.gl2es2.glUniform2i(arg0, arg1, arg2);
 	}
 	def glUniform2iv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
 		GLContext.gl2es2.glUniform2iv(arg0, arg1, arg2);
+	}
+	def glUniform2iv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
+		GLContext.gl2es2.glUniform2iv(arg0, arg1, arg2, arg3);
 	}
 	def glUniform3f(arg0:Int, arg1:Float, arg2:Float, arg3:Float):Unit = {
 		GLContext.gl2es2.glUniform3f(arg0, arg1, arg2, arg3);
@@ -213,11 +267,17 @@ trait GL2ES2Trait {
 	def glUniform3fv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es2.glUniform3fv(arg0, arg1, arg2);
 	}
+	def glUniform3fv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
+		GLContext.gl2es2.glUniform3fv(arg0, arg1, arg2, arg3);
+	}
 	def glUniform3i(arg0:Int, arg1:Int, arg2:Int, arg3:Int):Unit = {
 		GLContext.gl2es2.glUniform3i(arg0, arg1, arg2, arg3);
 	}
 	def glUniform3iv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
 		GLContext.gl2es2.glUniform3iv(arg0, arg1, arg2);
+	}
+	def glUniform3iv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
+		GLContext.gl2es2.glUniform3iv(arg0, arg1, arg2, arg3);
 	}
 	def glUniform4f(arg0:Int, arg1:Float, arg2:Float, arg3:Float, arg4:Float):Unit = {
 		GLContext.gl2es2.glUniform4f(arg0, arg1, arg2, arg3, arg4);
@@ -225,20 +285,35 @@ trait GL2ES2Trait {
 	def glUniform4fv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
 		GLContext.gl2es2.glUniform4fv(arg0, arg1, arg2, arg3);
 	}
+	def glUniform4fv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es2.glUniform4fv(arg0, arg1, arg2);
+	}
 	def glUniform4i(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int):Unit = {
 		GLContext.gl2es2.glUniform4i(arg0, arg1, arg2, arg3, arg4);
 	}
 	def glUniform4iv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
 		GLContext.gl2es2.glUniform4iv(arg0, arg1, arg2);
 	}
+	def glUniform4iv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
+		GLContext.gl2es2.glUniform4iv(arg0, arg1, arg2, arg3);
+	}
 	def glUniformMatrix2fv(arg0:Int, arg1:Int, arg2:Boolean, arg3:Array[Float], arg4:Int):Unit = {
 		GLContext.gl2es2.glUniformMatrix2fv(arg0, arg1, arg2, arg3, arg4);
+	}
+	def glUniformMatrix2fv(arg0:Int, arg1:Int, arg2:Boolean, arg3:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es2.glUniformMatrix2fv(arg0, arg1, arg2, arg3);
 	}
 	def glUniformMatrix3fv(arg0:Int, arg1:Int, arg2:Boolean, arg3:Array[Float], arg4:Int):Unit = {
 		GLContext.gl2es2.glUniformMatrix3fv(arg0, arg1, arg2, arg3, arg4);
 	}
+	def glUniformMatrix3fv(arg0:Int, arg1:Int, arg2:Boolean, arg3:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es2.glUniformMatrix3fv(arg0, arg1, arg2, arg3);
+	}
 	def glUniformMatrix4fv(arg0:Int, arg1:Int, arg2:Boolean, arg3:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es2.glUniformMatrix4fv(arg0, arg1, arg2, arg3);
+	}
+	def glUniformMatrix4fv(arg0:Int, arg1:Int, arg2:Boolean, arg3:Array[Float], arg4:Int):Unit = {
+		GLContext.gl2es2.glUniformMatrix4fv(arg0, arg1, arg2, arg3, arg4);
 	}
 	def glUseProgram(arg0:Int):Unit = {
 		GLContext.gl2es2.glUseProgram(arg0);
@@ -252,11 +327,17 @@ trait GL2ES2Trait {
 	def glVertexAttrib1fv(arg0:Int, arg1:Array[Float], arg2:Int):Unit = {
 		GLContext.gl2es2.glVertexAttrib1fv(arg0, arg1, arg2);
 	}
+	def glVertexAttrib1fv(arg0:Int, arg1:java.nio.FloatBuffer):Unit = {
+		GLContext.gl2es2.glVertexAttrib1fv(arg0, arg1);
+	}
 	def glVertexAttrib2f(arg0:Int, arg1:Float, arg2:Float):Unit = {
 		GLContext.gl2es2.glVertexAttrib2f(arg0, arg1, arg2);
 	}
 	def glVertexAttrib2fv(arg0:Int, arg1:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es2.glVertexAttrib2fv(arg0, arg1);
+	}
+	def glVertexAttrib2fv(arg0:Int, arg1:Array[Float], arg2:Int):Unit = {
+		GLContext.gl2es2.glVertexAttrib2fv(arg0, arg1, arg2);
 	}
 	def glVertexAttrib3f(arg0:Int, arg1:Float, arg2:Float, arg3:Float):Unit = {
 		GLContext.gl2es2.glVertexAttrib3f(arg0, arg1, arg2, arg3);
@@ -264,13 +345,25 @@ trait GL2ES2Trait {
 	def glVertexAttrib3fv(arg0:Int, arg1:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es2.glVertexAttrib3fv(arg0, arg1);
 	}
+	def glVertexAttrib3fv(arg0:Int, arg1:Array[Float], arg2:Int):Unit = {
+		GLContext.gl2es2.glVertexAttrib3fv(arg0, arg1, arg2);
+	}
 	def glVertexAttrib4f(arg0:Int, arg1:Float, arg2:Float, arg3:Float, arg4:Float):Unit = {
 		GLContext.gl2es2.glVertexAttrib4f(arg0, arg1, arg2, arg3, arg4);
 	}
 	def glVertexAttrib4fv(arg0:Int, arg1:java.nio.FloatBuffer):Unit = {
 		GLContext.gl2es2.glVertexAttrib4fv(arg0, arg1);
 	}
+	def glVertexAttrib4fv(arg0:Int, arg1:Array[Float], arg2:Int):Unit = {
+		GLContext.gl2es2.glVertexAttrib4fv(arg0, arg1, arg2);
+	}
 	def glVertexAttribPointer(arg0:Int, arg1:Int, arg2:Int, arg3:Boolean, arg4:Int, arg5:Long):Unit = {
+		GLContext.gl2es2.glVertexAttribPointer(arg0, arg1, arg2, arg3, arg4, arg5);
+	}
+	def glVertexAttribPointer(arg0:javax.media.opengl.GLArrayData):Unit = {
+		GLContext.gl2es2.glVertexAttribPointer(arg0);
+	}
+	def glVertexAttribPointer(arg0:Int, arg1:Int, arg2:Int, arg3:Boolean, arg4:Int, arg5:java.nio.Buffer):Unit = {
 		GLContext.gl2es2.glVertexAttribPointer(arg0, arg1, arg2, arg3, arg4, arg5);
 	}
 	def glUniform(arg0:javax.media.opengl.GLUniformData):Unit = {

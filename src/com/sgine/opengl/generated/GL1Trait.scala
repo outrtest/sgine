@@ -344,7 +344,13 @@ trait GL1Trait {
 	def glCompressedTexImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:java.nio.Buffer):Unit = {
 		GLContext.gl.glCompressedTexImage2D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
 	}
+	def glCompressedTexImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:Long):Unit = {
+		GLContext.gl.glCompressedTexImage2D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+	}
 	def glCompressedTexSubImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:Int, arg8:Long):Unit = {
+		GLContext.gl.glCompressedTexSubImage2D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+	}
+	def glCompressedTexSubImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:Int, arg8:java.nio.Buffer):Unit = {
 		GLContext.gl.glCompressedTexSubImage2D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
 	}
 	def glCopyTexImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:Int):Unit = {
@@ -359,14 +365,26 @@ trait GL1Trait {
 	def glDeleteBuffers(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
 		GLContext.gl.glDeleteBuffers(arg0, arg1);
 	}
+	def glDeleteBuffers(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
+		GLContext.gl.glDeleteBuffers(arg0, arg1, arg2);
+	}
 	def glDeleteFramebuffers(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
 		GLContext.gl.glDeleteFramebuffers(arg0, arg1);
+	}
+	def glDeleteFramebuffers(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
+		GLContext.gl.glDeleteFramebuffers(arg0, arg1, arg2);
 	}
 	def glDeleteRenderbuffers(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
 		GLContext.gl.glDeleteRenderbuffers(arg0, arg1, arg2);
 	}
+	def glDeleteRenderbuffers(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
+		GLContext.gl.glDeleteRenderbuffers(arg0, arg1);
+	}
 	def glDeleteTextures(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
 		GLContext.gl.glDeleteTextures(arg0, arg1);
+	}
+	def glDeleteTextures(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
+		GLContext.gl.glDeleteTextures(arg0, arg1, arg2);
 	}
 	def glDepthFunc(arg0:Int):Unit = {
 		GLContext.gl.glDepthFunc(arg0);
@@ -384,6 +402,9 @@ trait GL1Trait {
 		GLContext.gl.glDrawArrays(arg0, arg1, arg2);
 	}
 	def glDrawElements(arg0:Int, arg1:Int, arg2:Int, arg3:Long):Unit = {
+		GLContext.gl.glDrawElements(arg0, arg1, arg2, arg3);
+	}
+	def glDrawElements(arg0:Int, arg1:Int, arg2:Int, arg3:java.nio.Buffer):Unit = {
 		GLContext.gl.glDrawElements(arg0, arg1, arg2, arg3);
 	}
 	def glEnable(arg0:Int):Unit = {
@@ -407,14 +428,26 @@ trait GL1Trait {
 	def glGenBuffers(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
 		GLContext.gl.glGenBuffers(arg0, arg1);
 	}
+	def glGenBuffers(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
+		GLContext.gl.glGenBuffers(arg0, arg1, arg2);
+	}
 	def glGenFramebuffers(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
 		GLContext.gl.glGenFramebuffers(arg0, arg1, arg2);
+	}
+	def glGenFramebuffers(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
+		GLContext.gl.glGenFramebuffers(arg0, arg1);
 	}
 	def glGenRenderbuffers(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
 		GLContext.gl.glGenRenderbuffers(arg0, arg1, arg2);
 	}
+	def glGenRenderbuffers(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
+		GLContext.gl.glGenRenderbuffers(arg0, arg1);
+	}
 	def glGenTextures(arg0:Int, arg1:Array[Int], arg2:Int):Unit = {
 		GLContext.gl.glGenTextures(arg0, arg1, arg2);
+	}
+	def glGenTextures(arg0:Int, arg1:java.nio.IntBuffer):Unit = {
+		GLContext.gl.glGenTextures(arg0, arg1);
 	}
 	def glGenerateMipmap(arg0:Int):Unit = {
 		GLContext.gl.glGenerateMipmap(arg0);
@@ -422,8 +455,14 @@ trait GL1Trait {
 	def glGetBooleanv(arg0:Int, arg1:Array[Byte], arg2:Int):Unit = {
 		GLContext.gl.glGetBooleanv(arg0, arg1, arg2);
 	}
+	def glGetBooleanv(arg0:Int, arg1:java.nio.ByteBuffer):Unit = {
+		GLContext.gl.glGetBooleanv(arg0, arg1);
+	}
 	def glGetBufferParameteriv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
 		GLContext.gl.glGetBufferParameteriv(arg0, arg1, arg2);
+	}
+	def glGetBufferParameteriv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
+		GLContext.gl.glGetBufferParameteriv(arg0, arg1, arg2, arg3);
 	}
 	def glGetError():Int = {
 		GLContext.gl.glGetError();
@@ -431,8 +470,14 @@ trait GL1Trait {
 	def glGetFramebufferAttachmentParameteriv(arg0:Int, arg1:Int, arg2:Int, arg3:java.nio.IntBuffer):Unit = {
 		GLContext.gl.glGetFramebufferAttachmentParameteriv(arg0, arg1, arg2, arg3);
 	}
+	def glGetFramebufferAttachmentParameteriv(arg0:Int, arg1:Int, arg2:Int, arg3:Array[Int], arg4:Int):Unit = {
+		GLContext.gl.glGetFramebufferAttachmentParameteriv(arg0, arg1, arg2, arg3, arg4);
+	}
 	def glGetRenderbufferParameteriv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl.glGetRenderbufferParameteriv(arg0, arg1, arg2, arg3);
+	}
+	def glGetRenderbufferParameteriv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl.glGetRenderbufferParameteriv(arg0, arg1, arg2);
 	}
 	def glGetString(arg0:Int):java.lang.String = {
 		GLContext.gl.glGetString(arg0);
@@ -440,8 +485,14 @@ trait GL1Trait {
 	def glGetTexParameterfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
 		GLContext.gl.glGetTexParameterfv(arg0, arg1, arg2, arg3);
 	}
+	def glGetTexParameterfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
+		GLContext.gl.glGetTexParameterfv(arg0, arg1, arg2);
+	}
 	def glGetTexParameteriv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
 		GLContext.gl.glGetTexParameteriv(arg0, arg1, arg2);
+	}
+	def glGetTexParameteriv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
+		GLContext.gl.glGetTexParameteriv(arg0, arg1, arg2, arg3);
 	}
 	def glHint(arg0:Int, arg1:Int):Unit = {
 		GLContext.gl.glHint(arg0, arg1);
@@ -476,6 +527,9 @@ trait GL1Trait {
 	def glReadPixels(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:java.nio.Buffer):Unit = {
 		GLContext.gl.glReadPixels(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
 	}
+	def glReadPixels(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Long):Unit = {
+		GLContext.gl.glReadPixels(arg0, arg1, arg2, arg3, arg4, arg5, arg6);
+	}
 	def glRenderbufferStorage(arg0:Int, arg1:Int, arg2:Int, arg3:Int):Unit = {
 		GLContext.gl.glRenderbufferStorage(arg0, arg1, arg2, arg3);
 	}
@@ -497,11 +551,17 @@ trait GL1Trait {
 	def glTexImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:Int, arg8:Long):Unit = {
 		GLContext.gl.glTexImage2D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
 	}
+	def glTexImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:Int, arg8:java.nio.Buffer):Unit = {
+		GLContext.gl.glTexImage2D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+	}
 	def glTexParameterf(arg0:Int, arg1:Int, arg2:Float):Unit = {
 		GLContext.gl.glTexParameterf(arg0, arg1, arg2);
 	}
 	def glTexParameterfv(arg0:Int, arg1:Int, arg2:Array[Float], arg3:Int):Unit = {
 		GLContext.gl.glTexParameterfv(arg0, arg1, arg2, arg3);
+	}
+	def glTexParameterfv(arg0:Int, arg1:Int, arg2:java.nio.FloatBuffer):Unit = {
+		GLContext.gl.glTexParameterfv(arg0, arg1, arg2);
 	}
 	def glTexParameteri(arg0:Int, arg1:Int, arg2:Int):Unit = {
 		GLContext.gl.glTexParameteri(arg0, arg1, arg2);
@@ -509,7 +569,13 @@ trait GL1Trait {
 	def glTexParameteriv(arg0:Int, arg1:Int, arg2:Array[Int], arg3:Int):Unit = {
 		GLContext.gl.glTexParameteriv(arg0, arg1, arg2, arg3);
 	}
+	def glTexParameteriv(arg0:Int, arg1:Int, arg2:java.nio.IntBuffer):Unit = {
+		GLContext.gl.glTexParameteriv(arg0, arg1, arg2);
+	}
 	def glTexSubImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:Int, arg8:Long):Unit = {
+		GLContext.gl.glTexSubImage2D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+	}
+	def glTexSubImage2D(arg0:Int, arg1:Int, arg2:Int, arg3:Int, arg4:Int, arg5:Int, arg6:Int, arg7:Int, arg8:java.nio.Buffer):Unit = {
 		GLContext.gl.glTexSubImage2D(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
 	}
 	def glUnmapBuffer(arg0:Int):Boolean = {
