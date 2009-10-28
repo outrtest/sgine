@@ -39,16 +39,16 @@ class EnumParserTest extends FlatSpec with ShouldMatchers {
     """
 
     assertParseEquals(enumspec, List(
-      Enum( "Boolean", "", List(
-        Const( "FALSE", "", "0" ),
-        Const( "TRUE",  "", "1" )
+      Enum( "Boolean", List(
+        Const( "FALSE", "0" ),
+        Const( "TRUE",  "1" )
         ) ),
-      Enum( "AccumOp", "", List(
-        Const( "ACCUM",   "", "0x0100" ),
-        Const( "LOAD",    "", "0x0101" ),
-        Const( "RETURN",  "", "0x0102" ),
-        Const( "MULT",    "", "0x0103" ),
-        Const( "ADD",     "", "0x0104" )
+      Enum( "AccumOp", List(
+        Const( "ACCUM",  "0x0100" ),
+        Const( "LOAD",   "0x0101" ),
+        Const( "RETURN", "0x0102" ),
+        Const( "MULT",   "0x0103" ),
+        Const( "ADD",    "0x0104" )
         ) )
       ) )
   }

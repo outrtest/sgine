@@ -13,8 +13,8 @@ class EnumParser extends StdTokenParsers {
 
   // Parser
   def enums : Parser[List[Enum]] = rep( enum )
-  def enum  : Parser[Enum]       = ident ~ "enum" ~ ":" ~ rep( const ) ^^ { case name ~ keyword ~ colon ~ constants => Enum( name, "", constants ) }
-  def const : Parser[Const]      = ident ~ "=" ~ numericLiteral ^^ { case name ~ eq ~ value => Const( name, "", value ) }  
+  def enum  : Parser[Enum]       = ident ~ "enum" ~ ":" ~ rep( const ) ^^ { case name ~ keyword ~ colon ~ constants => Enum( name, constants ) }
+  def const : Parser[Const]      = ident ~ "=" ~ numericLiteral ^^ { case name ~ eq ~ value => Const( name, value ) }
 
 
 
