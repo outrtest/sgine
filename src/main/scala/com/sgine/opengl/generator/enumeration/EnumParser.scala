@@ -13,6 +13,14 @@ class EnumParser extends StdTokenParsers {
 
   // Parser
   def enums : Parser[List[Enum]] = rep( enum )
-  def enum : Parser[Enum] = "enum:" ^^ { x => null }
-  
+  def enum  : Parser[Enum]       = ident ~ "enum" ~ ":" ~ rep( const ) ^^ { case name ~ keyword ~ colon ~ constants => Enum( name, "", constants ) }
+  def const : Parser[Const]      = ident ~ "=" ~ numericLiteral ^^ { case name ~ eq ~ value => Const( name, "", value ) }  
+
+
+
+  /**
+   * A parser which matches a numeric (hexa or decimal) literal
+   */
+  def numericLiteral: Parser[String] = elem("number", _.isInstanceOf[EnumLexer#NumberLiteral]) ^^ (_.chars)
+
 }
