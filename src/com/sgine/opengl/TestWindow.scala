@@ -1,6 +1,8 @@
 package com.sgine.opengl
 
 import com.sgine.opengl.shape._;
+import point.Point3D;
+import point.Point2D;
 
 import GLContext._;
 import generated.OpenGL2._;

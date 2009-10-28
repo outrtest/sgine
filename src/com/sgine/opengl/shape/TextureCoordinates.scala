@@ -1,6 +1,7 @@
 package com.sgine.opengl.shape
 
-import com.sgine.opengl._;
+import com.sgine.opengl._
+import point.Point2D;
 
 class TextureCoordinates(val length:Int) {
 	lazy val coords = new Array[Point2D](length);
