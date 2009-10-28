@@ -17,7 +17,8 @@ class Shape(val shapeType:Int, val points:Point3D*) extends Function1[Double, Un
 	}
 	
 	private def drawVertex(vertex:Point3D, index:Int) = {
-		textureCoordinates(index);
+		val coords = textureCoordinates(index);
+		glTexCoord2d(coords.x, coords.y);
 		glVertex3d(vertex.x, vertex.y, vertex.z);
 	}
 }
