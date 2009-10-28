@@ -3,7 +3,7 @@
 <project name="opengl" basedir="." default="run-opengl-test">
 	<property environment="env"/>
 	
-    <property name="src" location="src"/>
+    <property name="src" location="src/main/scala"/>
     <property name="build" location="build"/>
     <property name="dist" location="dist"/>
     <property name="lib" location="lib"/>
