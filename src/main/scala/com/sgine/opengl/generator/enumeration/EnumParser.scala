@@ -13,6 +13,6 @@ class EnumParser extends StdTokenParsers {
 
   // Parser
   def enums : Parser[List[Enum]] = rep( enum )
-  def enum : Parser[Enum] = "enum" ^^ { x => null }
-
+  def enum : Parser[Enum] = "enum:" ^^ { x => null }
+  
 }
