@@ -21,7 +21,7 @@ class EnumLexer extends StdLexical with ImplicitConversions {
 
 
   /**
-   * A parser that matches a regex string
+   * A parser that matches a regexp string
    */
   private def regex(r: Regex): Parser[String] = new Parser[String] {
     def apply(in: Input) = {
