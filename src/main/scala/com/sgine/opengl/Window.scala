@@ -66,7 +66,7 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	    glLoadIdentity();
-	    glTranslatef(0.0f, 0.0f, -15.0f);
+	    glTranslatef(0.0f, 0.0f, -5.0f);
 	
 	    glColor3f(1.0f, 1.0f, 1.0f);
 	    

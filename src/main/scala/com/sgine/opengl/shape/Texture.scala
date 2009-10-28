@@ -34,7 +34,7 @@ class Texture {
 			val raster = image.getRaster();
 			val buffer = ByteBuffer.allocateDirect((width * height) * 4);
 			buffer.order(ByteOrder.nativeOrder);
-			for (i <- 0 to height) {
+			for (i <- 0 until height) {
 				raster.getDataElements(x, y + i, width, 1, data);
 				buffer.put(data);
 			}
