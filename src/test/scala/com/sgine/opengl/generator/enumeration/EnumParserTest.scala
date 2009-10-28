@@ -19,7 +19,7 @@ class EnumParserTest extends FlatSpec with ShouldMatchers {
 
   def checkParse(input: String, expected: List[Enum]) {
     val parser = new EnumParser()
-    parser.enumSpecifications(new parser.lexical.Scanner(input)) match {
+    parser.enums(new parser.lexical.Scanner(input)) match {
       case parser.Success(enums, _) => expected === enums
       println(enums)
       case f: parser.Failure => fail(f.toString)

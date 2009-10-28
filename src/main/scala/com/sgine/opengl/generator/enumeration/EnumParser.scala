@@ -11,8 +11,8 @@ class EnumParser extends StdTokenParsers {
   type Tokens = EnumLexer
   val lexical = new EnumLexer
 
-
   // Parser
-  def enumSpecifications : Parser[List[Enum]] = "" ^^ { x => Nil } 
-  
+  def enums : Parser[List[Enum]] = rep( enum )
+  def enum : Parser[Enum] = "enum" ^^ { x => null }
+
 }
