@@ -28,7 +28,7 @@
         <delete dir="${build}"/>
         <mkdir dir="${build}"/>
     	<mkdir dir="${dist}"/>
-    	<scalac srcdir="${src}" destdir="${build}" classpathref="cp"/>
+    	<scalac srcdir="${src}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
     </target>
 	
     <target name="jar" depends="compile">

@@ -124,7 +124,7 @@ class WorkManager {
 			}
 			w match {
 				case du:DependentUnit => if (du.isReady()) return du;
-				case f:Function0[Unit] => return f;
+				case f:Function0[_] => return f;
 				case _ =>
 			}
 			if (w != null) queue.add(w);

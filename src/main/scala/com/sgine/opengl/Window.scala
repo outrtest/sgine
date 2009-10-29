@@ -17,12 +17,17 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	
 	private var glWindow:GLWindow = _;
 	private var keepAlive = true;
+	private var renders:Long = 0;
+	private var lastRender:Long = System.nanoTime();
 	
 	val displayables = new ConcurrentLinkedQueue[(Double) => Unit]();
 	
 	def start() = {
 		workManager += run;
-		// TODO: wait until first render before returning
+		
+		while(renders < 2) {
+			Thread.sleep(10);
+		}
 	}
 	
 	private def run() = {
@@ -42,6 +47,7 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	
 	def init(g:GLAutoDrawable) = {
 		gl = g.getGL();
+//		setSwapInterval(0);
 		glClearDepth(1.0);
 		glEnable(GL_BLEND);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
@@ -53,7 +59,7 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	    gl = g.getGL();
 	    val glu = new GLU();
 	
-	    val h = width / height;
+	    val h = width.toDouble / height.toDouble;
 	    glViewport(0, 0, width, height);
 	    glMatrixMode(GL_PROJECTION);
 	    glLoadIdentity();
@@ -63,20 +69,22 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	}
  
 	def display(g:GLAutoDrawable) = {
+		val currentRender = System.nanoTime();
+		val time = (currentRender - lastRender) / 1000000000.0;
+		
 	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	    glLoadIdentity();
-	    glTranslatef(0.0f, 0.0f, -5.0f);
-	
 	    glColor3f(1.0f, 1.0f, 1.0f);
 	    
-	    displayables.foreach(_(0.0));
-//	    glBegin(GL_QUADS);
-//	    glVertex3f(0.0f, 0.0f, 0.0f);
-//	    glVertex3f(1.0f, 0.0f, 0.0f);
-//	    glVertex3f(1.0f, 1.0f, 0.0f);
-//	    glVertex3f(0.0f, 1.0f, 0.0f);
-//	    glEnd();
+	    displayables.foreach(_(time));
+	    
+	    renders += 1;
+	    if (renders == Math.MAX_LONG) {
+	    	renders = 0;
+	    }
+	    
+	    lastRender = currentRender;
 	}
  
 	def dispose(g:GLAutoDrawable) = {
