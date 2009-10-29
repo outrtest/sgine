@@ -47,7 +47,7 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	
 	def init(g:GLAutoDrawable) = {
 		gl = g.getGL();
-//		setSwapInterval(0);
+		setSwapInterval(0);
 		glClearDepth(1.0);
 		glEnable(GL_BLEND);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);

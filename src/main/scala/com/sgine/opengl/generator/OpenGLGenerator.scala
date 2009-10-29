@@ -15,6 +15,7 @@ object OpenGLGenerator {
 	private var methods:List[Method] = Nil;
 	
 	def main(args:Array[String]):Unit = {
+		createClass("GLBase", classOf[GLBase]);
 		createClass("GLMatrixFuncTrait", classOf[GLMatrixFunc]);
 		createClass("GL1Trait", classOf[GL]);
 		createClass("GL2Trait", classOf[GL2]);
@@ -24,8 +25,8 @@ object OpenGLGenerator {
 		createClass("GL2ES1Trait", classOf[GL2ES1]);
 		createClass("GL2ES2Trait", classOf[GL2ES2]);
 		
-		createSimpleClass("OpenGL", "GLMatrixFuncTrait", "GL1Trait", "GL2Trait", "GL3Trait", "GLES1Trait", "GLES2Trait", "GL2ES1Trait", "GL2ES2Trait");
-		createSimpleClass("OpenGL2", "GLMatrixFuncTrait", "GL1Trait", "GL2Trait", "GL2ES1Trait", "GL2ES2Trait");
+		createSimpleClass("OpenGL", "GLBase", "GLMatrixFuncTrait", "GL1Trait", "GL2Trait", "GL3Trait", "GLES1Trait", "GLES2Trait", "GL2ES1Trait", "GL2ES2Trait");
+		createSimpleClass("OpenGL2", "GLBase", "GLMatrixFuncTrait", "GL1Trait", "GL2Trait", "GL2ES1Trait", "GL2ES2Trait");
 	}
 	
 	def createSimpleClass(name:String, traits:String*):Unit = {
@@ -42,7 +43,7 @@ object OpenGLGenerator {
 			sb.append(s);
 		}
 		
-		val output = new FileOutputStream(new File("src/com/sgine/opengl/generated/" + name + ".scala"));
+		val output = new FileOutputStream(new File("src/main/scala/com/sgine/opengl/generated/" + name + ".scala"));
 		output.write(sb.toString().getBytes());
 		output.flush();
 	}
@@ -62,7 +63,7 @@ object OpenGLGenerator {
 		c.getMethods.foreach(processMethod);
 		sb.append("}");
 		
-		val output = new FileOutputStream(new File("src/com/sgine/opengl/generated/" + name + ".scala"));
+		val output = new FileOutputStream(new File("src/main/scala/com/sgine/opengl/generated/" + name + ".scala"));
 		output.write(sb.toString().getBytes());
 		output.flush();
 	}

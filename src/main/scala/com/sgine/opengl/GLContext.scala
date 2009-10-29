@@ -18,6 +18,10 @@ object GLContext {
 		localGL.set(gl);
 	}
 	
+	def glbase():GLBase = {
+		gl;
+	}
+	
 	def gl2():GL2 = {
 		gl.getGL2();
 	}
