@@ -9,16 +9,22 @@ class MutableProperty[T] extends Changeable[T] with Property[T] {
 	
 	def apply(value:T):Property[T] = {
 		val old = this.value;
-		this.value = value;
+		
+		this.value = modify(value);
 		
 		changed(old, value);
 		
 		this;
 	}
 	
+	def modify(value:T) = value;
+	
 	def changed(oldValue:T, newValue:T) = {
-		println("SUPER!");
 	}
+}
+
+abstract class Modifiable[T] {
+	def modify(value:T):T
 }
 
 abstract class Changeable[T] {

@@ -22,6 +22,10 @@ private[work] class WorkThread (workManager:WorkManager) {
 				if (work != null) {
 					working = true;
 					work match {
+						case wu:WorkUnit => wu.workManager = workManager;
+						case _ =>
+					}
+					work match {
 						case tu:TimeoutUnit => tu.started();
 						case _ =>
 					}
