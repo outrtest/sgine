@@ -4,10 +4,12 @@
 	<property environment="env"/>
 	
     <property name="src" location="src/main/scala"/>
+	<property name="tests" location="src/test/scala"/>
     <property name="build" location="build"/>
     <property name="dist" location="dist"/>
     <property name="lib" location="lib"/>
     <property name="jar" value="${ant.project.name}.jar"/>
+	<property name="jar.tests" value="${ant.project.name}.tests.jar"/>
 	<property name="scala.home" location="${env.SCALA_HOME}"/>
 	
     <path id="cp">
@@ -28,11 +30,13 @@
         <delete dir="${build}"/>
         <mkdir dir="${build}"/>
     	<mkdir dir="${dist}"/>
-    	<scalac srcdir="${src}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
+    	<fsc srcdir="${src}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
+    	<fsc srcdir="${tests}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
     </target>
 	
     <target name="jar" depends="compile">
         <jar destfile="${dist}/${jar}" basedir="${build}" index="true"/>
+    	<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
     </target>
 	
 	<target name="run-generator" depends="jar">
@@ -45,5 +49,13 @@
 	
 	<target name="run-work-test" depends="jar">
 		<java classpathref="cp" classname="com.sgine.work.TestPerformance"/>
+	</target>
+	
+	<target name="run-properties-test" depends="jar">
+		<java classpathref="cp" classname="com.sgine.property.TestProperties"/>
+	</target>
+	
+	<target name="run-tests">
+		<java classpathref="cp" classname="org.scalatest.tools.Runner" args="-p . -o -s com.sgine.property.PropertyTests"/>
 	</target>
 </project>
