@@ -19,4 +19,7 @@ trait WorkUnit extends Function0[Unit] {
 	}
 	
 	def getStarted = _started;
+	
+	def apply():Unit = {
+	}
 }

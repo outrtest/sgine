@@ -2,16 +2,15 @@ package com.sgine.work.unit
 
 import java.lang.ref._;
 
-trait RepeatingUnit extends WorkUnit {
-	private var unitRef:WeakReference[Function0[Unit]] = _;
+class RepeatingUnit(unitRef:WeakReference[Function0[Unit]]) extends WorkUnit {
+	
+	def this(_unit:Function0[Unit]) = {
+		this(new WeakReference(_unit));
+	}
 	
 	def unit = unitRef.get();
 	
-	def unit_=(_unit:Function0[Unit]) = {
-		unitRef = new WeakReference[Function0[Unit]](_unit);
-	}
-	
-	abstract override def apply():Unit = {
+	override def apply():Unit = {
 		super.apply();
 		
 		if (unitRef != null) {

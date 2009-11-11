@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<project name="opengl" basedir="." default="run-opengl-test">
+<project name="sgine" basedir="." default="compile">
 	<property environment="env"/>
 	
     <property name="src" location="src/main/scala"/>
