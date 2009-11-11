@@ -12,6 +12,7 @@ private[work] class WorkThread (workManager:WorkManager) {
 	private var working = false;
 	
 	def init() = {
+		thread.setDaemon(true);
 		thread.start();
 	}
 	

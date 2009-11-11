@@ -1,14 +1,16 @@
-package com.sgine.property
+package com.sgine.property.adjust
 
 import com.sgine.Updatable;
+import com.sgine.property.convert._;
+import com.sgine.property._;
 
 trait PropertyAdjuster[T] extends Modifiable[T] with Updatable {
-	protected var current:T
-	protected var target:T
+	protected var current:T = _;
+	protected var target:T = _;
 	
 	var animator = linearAnimator(5.0, _:Double);
-	var toDouble:Function1[T, Double] = null;
-	var fromDouble:Function1[Double, T] = null;
+	val toDouble:Function1[T, Double]
+	val fromDouble:Function1[Double, T]
 	
 	abstract override def modify(value:T):T = {
 		var v = super.modify(value);
@@ -18,18 +20,10 @@ trait PropertyAdjuster[T] extends Modifiable[T] with Updatable {
 		current;
 	}
 	
-	def adjust(source:T, destination:T, percentage:Double):T
+//	def adjust(source:T, destination:T, percentage:Double):T
 	
-	abstract override def update(time:Double) = {
-		super.update(time);
-		
+	def update(time:Double) = {
 		if (current != target) {
-			if (toDouble == null) {
-				// TODO: find valid function
-			}
-			if (fromDouble == null) {
-				// TODO: find valid function
-			}
 			animator(time);
 		}
 	}
@@ -50,5 +44,6 @@ trait PropertyAdjuster[T] extends Modifiable[T] with Updatable {
 				n = t;
 			}
 		}
+		println(n);
 	}
 }

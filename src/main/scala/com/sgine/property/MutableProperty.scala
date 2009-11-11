@@ -1,6 +1,6 @@
 package com.sgine.property;
 
-class MutableProperty[T] extends Changeable[T] with Property[T] {
+class MutableProperty[T] extends Changeable[T] with Modifiable[T] with Property[T] {
 	protected var value:T = _;
 
 	def apply():T = {
@@ -23,10 +23,10 @@ class MutableProperty[T] extends Changeable[T] with Property[T] {
 	}
 }
 
-abstract class Modifiable[T] {
+trait Modifiable[T] {
 	def modify(value:T):T
 }
 
-abstract class Changeable[T] {
+trait Changeable[T] {
 	def changed(oldValue:T, newValue:T)
 }
