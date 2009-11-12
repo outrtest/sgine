@@ -3,6 +3,9 @@ package com.sgine.math
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
+/**
+ * Tests Matrix4d
+ */
 class Matrix4dTest extends FlatSpec with ShouldMatchers {
 
   "A new matrix" should "be the identity matrix" in {
@@ -31,4 +34,5 @@ class Matrix4dTest extends FlatSpec with ShouldMatchers {
   }
 
   it should "project things unchanged" is (pending)
+
 }
