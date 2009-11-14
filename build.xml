@@ -30,13 +30,13 @@
         <delete dir="${build}"/>
         <mkdir dir="${build}"/>
     	<mkdir dir="${dist}"/>
-    	<fsc srcdir="${src}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
-    	<fsc srcdir="${tests}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
+    	<scalac srcdir="${src}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
+    	<!--<scalac srcdir="${tests}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>-->
     </target>
 	
     <target name="jar" depends="compile">
         <jar destfile="${dist}/${jar}" basedir="${build}" index="true"/>
-    	<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
+    	<!--<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>-->
     </target>
 	
 	<target name="run-generator" depends="jar">
