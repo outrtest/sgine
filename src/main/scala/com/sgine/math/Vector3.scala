@@ -9,6 +9,7 @@ object Vector3 {
 
 /**
  * An immutable vector with three double values.
+ * <p/>
  * Calculation operations will return a result Vector3 instead of modifying this one.
  */
 case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 ) {
@@ -29,7 +30,9 @@ case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 ) {
 
   /**
    * Calculates the squared length of the vector.
+   * <p/>
    * Faster than length, as it doesn't need to use a square root operation.
+   * <p/>
    * Useful for quickly comparing the relative length of vectors.
    */
   def lengthSquared : Double = x*x + y*y + z*z
