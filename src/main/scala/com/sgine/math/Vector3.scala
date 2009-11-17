@@ -4,6 +4,31 @@ object Vector3 {
 
   def apply( tuple3 : (Double,Double,Double) ) : Vector3 = new Vector3( tuple3._1, tuple3._2, tuple3._3 )
   
+  /**
+   * A vector with coordinates (0,0,0)
+   */
+  object Origo extends Vector3( 0, 0, 0 )
+
+  /**
+   * A unit vector in the direction of the x axis.  Coordinates (1,0,0)
+   */
+  object UnitX extends Vector3( 1, 0, 0 )
+
+  /**
+   * A unit vector in the direction of the x axis.  Coordinates (0,1,0)
+   */
+  object UnitY extends Vector3( 0, 1, 0 )
+
+  /**
+   * A unit vector in the direction of the x axis.  Coordinates (0,0,1)
+   */
+  object UnitZ extends Vector3( 0, 0, 1 )
+
+  /**
+   * A vector with coordinates (1,1,1)
+   */
+  // TODO: Is there some more correct name for this?
+  object Ones extends Vector3( 1, 1, 1 )
 
 }
 
@@ -24,7 +49,7 @@ case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 ) {
 
 
   /**
-   * Calculates the length of the vector.
+   *  Calculates the length of the vector.
    */
   def length : Double = Math.sqrt( x*x + y*y + z*z )
 

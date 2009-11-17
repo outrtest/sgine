@@ -63,6 +63,14 @@ class Vector3Test extends FlatSpec with ShouldMatchers {
     new Vector3(1.1, 2, -3).toList should equal ( 1.1 :: 2.0 :: -3.0 :: Nil )
   }
 
+  it should "have default objects for common vectors" in {
+    Vector3.Origo should equal ( Vector3(0,0,0) )
+    Vector3.UnitX should equal ( Vector3(1,0,0) )
+    Vector3.UnitY should equal ( Vector3(0,1,0) )
+    Vector3.UnitZ should equal ( Vector3(0,0,1) )
+    Vector3.Ones  should equal ( Vector3(1,1,1) )
+  }
+
 /* Didn't get this conversation to work yet
 
   it should "be created implicitly from a tuple" in {
