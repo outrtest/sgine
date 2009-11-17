@@ -10,7 +10,7 @@ import javax.imageio._;
 import com.sgine.opengl.GLContext._;
 import com.sgine.opengl.generated.OpenGL2._;
 
-class Shape(val shapeType:Int, val points:Point3d*) extends Function1[Double, Unit] {
+class Shape(val shapeType:Int, val points:Point3*) extends Function1[Double, Unit] {
 	lazy val vertices = points zipWithIndex;
 	val texture = new Texture();
 	val textureCoordinates = new TextureCoordinates(vertices.length);
@@ -22,7 +22,7 @@ class Shape(val shapeType:Int, val points:Point3d*) extends Function1[Double, Un
 		glEnd();
 	}
 	
-	private def drawVertex(vertex:Point3d, index:Int) = {
+	private def drawVertex(vertex:Point3, index:Int) = {
 		val coords = textureCoordinates(index);
 		glTexCoord2d(coords.x, coords.y);
 		glVertex3d(vertex.x, vertex.y, vertex.z);
@@ -30,7 +30,7 @@ class Shape(val shapeType:Int, val points:Point3d*) extends Function1[Double, Un
 }
 
 object Shape {
-	def apply(shapeType:Int, vertices:Point3d*) = new Shape(shapeType, vertices:_*);
+	def apply(shapeType:Int, vertices:Point3*) = new Shape(shapeType, vertices:_*);
 	
 	def apply(image:BufferedImage):Shape = {
 		val xb = image.getWidth / 2.0;

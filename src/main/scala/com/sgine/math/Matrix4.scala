@@ -1,7 +1,7 @@
 package com.sgine.math
 
-class Matrix4d {
-	//private var stack:List[Matrix4d] = Nil
+class Matrix4 {
+	//private var stack:List[Matrix4] = Nil
   //private var stackPosition
 
   // TODO: Why not an Array[Double](4 * 4) ?

@@ -4,12 +4,12 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
 /**
- * Tests Matrix4d
+ * Tests Matrix4
  */
-class Matrix4dTest extends FlatSpec with ShouldMatchers {
+class Matrix4Test extends FlatSpec with ShouldMatchers {
 
   "A new matrix" should "be the identity matrix" in {
-    val m = new Matrix4d()
+    val m = new Matrix4()
 
     m.m00 should equal (1.0)
     m.m01 should equal (0.0)
