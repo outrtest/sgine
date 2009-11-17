@@ -33,6 +33,33 @@ class Vector3Test extends FlatSpec with ShouldMatchers {
     Vector3(0,2,3) / 2 should equal (Vector3(0,1,1.5))
   }
 
+  it should "calculate length correctly" in {
+    new Vector3( -1, 0, 0 ).length should equal (1)
+    new Vector3( 0, 0, 0 ).length should equal (0)
+    new Vector3( 0, 1, 0 ).length should equal (1)
+    new Vector3( 0, 3, 4 ).length should equal ( 5 )
+    new Vector3( 1, 2, 3 ).length should equal ( Math.sqrt(14) )
+  }
+
+  it should "calculate squared length correctly" in {
+    new Vector3( -1, -2, 0 ).lengthSquared should equal (5)
+    new Vector3( 0, 0, 0 ).lengthSquared should equal (0)
+    new Vector3( 0, 1, 0 ).lengthSquared should equal (1)
+    new Vector3( 0, 3, 4 ).lengthSquared should equal ( 25 )
+    new Vector3( 1, 2, 3 ).lengthSquared should equal ( 14 )
+  }
+
+  it should "convert to string correctly" in {
+    new Vector3(1.1, 2, -3).toString should equal ( "Vector3(1.1, 2.0, -3.0)" )
+  }
+
+  it should "convert to a tuple" in {
+    new Vector3(1.1, 2, -3).toTuple should equal ( (1.1, 2.0, -3.0) )
+  }
+
+  it should "convert to a list" in {
+    new Vector3(1.1, 2, -3).toList should equal ( 1.1 :: 2.0 :: -3.0 :: Nil )
+  }
 
 /* Didn't get this conversation to work yet
 
