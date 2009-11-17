@@ -19,9 +19,11 @@ class Vector3Test extends FlatSpec with ShouldMatchers {
 
   it should "add correctly" in {
     Vector3(0,2,3) + (1,3,7) should equal (Vector3(1,5,10))
+    Vector3(0,2,3) + Vector3(1,3,7) should equal (Vector3(1,5,10))
   }
 
   it should "subtract correctly" in {
+    Vector3(0,2,3) - (1,3,7) should equal (Vector3(-1,-1,-4))
     Vector3(0,2,3) - Vector3(1,3,7) should equal (Vector3(-1,-1,-4))
   }
 
