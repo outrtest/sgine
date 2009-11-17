@@ -41,7 +41,7 @@ case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 ) {
   // TODO:
 
   // dot product    * operator
-  // cross product  x operator? or maybe >< or 'cross'
+  // cross product  X operator? (easy to confuse with coordinate x access though) or maybe 'cross'
 
   // distance
   // squaredDistance
