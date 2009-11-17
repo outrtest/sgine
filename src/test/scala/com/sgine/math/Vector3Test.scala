@@ -17,6 +17,14 @@ class Vector3Test extends FlatSpec with ShouldMatchers {
     v.z should equal (0.0)
   }
 
+  "A vector" should "have correct coordinate mapping" in {
+    val v = new Vector3(1, 2, 3)
+
+    v.x should equal (1)
+    v.y should equal (2)
+    v.z should equal (3)
+  }
+
   it should "add correctly" in {
     Vector3(0,2,3) + (1,3,7) should equal (Vector3(1,5,10))
     Vector3(0,2,3) + Vector3(1,3,7) should equal (Vector3(1,5,10))
