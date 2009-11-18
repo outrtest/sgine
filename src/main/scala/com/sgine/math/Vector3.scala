@@ -132,4 +132,14 @@ final case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 )
 
   override def toString = "Vector3("+x+", "+y+", "+z+")"
 
+  
+  // TODO: Other useful methods:
+  //
+  // interpolate (linear, maybe cosine also?)
+  // scale add (implemented sensibly for the case where e.g. velocity multiplied with a time step is added to a position)
+  // scaling each of the three coordinates ( * (x,y,z) operator?  Risk for confusing with dot product?  Maybe call it scale?)
+  // various direction related manipulations?  They might be better for a Quaternion / Direction class thou.
+  // polar coordinate conversion (to/from)
+
+
 }
