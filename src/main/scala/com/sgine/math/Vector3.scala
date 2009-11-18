@@ -7,37 +7,43 @@ object Vector3 {
   /**
    * A vector with coordinates (0,0,0)
    */
-  object Origo extends Vector3( 0, 0, 0 )
+  val Zero  = new Vector3( 0, 0, 0 )
+
+  /**
+   * A vector with coordinates (0,0,0)
+   */
+  val Origo = Zero
 
   /**
    * A unit vector in the direction of the x axis.  Coordinates (1,0,0)
    */
-  object UnitX extends Vector3( 1, 0, 0 )
+  val UnitX = new Vector3( 1, 0, 0 )
 
   /**
    * A unit vector in the direction of the x axis.  Coordinates (0,1,0)
    */
-  object UnitY extends Vector3( 0, 1, 0 )
+  val UnitY = new Vector3( 0, 1, 0 )
 
   /**
    * A unit vector in the direction of the x axis.  Coordinates (0,0,1)
    */
-  object UnitZ extends Vector3( 0, 0, 1 )
+  val UnitZ = new Vector3( 0, 0, 1 )
 
   /**
    * A vector with coordinates (1,1,1)
    */
   // TODO: Is there some more correct name for this?
-  object Ones extends Vector3( 1, 1, 1 )
+  val Ones = new Vector3( 1, 1, 1 )
 
 }
+
 
 /**
  * An immutable vector with three double values.
  * <p/>
  * Calculation operations will return a result Vector3 instead of modifying this one.
  */
-case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 ) {
+final case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 ) {
 
   def + ( other : Vector3 ) : Vector3 = new Vector3( x + other.x, y + other.y, z + other.z )
   def - ( other : Vector3 ) : Vector3 = new Vector3( x - other.x, y - other.y, z - other.z )
@@ -47,6 +53,7 @@ case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 ) {
   def + ( ox : Double, oy : Double, oz : Double ) : Vector3 = new Vector3( x + ox, y + oy, z + oz )
   def - ( ox : Double, oy : Double, oz : Double ) : Vector3 = new Vector3( x - ox, y - oy, z - oz )
 
+  def unary_- : Vector3 = new Vector3( -x, -y, -z )
 
   /**
    *  Calculates the length of the vector.
@@ -62,19 +69,56 @@ case class Vector3( x : Double = 0.0, y : Double = 0.0, z : Double = 0.0 ) {
    */
   def lengthSquared : Double = x*x + y*y + z*z
 
+  /**
+   * The distance to the position specified by the other vector from the position specified by this vector.
+   */
+  def distance( other : Vector3 ) : Double = Math.sqrt( distanceSquared( other ) )
 
-  // TODO:
+  /**
+   * The squared distance to the position specified by the other vector from the position specified by this vector.
+   * <p/>
+   * Faster than distance, as it doesn't need to use a square root operation.
+   * <p/>
+   * Useful for quickly comparing the relative distances between points.
+   */
+  def distanceSquared( other : Vector3 ) : Double = {
+    val dx = x - other.x
+    val dy = y - other.y
+    val dz = z - other.z
+    dx*dx + dy*dy + dz*dz
+  }
 
-  // dot product    * operator
-  // cross product  X operator? (easy to confuse with coordinate x access though) or maybe 'cross'
+  /**
+   * Calculates and returns the normalized version of this vector.
+   * A normalized vector is in the same direction as the original vector, but has a length of one.
+   * The normalized vector for (0,0,0) is (0,0,0).
+   */
+  def normalized : Vector3 = {
+    if (isZero) Vector3.Zero else {
+      val len = length
+      new Vector3( x / len, y / len, z / len )
+    }
+  }
 
-  // distance
-  // squaredDistance
+  /**
+   * True if this a vector with zero length (that is, x, y, and z are all 0).
+   */
+  def isZero : Boolean = x == 0 && y == 0 && z == 0
 
-  // normalize
+  /**
+   * Calculates and returns the dot product of this and the specified vector.
+   * <p/>
+   * The dot product of vectors a and b is defined as a.x*b.x + a.y*b.y + a.z*b.z
+   */
+  def * ( other : Vector3 ) : Double = x * other.x + y * other.y + z * other.z
 
-  // unary minus
-
+  /**
+ * Calculates and returns the cross product of this and the specified vector.
+ * <p/>
+ * The cross product of vectors a and b is defined as
+ * a X b = (a.y * b.z − a.z * b.y, a.z * b.x − a.x * b.z, a.x * b.y − a.y * b.x).
+ */
+  def cross ( o : Vector3 ) : Vector3 = new Vector3(y * o.z - z * o.y, z * o.x - x * o.z, x * o.y - y * o.x)
 
   /**
    * Returns a three element list with the x, y, and z coordinates of the Vector3 in that order.

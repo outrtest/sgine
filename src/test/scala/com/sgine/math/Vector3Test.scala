@@ -43,6 +43,11 @@ class Vector3Test extends FlatSpec with ShouldMatchers {
     Vector3(0,2,3) / 2 should equal (Vector3(0,1,1.5))
   }
 
+  it should "support unary minus" in {
+    -Vector3( 0, 0, 0) should equal (Vector3(0, 0, 0))
+    -Vector3( -1, 2, 3) should equal (Vector3(1, -2, -3))
+  }
+
   it should "calculate length correctly" in {
     new Vector3( -1, 0, 0 ).length should equal (1)
     new Vector3( 0, 0, 0 ).length should equal (0)
@@ -77,6 +82,52 @@ class Vector3Test extends FlatSpec with ShouldMatchers {
     Vector3.UnitY should equal ( Vector3(0,1,0) )
     Vector3.UnitZ should equal ( Vector3(0,0,1) )
     Vector3.Ones  should equal ( Vector3(1,1,1) )
+  }
+
+  it should "calculate dot product properly" in {
+
+    Vector3( 0, 0, 0 ) * Vector3( 0, 0, 0 ) should equal( 0 )
+    Vector3( 1, 2, 3 ) * Vector3( 2, 3, 4 ) should equal( 2 + 6 + 12 )
+    Vector3( -1, 0, -1 ) * Vector3( 0, 1, 1 ) should equal( -1 )
+
+  }
+
+  it should "calculate cross product properly" in {
+
+    Vector3( 0, 0, 0 ) cross Vector3( 0, 0, 0 ) should equal( Vector3( 0, 0, 0 ) )
+    Vector3( 1, 0, 0 ) cross Vector3( 0, 1, 0 ) should equal( Vector3( 0, 0, 1 ) )
+    Vector3( 1, 0, 0 ) cross Vector3( 0, -1, 0 ) should equal( Vector3( 0, 0, -1 ) )
+    Vector3( 2, 0, 0 ) cross Vector3( 0, 0, -3 ) should equal( Vector3( 0, 6, 0 ) )
+    Vector3( 1, 2, 3 ) cross Vector3( 2, 3, 4 ) should equal( Vector3( 2*4 - 3*3, 3*2 - 1*4, 1*3 - 2*2 ) )
+
+  }
+
+  it should "calculate distance correctly" in {
+    Vector3( 1, 3, 4 ) distance Vector3( 1, 0, 0 ) should equal (5)
+    Vector3( 0, 2, 0 ) distance Vector3( 0, -1, 0 ) should equal (3)
+  }
+
+  it should "calculate squared distance correctly" in {
+    Vector3( 1, 3, 4 ) distanceSquared Vector3( 1, 0, 0 ) should equal (25)
+    Vector3( 0, 2, 0 ) distanceSquared Vector3( 0, -1, 0 ) should equal (9)
+  }
+
+  it should "normalize correctly" in {
+    val d2 = 1.0 / Math.sqrt( 2 )
+    val d3 = 1.0 / Math.sqrt( 3 )
+    val epsilon: Double = 0.00001
+
+    Vector3(0,  0,  0).normalized should equal( Vector3.Zero )
+    Vector3(1, -1,  0).normalized should equal( Vector3( d2, -d2, 0 ) )
+    Vector3(2,  0,  0).normalized should equal( Vector3( 1, 0, 0 ) )
+    Vector3(1,  1,  1).normalized should equal( Vector3( d3, d3, d3 ) )
+    Vector3(1,  2, -2).normalized should equal( Vector3( 1.0/3, 2.0/3, -2.0/3 ) )
+
+    Vector3(0,  0,  0).normalized.length should be (0.0 plusOrMinus epsilon)
+    Vector3(1, -1,  0).normalized.length should be (1.0 plusOrMinus epsilon)
+    Vector3(2,  0,  0).normalized.length should be (1.0 plusOrMinus epsilon)
+    Vector3(1,  1,  1).normalized.length should be (1.0 plusOrMinus epsilon)
+    Vector3(1,  2, -1).normalized.length should be (1.0 plusOrMinus epsilon)
   }
 
 /* Didn't get this conversation to work yet
