@@ -1,14 +1,14 @@
 package com.sgine.opengl
 
-import javax.imageio._;
+import javax.imageio._
 
-import com.sgine.util._;
-import shape._;
-import point._;
-import state._;
+import com.sgine.util._
+import shape._
+import com.sgine.math._
+import state._
 
-import GLContext._;
-import generated.OpenGL2._;
+import GLContext._
+import generated.OpenGL2._
 
 object TestWindow {
 	def main(args:Array[String]):Unit = {

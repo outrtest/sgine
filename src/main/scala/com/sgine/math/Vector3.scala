@@ -20,12 +20,12 @@ object Vector3 {
   val UnitX = new Vector3( 1, 0, 0 )
 
   /**
-   * A unit vector in the direction of the x axis.  Coordinates (0,1,0)
+   * A unit vector in the direction of the y axis.  Coordinates (0,1,0)
    */
   val UnitY = new Vector3( 0, 1, 0 )
 
   /**
-   * A unit vector in the direction of the x axis.  Coordinates (0,0,1)
+   * A unit vector in the direction of the z axis.  Coordinates (0,0,1)
    */
   val UnitZ = new Vector3( 0, 0, 1 )
 
