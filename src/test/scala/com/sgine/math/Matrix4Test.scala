@@ -1,5 +1,6 @@
 package com.sgine.math
 
+import com.sgine.math
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
@@ -33,6 +34,13 @@ class Matrix4Test extends FlatSpec with ShouldMatchers {
 
   }
 
-  it should "project things unchanged" is (pending)
+  it should "transform vectors correctly" in {
+
+    val v = Vector3( 1, 2.5, -3 )
+
+    val t = Matrix4.Identity.transform( v )
+    
+    t should equal (v)
+  }
 
 }

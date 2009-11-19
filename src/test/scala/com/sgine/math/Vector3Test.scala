@@ -9,7 +9,7 @@ import org.scalatest.matchers.ShouldMatchers
  */
 class Vector3Test extends FlatSpec with ShouldMatchers {
 
-  "A vector" should "default to all zero" in {
+  "A Vector3" should "default to all zero" in {
     val v = new Vector3()
 
     v.x should equal (0.0)
@@ -17,7 +17,7 @@ class Vector3Test extends FlatSpec with ShouldMatchers {
     v.z should equal (0.0)
   }
 
-  "A vector" should "have correct coordinate mapping" in {
+  it should "have correct coordinate mapping" in {
     val v = new Vector3(1, 2, 3)
 
     v.x should equal (1)
@@ -78,6 +78,7 @@ class Vector3Test extends FlatSpec with ShouldMatchers {
 
   it should "have default objects for common vectors" in {
     Vector3.Origo should equal ( Vector3(0,0,0) )
+    Vector3.Zero should equal ( Vector3(0,0,0) )
     Vector3.UnitX should equal ( Vector3(1,0,0) )
     Vector3.UnitY should equal ( Vector3(0,1,0) )
     Vector3.UnitZ should equal ( Vector3(0,0,1) )
