@@ -43,4 +43,7 @@ class Matrix4Test extends FlatSpec with ShouldMatchers {
     t should equal (v)
   }
 
+  // TODO: Test other transformations than identity
+
+
 }

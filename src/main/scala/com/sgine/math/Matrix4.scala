@@ -22,6 +22,8 @@ object Matrix4{
 
 import Matrix4.D
 import java.security.Identity
+import java.nio.FloatBuffer
+import java.nio.DoubleBuffer
 
 /**
  * An immutable Matrix4 implementation.
@@ -47,6 +49,117 @@ case class Matrix4(
       m00 * v.x + m01 * v.y + m02 * v.z + m03,
       m10 * v.x + m11 * v.y + m12 * v.z + m13,
       m20 * v.x + m21 * v.y + m22 * v.z + m23 )
+  }
+
+
+  def transform(src : DoubleBuffer , dst : DoubleBuffer ) {
+    transform(src, dst, 0, src.capacity() / 3)
+  }
+
+  def transformNonUnrolled(src : DoubleBuffer , dst : DoubleBuffer ) {
+    transformNonUnrolled(src, dst, 0, src.capacity() / 3)
+  }
+
+  def transform(src : DoubleBuffer , dst : DoubleBuffer, offset : Int, length : Int) {
+    if (src.position() != 0 || src.limit() != src.capacity()) throw new IllegalStateException("Src-floatbuffer must be cleared")
+    if (dst.position() != 0 || dst.limit() != dst.capacity()) throw new IllegalStateException("Dst-floatbuffer must be cleared")
+
+    val off = offset * 3
+    val len = length * 3
+
+    var x = 0.0
+    var y = 0.0
+    var z = 0.0
+    var a = off
+    var b = 0
+    var c = 0
+    var end = off + len
+    var end4 = ((end / 3) / 4 * 4) * 3
+
+    // Unrolled loop, do 4 at a time
+    while (a < end4) {
+      b = a + 1
+      c = a + 2
+      x = src.get(a)
+      y = src.get(b)
+      z = src.get(c)
+      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
+      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
+      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
+      a += 3
+
+      b = a + 1
+      c = a + 2
+      x = src.get(a)
+      y = src.get(b)
+      z = src.get(c)
+      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
+      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
+      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
+      a += 3;
+
+      b = a + 1
+      c = a + 2
+      x = src.get(a)
+      y = src.get(b)
+      z = src.get(c)
+      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
+      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
+      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
+      a += 3
+
+      b = a + 1
+      c = a + 2
+      x = src.get(a)
+      y = src.get(b)
+      z = src.get(c)
+      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
+      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
+      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
+      a += 3
+    }
+
+    while (a < end) {
+      b = a + 1
+      c = a + 2
+      x = src.get(a)
+      y = src.get(b)
+      z = src.get(c)
+      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
+      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
+      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
+      a += 3
+    }
+  }
+
+
+  def transformNonUnrolled(src : DoubleBuffer , dst : DoubleBuffer, offset : Int, length : Int) {
+    if (src.position() != 0 || src.limit() != src.capacity()) throw new IllegalStateException("Src-floatbuffer must be cleared")
+    if (dst.position() != 0 || dst.limit() != dst.capacity()) throw new IllegalStateException("Dst-floatbuffer must be cleared")
+
+    val off = offset * 3
+    val len = length * 3
+
+    var x = 0.0
+    var y = 0.0
+    var z = 0.0
+    var a = off
+    var b = 0
+    var c = 0
+    var end = off + len
+    var end4 = ((end / 3) / 4 * 4) * 3
+
+    while (a < end) {
+      b = a + 1
+      c = a + 2
+      x = src.get(a)
+      y = src.get(b)
+      z = src.get(c)
+      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
+      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
+      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
+      a += 3
+    }
   }
 
 
@@ -132,26 +245,6 @@ public class Matrix4f {
 		return vec;
 	}
 
-	public final Vector3f transform(Vector3f src_dst) {
-		return this.transform(src_dst, src_dst);
-	}
-
-	public final Vector3f transform(Vector3f src, Vector3f dst) {
-		float x = src.x;
-		float y = src.y;
-		float z = src.z;
-
-		dst.x = m00 * x + m01 * y + m02 * z + m03;
-		dst.y = m10 * x + m11 * y + m12 * z + m13;
-		dst.z = m20 * x + m21 * y + m22 * z + m23;
-
-		return dst;
-	}
-
-	public final void transform(Vector3f[] src, Vector3f[] dst) {
-		for (int i = 0; i < src.length; i++)
-			this.transform(src[i], dst[i]);
-	}
 
 	public final void transform(FloatBuffer src, FloatBuffer dst) {
 		this.transform(src, dst, 0, src.capacity() / 3);
