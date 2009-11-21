@@ -4,24 +4,26 @@ package com.sgine.util
  * Start of a framework for measuring perfromance and reporting the results.
  */
 // TODO: Some tool for iterating through classes in source dirs and running the ones inheriting the performance test trait.
-final case class PerformanceProfiler( subject : String ) {
+// TODO: Refactor this to be unit test like instead with an overrideable setup method and reflection found test methods, this current approach seems clumsy to use
+final case class PerformanceProfiler[T]( subject : String ) {
 
   var warmupRounds = 5
-  var testRounds = 5
+  var testRounds = 10
 
-  private var tests : List[(String,Unit=>Any,Any=>Unit)] = Nil
+  private var tests : List[(String,Unit=>T,T=>Unit)] = Nil
 
-  def addTest[T]( testName : String, setup: Unit => T) (performanceTest : T => Unit ) {
-    tests = tests ::: List( (testName, setup.asInstanceOf[Unit => Any], performanceTest.asInstanceOf[Any => Unit]) )
+  def addTest( testName : String, setup: Unit => T) (performanceTest : T => Unit ) {
+    tests = tests ::: List( (testName, setup.asInstanceOf[Unit => T], performanceTest.asInstanceOf[T => Unit]) )
   }
 
   def runTestsAndPrintResults() {
+    println( "Running "+tests.size+" performance test"+(if(tests.size!=1) "s" else "")+" for " + subject + "\n ..." )
     println( runTests )
   }
 
   def runTests() : String = {
     makeSummaryReport( subject,
-      tests map { case (testName : String, setup : (Unit=>Any), test : (Any=>Unit)) =>
+      tests map { case (testName : String, setup : (Unit=>T), test : (T=>Unit)) =>
 
         // Warm up the JVM -- that is, allow the Just In Time compiler to optimize the code for the tested block.
         runTest(warmupRounds, setup, test)
@@ -37,9 +39,12 @@ final case class PerformanceProfiler( subject : String ) {
   def makeTestReport( testName : String, durations : Seq[Double]) : String = {
     "    " + testName + "\n"+
     "      Numer of rounds: " + durations.size + "\n" +
-    "      Average duration: " + durations.sum / durations.size + " s\n" +
+    "      Average duration: " + 1000.0 * (durations.sum / durations.size) + " ms\n" +
+/*
     "      Round durations:\n" +
-    "        " + durations.mkString( " s\n        " ) + (if (durations.size>0) "s" else "") + "\n"
+    "        " + durations.mkString( " s\n        " ) + (if (durations.size>0) "s" else "") +
+*/
+    "\n"
   }
 
   /**
@@ -54,10 +59,10 @@ final case class PerformanceProfiler( subject : String ) {
   /**
    *  Returns the durations of each test run in seconds.
    */
-  def runTest( numberOfRuns : Int,  setup : (Unit=>Any), test : (Any=>Unit) ) : Seq[Double] = {
+  def runTest( numberOfRuns : Int,  setup : (Unit=>T), test : (T=>Unit) ) : Seq[Double] = {
     1 to numberOfRuns map { i =>
 
-      val testData = setup
+      val testData = setup()
 
       val startTime_ns = System.nanoTime
 

@@ -1,5 +1,8 @@
 package com.sgine.math
 
+import java.nio.DoubleBuffer
+import Matrix4.D
+
 object Matrix4{
 
   type D = Double
@@ -20,10 +23,6 @@ object Matrix4{
   def apply() : Matrix4 = Identity
 }
 
-import Matrix4.D
-import java.security.Identity
-import java.nio.FloatBuffer
-import java.nio.DoubleBuffer
 
 /**
  * An immutable Matrix4 implementation.
@@ -56,86 +55,12 @@ case class Matrix4(
     transform(src, dst, 0, src.capacity() / 3)
   }
 
-  def transformNonUnrolled(src : DoubleBuffer , dst : DoubleBuffer ) {
-    transformNonUnrolled(src, dst, 0, src.capacity() / 3)
-  }
-
   def transform(src : DoubleBuffer , dst : DoubleBuffer, offset : Int, length : Int) {
     if (src.position() != 0 || src.limit() != src.capacity()) throw new IllegalStateException("Src-floatbuffer must be cleared")
     if (dst.position() != 0 || dst.limit() != dst.capacity()) throw new IllegalStateException("Dst-floatbuffer must be cleared")
 
-    val off = offset * 3
-    val len = length * 3
-
-    var x = 0.0
-    var y = 0.0
-    var z = 0.0
-    var a = off
-    var b = 0
-    var c = 0
-    var end = off + len
-    var end4 = ((end / 3) / 4 * 4) * 3
-
-    // Unrolled loop, do 4 at a time
-    while (a < end4) {
-      b = a + 1
-      c = a + 2
-      x = src.get(a)
-      y = src.get(b)
-      z = src.get(c)
-      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
-      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
-      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
-      a += 3
-
-      b = a + 1
-      c = a + 2
-      x = src.get(a)
-      y = src.get(b)
-      z = src.get(c)
-      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
-      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
-      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
-      a += 3;
-
-      b = a + 1
-      c = a + 2
-      x = src.get(a)
-      y = src.get(b)
-      z = src.get(c)
-      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
-      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
-      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
-      a += 3
-
-      b = a + 1
-      c = a + 2
-      x = src.get(a)
-      y = src.get(b)
-      z = src.get(c)
-      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
-      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
-      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
-      a += 3
-    }
-
-    while (a < end) {
-      b = a + 1
-      c = a + 2
-      x = src.get(a)
-      y = src.get(b)
-      z = src.get(c)
-      dst.put(a, m00 * x + m01 * y + m02 * z + m03)
-      dst.put(b, m10 * x + m11 * y + m12 * z + m13)
-      dst.put(c, m20 * x + m21 * y + m22 * z + m23)
-      a += 3
-    }
-  }
-
-
-  def transformNonUnrolled(src : DoubleBuffer , dst : DoubleBuffer, offset : Int, length : Int) {
-    if (src.position() != 0 || src.limit() != src.capacity()) throw new IllegalStateException("Src-floatbuffer must be cleared")
-    if (dst.position() != 0 || dst.limit() != dst.capacity()) throw new IllegalStateException("Dst-floatbuffer must be cleared")
+    // NOTE: There was a partially unrolled version of this algorithm (did 4 transformations at a time),
+    // but it was actually slightly slower than this simple loop version, so it was removed.
 
     val off = offset * 3
     val len = length * 3
