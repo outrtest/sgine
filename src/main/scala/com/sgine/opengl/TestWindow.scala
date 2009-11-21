@@ -10,7 +10,7 @@ import state._
 object TestWindow {
 	def main(args:Array[String]):Unit = {
 		// Create our window
-		val w = new Window("Test Window", 800, 600);
+		val w = new Window("Test Window", 1024, 768);
 		
 		// Translate back so we can see
 		w.displayables.add(TranslateState(0.0, 0.0, -1000.0));
@@ -24,7 +24,5 @@ object TestWindow {
 		
 		// Start / Display the window
 		w.start();
-		
-		Thread.sleep(10000);
 	}	
 }

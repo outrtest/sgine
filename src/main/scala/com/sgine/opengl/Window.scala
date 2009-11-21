@@ -2,9 +2,11 @@ package com.sgine.opengl
 
 import java.util.concurrent._;
 
+import com.sgine.util._;
 import com.sgine.work._;
 
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11._;
 import org.lwjgl.util.glu.GLU._;
 
@@ -14,11 +16,12 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	private var keepAlive = true;
 	private var renders:Long = 0;
 	private var lastRender:Long = System.nanoTime();
+	private val thread = new Thread(FunctionRunnable(run));
 	
 	val displayables = new ConcurrentLinkedQueue[(Double) => Unit]();
 	
 	def start() = {
-		workManager += run;
+		thread.start();
 		
 		while(renders < 2) {
 			Thread.sleep(10);
@@ -30,8 +33,8 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 		Display.setTitle(title);
 		Display.setFullscreen(false);		// TODO: revisit
 		Display.setVSyncEnabled(false);		// TODO: revisit
-		// TODO: set DisplayMode
-		Display.create();
+		Display.setDisplayMode(determineDisplayMode());
+		Display.create();		// TODO: incorporate PixelFormat
 		
 		// Initialize the GL context
 		init();
@@ -41,16 +44,22 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 			
 			if (Display.isCloseRequested()) {		// Window close
 				keepAlive = false;
-			} else if (Display.isActive()) {		// Window is in foreground
-				render();
-			} else {								// Window in background
-				Thread.sleep(100);			// TODO: revisit
 			}
-			
-			Thread.`yield`();
+			render();
 		}
 		Display.destroy();
 		System.exit(0);
+	}
+	
+	private def determineDisplayMode():DisplayMode = {		// TODO: make better
+		for (mode <- Display.getAvailableDisplayModes()) {
+			if (mode.getWidth() == width) {
+				if (mode.getHeight() == height) {
+					return mode;
+				}
+			}
+		}
+		return null;
 	}
 	
 	def init() = {
@@ -59,7 +68,7 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 		glEnable(GL_TEXTURE_2D);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		reshape(0, 0, 640, 480); 		// TODO: revisit
+		reshape(0, 0, width, height);
 	}
  
 	def reshape(x:Int, y:Int, width:Int, height:Int) = {

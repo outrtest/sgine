@@ -25,7 +25,7 @@ class WorkManager {
 	private val queue = new ConcurrentLinkedQueue[() => Unit]();
 	private val workers = new ConcurrentLinkedQueue[WorkThread]();
 	
-	private[work] val monitor = new Thread(FunctionRunnable(WorkManager.this.run));
+	private[work] val monitor = new Thread(FunctionRunnable(run));
 	
 	private var started = false;
 	private var keepAlive = true;
