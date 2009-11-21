@@ -7,9 +7,6 @@ import shape._
 import com.sgine.math._
 import state._
 
-import GLContext._
-import generated.OpenGL2._
-
 object TestWindow {
 	def main(args:Array[String]):Unit = {
 		// Create our window

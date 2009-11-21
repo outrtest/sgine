@@ -1,21 +1,16 @@
 package com.sgine.opengl
 
 import java.util.concurrent._;
-import javax.media.opengl._;
-import javax.media.opengl.glu._;
-
-import com.sun.javafx.newt._;
-import com.sun.javafx.newt.opengl._;
 
 import com.sgine.work._;
 
-import GLContext._;
-import generated.OpenGL2._;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11._;
+import org.lwjgl.util.glu.GLU._;
 
-class Window (val title:String, val width:Int, val height:Int, val workManager:WorkManager = DefaultWorkManager) extends GLEventListener with WindowListener {
+class Window (val title:String, val width:Int, val height:Int, val workManager:WorkManager = DefaultWorkManager) {
 	import com.sgine.util.JavaConversions.clq2iterable;
 	
-	private var glWindow:GLWindow = _;
 	private var keepAlive = true;
 	private var renders:Long = 0;
 	private var lastRender:Long = System.nanoTime();
@@ -31,44 +26,51 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	}
 	
 	private def run() = {
-		glWindow = GLWindow.create();
-		glWindow.setTitle(title);
-		glWindow.setSize(width, height);
-		glWindow.setAutoDrawableClient(true);
-		glWindow.addGLEventListener(this);
-		glWindow.addWindowListener(this);
-		glWindow.setVisible(true);
+		// Configure display
+		Display.setTitle(title);
+		Display.setFullscreen(false);		// TODO: revisit
+		Display.setVSyncEnabled(false);		// TODO: revisit
+		// TODO: set DisplayMode
+		Display.create();
+		
+		// Initialize the GL context
+		init();
+		
 		while(keepAlive) {
-			glWindow.display();
+			Display.update();
+			
+			if (Display.isCloseRequested()) {		// Window close
+				keepAlive = false;
+			} else if (Display.isActive()) {		// Window is in foreground
+				render();
+			} else {								// Window in background
+				Thread.sleep(100);			// TODO: revisit
+			}
+			
 			Thread.`yield`();
 		}
-		System.exit(0); // TODO: figure out what's not letting go
 	}
 	
-	def init(g:GLAutoDrawable) = {
-		gl = g.getGL();
-		setSwapInterval(0);
+	def init() = {
 		glClearDepth(1.0);
 		glEnable(GL_BLEND);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 		glEnable(GL_TEXTURE_2D);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		reshape(0, 0, 640, 480); 		// TODO: revisit
 	}
  
-	def reshape(g:GLAutoDrawable, x:Int, y:Int, width:Int, height:Int) = {
-	    gl = g.getGL();
-	    val glu = new GLU();
-	
-	    val h = width.toDouble / height.toDouble;
+	def reshape(x:Int, y:Int, width:Int, height:Int) = {
+	    val h = width.toFloat / height.toFloat;
 	    glViewport(0, 0, width, height);
 	    glMatrixMode(GL_PROJECTION);
 	    glLoadIdentity();
-	    glu.gluPerspective(45.0f, h, 1.0, 20000.0);
+	    gluPerspective(45.0f, h, 1.0f, 20000.0f);
 	    glMatrixMode(GL_MODELVIEW);
 	    glLoadIdentity();
 	}
  
-	def display(g:GLAutoDrawable) = {
+	def render() = {
 		val currentRender = System.nanoTime();
 		val time = (currentRender - lastRender) / 1000000000.0;
 		
@@ -85,25 +87,5 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	    }
 	    
 	    lastRender = currentRender;
-	}
- 
-	def dispose(g:GLAutoDrawable) = {
-	}
- 
-	def windowResized(e:WindowEvent) = {
-	}
- 
-	def windowMoved(e:WindowEvent) = {
-	}
- 
-	def windowLostFocus(e:WindowEvent) = {
-	}
- 
-	def windowGainedFocus(e:WindowEvent) = {
-	}
- 
-	def windowDestroyNotify(e:WindowEvent) = {
-		println("Destroy!");
-		keepAlive = false;
 	}
 }

@@ -2,8 +2,7 @@ package com.sgine.opengl.state
 
 
 import com.sgine.math._;
-import com.sgine.opengl.GLContext._;
-import com.sgine.opengl.generated.OpenGL2._;
+import org.lwjgl.opengl.GL11._;
 
 class TranslateState private(val p:Vector3 = Vector3.Zero) extends Function1[Double, Unit] {
 	def apply(time:Double) = {

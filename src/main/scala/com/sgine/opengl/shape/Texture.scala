@@ -1,11 +1,14 @@
 package com.sgine.opengl.shape
 
-import com.sgine.opengl.GLContext._;
-import com.sgine.opengl.generated.OpenGL2._;
 import com.sgine.util._;
 
 import java.awt.image.BufferedImage;
 import java.nio._;
+
+import org.lwjgl.opengl.GL11._;
+import org.lwjgl.opengl.GL12._;
+import org.lwjgl.opengl.GL14._;
+import com.sgine.opengl.GLUtilities._;
 
 class Texture {
 	private lazy val id = generateId();
@@ -19,9 +22,9 @@ class Texture {
 	private var mipmap:Boolean = _;
 	
 	private def generateId() = {
-		val tmp = new Array[Int](1);
-		glGenTextures(1, tmp, 0);
-		tmp(0);
+		val tmp = IntBuffer.allocate(1);
+		glGenTextures(tmp);
+		tmp.get(0);
 	}
 	
 	def apply(image:BufferedImage, x:Int, y:Int, width:Int, height:Int, mipmap:Boolean) = {
@@ -92,7 +95,7 @@ class Texture {
 				x = Math.round((w - tu.width) / 2.0f);
 				y = Math.round((h - tu.height) / 2.0f);
 			}
-			glTexImage2D(GL_TEXTURE_2D, 0, tu.imageFormat, w, h, 0, tu.textureFormat, tu.imageType, null);
+			glTexImage2D(GL_TEXTURE_2D, 0, tu.imageFormat, w, h, 0, tu.textureFormat, tu.imageType, null.asInstanceOf[ByteBuffer]);
 			
 			width = tu.width;
 			height = tu.height;

@@ -39,12 +39,8 @@
     	<!--<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>-->
     </target>
 	
-	<target name="run-generator" depends="jar">
-		<java classpathref="cp" classname="com.sgine.opengl.generator.OpenGLGenerator"/>
-	</target>
-	
 	<target name="run-opengl-test" depends="jar">
-		<java classpathref="cp" classname="com.sgine.opengl.RunTest" fork="true" jvmargs="-Djava.library.path=Z:/programming/work/workspace_idea/scalagl/lib/native/win64"/>
+		<java classpathref="cp" classname="com.sgine.opengl.TestWindow" fork="true" jvmargs="-Djava.library.path=Z:/programming/work/workspace_scala/sgine/lib/native/windows"/>
 	</target>
 	
 	<target name="run-work-test" depends="jar">
