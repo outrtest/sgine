@@ -49,6 +49,8 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 			
 			Thread.`yield`();
 		}
+		Display.destroy();
+		System.exit(0);
 	}
 	
 	def init() = {
