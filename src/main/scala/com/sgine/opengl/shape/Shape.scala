@@ -8,7 +8,6 @@ import java.awt.image._;
 import javax.imageio._;
 
 import com.sgine.opengl.GLContext._;
-import com.sgine.opengl.generated.OpenGL2._;
 
 class Shape(val shapeType:Int, val points:Vector3*) extends Function1[Double, Unit] {
 	lazy val vertices = points zipWithIndex;

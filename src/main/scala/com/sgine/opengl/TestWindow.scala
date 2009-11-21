@@ -27,5 +27,7 @@ object TestWindow {
 		
 		// Start / Display the window
 		w.start();
+		
+		Thread.sleep(10000);
 	}	
 }

@@ -26,7 +26,7 @@ object Fixed {
  *
  * If used as coordinates where 1 unit = 1m, it gives about 0.03 light years range at 0.01 mm resolution.
  */
-final case class Fixed( rawValue : long ) extends Ordered[Fixed] {
+final case class Fixed( rawValue : Long ) extends Ordered[Fixed] {
 
   def toFloat = rawValue * Fixed.invFactorF
   def toDouble = rawValue * Fixed.invFactorD
