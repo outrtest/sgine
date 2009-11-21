@@ -14,6 +14,8 @@ object FixedPerformanceTest {
   val mfixed2: Long = fixed2.rawValue
   val double1: Double = 42.12
   val double2: Double = 532.123
+  val float1: Float = 42.12f
+  val float2: Float = 532.123f
 
   def main(args: Array[String]) {
 
@@ -22,6 +24,17 @@ object FixedPerformanceTest {
     profiler.testRounds = 300
 
     val testDataSize: Int = 10000
+
+    profiler.addTest( "Float math" , _ =>createFloatTestData(testDataSize))
+    { in =>
+      val data = in.asInstanceOf[Array[Float]]
+      var i = 0
+      while (i < data.length) {
+        val result = (data( i ) * float1) + float2
+        data( i ) = result
+        i = i + 1
+      }
+    }
 
     profiler.addTest( "Double math" , _ =>createDoubleTestData(testDataSize))
     { in =>
@@ -59,6 +72,16 @@ object FixedPerformanceTest {
     profiler.runTestsAndPrintResults
   }
 
+
+  def createFloatTestData(size : Int) : Array[Float] = {
+    val data = new Array[Float]( size )
+
+    0 until size foreach { i =>
+      data( i ) =  (Math.random * 1000.0).toFloat
+    }
+
+    data
+  }
 
   def createDoubleTestData(size : Int) : Array[Double] = {
     val data = new Array[Double]( size )
