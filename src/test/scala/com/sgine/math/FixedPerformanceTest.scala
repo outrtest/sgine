@@ -6,6 +6,7 @@ import com.sgine.util.PerformanceProfiler
 /**
  * Test performance of fixed point math
  */
+@Deprecated
 object FixedPerformanceTest {
 
   val fixed1: Fixed = Fixed.make(42.12)

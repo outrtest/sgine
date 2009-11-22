@@ -91,7 +91,6 @@ case class Matrix4(
 
   // TODO:
 
-  // Transform Vector3
   // Transform array with 3d coordinates
   // Get & set row & column
   // Scale
