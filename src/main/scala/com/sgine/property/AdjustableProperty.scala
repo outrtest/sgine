@@ -34,7 +34,13 @@ trait AdjustableProperty[T] extends Property[T] with Updatable {
 		}
 	}
 	
-	def isAdjusting() = apply() == target
+	def isAdjusting() = apply() != target
+	
+	def waitForTarget() = {
+		while (isAdjusting) {
+			Thread.sleep(10);
+		}
+	}
 	
 	def defaultAdjuster(current:T, target:T, elapsed:Double):T = target;
 }
