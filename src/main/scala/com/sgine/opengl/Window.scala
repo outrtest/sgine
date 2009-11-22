@@ -10,12 +10,20 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11._;
 import org.lwjgl.util.glu.GLU._;
 
+import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 class Window (val title:String, val width:Int, val height:Int, val workManager:WorkManager = DefaultWorkManager) {
 	import com.sgine.util.JavaConversions.clq2iterable;
 	
 	private var keepAlive = true;
 	private var renders:Long = 0;
 	private var lastRender:Long = System.nanoTime();
+	private val frame = new Frame();						// TODO: allow for custom container, applets, etc.
+	private val canvas = new Canvas();
 	private val thread = new Thread(FunctionRunnable(run));
 	
 	val displayables = new ConcurrentLinkedQueue[(Double) => Unit]();
@@ -29,11 +37,24 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	}
 	
 	private def run() = {
+		// Configure Swing aspect
+		frame.setLayout(new BorderLayout());
+		frame.add(BorderLayout.CENTER, canvas);
+		frame.setSize(width, height);
+		frame.setTitle(title);
+		frame.setResizable(false);		// TODO: support resizing at some point
+		frame.addWindowListener(new WindowAdapter() {
+			override def windowClosing(e:WindowEvent):Unit = {
+				keepAlive = false;
+			}
+		});
+		frame.setVisible(true);
+		
 		// Configure display
-		Display.setTitle(title);
 		Display.setFullscreen(false);		// TODO: revisit
 		Display.setVSyncEnabled(false);		// TODO: revisit
 		Display.setDisplayMode(determineDisplayMode());
+		Display.setParent(canvas);
 		Display.create();		// TODO: incorporate PixelFormat
 		
 		// Initialize the GL context
@@ -48,7 +69,8 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 			render();
 		}
 		Display.destroy();
-		System.exit(0);
+		frame.dispose();
+//		System.exit(0);
 	}
 	
 	private def determineDisplayMode():DisplayMode = {		// TODO: make better
