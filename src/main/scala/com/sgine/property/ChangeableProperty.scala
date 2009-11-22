@@ -1,5 +1,12 @@
 package com.sgine.property
 
+/**
+ * ChangeableProperty trait provides a simple abstract method
+ * <code>changed(oldValue:T, newValue:T)</code> to allow notification
+ * upon modification of the internal value.
+ * 
+ * @author Matt Hicks
+ */
 trait ChangeableProperty[T] extends Property[T] {
 	private var oldValue:T = _;
 	

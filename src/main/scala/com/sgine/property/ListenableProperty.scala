@@ -2,6 +2,13 @@ package com.sgine.property
 
 import java.util.concurrent._;
 
+/**
+ * ListenableProperty trait extends ChangeableProperty trait to
+ * provide <code>listeners</code> to allow multiple sources to
+ * monitor the changes the Property undergoes.
+ * 
+ * @author Matt Hicks
+ */
 trait ListenableProperty[T] extends ChangeableProperty[T] {
 	import com.sgine.util.JavaConversions.clq2iterable;
 	
