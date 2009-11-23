@@ -40,6 +40,9 @@ case class Matrix4(
            0, 0, 0, 1 )
   }
 
+  // ------------------------------------------------
+  // Transform
+
   /**
    * Uses this matrix to transform the specified vector.
    */
@@ -87,18 +90,286 @@ case class Matrix4(
     }
   }
 
+  // ------------------------------------------------
+  // Get
+
+  def getColumn( column  : Int ) : Vector4 = {
+    column match {
+      case 0 => Vector4( m00, m10, m20, m30 )
+      case 1 => Vector4( m01, m11, m21, m31 )
+      case 2 => Vector4( m02, m12, m22, m32 )
+      case 3 => Vector4( m03, m13, m23, m33 )
+    }
+  }
+
+  def getRow( row : Int ) : Vector4 = {
+    row match {
+      case 0 => Vector4( m00, m01, m02, m03 )
+      case 1 => Vector4( m10, m11, m12, m13 )
+      case 2 => Vector4( m20, m21, m22, m23 )
+      case 3 => Vector4( m30, m31, m32, m33 )
+    }
+  }
+
+  // ------------------------------------------------
+  // Scale
+
+  def scale( s : D ) : Matrix4 = {
+    new Matrix4( m00*s, m01*s, m02*s, m03,
+                 m10*s, m11*s, m12*s, m13,
+                 m20*s, m21*s, m22*s, m23,
+                 m30*s, m31*s, m32*s, m33 )
+  }
+
+  def scale( v : Vector3 ) : Matrix4 = {
+    scale( v.x, v.y, v.z )
+  }
+
+  def scale( x : D, y : D, z : D ) : Matrix4 = {
+    new Matrix4( m00*x, m01*y, m02*z, m03,
+                 m10*x, m11*y, m12*z, m13,
+                 m20*x, m21*y, m22*z, m23,
+                 m30*x, m31*y, m32*z, m33 )
+  }
+
+  def scaleX( s : D ) : Matrix4 = {
+    new Matrix4( m00*s, m01, m02, m03,
+                 m10*s, m11, m12, m13,
+                 m20*s, m21, m22, m23,
+                 m30*s, m31, m32, m33 )
+  }
+
+  def scaleY( s : D ) : Matrix4 = {
+    new Matrix4( m00, m01*s, m02, m03,
+                 m10, m11*s, m12, m13,
+                 m20, m21*s, m22, m23,
+                 m30, m31*s, m32, m33 )
+  }
+
+  def scaleZ( s : D ) : Matrix4 = {
+    new Matrix4( m00, m01, m02*s, m03,
+                 m10, m11, m12*s, m13,
+                 m20, m21, m22*s, m23,
+                 m30, m31, m32*s, m33 )
+  }
+
+  // ------------------------------------------------
+  // Transpose
+
+  def transpose() : Matrix4 = {
+    val t01 = m10;
+    val t02 = m20;
+    val t03 = m30;
+
+    val t10 = m01;
+    val t12 = m21;
+    val t13 = m31;
+
+    val t20 = m02;
+    val t21 = m12;
+    val t23 = m32;
+
+    val t30 = m03;
+    val t31 = m13;
+    val t32 = m23;
+
+    return Matrix4( m00, t01, t02, t03,
+                    t10, m11, t12, t13,
+                    t20, t21, m22, t23,
+                    t30, t31, t32, m33 )
+  }
+
+
+
+  // ------------------------------------------------
+  // Invert
+
+  def invert : Matrix4 = {
+    val det = determinant()
+
+    if (det == 0.0) {
+      return this
+    }
+
+    // first row
+    val t00 = +determinant3x3(m11, m12, m13, m21, m22, m23, m31, m32, m33)
+    val t01 = -determinant3x3(m10, m12, m13, m20, m22, m23, m30, m32, m33)
+    val t02 = +determinant3x3(m10, m11, m13, m20, m21, m23, m30, m31, m33)
+    val t03 = -determinant3x3(m10, m11, m12, m20, m21, m22, m30, m31, m32)
+    // second row
+    val t10 = -determinant3x3(m01, m02, m03, m21, m22, m23, m31, m32, m33)
+    val t11 = +determinant3x3(m00, m02, m03, m20, m22, m23, m30, m32, m33)
+    val t12 = -determinant3x3(m00, m01, m03, m20, m21, m23, m30, m31, m33)
+    val t13 = +determinant3x3(m00, m01, m02, m20, m21, m22, m30, m31, m32)
+    // third row
+    val t20 = +determinant3x3(m01, m02, m03, m11, m12, m13, m31, m32, m33)
+    val t21 = -determinant3x3(m00, m02, m03, m10, m12, m13, m30, m32, m33)
+    val t22 = +determinant3x3(m00, m01, m03, m10, m11, m13, m30, m31, m33)
+    val t23 = -determinant3x3(m00, m01, m02, m10, m11, m12, m30, m31, m32)
+    // fourth row
+    val t30 = -determinant3x3(m01, m02, m03, m11, m12, m13, m21, m22, m23)
+    val t31 = +determinant3x3(m00, m02, m03, m10, m12, m13, m20, m22, m23)
+    val t32 = -determinant3x3(m00, m01, m03, m10, m11, m13, m20, m21, m23)
+    val t33 = +determinant3x3(m00, m01, m02, m10, m11, m12, m20, m21, m22)
+
+    // transpose and divide by the determinant
+    val inv = 1.0 / det
+    new Matrix4(  t00 * inv, t10 * inv, t20 * inv, t30 * inv,
+                  t01 * inv, t11 * inv, t21 * inv, t31 * inv,
+                  t02 * inv, t12 * inv, t22 * inv, t32 * inv,
+                  t03 * inv, t13 * inv, t23 * inv, t33 * inv )
+  }
+
+  def determinant : Double = {
+    val d = 0.0
+    d += m00 * (   (m11 * m22 * m33 + m12 * m23 * m31 + m13 * m21 * m32)
+                 - (m13 * m22 * m31 + m11 * m23 * m32 + m12 * m21 * m33) )
+    d -= m01 * (   (m10 * m22 * m33 + m12 * m23 * m30 + m13 * m20 * m32)
+                 - (m13 * m22 * m30 + m10 * m23 * m32 + m12 * m20 * m33) )
+    d += m02 * (   (m10 * m21 * m33 + m11 * m23 * m30 + m13 * m20 * m31)
+                 - (m13 * m21 * m30 + m10 * m23 * m31 + m11 * m20 * m33) )
+    d -= m03 * (   (m10 * m21 * m32 + m11 * m22 * m30 + m12 * m20 * m31)
+                 - (m12 * m21 * m30 + m10 * m22 * m31 + m11 * m20 * m32) )
+    d
+  }
+
+  private def determinant3x3( t00 : D, t01 : D, t02 : D,
+                      t10 : D, t11 : D, t12 : D,
+                      t20 : D, t21 : D, t22 : D) : Double = {
+    t00 * (t11 * t22 - t12 * t21) +
+    t01 * (t12 * t20 - t10 * t22) +
+    t02 * (t10 * t21 - t11 * t20)
+  }
+
+
+
+  // ------------------------------------------------
+  // Rotate
+
+  def rotX( a : D ) : Matrix4 = {
+    // TODO: Check that the unit is correct - should it be radians or Degrees
+    val d11 = Math.cos( a ) // Was:  FastMath.cosDeg(a)
+    val d21 = Math.sin( a ) // Was:  FastMath.sinDeg(a)
+    val d12 = -d21
+    val d22 = d11
+
+    val t01 = m01 * d11 + m02 * d21
+    val t02 = m01 * d12 + m02 * d22
+    val t11 = m11 * d11 + m12 * d21
+    val t12 = m11 * d12 + m12 * d22
+    val t21 = m21 * d11 + m22 * d21
+    val t22 = m21 * d12 + m22 * d22
+    val t31 = m31 * d11 + m32 * d21
+    val t32 = m31 * d12 + m32 * d22
+
+    new Matrix4( m00, t01, t02, m03,
+                 m10, t11, t12, m13,
+                 m20, t21, t22, m23,
+                 m30, t31, t32, m33 )
+  }
+
+  def rotY( a : D ) : Matrix4 = {
+    val d00 = Math.cos( a )
+    val d20 = Math.sin( a )
+    val d02 = -d20
+    val d22 = d00
+
+    val t00 = m00 * d00 + m02 * d20;
+    val t02 = m00 * d02 + m02 * d22;
+    val t10 = m10 * d00 + m12 * d20;
+    val t12 = m10 * d02 + m12 * d22;
+    val t20 = m20 * d00 + m22 * d20;
+    val t22 = m20 * d02 + m22 * d22;
+    val t30 = m30 * d00 + m32 * d20;
+    val t32 = m30 * d02 + m32 * d22;
+
+    new Matrix4( t00, m01, t02, m03,
+                 t10, m11, t12, m13,
+                 t20, m21, t22, m23,
+                 t30, m31, t32, m33 )
+  }
+
+  def rotZ( a : D ) : Matrix4 = {
+    val d00 = Math.cos( a )
+    val d10 = Math.sin( a )
+    val d01 = -d10
+    val d11 = d00
+
+    val t00 = m00 * d00 + m01 * d10
+    val t01 = m00 * d01 + m01 * d11
+    val t10 = m10 * d00 + m11 * d10
+    val t11 = m10 * d01 + m11 * d11
+    val t20 = m20 * d00 + m21 * d10
+    val t21 = m20 * d01 + m21 * d11
+    val t30 = m30 * d00 + m31 * d10
+    val t31 = m30 * d01 + m31 * d11
+
+    new Matrix4( t00, t01, m02, m03,
+                 t10, t11, m12, m13,
+                 t20, t21, m22, m23,
+                 t30, t31, m32, m33 )
+  }
+
+  def rotate(rot : Vector3 ) : Matrix4 = {
+    rotate(rot.x, rot.y, rot.z)
+  }
+
+  def rotate( x : D, y : D, z : D ) : Matrix4 = {
+    y = -y
+
+    val cx = Math.cos( x )
+    val sx = Math.sin( x )
+    val cy = Math.cos( y )
+    val sy = Math.sin( y )
+    val cz = Math.cos( z )
+    val sz = Math.sin( z )
+
+    val cxsy = cx * sy
+    val sxsy = sx * sy
+
+    val d00 = +cy * +cz
+    val d01 = -cy * +sz
+    val d02 = -sy
+
+    val d10 = -sxsy * cz + cx * sz
+    val d11 = +sxsy * sz + cx * cz
+    val d12 = -sx * +cy
+
+    val d20 = +cxsy * cz + sx * sz
+    val d21 = -cxsy * sz + sx * cz
+    val d22 = +cx * +cy
+
+    val t00 = m00 * d00 + m01 * d10 + m02 * d20
+    val t01 = m00 * d01 + m01 * d11 + m02 * d21
+    val t02 = m00 * d02 + m01 * d12 + m02 * d22
+
+    val t10 = m10 * d00 + m11 * d10 + m12 * d20
+    val t11 = m10 * d01 + m11 * d11 + m12 * d21
+    val t12 = m10 * d02 + m11 * d12 + m12 * d22
+
+    val t20 = m20 * d00 + m21 * d10 + m22 * d20
+    val t21 = m20 * d01 + m21 * d11 + m22 * d21
+    val t22 = m20 * d02 + m21 * d12 + m22 * d22
+
+    val t30 = m30 * d00 + m31 * d10 + m32 * d20
+    val t31 = m30 * d01 + m31 * d11 + m32 * d21
+    val t32 = m30 * d02 + m31 * d12 + m32 * d22
+
+    new Matrix4( t00, t01, t02, m03,
+                 t10, t11, t12, m13,
+                 t20, t21, t22, m23,
+                 t30, t31, t32, m33 )
+  }
+
 
 
   // TODO:
 
   // Transform array with 3d coordinates
-  // Get & set row & column
   // Scale
   // Translate
-  // Transpose
   // Invert
   // Determinant
-  // Rotate
   // Multiply
   // To/from array
   // To/(from?) string
@@ -658,198 +929,6 @@ public class Matrix4f {
 	}
 
 	/**
-	 * TRANSPOSE
-	 */
-
-	public final Matrix4f transpose() {
-		float t01 = m10;
-		float t02 = m20;
-		float t03 = m30;
-
-		float t10 = m01;
-		float t12 = m21;
-		float t13 = m31;
-
-		float t20 = m02;
-		float t21 = m12;
-		float t23 = m32;
-
-		float t30 = m03;
-		float t31 = m13;
-		float t32 = m23;
-
-		//
-
-		m01 = t01;
-		m02 = t02;
-		m03 = t03;
-
-		m10 = t10;
-		m12 = t12;
-		m13 = t13;
-
-		m20 = t20;
-		m21 = t21;
-		m23 = t23;
-
-		m30 = t30;
-		m31 = t31;
-		m32 = t32;
-
-		return this;
-	}
-
-	/**
-	 * INVERT
-	 */
-
-	public final Matrix4f invert() {
-		float determinant = determinant();
-
-		if (determinant == 0.0F) {
-			return this;
-		}
-
-		// first row
-		float t00 = +determinant3x3(m11, m12, m13, m21, m22, m23, m31, m32, m33);
-		float t01 = -determinant3x3(m10, m12, m13, m20, m22, m23, m30, m32, m33);
-		float t02 = +determinant3x3(m10, m11, m13, m20, m21, m23, m30, m31, m33);
-		float t03 = -determinant3x3(m10, m11, m12, m20, m21, m22, m30, m31, m32);
-		// second row
-		float t10 = -determinant3x3(m01, m02, m03, m21, m22, m23, m31, m32, m33);
-		float t11 = +determinant3x3(m00, m02, m03, m20, m22, m23, m30, m32, m33);
-		float t12 = -determinant3x3(m00, m01, m03, m20, m21, m23, m30, m31, m33);
-		float t13 = +determinant3x3(m00, m01, m02, m20, m21, m22, m30, m31, m32);
-		// third row
-		float t20 = +determinant3x3(m01, m02, m03, m11, m12, m13, m31, m32, m33);
-		float t21 = -determinant3x3(m00, m02, m03, m10, m12, m13, m30, m32, m33);
-		float t22 = +determinant3x3(m00, m01, m03, m10, m11, m13, m30, m31, m33);
-		float t23 = -determinant3x3(m00, m01, m02, m10, m11, m12, m30, m31, m32);
-		// fourth row
-		float t30 = -determinant3x3(m01, m02, m03, m11, m12, m13, m21, m22, m23);
-		float t31 = +determinant3x3(m00, m02, m03, m10, m12, m13, m20, m22, m23);
-		float t32 = -determinant3x3(m00, m01, m03, m10, m11, m13, m20, m21, m23);
-		float t33 = +determinant3x3(m00, m01, m02, m10, m11, m12, m20, m21, m22);
-
-		// transpose and divide by the determinant
-		float invDeterminant = 1.0F / determinant;
-		m00 = t00 * invDeterminant;
-		m01 = t10 * invDeterminant;
-		m02 = t20 * invDeterminant;
-		m03 = t30 * invDeterminant;
-		m10 = t01 * invDeterminant;
-		m11 = t11 * invDeterminant;
-		m12 = t21 * invDeterminant;
-		m13 = t31 * invDeterminant;
-		m20 = t02 * invDeterminant;
-		m21 = t12 * invDeterminant;
-		m22 = t22 * invDeterminant;
-		m23 = t32 * invDeterminant;
-		m30 = t03 * invDeterminant;
-		m31 = t13 * invDeterminant;
-		m32 = t23 * invDeterminant;
-		m33 = t33 * invDeterminant;
-
-		return this;
-	}
-
-	private final float determinant() {
-		float f = 0.0f;
-		f += m00
-				* ((m11 * m22 * m33 + m12 * m23 * m31 + m13 * m21 * m32) - (m13
-						* m22 * m31 + m11 * m23 * m32 + m12 * m21 * m33));
-		f -= m01
-				* ((m10 * m22 * m33 + m12 * m23 * m30 + m13 * m20 * m32) - (m13
-						* m22 * m30 + m10 * m23 * m32 + m12 * m20 * m33));
-		f += m02
-				* ((m10 * m21 * m33 + m11 * m23 * m30 + m13 * m20 * m31) - (m13
-						* m21 * m30 + m10 * m23 * m31 + m11 * m20 * m33));
-		f -= m03
-				* ((m10 * m21 * m32 + m11 * m22 * m30 + m12 * m20 * m31) - (m12
-						* m21 * m30 + m10 * m22 * m31 + m11 * m20 * m32));
-		return f;
-	}
-
-	private final float determinant3x3(float t00, float t01, float t02,
-			float t10, float t11, float t12, float t20, float t21, float t22) {
-		return t00 * (t11 * t22 - t12 * t21) + t01 * (t12 * t20 - t10 * t22)
-				+ t02 * (t10 * t21 - t11 * t20);
-	}
-
-	/**
-	 * SCALE
-	 */
-
-	public final Matrix4f scale(Vector3f v) {
-		return this.scale(v.x, v.y, v.z);
-	}
-
-	public final Matrix4f scale(float x, float y, float z) {
-		m00 *= x;
-		m10 *= x;
-		m20 *= x;
-		m30 *= x;
-
-		m01 *= y;
-		m11 *= y;
-		m21 *= y;
-		m31 *= y;
-
-		m02 *= z;
-		m12 *= z;
-		m22 *= z;
-		m32 *= z;
-
-		return this;
-	}
-
-	public final Matrix4f scaleX(float s) {
-		m00 *= s;
-		m10 *= s;
-		m20 *= s;
-		m30 *= s;
-
-		return this;
-	}
-
-	public final Matrix4f scaleY(float s) {
-		m01 *= s;
-		m11 *= s;
-		m21 *= s;
-		m31 *= s;
-
-		return this;
-	}
-
-	public final Matrix4f scaleZ(float s) {
-		m02 *= s;
-		m12 *= s;
-		m22 *= s;
-		m32 *= s;
-
-		return this;
-	}
-
-	public final Matrix4f scale(float d) {
-		m00 *= d;
-		m10 *= d;
-		m20 *= d;
-		m30 *= d;
-
-		m01 *= d;
-		m11 *= d;
-		m21 *= d;
-		m31 *= d;
-
-		m02 *= d;
-		m12 *= d;
-		m22 *= d;
-		m32 *= d;
-
-		return this;
-	}
-
-	/**
 	 * TRANSLATE
 	 */
 
@@ -889,151 +968,6 @@ public class Matrix4f {
 		m13 += m12 * t;
 		m23 += m22 * t;
 		m33 += m32 * t;
-
-		return this;
-	}
-
-	/**
-	 * ROT
-	 */
-
-	public final Matrix4f rotX(float a) {
-		float d11 = FastMath.cosDeg(a);
-		float d21 = FastMath.sinDeg(a);
-		float d12 = -d21;
-		float d22 = d11;
-
-		float t01 = m01 * d11 + m02 * d21;
-		m02 = m01 * d12 + m02 * d22;
-		float t11 = m11 * d11 + m12 * d21;
-		m12 = m11 * d12 + m12 * d22;
-		float t21 = m21 * d11 + m22 * d21;
-		m22 = m21 * d12 + m22 * d22;
-		float t31 = m31 * d11 + m32 * d21;
-		m32 = m31 * d12 + m32 * d22;
-
-		m01 = t01;
-		m11 = t11;
-		m21 = t21;
-		m31 = t31;
-
-		return this;
-	}
-
-	public final Matrix4f rotY(float a) {
-		a = -a;
-
-		float d00 = FastMath.cosDeg(a);
-		float d20 = FastMath.sinDeg(a);
-		float d02 = -d20;
-		float d22 = d00;
-
-		float t00 = m00 * d00 + m02 * d20;
-		m02 = m00 * d02 + m02 * d22;
-		float t10 = m10 * d00 + m12 * d20;
-		m12 = m10 * d02 + m12 * d22;
-		float t20 = m20 * d00 + m22 * d20;
-		m22 = m20 * d02 + m22 * d22;
-		float t30 = m30 * d00 + m32 * d20;
-		m32 = m30 * d02 + m32 * d22;
-
-		m00 = t00;
-		m10 = t10;
-		m20 = t20;
-		m30 = t30;
-
-		return this;
-	}
-
-	public final Matrix4f rotZ(float a) {
-		float d00 = FastMath.cosDeg(a);
-		float d10 = FastMath.sinDeg(a);
-		float d01 = -d10;
-		float d11 = d00;
-
-		float t00 = m00 * d00 + m01 * d10;
-		m01 = m00 * d01 + m01 * d11;
-		float t10 = m10 * d00 + m11 * d10;
-		m11 = m10 * d01 + m11 * d11;
-		float t20 = m20 * d00 + m21 * d10;
-		m21 = m20 * d01 + m21 * d11;
-		float t30 = m30 * d00 + m31 * d10;
-		m31 = m30 * d01 + m31 * d11;
-
-		m00 = t00;
-		m10 = t10;
-		m20 = t20;
-		m30 = t30;
-
-		return this;
-	}
-
-	public final Matrix4f rotate(Vector3f rot) {
-		return this.rotate(rot.x, rot.y, rot.z);
-	}
-
-	public final Matrix4f rotate(float x, float y, float z) {
-		y = -y;
-
-		float cx = FastMath.cosDeg(x);
-		float sx = FastMath.sinDeg(x);
-		float cy = FastMath.cosDeg(y);
-		float sy = FastMath.sinDeg(y);
-		float cz = FastMath.cosDeg(z);
-		float sz = FastMath.sinDeg(z);
-
-		float cxsy = cx * sy;
-		float sxsy = sx * sy;
-
-		//
-
-		float d00 = +cy * +cz;
-		float d01 = -cy * +sz;
-		float d02 = -sy;
-
-		float d10 = -sxsy * cz + cx * sz;
-		float d11 = +sxsy * sz + cx * cz;
-		float d12 = -sx * +cy;
-
-		float d20 = +cxsy * cz + sx * sz;
-		float d21 = -cxsy * sz + sx * cz;
-		float d22 = +cx * +cy;
-
-		//
-
-		float t00 = m00 * d00 + m01 * d10 + m02 * d20;
-		float t01 = m00 * d01 + m01 * d11 + m02 * d21;
-		float t02 = m00 * d02 + m01 * d12 + m02 * d22;
-
-		float t10 = m10 * d00 + m11 * d10 + m12 * d20;
-		float t11 = m10 * d01 + m11 * d11 + m12 * d21;
-		float t12 = m10 * d02 + m11 * d12 + m12 * d22;
-
-		float t20 = m20 * d00 + m21 * d10 + m22 * d20;
-		float t21 = m20 * d01 + m21 * d11 + m22 * d21;
-		float t22 = m20 * d02 + m21 * d12 + m22 * d22;
-
-		float t30 = m30 * d00 + m31 * d10 + m32 * d20;
-		float t31 = m30 * d01 + m31 * d11 + m32 * d21;
-		float t32 = m30 * d02 + m31 * d12 + m32 * d22;
-
-		//
-
-		m00 = t00;
-		m01 = t01;
-		m02 = t02;
-
-		m10 = t10;
-		m11 = t11;
-		m12 = t12;
-
-		m20 = t20;
-		m21 = t21;
-		m22 = t22;
-
-		m30 = t30;
-		m31 = t31;
-		m32 = t32;
 
 		return this;
 	}
