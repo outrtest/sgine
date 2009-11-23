@@ -1,6 +1,7 @@
 package com.sgine.math
 
 import java.nio.DoubleBuffer
+import java.text.NumberFormat
 import Matrix4.D
 
 object Matrix4{
@@ -21,6 +22,19 @@ object Matrix4{
    * Creates a new Matrix4 configured as an Identity matrix.
    */
   def apply() : Matrix4 = Identity
+
+
+  val matrixNumberFormat : NumberFormat = createMatrixNumberFormat
+
+  private def createMatrixNumberFormat : NumberFormat = {
+    val format = NumberFormat.getInstance()
+    format.setMinimumFractionDigits(3)
+    format.setMaximumFractionDigits(3)
+    format.setMinimumIntegerDigits(3)
+    format.setMaximumIntegerDigits(3)
+    format
+  }
+
 }
 
 
@@ -361,7 +375,91 @@ case class Matrix4(
                  t30, t31, t32, m33 )
   }
 
+  // ------------------------------------------------
+  // Multiplication
 
+  def mult(m : Matrix4) : Matrix4 = {
+    val t00 = m00 * m.m00 + m01 * m.m10 + m02 * m.m20 + m03 * m.m30
+    val t01 = m00 * m.m01 + m01 * m.m11 + m02 * m.m21 + m03 * m.m31
+    val t02 = m00 * m.m02 + m01 * m.m12 + m02 * m.m22 + m03 * m.m32
+    val t03 = m00 * m.m03 + m01 * m.m13 + m02 * m.m23 + m03 * m.m33
+
+    val t10 = m10 * m.m00 + m11 * m.m10 + m12 * m.m20 + m13 * m.m30
+    val t11 = m10 * m.m01 + m11 * m.m11 + m12 * m.m21 + m13 * m.m31
+    val t12 = m10 * m.m02 + m11 * m.m12 + m12 * m.m22 + m13 * m.m32
+    val t13 = m10 * m.m03 + m11 * m.m13 + m12 * m.m23 + m13 * m.m33
+
+    val t20 = m20 * m.m00 + m21 * m.m10 + m22 * m.m20 + m23 * m.m30
+    val t21 = m20 * m.m01 + m21 * m.m11 + m22 * m.m21 + m23 * m.m31
+    val t22 = m20 * m.m02 + m21 * m.m12 + m22 * m.m22 + m23 * m.m32
+    val t23 = m20 * m.m03 + m21 * m.m13 + m22 * m.m23 + m23 * m.m33
+
+    val t30 = m30 * m.m00 + m31 * m.m10 + m32 * m.m20 + m33 * m.m30
+    val t31 = m30 * m.m01 + m31 * m.m11 + m32 * m.m21 + m33 * m.m31
+    val t32 = m30 * m.m02 + m31 * m.m12 + m32 * m.m22 + m33 * m.m32
+    val t33 = m30 * m.m03 + m31 * m.m13 + m32 * m.m23 + m33 * m.m33
+
+    new Matrix4( t00, t01, t02, t03,
+                 t10, t11, t12, t13,
+                 t20, t21, t22, t23,
+                 t30, t31, t32, t33 )
+  }
+
+
+  // ------------------------------------------------
+  // Translate
+
+  def translate( v : Vector3 ) : Matrix4 = {
+    translate(v.x, v.y, v.z)
+  }
+
+  def translate(x : D, y : D, z : D) : Matrix4 = {
+    val t03 = m03 + m00 * x + m01 * y + m02 * z
+    val t13 = m13 + m10 * x + m11 * y + m12 * z
+    val t23 = m23 + m20 * x + m21 * y + m22 * z
+    val t33 = m33 + m30 * x + m31 * y + m32 * z
+
+    new Matrix4( m00, m01, m02, t03,
+                 m10, m11, m12, t13,
+                 m20, m21, m22, t23,
+                 m30, m31, m32, t33 )
+  }
+
+  def translateX(x : D) : Matrix4 = {
+    val t03 = m03 + m00 * x
+    val t13 = m13 + m10 * x
+    val t23 = m23 + m20 * x
+    val t33 = m33 + m30 * x
+
+    new Matrix4( m00, m01, m02, t03,
+                 m10, m11, m12, t13,
+                 m20, m21, m22, t23,
+                 m30, m31, m32, t33 )
+  }
+
+  def translateY(y : D) : Matrix4 = {
+    val t03 = m03 + m01 * y
+    val t13 = m13 + m11 * y
+    val t23 = m23 + m21 * y
+    val t33 = m33 + m31 * y
+
+    new Matrix4( m00, m01, m02, t03,
+                 m10, m11, m12, t13,
+                 m20, m21, m22, t23,
+                 m30, m31, m32, t33 )
+  }
+
+  def translateZ(z : D) : Matrix4 = {
+    val t03 = m03 + m02 * z
+    val t13 = m13 + m12 * z
+    val t23 = m23 + m22 * z
+    val t33 = m33 + m32 * z
+
+    new Matrix4( m00, m01, m02, t03,
+                 m10, m11, m12, t13,
+                 m20, m21, m22, t23,
+                 m30, m31, m32, t33 )
+  }
 
   // TODO:
 
@@ -373,6 +471,41 @@ case class Matrix4(
   // Multiply
   // To/from array
   // To/(from?) string
+
+
+
+  val toString : String = {
+    StringBuffer buffer = new StringBuffer()
+    val format = Matrix4.matrixNumberFormat
+
+    String sep = "  "
+
+    buffer.append("Matrix4[ ");
+    buffer.append(format.format(m00) + sep);
+    buffer.append(format.format(m01) + sep);
+    buffer.append(format.format(m02) + sep);
+    buffer.append(format.format(m03) + "\n");
+
+    buffer.append("         ");
+    buffer.append(format.format(m10) + sep);
+    buffer.append(format.format(m11) + sep);
+    buffer.append(format.format(m12) + sep);
+    buffer.append(format.format(m13) + "\n");
+
+    buffer.append("         ");
+    buffer.append(format.format(m20) + sep);
+    buffer.append(format.format(m21) + sep);
+    buffer.append(format.format(m22) + sep);
+    buffer.append(format.format(m23) + "\n");
+
+    buffer.append("         ");
+    buffer.append(format.format(m30) + sep);
+    buffer.append(format.format(m31) + sep);
+    buffer.append(format.format(m32) + sep);
+    buffer.append(format.format(m33) + " ]");
+
+    buffer.toString()
+  }
 
 }
 
@@ -925,100 +1058,6 @@ public class Matrix4f {
 		m20 = m21 = m23 = 0.0f;
 		m30 = m31 = m32 = 0.0f;
 		m00 = m11 = m22 = m33 = 1.0f;
-		return this;
-	}
-
-	/**
-	 * TRANSLATE
-	 */
-
-	public final Matrix4f translate(Vector3f v) {
-		return this.translate(v.x(), v.y(), v.z());
-	}
-
-	public final Matrix4f translate(float x, float y, float z) {
-		m03 += m00 * x + m01 * y + m02 * z;
-		m13 += m10 * x + m11 * y + m12 * z;
-		m23 += m20 * x + m21 * y + m22 * z;
-		m33 += m30 * x + m31 * y + m32 * z;
-
-		return this;
-	}
-
-	public final Matrix4f translateX(float t) {
-		m03 += m00 * t;
-		m13 += m10 * t;
-		m23 += m20 * t;
-		m33 += m30 * t;
-
-		return this;
-	}
-
-	public final Matrix4f translateY(float t) {
-		m03 += m01 * t;
-		m13 += m11 * t;
-		m23 += m21 * t;
-		m33 += m31 * t;
-
-		return this;
-	}
-
-	public final Matrix4f translateZ(float t) {
-		m03 += m02 * t;
-		m13 += m12 * t;
-		m23 += m22 * t;
-		m33 += m32 * t;
-
-		return this;
-	}
-
-	/**
-	 * MULT
-	 */
-
-	public final Matrix4f mult(Matrix4f m) {
-		float t00 = m00 * m.m00 + m01 * m.m10 + m02 * m.m20 + m03 * m.m30;
-		float t01 = m00 * m.m01 + m01 * m.m11 + m02 * m.m21 + m03 * m.m31;
-		float t02 = m00 * m.m02 + m01 * m.m12 + m02 * m.m22 + m03 * m.m32;
-		float t03 = m00 * m.m03 + m01 * m.m13 + m02 * m.m23 + m03 * m.m33;
-
-		float t10 = m10 * m.m00 + m11 * m.m10 + m12 * m.m20 + m13 * m.m30;
-		float t11 = m10 * m.m01 + m11 * m.m11 + m12 * m.m21 + m13 * m.m31;
-		float t12 = m10 * m.m02 + m11 * m.m12 + m12 * m.m22 + m13 * m.m32;
-		float t13 = m10 * m.m03 + m11 * m.m13 + m12 * m.m23 + m13 * m.m33;
-
-		float t20 = m20 * m.m00 + m21 * m.m10 + m22 * m.m20 + m23 * m.m30;
-		float t21 = m20 * m.m01 + m21 * m.m11 + m22 * m.m21 + m23 * m.m31;
-		float t22 = m20 * m.m02 + m21 * m.m12 + m22 * m.m22 + m23 * m.m32;
-		float t23 = m20 * m.m03 + m21 * m.m13 + m22 * m.m23 + m23 * m.m33;
-
-		float t30 = m30 * m.m00 + m31 * m.m10 + m32 * m.m20 + m33 * m.m30;
-		float t31 = m30 * m.m01 + m31 * m.m11 + m32 * m.m21 + m33 * m.m31;
-		float t32 = m30 * m.m02 + m31 * m.m12 + m32 * m.m22 + m33 * m.m32;
-		float t33 = m30 * m.m03 + m31 * m.m13 + m32 * m.m23 + m33 * m.m33;
-
-		//
-
-		m00 = t00;
-		m01 = t01;
-		m02 = t02;
-		m03 = t03;
-
-		m10 = t10;
-		m11 = t11;
-		m12 = t12;
-		m13 = t13;
-
-		m20 = t20;
-		m21 = t21;
-		m22 = t22;
-		m23 = t23;
-
-		m30 = t30;
-		m31 = t31;
-		m32 = t32;
-		m33 = t33;
-
 		return this;
 	}
 
