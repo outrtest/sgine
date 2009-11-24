@@ -194,6 +194,32 @@ case class Matrix4(
   }
 
 
+  def getTranspose(dst : DoubleBuffer ) {
+    val pos = dst.position()
+
+    dst.put(pos + 0, m00);
+    dst.put(pos + 1, m10);
+    dst.put(pos + 2, m20);
+    dst.put(pos + 3, m30);
+
+    dst.put(pos + 4, m01);
+    dst.put(pos + 5, m11);
+    dst.put(pos + 6, m21);
+    dst.put(pos + 7, m31);
+
+    dst.put(pos + 8, m02);
+    dst.put(pos + 9, m12);
+    dst.put(pos + 10, m22);
+    dst.put(pos + 11, m32);
+
+    dst.put(pos + 12, m03);
+    dst.put(pos + 13, m13);
+    dst.put(pos + 14, m23);
+    dst.put(pos + 15, m33);
+
+    dst.position(pos + 16);
+  }
+
 
   // ------------------------------------------------
   // Invert
@@ -234,8 +260,8 @@ case class Matrix4(
                   t03 * inv, t13 * inv, t23 * inv, t33 * inv )
   }
 
-  def determinant : Double = {
-    val d = 0.0
+  def determinant() : Double = {
+    var d = 0.0
     d += m00 * (   (m11 * m22 * m33 + m12 * m23 * m31 + m13 * m21 * m32)
                  - (m13 * m22 * m31 + m11 * m23 * m32 + m12 * m21 * m33) )
     d -= m01 * (   (m10 * m22 * m33 + m12 * m23 * m30 + m13 * m20 * m32)
@@ -329,12 +355,12 @@ case class Matrix4(
   }
 
   def rotate( x : D, y : D, z : D ) : Matrix4 = {
-    y = -y
+    val negY = -y
 
     val cx = Math.cos( x )
     val sx = Math.sin( x )
-    val cy = Math.cos( y )
-    val sy = Math.sin( y )
+    val cy = Math.cos( negY )
+    val sy = Math.sin( negY )
     val cz = Math.cos( z )
     val sz = Math.sin( z )
 
@@ -474,35 +500,33 @@ case class Matrix4(
 
 
 
-  val toString : String = {
-    StringBuffer buffer = new StringBuffer()
+  override def toString() = {
+    val buffer = new StringBuffer()
     val format = Matrix4.matrixNumberFormat
 
-    String sep = "  "
+    val columnSeparator = "  "
+    val rowSeparator = "\n"
+    val indent = "         "
 
-    buffer.append("Matrix4[ ");
-    buffer.append(format.format(m00) + sep);
-    buffer.append(format.format(m01) + sep);
-    buffer.append(format.format(m02) + sep);
-    buffer.append(format.format(m03) + "\n");
+    def appendRow( d0 : D, d1 : D , d2 : D , d3 : D  ) {
+      def appendValue( d : D, s : String ) {
+        buffer.append(format.format(d))
+        buffer.append(s)
+      }
 
-    buffer.append("         ");
-    buffer.append(format.format(m10) + sep);
-    buffer.append(format.format(m11) + sep);
-    buffer.append(format.format(m12) + sep);
-    buffer.append(format.format(m13) + "\n");
+      buffer.append(indent)
+      appendValue( d0, columnSeparator )
+      appendValue( d1, columnSeparator )
+      appendValue( d2, columnSeparator )
+      appendValue( d3, rowSeparator )
+    }
 
-    buffer.append("         ");
-    buffer.append(format.format(m20) + sep);
-    buffer.append(format.format(m21) + sep);
-    buffer.append(format.format(m22) + sep);
-    buffer.append(format.format(m23) + "\n");
-
-    buffer.append("         ");
-    buffer.append(format.format(m30) + sep);
-    buffer.append(format.format(m31) + sep);
-    buffer.append(format.format(m32) + sep);
-    buffer.append(format.format(m33) + " ]");
+    buffer.append("Matrix4[ ")
+    appendRow( m00, m01, m02, m03 )
+    appendRow( m10, m11, m12, m13 )
+    appendRow( m20, m21, m22, m23 )
+    appendRow( m30, m31, m32, m33 )
+    buffer.append("]\n")
 
     buffer.toString()
   }
@@ -513,9 +537,9 @@ case class Matrix4(
 
 /* Old code from jseamless:
 
-/*
+/ *
  * Created on Sep 21, 2004
- */
+ * /
 package org.jseamless.math;
 
 import java.nio.FloatBuffer;
@@ -561,9 +585,9 @@ public class Matrix4f {
 		stackPosition--;
 	}
 
-	/**
+	/ * *
 	 * PROCESS
-	 */
+	 * /
 
 	public final Vector3f fillOrigin(Vector3f vec) {
 		vec.x = m03;
@@ -573,80 +597,6 @@ public class Matrix4f {
 		return vec;
 	}
 
-
-	public final void transform(FloatBuffer src, FloatBuffer dst) {
-		this.transform(src, dst, 0, src.capacity() / 3);
-	}
-
-	public final void transform(FloatBuffer src, FloatBuffer dst, int off,
-			int len) {
-		if (src.position() != 0 || src.limit() != src.capacity())
-			throw new IllegalStateException("Src-floatbuffer must be cleared");
-		if (dst.position() != 0 || dst.limit() != dst.capacity())
-			throw new IllegalStateException("Dst-floatbuffer must be cleared");
-
-		off *= 3;
-		len *= 3;
-
-		float x, y, z;
-		int a = off, b, c;
-		int end = off + len;
-		int end4 = ((end / 3) / 4 * 4) * 3;
-
-		while (a < end4) {
-			b = a + 1;
-			c = a + 2;
-			x = src.get(a);
-			y = src.get(b);
-			z = src.get(c);
-			dst.put(a, m00 * x + m01 * y + m02 * z + m03);
-			dst.put(b, m10 * x + m11 * y + m12 * z + m13);
-			dst.put(c, m20 * x + m21 * y + m22 * z + m23);
-			a += 3;
-
-			b = a + 1;
-			c = a + 2;
-			x = src.get(a);
-			y = src.get(b);
-			z = src.get(c);
-			dst.put(a, m00 * x + m01 * y + m02 * z + m03);
-			dst.put(b, m10 * x + m11 * y + m12 * z + m13);
-			dst.put(c, m20 * x + m21 * y + m22 * z + m23);
-			a += 3;
-
-			b = a + 1;
-			c = a + 2;
-			x = src.get(a);
-			y = src.get(b);
-			z = src.get(c);
-			dst.put(a, m00 * x + m01 * y + m02 * z + m03);
-			dst.put(b, m10 * x + m11 * y + m12 * z + m13);
-			dst.put(c, m20 * x + m21 * y + m22 * z + m23);
-			a += 3;
-
-			b = a + 1;
-			c = a + 2;
-			x = src.get(a);
-			y = src.get(b);
-			z = src.get(c);
-			dst.put(a, m00 * x + m01 * y + m02 * z + m03);
-			dst.put(b, m10 * x + m11 * y + m12 * z + m13);
-			dst.put(c, m20 * x + m21 * y + m22 * z + m23);
-			a += 3;
-		}
-
-		while (a < end) {
-			b = a + 1;
-			c = a + 2;
-			x = src.get(a);
-			y = src.get(b);
-			z = src.get(c);
-			dst.put(a, m00 * x + m01 * y + m02 * z + m03);
-			dst.put(b, m10 * x + m11 * y + m12 * z + m13);
-			dst.put(c, m20 * x + m21 * y + m22 * z + m23);
-			a += 3;
-		}
-	}
 
 	public final void transform(float[] src, float[] dst) {
 		this.transform(src, dst, 0, src.length / 3);
@@ -716,17 +666,17 @@ public class Matrix4f {
 		}
 	}
 
-	/**
+	/ * *
 	 * TRANSLATION
-	 */
+	 * /
 
 	public final void getTranslation(Vector3f translation) {
 		translation.load(m03, m13, m23);
 	}
 
-	/**
+	/ * *
 	 * COLUMN
-	 */
+	 * /
 
 	public final void setColumn(int column, Vector4f v) {
 		switch (column) {
@@ -786,9 +736,9 @@ public class Matrix4f {
 		}
 	}
 
-	/**
+	/ *  *
 	 * ROW
-	 */
+	 * /
 
 	public final void setRow(int row, Vector4f v) {
 		switch (row) {
@@ -848,9 +798,9 @@ public class Matrix4f {
 		}
 	}
 
-	/**
+	/ * *
 	 * GET / SET
-	 */
+	 * /
 
 	public final void get(FloatBuffer dst) {
 		int pos = dst.position();
@@ -948,109 +898,10 @@ public class Matrix4f {
 		src.position(pos + 16);
 	}
 
-	/**
-	 * GET / SET TRANSPOSE
-	 */
 
-	public final void getTranspose(FloatBuffer dst) {
-		int pos = dst.position();
-
-		dst.put(pos + 0, m00);
-		dst.put(pos + 1, m10);
-		dst.put(pos + 2, m20);
-		dst.put(pos + 3, m30);
-
-		dst.put(pos + 4, m01);
-		dst.put(pos + 5, m11);
-		dst.put(pos + 6, m21);
-		dst.put(pos + 7, m31);
-
-		dst.put(pos + 8, m02);
-		dst.put(pos + 9, m12);
-		dst.put(pos + 10, m22);
-		dst.put(pos + 11, m32);
-
-		dst.put(pos + 12, m03);
-		dst.put(pos + 13, m13);
-		dst.put(pos + 14, m23);
-		dst.put(pos + 15, m33);
-
-		dst.position(pos + 16);
-	}
-
-	public final void getTranspose(Matrix4f dst) {
-		dst.m00 = m00;
-		dst.m01 = m10;
-		dst.m02 = m20;
-		dst.m03 = m30;
-
-		dst.m10 = m01;
-		dst.m11 = m11;
-		dst.m12 = m21;
-		dst.m13 = m31;
-
-		dst.m20 = m02;
-		dst.m21 = m12;
-		dst.m22 = m22;
-		dst.m23 = m32;
-
-		dst.m30 = m03;
-		dst.m31 = m13;
-		dst.m32 = m23;
-		dst.m33 = m33;
-	}
-
-	public final void setTranspose(Matrix4f src) {
-		m00 = src.m00;
-		m01 = src.m10;
-		m02 = src.m20;
-		m03 = src.m30;
-
-		m10 = src.m01;
-		m11 = src.m11;
-		m12 = src.m21;
-		m13 = src.m31;
-
-		m20 = src.m02;
-		m21 = src.m12;
-		m22 = src.m22;
-		m23 = src.m32;
-
-		m30 = src.m03;
-		m31 = src.m13;
-		m32 = src.m23;
-		m33 = src.m33;
-	}
-
-	public final void setTranspose(FloatBuffer src) {
-		int pos = src.position();
-
-		m00 = src.get(pos + 0);
-		m10 = src.get(pos + 1);
-		m20 = src.get(pos + 2);
-		m30 = src.get(pos + 3);
-
-		m01 = src.get(pos + 4);
-		m11 = src.get(pos + 5);
-		m21 = src.get(pos + 6);
-		m31 = src.get(pos + 7);
-
-		m02 = src.get(pos + 8);
-		m12 = src.get(pos + 9);
-		m22 = src.get(pos + 10);
-		m32 = src.get(pos + 11);
-
-		m03 = src.get(pos + 12);
-		m13 = src.get(pos + 13);
-		m23 = src.get(pos + 14);
-		m33 = src.get(pos + 15);
-
-		src.position(pos + 16);
-	}
-
-	/**
+	/ * *
 	 * IDENTITY
-	 */
+	 * /
 
 	public final Matrix4f identity() {
 		m01 = m02 = m03 = 0.0f;
@@ -1061,9 +912,9 @@ public class Matrix4f {
 		return this;
 	}
 
-	/**
+	/ * *
 	 * EQUALS
-	 */
+	 * /
 
 	public final boolean equals(Matrix4f mat, float margin) {
 		if (!(EasyMath.equals(m00, mat.m00, margin)
