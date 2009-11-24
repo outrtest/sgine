@@ -125,6 +125,65 @@ case class Matrix4(
     }
   }
 
+  def toBuffer(dst : DoubleBuffer ) {
+    val pos = dst.position()
+
+    dst.put(pos +  0, m00);
+    dst.put(pos +  1, m01);
+    dst.put(pos +  2, m02);
+    dst.put(pos +  3, m03);
+
+    dst.put(pos +  4, m10);
+    dst.put(pos +  5, m11);
+    dst.put(pos +  6, m12);
+    dst.put(pos +  7, m13);
+
+    dst.put(pos +  8, m20);
+    dst.put(pos +  9, m21);
+    dst.put(pos + 10, m22);
+    dst.put(pos + 11, m23);
+
+    dst.put(pos + 12, m30);
+    dst.put(pos + 13, m31);
+    dst.put(pos + 14, m32);
+    dst.put(pos + 15, m33);
+
+    dst.position(pos + 16);
+  }
+
+  def toBuffer : DoubleBuffer = {
+    val buffer: DoubleBuffer = DoubleBuffer.allocate(16)
+    toBuffer( buffer )
+    buffer
+  }
+
+  def toArray(dst : DoubleBuffer ) {
+    val pos = dst.position()
+
+    dst.put(pos +  0, m00);
+    dst.put(pos +  1, m01);
+    dst.put(pos +  2, m02);
+    dst.put(pos +  3, m03);
+
+    dst.put(pos +  4, m10);
+    dst.put(pos +  5, m11);
+    dst.put(pos +  6, m12);
+    dst.put(pos +  7, m13);
+
+    dst.put(pos +  8, m20);
+    dst.put(pos +  9, m21);
+    dst.put(pos + 10, m22);
+    dst.put(pos + 11, m23);
+
+    dst.put(pos + 12, m30);
+    dst.put(pos + 13, m31);
+    dst.put(pos + 14, m32);
+    dst.put(pos + 15, m33);
+
+    dst.position(pos + 16);
+  }
+
+
   // ------------------------------------------------
   // Scale
 
@@ -197,18 +256,18 @@ case class Matrix4(
   def getTranspose(dst : DoubleBuffer ) {
     val pos = dst.position()
 
-    dst.put(pos + 0, m00);
-    dst.put(pos + 1, m10);
-    dst.put(pos + 2, m20);
-    dst.put(pos + 3, m30);
+    dst.put(pos +  0, m00);
+    dst.put(pos +  1, m10);
+    dst.put(pos +  2, m20);
+    dst.put(pos +  3, m30);
 
-    dst.put(pos + 4, m01);
-    dst.put(pos + 5, m11);
-    dst.put(pos + 6, m21);
-    dst.put(pos + 7, m31);
+    dst.put(pos +  4, m01);
+    dst.put(pos +  5, m11);
+    dst.put(pos +  6, m21);
+    dst.put(pos +  7, m31);
 
-    dst.put(pos + 8, m02);
-    dst.put(pos + 9, m12);
+    dst.put(pos +  8, m02);
+    dst.put(pos +  9, m12);
     dst.put(pos + 10, m22);
     dst.put(pos + 11, m32);
 
@@ -498,6 +557,39 @@ case class Matrix4(
   // To/from array
   // To/(from?) string
 
+
+  /**
+   * Returns added differences for all elementds between this and the specified matrix.
+   */
+  def cumulativeDifference(m : Matrix4 ) : Double = {
+    var sum = 0.0
+
+    def addDiff( a : D, b : D) {
+      sum += Math.abs(a - b)
+    }
+
+    addDiff( m00, m.m00 )
+    addDiff( m01, m.m01 )
+    addDiff( m02, m.m02 )
+    addDiff( m03, m.m03 )
+
+    addDiff( m10, m.m10 )
+    addDiff( m11, m.m11 )
+    addDiff( m12, m.m12 )
+    addDiff( m13, m.m13 )
+
+    addDiff( m20, m.m20 )
+    addDiff( m21, m.m21 )
+    addDiff( m22, m.m22 )
+    addDiff( m23, m.m23 )
+
+    addDiff( m30, m.m30 )
+    addDiff( m31, m.m31 )
+    addDiff( m32, m.m32 )
+    addDiff( m33, m.m33 )
+
+    sum
+  }
 
 
   override def toString() = {
@@ -964,37 +1056,6 @@ public class Matrix4f {
 		return sum;
 	}
 
-	public final String toString() {
-		StringBuffer buffer = new StringBuffer();
-
-		String sep = "  ";
-
-		buffer.append("Matrix4f[ ");
-		buffer.append(format.format(m00) + sep);
-		buffer.append(format.format(m01) + sep);
-		buffer.append(format.format(m02) + sep);
-		buffer.append(format.format(m03) + "\n");
-
-		buffer.append("         ");
-		buffer.append(format.format(m10) + sep);
-		buffer.append(format.format(m11) + sep);
-		buffer.append(format.format(m12) + sep);
-		buffer.append(format.format(m13) + "\n");
-
-		buffer.append("         ");
-		buffer.append(format.format(m20) + sep);
-		buffer.append(format.format(m21) + sep);
-		buffer.append(format.format(m22) + sep);
-		buffer.append(format.format(m23) + "\n");
-
-		buffer.append("         ");
-		buffer.append(format.format(m30) + sep);
-		buffer.append(format.format(m31) + sep);
-		buffer.append(format.format(m32) + sep);
-		buffer.append(format.format(m33) + " ]");
-
-		return buffer.toString();
-	}
 }
 
 */
