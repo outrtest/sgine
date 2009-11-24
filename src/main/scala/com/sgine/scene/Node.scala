@@ -2,8 +2,16 @@ package com.sgine.scene
 
 import com.sgine.property._;
 
-class Node {
-	val id = new ImmutableProperty[Long](0L);
-	val name = new MutableProperty[String];
-	val parent = new MutableProperty[Node];
+/**
+ * Represents some object in a scenegraph.
+ *
+ * Can be something visible, or just pure information organized in a searchable tree.
+ */
+trait Node {
+
+  val id : NodeId
+
+  def parent : Node
+
 }
+
