@@ -51,6 +51,10 @@
 		<java classpathref="cp" classname="com.sgine.property.TestProperties"/>
 	</target>
 	
+	<target name="run-easing-test" depends="jar">
+		<java classpathref="cp" classname="com.sgine.easing.BackTest"/>
+	</target>
+	
 	<target name="run-tests">
 		<java classpathref="cp" classname="org.scalatest.tools.Runner" args="-p . -o -s com.sgine.property.PropertyTests"/>
 	</target>

@@ -115,7 +115,7 @@ class Window (val title:String, val width:Int, val height:Int, val workManager:W
 	    displayables.foreach(_(time));
 	    
 	    renders += 1;
-	    if (renders == Math.MAX_LONG) {
+	    if (renders == Long.MaxValue) {
 	    	renders = 0;
 	    }
 	    
