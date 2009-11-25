@@ -7,7 +7,9 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 		p.bindings = this :: p.bindings
 	}
 	
-	def changed(oldValue:T, newValue:T):Unit = {
+	abstract override def changed(oldValue:T, newValue:T):Unit = {
+		super.changed(oldValue, newValue)
+		
 		bindings.foreach(_ := newValue)
 	}
 }

@@ -34,5 +34,6 @@ trait ChangeableProperty[T] extends Property[T] {
 		oldValue = newValue;
 	}
 	
-	def changed(oldValue:T, newValue:T):Unit
+	def changed(oldValue:T, newValue:T):Unit = {
+	}
 }

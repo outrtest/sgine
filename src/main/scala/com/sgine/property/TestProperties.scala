@@ -8,7 +8,7 @@ import com.sgine.work.unit._
 
 object TestProperties {
 	val p = new MutableProperty[Int] with ChangeableProperty[Int] {
-		def changed(oldValue:Int, newValue:Int):Unit = println("Changed: " + oldValue + " to " + newValue)
+		override def changed(oldValue:Int, newValue:Int):Unit = println("Changed: " + oldValue + " to " + newValue)
 	}
 	val p2 = new MutableProperty[Int] with ListenableProperty[Int]
 	val p3 = new MutableProperty[Double] with AdjustableProperty[Double]
@@ -18,6 +18,7 @@ object TestProperties {
 		val p1 = new MutableProperty[Int]
 		val p2 = new MutableProperty[String]
 	}
+	val ap1 = new AdvancedProperty[String]
 	
 	def main(args:Array[String]) = {
 		p(5)
@@ -49,9 +50,21 @@ object TestProperties {
 		println("p4: " + p4() + ", p5: " + p5())
 		
 		println("PropertGroup: " + pg1.properties.length)
+		
+		ap1.listeners.add(ap1Changed)
+		ap1 := "One"
+		ap1 := "Two"
+		p4 bind ap1
+		ap1 := "Changed"
+		
+		println("ap1: " + ap1() + ", p4: " + p4() + ", p5: " + p5())
 	}
 	
 	def p2Changed(p:Property[Int], oldValue:Int, newValue:Int):Unit = {
 		println("p2Changed: " + oldValue + " to " + newValue)
+	}
+	
+	def ap1Changed(p:Property[String], oldValue:String, newValue:String):Unit = {
+		println("ap1Changed: " + oldValue + " to " + newValue)
 	}
 }

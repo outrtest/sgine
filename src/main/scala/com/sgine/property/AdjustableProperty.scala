@@ -12,12 +12,16 @@ import com.sgine.property.adjust._;
  * @author Matt Hicks
  */
 trait AdjustableProperty[T] extends Property[T] with Updatable {
-	var adjuster:Function3[T, T, Double, T] = defaultAdjuster
+	var adjuster:Function3[T, T, Double, T] = null
 	
 	private var target:T = apply();
 	
 	abstract override def apply(value:T):Property[T] = {
-		target = value
+		if (adjuster != null) {
+			target = value
+		} else {
+			super.apply(value)
+		}
 		
 		this
 	}
@@ -41,6 +45,4 @@ trait AdjustableProperty[T] extends Property[T] with Updatable {
 			Thread.sleep(10);
 		}
 	}
-	
-	def defaultAdjuster(current:T, target:T, elapsed:Double):T = target;
 }

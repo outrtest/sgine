@@ -14,7 +14,9 @@ trait ListenableProperty[T] extends ChangeableProperty[T] {
 	
 	val listeners = new ConcurrentLinkedQueue[Function3[Property[T], T, T, Unit]];
 	
-	def changed(oldValue:T, newValue:T):Unit = {
+	abstract override def changed(oldValue:T, newValue:T):Unit = {
+		super.changed(oldValue, newValue)
+		
 		listeners.foreach(_(this, oldValue, newValue))
 	}
 }
