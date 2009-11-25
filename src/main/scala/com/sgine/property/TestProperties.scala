@@ -2,6 +2,7 @@ package com.sgine.property
 
 import com.sgine._
 import com.sgine.property.adjust._
+import com.sgine.property.group._
 import com.sgine.work._
 import com.sgine.work.unit._
 
@@ -13,6 +14,10 @@ object TestProperties {
 	val p3 = new MutableProperty[Double] with AdjustableProperty[Double]
 	val p4 = new MutableProperty[String] with BindingProperty[String]
 	val p5 = new MutableProperty[String] with BindingProperty[String]
+	val pg1 = new PropertyGroup {
+		val p1 = new MutableProperty[Int]
+		val p2 = new MutableProperty[String]
+	}
 	
 	def main(args:Array[String]) = {
 		p(5)
@@ -42,6 +47,8 @@ object TestProperties {
 		p5 bind p4
 		p4 := "Three"
 		println("p4: " + p4() + ", p5: " + p5())
+		
+		println("PropertGroup: " + pg1.properties.length)
 	}
 	
 	def p2Changed(p:Property[Int], oldValue:Int, newValue:Int):Unit = {
