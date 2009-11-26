@@ -9,8 +9,6 @@ import com.sgine.property._;
  */
 trait Node {
 
-  val id : NodeId
-
   def parent : Node
 
 }
