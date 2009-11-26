@@ -13,19 +13,19 @@ trait BranchNode extends Node {
    *
    * Does not necessarily create generated childNodes.
    */
-  def children : Iterator[Node]
+  def children: Iterator[Node]
 
   /**
    * Returns the child nodes of this BranchNode that match the specified query.
    */
   // TODO:
-  // def children( query : NodeQuery ) : Iterator[Node]
+  // def children( query: NodeQuery ): Iterator[Node]
 
   /**
    * Creates a view of this BranchNode, showing any children that match the query.
    * The view is updated automatically as child nodes appear or dissappear from the query results.
    */
   // TODO:
-  // def createView( query : NodeQuery ) : NodeView
+  // def createView( query: NodeQuery ): NodeView
 
 }

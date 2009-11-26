@@ -9,7 +9,7 @@ import com.sgine.property._;
  */
 trait Node {
 
-  def parent : Node
+  def parent: Node
 
 }
 
