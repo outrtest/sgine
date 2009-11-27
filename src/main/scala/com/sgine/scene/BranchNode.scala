@@ -1,7 +1,6 @@
 package com.sgine.scene
 
 import collection.Iterator
-import java.util.concurrent._;
 
 /**
  * A Node that can contain child nodes.
