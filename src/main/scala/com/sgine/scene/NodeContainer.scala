@@ -1,7 +1,7 @@
 package com.sgine.scene
 
 
-import query.AllQuery
+import query._
 
 /**
  * Something that contains Nodes and can fetch the ones mathcing a query.

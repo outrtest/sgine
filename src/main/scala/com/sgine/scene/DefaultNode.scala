@@ -1,4 +1,6 @@
-package com.sgine.scene
+package com.sgine.scene.query
+
+import com.sgine.scene.Node
 
 /**
  * A default implementation of Node.

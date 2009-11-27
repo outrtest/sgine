@@ -1,4 +1,6 @@
-package com.sgine.scene
+package com.sgine.scene.query
+
+import com.sgine.scene.{NodeQuery, Node}
 
 /**
  * A simple boolean condition version of a NodeQuery.
