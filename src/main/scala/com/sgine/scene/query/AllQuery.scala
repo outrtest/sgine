@@ -8,5 +8,4 @@ import com.sgine.scene.Node
 object AllQuery extends NodeQuery {
 
   def matches(node: Node) = true
-
 }

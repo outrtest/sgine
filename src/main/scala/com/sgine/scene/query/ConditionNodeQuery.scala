@@ -8,5 +8,4 @@ import com.sgine.scene.Node
 final case class ConditionNodeQuery(condition: Node => Boolean) extends NodeQuery {
 
   def matches(node: Node): Boolean = condition(node)
-
 }

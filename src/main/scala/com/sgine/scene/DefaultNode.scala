@@ -1,10 +1,11 @@
 package com.sgine.scene.query
 
-import com.sgine.scene.Node
+import com.sgine.scene.{NodeContainer, Node}
 
 /**
  * A default implementation of Node.
  */
-case class DefaultNode( var parent: Node ) extends Node {
+case class DefaultNode( var parent: NodeContainer ) extends Node {
 
+  def setParent(container: NodeContainer) = parent = container
 }

@@ -7,6 +7,10 @@ package com.sgine.scene
  */
 trait Node {
 
-  def parent: Node
+  /**
+   * The container that this node is located in, or null if it is not located in any collection.
+   */
+  def parent: NodeContainer
 
+  def setParent(container: NodeContainer)
 }
