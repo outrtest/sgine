@@ -1,4 +1,4 @@
-package com.sgine.space
+package com.sgine.scene.space
 
 /**
  * Shows some Region of a Space at some DetailLevel.

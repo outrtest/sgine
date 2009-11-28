@@ -1,4 +1,4 @@
-package com.sgine.space
+package com.sgine.scene.space
 
 import collection.JavaConversions._
 import java.util.{HashSet, ArrayList}

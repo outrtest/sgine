@@ -1,8 +1,9 @@
-package com.sgine.space
+package com.sgine.scene.space.simple
 
 import collection.JavaConversions._
 
 import java.util.ArrayList
+import com.sgine.scene.space._
 
 /**
  * A simple ArrayList backed brute-force implementation of Space.

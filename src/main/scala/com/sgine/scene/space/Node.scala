@@ -1,5 +1,6 @@
-package com.sgine.space
+package com.sgine.scene.space
 
+import bounds.Bounds
 import com.sgine.math.Vector3
 
 /**

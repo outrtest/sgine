@@ -1,4 +1,4 @@
-package com.sgine.space
+package com.sgine.scene.space
 
 /**
  * Contains positioned Nodes that have some bounding information and detail level information.

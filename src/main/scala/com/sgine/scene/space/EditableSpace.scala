@@ -1,4 +1,4 @@
-package com.sgine.space
+package com.sgine.scene.space
 
 /**
  * A Space where Nodes can be manually added and removed.
