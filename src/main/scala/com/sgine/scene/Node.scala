@@ -12,5 +12,8 @@ trait Node {
    */
   def parent: NodeContainer
 
+  /**
+   * Changes the parent NodeContainer of this Node.
+   */
   def setParent(container: NodeContainer)
 }
