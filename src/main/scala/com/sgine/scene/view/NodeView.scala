@@ -19,7 +19,7 @@ import com.sgine.scene.Node
 //
 // We'll also need spatial views for monitoring all nodes inside some area.  For this, we can use spatial
 // query datatypes like quadtrees or r-trees, and should manage ok.
-class NodeView extends Iterable[Node] {
+trait NodeView extends Iterable[Node] {
 
   /**
    * The nodes currently in this view.
