@@ -3,6 +3,8 @@ package com.sgine.scene
 import query.NodeQuery
 import java.util.concurrent.ConcurrentLinkedQueue
 import scala.collection.JavaConversions._
+import view.NodeView
+import java.lang.UnsupportedOperationException
 
 /**
  * NodeContainer backed up by a simple collection.
@@ -26,5 +28,11 @@ class SimpleNodeContainer extends EditableNodeContainer {
     val removed = nodes.remove( node )
     if (removed) node.setParent(null)
     removed
+  }
+
+  def createView(query: NodeQuery): NodeView = {
+    // TODO: Implement
+    // We'll need to notify the view about added and removed nodes in this container.
+    throw new UnsupportedOperationException("Not implemented yet")
   }
 }

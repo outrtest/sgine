@@ -2,6 +2,7 @@ package com.sgine.scene
 
 
 import query._
+import view.NodeView
 
 /**
  * Something that contains Nodes and can fetch the ones mathcing a query.
@@ -27,4 +28,9 @@ trait NodeContainer extends Iterable[Node] {
    * Return all the Node:s matching the specified query in the container.
    */
   def getNodes(query : NodeQuery): Iterable[Node]
+
+  /**
+   * Creates a view that shows the nodes in this container that match the query at any given moment.
+   */
+  def createView(query: NodeQuery): NodeView
 }
