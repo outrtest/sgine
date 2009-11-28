@@ -7,4 +7,5 @@ import com.sgine.scene.Node
  */
 case class DefaultNode( var parent: Node ) extends Node {
 
+  testing hudson on build break
 }
