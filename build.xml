@@ -19,25 +19,45 @@
         <fileset dir="${scala.home}/lib">
             <include name="*.jar"/>
         </fileset>
+    </path>
+	
+	<path id="cp-test">
+		<fileset dir="${lib}">
+    		<include name="*.jar"/>
+    	</fileset>
+        <fileset dir="${scala.home}/lib">
+            <include name="*.jar"/>
+        </fileset>
     	<fileset dir="${dist}">
     		<include name="*.jar"/>
     	</fileset>
-    </path>
+	</path>
 	
 	<taskdef resource="scala/tools/ant/antlib.xml" classpathref="cp"/>
+	<taskdef name="scalatest" classname="org.scalatest.tools.ScalaTestAntTask">
+		<classpath refid="cp-test"/>
+	</taskdef>
 
     <target name="compile">
         <delete dir="${build}"/>
         <mkdir dir="${build}"/>
     	<mkdir dir="${dist}"/>
     	<scalac srcdir="${src}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
-    	<!--<scalac srcdir="${tests}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>-->
     </target>
+	
+	<target name="compile-tests" depends="jar">
+		<delete dir="${build}"/>
+        <mkdir dir="${build}"/>
+    	<scalac srcdir="${tests}" destdir="${build}" classpathref="cp-test" deprecation="on" unchecked="on"/>
+	</target>
 	
     <target name="jar" depends="compile">
         <jar destfile="${dist}/${jar}" basedir="${build}" index="true"/>
-    	<!--<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>-->
     </target>
+	
+	<target name="jar-tests" depends="compile-tests">
+		<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
+	</target>
 	
 	<target name="run-opengl-test" depends="jar">
 		<java classpathref="cp" classname="com.sgine.opengl.TestWindow" fork="true" jvmargs="-Djava.library.path=Z:/programming/work/workspace_scala/sgine/lib/native/windows"/>
@@ -56,6 +76,14 @@
 	</target>
 	
 	<target name="run-tests">
-		<java classpathref="cp" classname="org.scalatest.tools.Runner" args="-p . -o -s com.sgine.property.PropertyTests"/>
+		<java taskname="scalatest" classpathref="cp-test" classname="org.scalatest.tools.Runner" fork="true">
+			<arg value="-p"/>
+			<arg value="."/>
+			<arg value="-oWD"/>
+			<arg value="-s"/>
+			<arg value="com.sgine.property.PropertyTests"/>
+		</java>
 	</target>
+	
+	<target name="run-tests-build-first" depends="jar-tests, run-tests"/>
 </project>
