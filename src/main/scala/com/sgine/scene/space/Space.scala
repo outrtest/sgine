@@ -1,5 +1,8 @@
 package com.sgine.scene.space
 
+import com.sgine.scene._
+import query.NodeQuery
+
 /**
  * Contains positioned Nodes that have some bounding information and detail level information.
  * <p/>
@@ -9,16 +12,7 @@ package com.sgine.scene.space
  * Can also contain Generators that produce nodes on demand for the requested area - e.g. trees when walking through a forest.
  *
  */
-trait Space {
-
-  /**
-   * Creates a new view, initially showing the specified Region at the specified DetailLevel.
-   */
-  def createView( region : Region, detailLevel : DetailLevel ) : SpaceView
-
-  /**
-   * Disables an existing view to this Space.  The view will no longer be updated, and will be in an undefined state.
-   */
-  def disableView( view : SpaceView )
-
+trait Space extends NodeContainer {
+  
+  def createView(query: NodeQuery): SpaceView
 }

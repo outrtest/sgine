@@ -1,5 +1,7 @@
 package com.sgine.scene.space
 
+import com.sgine.scene._
+
 /**
  * A Space where Nodes can be manually added and removed.
  */

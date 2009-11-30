@@ -1,9 +1,13 @@
 package com.sgine.scene.space
 
+
+import view.NodeView
+import com.sgine.scene._
+
 /**
  * Shows some Region of a Space at some DetailLevel.
  */
-trait SpaceView {
+trait SpaceView extends NodeView {
 
   /**
    * The Space that this view is into.
@@ -23,28 +27,16 @@ trait SpaceView {
   /**
    *   Changes the shown region.
    */
-  def setRegion( newRegion : Region )
+  def setRegion(newRegion: Region)
 
   /**
    *   Changes the shown detail level.
    */
-  def setDetailLevel( detailLevel : DetailLevel )
-
- /**
-   * The currently visible nodes in this view.
-   */
-  def nodes : Collection[Node]
+  def setDetailLevel(detailLevel: DetailLevel)
 
   /**
    * True if this view shows the specified node.
    */
-  def containsNode( node : Node ) : Boolean
-
-  // Add / remove listeners that get notified when nodes appear or dissappear in this view.
-  // TODO: Use signals library or such?
-  def addNodeAppearanceListener( listener : (Node) => Unit )
-  def addNodeDisappearanceListener( listener : (Node) => Unit )
-  def removeNodeAppearanceListener( listener : (Node) => Unit )
-  def removeNodeDisappearanceListener( listener : (Node) => Unit )
+  def containsNode(node: Node ): Boolean
 
 }

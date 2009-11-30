@@ -1,4 +1,4 @@
-package com.sgine.scene.query
+package com.sgine.scene
 
 import com.sgine.scene.{NodeContainer, Node}
 

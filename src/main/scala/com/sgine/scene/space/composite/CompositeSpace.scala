@@ -1,6 +1,6 @@
 package com.sgine.scene.space.composite
 
-import com.sgine.scene.space.{Space, SpaceView, Region, DetailLevel}
+import com.sgine.scene._
 
 /**
  * A Space that combines the content of several other Spaces, and presents them all together as one Space.

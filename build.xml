@@ -74,7 +74,7 @@
 	<target name="run-easing-test" depends="jar">
 		<java classpathref="cp" classname="com.sgine.easing.BackTest"/>
 	</target>
-	
+
 	<target name="run-tests">
 		<java taskname="scalatest" classpathref="cp-test" classname="org.scalatest.tools.Runner" fork="true">
 			<arg value="-p"/>
@@ -84,6 +84,6 @@
 			<arg value="com.sgine.property.PropertyTests"/>
 		</java>
 	</target>
-	
+
 	<target name="run-tests-build-first" depends="jar-tests, run-tests"/>
 </project>
