@@ -4,6 +4,7 @@ import bounds.Bounds
 import com.sgine.math.Vector3
 import com.sgine.scene.query.NodeQuery
 import com.sgine.scene._
+import com.sgine.scenespace._
 
 /**
  * Represents some fixed part of a Space.
