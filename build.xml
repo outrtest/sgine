@@ -37,6 +37,12 @@
 	<taskdef name="scalatest" classname="org.scalatest.tools.ScalaTestAntTask">
 		<classpath refid="cp-test"/>
 	</taskdef>
+	
+	<target name="test-sbt">
+		<java taskname="sbt" classpathref="cp" jar="${lib}/xsbt-launch-0.6.0.jar" fork="true">
+			<arg value="compile"/>
+		</java>
+	</target>
 
     <target name="compile">
         <delete dir="${build}"/>
