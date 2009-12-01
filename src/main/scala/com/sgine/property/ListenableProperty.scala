@@ -1,6 +1,6 @@
 package com.sgine.property
 
-import java.util.concurrent._;
+import java.util.concurrent._
 
 /**
  * ListenableProperty trait extends ChangeableProperty trait to

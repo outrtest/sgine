@@ -82,6 +82,8 @@
 			<arg value="-oWD"/>
 			<arg value="-s"/>
 			<arg value="com.sgine.property.PropertyTests"/>
+			<arg value="-s"/>
+			<arg value="com.sgine.event.TestEvents"/>
 		</java>
 	</target>
 
