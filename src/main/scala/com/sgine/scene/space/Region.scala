@@ -2,7 +2,7 @@ package com.sgine.scene.space
 
 import bounds.Bounds
 import com.sgine.math.Vector3
-import query.NodeQuery
+import com.sgine.scene.query.NodeQuery
 import com.sgine.scene._
 
 /**

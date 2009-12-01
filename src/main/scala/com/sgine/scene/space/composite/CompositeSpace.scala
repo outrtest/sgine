@@ -1,6 +1,8 @@
 package com.sgine.scene.space.composite
 
 import com.sgine.scene._
+import com.sgine.scene.space._
+import query.NodeQuery
 
 /**
  * A Space that combines the content of several other Spaces, and presents them all together as one Space.
@@ -13,7 +15,7 @@ class CompositeSpace extends Space {
   // TODO: Add / remove member Spaces.
 
   // TODO: Implement
-  def disableView(view: SpaceView) = null
-  def createView(region: Region, detailLevel: DetailLevel) = null
+  def getNodes(query: NodeQuery) = null
+  def createView(query: NodeQuery) = null
 
 }

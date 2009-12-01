@@ -1,7 +1,7 @@
 package com.sgine.scene.space
 
 
-import view.NodeView
+import com.sgine.scene.view.NodeView
 import com.sgine.scene._
 
 /**
