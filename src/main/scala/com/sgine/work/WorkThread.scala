@@ -42,6 +42,10 @@ private[work] class WorkThread (workManager:WorkManager) {
 					workManager.uncaughtExceptionHandler(exc);
 				}
 			}
+			work match {
+				case fu: FinishedUnit => fu.finished()
+				case _ =>
+			}
 			work = null;
 			
 			if (workManager.threadYielding) {
