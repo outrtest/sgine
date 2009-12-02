@@ -4,28 +4,39 @@ import java.util.concurrent._
 
 import scala.collection.JavaConversions._
 
-final class EventProcessor {
+final class EventProcessor(listenable:Listenable) extends Iterable[EventHandler] {
 	private val handlers = new CopyOnWriteArraySet[EventHandler]
-	
-	private[event] def processEvent(evt: Event): Unit = {
-		handlers.foreach(_.process(evt))
-	}
 	
 	def +=(listener: Event => Unit): EventHandler = {
 		val h = new EventHandler(listener)
-		handlers.add(h)
-		h
+		this += h
+	}
+	
+	def +=(handler: EventHandler): EventHandler = {
+		handlers.add(handler)
+		handler
 	}
 	
 	def -=(listener: Event => Unit): EventHandler = {
+		val h = getHandler(listener)
+		this -= h
+	}
+	
+	def -=(handler: EventHandler): EventHandler = {
+		if (handler != null) {
+			handlers.remove(handler)
+		}
+		handler
+	}
+	
+	def getHandler(listener: Event => Unit): EventHandler = {
 		for (h <- handlers) {
 			if (h.listener == listener) {
-				handlers.remove(h)
 				return h
 			}
 		}
 		null
 	}
 	
-	def length = handlers.size()
+	def iterator: Iterator[EventHandler] = handlers.iterator()
 }

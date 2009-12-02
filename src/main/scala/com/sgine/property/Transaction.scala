@@ -19,6 +19,7 @@ class Transaction {
 	def commit() = {
 		map.values().foreach(_.changeValue())
 		map.values().foreach(_.invokeChange())
+		map.clear()
 	}
 	
 	def rollback() = {

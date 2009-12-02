@@ -38,9 +38,9 @@
 		<classpath refid="cp-test"/>
 	</taskdef>
 	
-	<target name="test-sbt">
-		<java taskname="sbt" classpathref="cp" jar="${lib}/xsbt-launch-0.6.0.jar" fork="true">
-			<arg value="compile"/>
+	<target name="sbt-test">
+		<java taskname="sbt" classpathref="cp" jar="sbt/xsbt-launch-0.6.0.jar" fork="true">
+			<arg value="test"/>
 		</java>
 	</target>
 
