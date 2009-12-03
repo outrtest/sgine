@@ -70,4 +70,6 @@ private[work] class WorkThread (workManager:WorkManager) {
 	}
 	
 	def isWorking() = working;
+	
+	def hasWork() = work != null
 }
