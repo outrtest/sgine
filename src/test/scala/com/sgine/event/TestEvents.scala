@@ -13,6 +13,7 @@ class TestEvents extends FlatSpec with ShouldMatchers {
 	var listenerIncrement1: Int = 0
 	var listenerIncrement2: Int = 0
 	var listenerIncrement3: Int = 0
+	var listenerIncrement4: Int = 0
 	
 	"EventProcessor" should "be empty" in {
 		listenable.listeners.size should equal (0)
@@ -61,6 +62,17 @@ class TestEvents extends FlatSpec with ShouldMatchers {
 		listenerIncrement3 should equal (1)
 	}
 	
+	"EventListener" should "let through events for its generic type" in {
+		val eh = listenable.listeners += EventListener(exclusiveListener1)
+		eh.processingMode = ProcessingMode.Blocking
+		listenable.listeners.size should equal (4)
+		listenerIncrement4 should equal (0)
+		Event.enqueue(new ExclusiveEvent1(listenable))
+		listenerIncrement4 should equal (1)
+		Event.enqueue(new SimpleEvent1(listenable))
+		listenerIncrement4 should equal (1)
+	}
+	
 	"ProcessingMode" should "be different" in {
 		ProcessingMode.Blocking should not equal (ProcessingMode.Asynchronous)
 		ProcessingMode.Asynchronous should not equal (ProcessingMode.Normal)
@@ -81,6 +93,11 @@ class TestEvents extends FlatSpec with ShouldMatchers {
 		println("listener3")
 		listenerIncrement3 += 1
 	}
+	
+	def exclusiveListener1(evt: ExclusiveEvent1) = {
+		println("listener4")
+		listenerIncrement4 += 1
+	}
 }
 
 class SimpleListenable extends Listenable {
@@ -91,3 +108,4 @@ class SimpleListenable extends Listenable {
 class SimpleEvent1(listenable: Listenable) extends Event(listenable)
 class SimpleEvent2(listenable: Listenable) extends Event(listenable)
 class SimpleEvent3(listenable: Listenable) extends Event(listenable)
+class ExclusiveEvent1(listenable: Listenable) extends Event(listenable)
