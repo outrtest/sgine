@@ -7,8 +7,8 @@ import scala.collection.JavaConversions._
 final class EventProcessor(listenable:Listenable) extends Iterable[EventHandler] {
 	private val handlers = new CopyOnWriteArraySet[EventHandler]
 	
-	def +=(listener: Event => Unit): EventHandler = {
-		val h = new EventHandler(listener)
+	def +=[E <: Event](listener: E => Unit): EventHandler = {
+		val h = new EventHandler(EventListener(listener))
 		this += h
 	}
 	

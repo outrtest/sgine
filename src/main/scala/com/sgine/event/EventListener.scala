@@ -9,7 +9,7 @@ class EventListener[E <: Event] private (f: Function1[E, Unit]) extends Function
 		}
 	}
 	
-	def isValidEvent(evt: Event) = eventClass == evt.getClass
+	def isValidEvent(evt: Event) = eventClass.isAssignableFrom(evt.getClass)
 	
 	private def determineEventClass():Class[E] = {
 		for (m <- f.getClass.getMethods) {

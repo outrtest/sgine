@@ -1,8 +1,17 @@
 package com.sgine.event
 
-case class EventTypeFilter(eventType: Class[_]) extends Function1[Event, Boolean] {
+class EventTypeFilter private (eventType: Class[_], inclusive: Boolean) extends Function1[Event, Boolean] {
 	def apply(evt: Event): Boolean = {
-		// TODO: make compliant for extending classes
-		evt.getClass() == eventType
+		if (inclusive) {
+			eventType.isAssignableFrom(evt.getClass)
+		} else {
+			evt.getClass() == eventType
+		}
 	}
+}
+
+object EventTypeFilter {
+	def apply(eventType: Class[_], inclusive: Boolean): EventTypeFilter = new EventTypeFilter(eventType, inclusive)
+	
+	def apply(eventType: Class[_]): EventTypeFilter = apply(eventType, true)
 }

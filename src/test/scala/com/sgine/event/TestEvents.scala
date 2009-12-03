@@ -48,6 +48,12 @@ class TestEvents extends FlatSpec with ShouldMatchers {
 		listenerIncrement1 should equal (1)
 	}
 	
+	it should "register sub-classed events for filtered type" in {
+		listenerIncrement1 should equal (1)
+		Event.enqueue(new SimpleEvent4(listenable))
+		listenerIncrement1 should equal (2)
+	}
+	
 	it should "register the event occurrence in Normal mode" in {
 		Event.enqueue(new SimpleEvent2(listenable))
 		listenerIncrement2 should equal (0)
@@ -63,7 +69,7 @@ class TestEvents extends FlatSpec with ShouldMatchers {
 	}
 	
 	"EventListener" should "let through events for its generic type" in {
-		val eh = listenable.listeners += EventListener(exclusiveListener1)
+		val eh = listenable.listeners += exclusiveListener1 _
 		eh.processingMode = ProcessingMode.Blocking
 		listenable.listeners.size should equal (4)
 		listenerIncrement4 should equal (0)
@@ -108,4 +114,5 @@ class SimpleListenable extends Listenable {
 class SimpleEvent1(listenable: Listenable) extends Event(listenable)
 class SimpleEvent2(listenable: Listenable) extends Event(listenable)
 class SimpleEvent3(listenable: Listenable) extends Event(listenable)
+class SimpleEvent4(listenable: Listenable) extends SimpleEvent1(listenable)
 class ExclusiveEvent1(listenable: Listenable) extends Event(listenable)
