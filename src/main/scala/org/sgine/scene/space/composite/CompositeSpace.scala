@@ -15,7 +15,7 @@ class CompositeSpace extends Space {
   // TODO: Add / remove member Spaces.
 
   // TODO: Implement
-  def getNodes(query: NodeQuery) = null
+  def iterator = null
   def createView(query: NodeQuery) = null
 
 }

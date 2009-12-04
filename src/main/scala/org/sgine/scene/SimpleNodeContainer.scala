@@ -13,20 +13,20 @@ class SimpleNodeContainer extends EditableNodeContainer {
 
   private val nodes = new ConcurrentLinkedQueue[Node]()
 
-  def getNodes(query: NodeQuery) = nodes filter( query.matches(_) )
+  def iterator = nodes.iterator
 
-  def addNode(node: Node) {
+  def +=(node: Node) {
     require(node != null,"Can not add node, the node should not be null.")
     require(!nodes.contains(node), "Can not add node, node already in container.  " +
                                    "The node '"+node+"' is already in the container '"+this+"'.")
 
     nodes.add(node)
-    node.setParent(this)
+    node.parent = this
   }
 
-  def removeNode(node: Node): Boolean = {
+  def -=(node: Node): Boolean = {
     val removed = nodes.remove( node )
-    if (removed) node.setParent(null)
+    if (removed) node.parent = null
     removed
   }
 
