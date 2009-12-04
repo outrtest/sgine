@@ -2,6 +2,8 @@ package org.sgine.opengl
 
 import java.util.concurrent._;
 
+import scala.collection.JavaConversions._
+
 import org.sgine.util._;
 import org.sgine.work._;
 
@@ -16,9 +18,7 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-class Window (val title:String, val width:Int, val height:Int, val workManager:WorkManager = DefaultWorkManager) {
-	import org.sgine.util.JavaConversions.clq2iterable;
-	
+class GLWindow (val title:String, val width:Int, val height:Int, val workManager:WorkManager = DefaultWorkManager) {
 	private var keepAlive = true;
 	private var renders:Long = 0;
 	private var lastRender:Long = System.nanoTime();

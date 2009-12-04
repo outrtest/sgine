@@ -2,6 +2,8 @@ package org.sgine.property
 
 import java.util.concurrent._
 
+import scala.collection.JavaConversions._
+
 /**
  * ListenableProperty trait extends ChangeableProperty trait to
  * provide <code>listeners</code> to allow multiple sources to
@@ -10,7 +12,6 @@ import java.util.concurrent._
  * @author Matt Hicks
  */
 trait ListenableProperty[T] extends ChangeableProperty[T] {
-	import org.sgine.util.JavaConversions.clq2iterable;
 	
 	val listeners = new ConcurrentLinkedQueue[Function3[Property[T], T, T, Unit]];
 	
