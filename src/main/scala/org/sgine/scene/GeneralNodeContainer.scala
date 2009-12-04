@@ -6,6 +6,9 @@ import scala.collection.JavaConversions._
 import view.NodeView
 import java.lang.UnsupportedOperationException
 
+import org.sgine.event._
+import org.sgine.scene.event._
+
 /**
  * NodeContainer backed up by a thread-safe collection.
  */
@@ -22,11 +25,21 @@ class GeneralNodeContainer extends MutableNodeContainer {
 
     nodes.add(node)
     node.parent = this
+    
+    val evt = new NodeContainerEvent(this, node, SceneEventType.ChildAdded)
+    Event.enqueue(evt)
   }
 
   def -=(node: Node): Boolean = {
     val removed = nodes.remove( node )
-    if (removed) node.parent = null
+    
+    if (removed) {
+    	node.parent = null
+    	
+    	val evt = new NodeContainerEvent(this, node, SceneEventType.ChildRemoved)
+    	Event.enqueue(evt)
+    }
+
     removed
   }
 

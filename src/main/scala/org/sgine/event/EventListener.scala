@@ -1,6 +1,6 @@
 package org.sgine.event
 
-class EventListener[E <: Event] private (eventClass:Class[E], f: Function1[E, Unit]) extends Function1[Event, Unit] {
+class EventListener[E <: Event] private (val eventClass:Class[E], val f: Function1[E, Unit]) extends Function1[Event, Unit] {
 	def apply(evt: Event) = {
 		if (isValidEvent(evt)) {
 			f(evt.asInstanceOf[E])
