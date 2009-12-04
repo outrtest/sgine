@@ -1,8 +1,8 @@
-package com.sgine.scene
+package org.sgine.scene
 
 
-import com.sgine.scene.query._
-import com.sgine.scene.view.NodeView
+import org.sgine.scene.query._
+import org.sgine.scene.view.NodeView
 
 /**
  * Something that contains Nodes and can fetch the ones mathcing a query.

@@ -1,4 +1,4 @@
-package com.sgine.util
+package org.sgine.util
 
 /**
  * Start of a framework for measuring perfromance and reporting the results.

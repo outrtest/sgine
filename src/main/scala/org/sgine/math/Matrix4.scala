@@ -1,4 +1,4 @@
-package com.sgine.math
+package org.sgine.math
 
 import java.nio.DoubleBuffer
 import java.text.NumberFormat

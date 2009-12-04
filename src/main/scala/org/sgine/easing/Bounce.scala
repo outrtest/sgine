@@ -1,4 +1,4 @@
-package com.sgine.easing
+package org.sgine.easing
 
 object Bounce {
 	def easeIn(time:Double, start:Double, change:Double, duration:Double):Double = {

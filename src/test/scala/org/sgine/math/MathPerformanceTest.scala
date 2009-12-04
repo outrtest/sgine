@@ -1,6 +1,6 @@
-package com.sgine.math
+package org.sgine.math
 
-import com.sgine.util.PerformanceProfiler
+import org.sgine.util.PerformanceProfiler
 import java.nio.{DoubleBuffer, FloatBuffer}
 
 /**

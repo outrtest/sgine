@@ -1,7 +1,7 @@
-package com.sgine.scene.space.composite
+package org.sgine.scene.space.composite
 
-import com.sgine.scene._
-import com.sgine.scene.space._
+import org.sgine.scene._
+import org.sgine.scene.space._
 import query.NodeQuery
 
 /**

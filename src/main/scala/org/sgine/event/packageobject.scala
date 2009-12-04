@@ -1,4 +1,4 @@
-import com.sgine.event._
+import org.sgine.event._
 
 package object event {
 }

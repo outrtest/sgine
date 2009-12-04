@@ -1,4 +1,4 @@
-package com.sgine.property.adjust
+package org.sgine.property.adjust
 
 class EasingNumericAdjuster(easing:Function4[Double, Double, Double, Double, Double], multiplier:Double, dynamic:Boolean = true) extends PropertyAdjuster[Double] {
 	private var target:Double = _

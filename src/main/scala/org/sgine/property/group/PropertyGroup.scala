@@ -1,7 +1,7 @@
-package com.sgine.property.group
+package org.sgine.property.group
 
-import com.sgine._;
-import com.sgine.property._;
+import org.sgine._;
+import org.sgine.property._;
 
 class PropertyGroup extends Updatable {
 	lazy val properties:List[Property[_]] = propertiesList()

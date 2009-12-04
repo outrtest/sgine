@@ -1,10 +1,10 @@
-package com.sgine.property
+package org.sgine.property
 
-import com.sgine._
-import com.sgine.property.adjust._
-import com.sgine.property.group._
-import com.sgine.work._
-import com.sgine.work.unit._
+import org.sgine._
+import org.sgine.property.adjust._
+import org.sgine.property.group._
+import org.sgine.work._
+import org.sgine.work.unit._
 
 object TestProperties {
 	val p = new MutableProperty[Int] with ChangeableProperty[Int] {

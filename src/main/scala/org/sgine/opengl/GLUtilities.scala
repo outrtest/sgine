@@ -1,4 +1,4 @@
-package com.sgine.opengl
+package org.sgine.opengl
 
 import org.lwjgl.opengl._;
 

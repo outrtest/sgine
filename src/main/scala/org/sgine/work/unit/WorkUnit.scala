@@ -1,6 +1,6 @@
-package com.sgine.work.unit
+package org.sgine.work.unit
 
-import com.sgine.work._;
+import org.sgine.work._;
 
 trait WorkUnit extends Function0[Unit] {
 	private var _enqueued:Long = _;

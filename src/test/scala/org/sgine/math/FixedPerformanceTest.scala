@@ -1,7 +1,7 @@
-package com.sgine.math
+package org.sgine.math
 
 import java.nio.DoubleBuffer
-import com.sgine.util.PerformanceProfiler
+import org.sgine.util.PerformanceProfiler
 
 /**
  * Test performance of fixed point math

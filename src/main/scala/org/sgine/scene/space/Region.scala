@@ -1,10 +1,10 @@
-package com.sgine.scene.space
+package org.sgine.scene.space
 
 import bounds.Bounds
-import com.sgine.math.Vector3
-import com.sgine.scene.query.NodeQuery
-import com.sgine.scene._
-import com.sgine.scene.space._
+import org.sgine.math.Vector3
+import org.sgine.scene.query.NodeQuery
+import org.sgine.scene._
+import org.sgine.scene.space._
 
 /**
  * Represents some fixed part of a Space.

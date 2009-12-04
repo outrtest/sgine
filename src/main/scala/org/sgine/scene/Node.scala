@@ -1,4 +1,4 @@
-package com.sgine.scene
+package org.sgine.scene
 
 /**
  * Represents some object in a scenegraph.

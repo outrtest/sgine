@@ -1,4 +1,4 @@
-package com.sgine.util
+package org.sgine.util
 
 import java.awt._;
 import java.awt.color._;

@@ -1,4 +1,4 @@
-package com.sgine.event
+package org.sgine.event
 
 class EventListener[E <: Event] private (f: Function1[E, Unit]) extends Function1[Event, Unit] {
 	lazy val eventClass:Class[E] = determineEventClass()

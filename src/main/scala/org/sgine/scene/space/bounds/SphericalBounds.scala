@@ -1,7 +1,7 @@
-package com.sgine.scene.space.bounds
+package org.sgine.scene.space.bounds
 
-import com.sgine.math.Vector3
-import com.sgine.scene._
+import org.sgine.math.Vector3
+import org.sgine.scene._
 
 /**
  * Represents a spherical bounding volume.

@@ -1,4 +1,4 @@
-package com.sgine.util
+package org.sgine.util
 
 object FunctionRunnable {
 	def apply(f:() => Unit) = {

@@ -1,4 +1,4 @@
-package com.sgine.event
+package org.sgine.event
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers

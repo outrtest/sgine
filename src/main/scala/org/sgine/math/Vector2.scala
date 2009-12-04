@@ -1,4 +1,4 @@
-package com.sgine.math
+package org.sgine.math
 
 
 object Vector2 {

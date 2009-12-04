@@ -1,6 +1,6 @@
-package com.sgine.work
+package org.sgine.work
 
-import com.sgine.work.unit._;
+import org.sgine.work.unit._;
 
 object TestWork {
 	def main(args:Array[String]) = {

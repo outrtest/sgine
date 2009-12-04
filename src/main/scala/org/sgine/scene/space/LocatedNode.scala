@@ -1,5 +1,5 @@
-package com.sgine.scene.space
-import com.sgine.scene._
+package org.sgine.scene.space
+import org.sgine.scene._
 
 /**
  * A node with a location and bounds.

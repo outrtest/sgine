@@ -1,6 +1,6 @@
-package com.sgine.opengl.shape
+package org.sgine.opengl.shape
 
-import com.sgine.util._;
+import org.sgine.util._;
 
 import java.awt.image.BufferedImage;
 import java.nio._;
@@ -8,7 +8,7 @@ import java.nio._;
 import org.lwjgl.opengl.GL11._;
 import org.lwjgl.opengl.GL12._;
 import org.lwjgl.opengl.GL14._;
-import com.sgine.opengl.GLUtilities._;
+import org.sgine.opengl.GLUtilities._;
 
 class Texture {
 	private lazy val id = generateId();

@@ -1,7 +1,7 @@
-package com.sgine.work
+package org.sgine.work
 
-import com.sgine.util._
-import com.sgine.work.unit._
+import org.sgine.util._
+import org.sgine.work.unit._
 
 import java.util.concurrent._
 import java.util.concurrent.locks._

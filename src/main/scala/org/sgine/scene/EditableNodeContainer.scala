@@ -1,4 +1,4 @@
-package com.sgine.scene
+package org.sgine.scene
 
 /**
  * A trait for a node container where Nodes can be added or removed.

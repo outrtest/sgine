@@ -1,6 +1,6 @@
-package com.sgine.scene
+package org.sgine.scene
 
-import com.sgine.scene.{NodeContainer, Node}
+import org.sgine.scene.{NodeContainer, Node}
 
 /**
  * A default implementation of Node.

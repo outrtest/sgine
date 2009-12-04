@@ -1,4 +1,4 @@
-package com.sgine.opengl.state
+package org.sgine.opengl.state
 
 class MatrixState {
 

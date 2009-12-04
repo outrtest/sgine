@@ -1,4 +1,4 @@
-package com.sgine.event
+package org.sgine.event
 
 trait Listenable {
 	def parent: Listenable

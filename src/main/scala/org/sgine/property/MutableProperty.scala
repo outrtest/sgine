@@ -1,4 +1,4 @@
-package com.sgine.property;
+package org.sgine.property;
 
 /**
  * MutableProperty provides an extremely simple Property implementation

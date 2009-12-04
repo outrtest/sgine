@@ -1,10 +1,10 @@
-package com.sgine.opengl
+package org.sgine.opengl
 
 import javax.imageio._
 
-import com.sgine.util._
+import org.sgine.util._
 import shape._
-import com.sgine.math._
+import org.sgine.math._
 import state._
 
 object TestWindow {

@@ -1,4 +1,4 @@
-package com.sgine.scene
+package org.sgine.scene
 
 import query.NodeQuery
 import java.util.concurrent.ConcurrentLinkedQueue

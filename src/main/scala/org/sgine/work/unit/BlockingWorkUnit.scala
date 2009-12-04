@@ -1,4 +1,4 @@
-package com.sgine.work.unit
+package org.sgine.work.unit
 
 import java.util.concurrent._
 

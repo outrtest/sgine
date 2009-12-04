@@ -1,4 +1,4 @@
-package com.sgine.event
+package org.sgine.event
 
 import java.util.concurrent._
 

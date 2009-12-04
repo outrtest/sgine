@@ -1,6 +1,6 @@
-package com.sgine
+package org.sgine
 
-import com.sgine.work._;
+import org.sgine.work._;
 
 class Updater(updatable:Updatable) extends Function0[Unit] {
 	private var lastUpdate = WorkManager.time;

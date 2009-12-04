@@ -1,4 +1,4 @@
-package com.sgine.scene.space
+package org.sgine.scene.space
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec

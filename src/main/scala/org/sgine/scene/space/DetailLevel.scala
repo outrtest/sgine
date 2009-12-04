@@ -1,4 +1,4 @@
-package com.sgine.scene.space
+package org.sgine.scene.space
 
 /**
  * Represents some level of detail.

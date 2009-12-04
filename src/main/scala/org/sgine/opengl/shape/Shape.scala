@@ -1,8 +1,8 @@
-package com.sgine.opengl.shape
+package org.sgine.opengl.shape
 
-import com.sgine.opengl._
-import com.sgine.math._;
-import com.sgine.util._;
+import org.sgine.opengl._
+import org.sgine.math._;
+import org.sgine.util._;
 
 import java.awt.image._;
 import javax.imageio._;

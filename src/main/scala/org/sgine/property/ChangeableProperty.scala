@@ -1,4 +1,4 @@
-package com.sgine.property
+package org.sgine.property
 
 /**
  * ChangeableProperty trait provides a simple abstract method

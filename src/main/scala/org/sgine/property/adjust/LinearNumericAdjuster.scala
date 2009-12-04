@@ -1,4 +1,4 @@
-package com.sgine.property.adjust
+package org.sgine.property.adjust
 
 class LinearNumericAdjuster(multiplier:Double) extends PropertyAdjuster[Double] {
 	def apply(current:Double, target:Double, elapsed:Double):Double = {

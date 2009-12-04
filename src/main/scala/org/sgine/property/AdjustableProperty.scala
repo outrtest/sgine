@@ -1,7 +1,7 @@
-package com.sgine.property
+package org.sgine.property
 
-import com.sgine._;
-import com.sgine.property.adjust._;
+import org.sgine._;
+import org.sgine.property.adjust._;
 
 /**
  * AdjustableProperty trait provides time-based changes to occur over

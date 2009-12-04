@@ -1,4 +1,4 @@
-import com.sgine.math.{Fixed, Vector2, Vector3}
+import org.sgine.math.{Fixed, Vector2, Vector3}
 
 package object math {
 	implicit def tuple3dToVector3(value:(Double, Double, Double)) : Vector3 = new Vector3(value._1, value._2, value._3);

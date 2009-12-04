@@ -1,4 +1,4 @@
-package com.sgine.property
+package org.sgine.property
 
 trait BindingProperty[T] extends ChangeableProperty[T] {
 	protected var bindings:List[BindingProperty[T]] = Nil

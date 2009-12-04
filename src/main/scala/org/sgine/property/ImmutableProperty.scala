@@ -1,4 +1,4 @@
-package com.sgine.property;
+package org.sgine.property;
 
 /**
  * ImmutableProperty provides an extremely simple Property implementation

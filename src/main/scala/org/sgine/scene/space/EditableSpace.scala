@@ -1,6 +1,6 @@
-package com.sgine.scene.space
+package org.sgine.scene.space
 
-import com.sgine.scene._
+import org.sgine.scene._
 
 /**
  * A Space where Nodes can be manually added and removed.

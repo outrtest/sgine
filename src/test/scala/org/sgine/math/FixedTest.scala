@@ -1,6 +1,6 @@
-package com.sgine.math
+package org.sgine.math
 
-import com.sgine.math
+import org.sgine.math
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 

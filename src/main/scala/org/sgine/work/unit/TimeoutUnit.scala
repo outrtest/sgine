@@ -1,4 +1,4 @@
-package com.sgine.work.unit;
+package org.sgine.work.unit;
 
 trait TimeoutUnit extends WorkUnit {
 	private var _timeout:Long = _;

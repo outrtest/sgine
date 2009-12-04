@@ -1,7 +1,7 @@
-package com.sgine.scene.view
+package org.sgine.scene.view
 
-import com.sgine.util.Signal
-import com.sgine.scene.Node
+import org.sgine.util.Signal
+import org.sgine.scene.Node
 
 /**
  * A view to some Nodes that match a query in a NodeContainer.

@@ -1,7 +1,7 @@
-package com.sgine.opengl.state
+package org.sgine.opengl.state
 
 
-import com.sgine.math._;
+import org.sgine.math._;
 import org.lwjgl.opengl.GL11._;
 
 class TranslateState private(val p:Vector3 = Vector3.Zero) extends Function1[Double, Unit] {

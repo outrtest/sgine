@@ -1,8 +1,8 @@
-package com.sgine.scene.space
+package org.sgine.scene.space
 
 import collection.JavaConversions._
 import java.util.{HashSet, ArrayList}
-import com.sgine.scene._
+import org.sgine.scene._
 
 /**
  * Provides some default implementations for some SpaceView methods.

@@ -1,4 +1,4 @@
-package com.sgine.property
+package org.sgine.property
 
 class DelegateProperty[T](getter:Function0[T], setter:Function1[T, Unit]) extends Property[T] {
 	def apply():T = {

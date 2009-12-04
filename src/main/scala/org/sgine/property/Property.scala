@@ -1,4 +1,4 @@
-package com.sgine.property;
+package org.sgine.property;
 
 /**
  * Property provides an abstraction and hierarchical control over objects and

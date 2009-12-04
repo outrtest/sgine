@@ -1,4 +1,4 @@
-package com.sgine.easing
+package org.sgine.easing
 
 object Back {
 	private val overshoot = 1.70158d;

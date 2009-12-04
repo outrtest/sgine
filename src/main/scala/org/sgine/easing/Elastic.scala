@@ -1,4 +1,4 @@
-package com.sgine.easing
+package org.sgine.easing
 
 object Elastic {
 	def easeIn(time:Double, start:Double, change:Double, duration:Double):Double = {

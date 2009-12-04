@@ -1,4 +1,4 @@
-package com.sgine.property
+package org.sgine.property
 
 import java.util.concurrent._
 
@@ -10,7 +10,7 @@ import java.util.concurrent._
  * @author Matt Hicks
  */
 trait ListenableProperty[T] extends ChangeableProperty[T] {
-	import com.sgine.util.JavaConversions.clq2iterable;
+	import org.sgine.util.JavaConversions.clq2iterable;
 	
 	val listeners = new ConcurrentLinkedQueue[Function3[Property[T], T, T, Unit]];
 	

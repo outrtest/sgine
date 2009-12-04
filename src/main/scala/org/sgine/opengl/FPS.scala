@@ -1,4 +1,4 @@
-package com.sgine.opengl
+package org.sgine.opengl
 
 class FPS private() extends Function1[Double, Unit] {
 	private var elapsed:Double = 0.0;

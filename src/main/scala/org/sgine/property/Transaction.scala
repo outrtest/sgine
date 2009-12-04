@@ -1,4 +1,4 @@
-package com.sgine.property
+package org.sgine.property
 
 import java.util._
 import scala.collection.JavaConversions._

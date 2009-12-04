@@ -1,7 +1,7 @@
-package com.sgine.event
+package org.sgine.event
 
-import com.sgine.work._
-import com.sgine.work.unit._
+import org.sgine.work._
+import org.sgine.work.unit._
 
 class Event (val listenable: Listenable)
 

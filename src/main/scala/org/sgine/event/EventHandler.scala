@@ -1,4 +1,4 @@
-package com.sgine.event
+package org.sgine.event
 
 class EventHandler(val listener: Event => Unit) {
 	var processingMode = ProcessingMode.Normal

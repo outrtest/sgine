@@ -1,4 +1,4 @@
-package com.sgine.event
+package org.sgine.event
 
 object ProcessingMode extends Enumeration {
 	type ProcessingMode = Value

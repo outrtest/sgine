@@ -1,9 +1,9 @@
-package com.sgine.opengl
+package org.sgine.opengl
 
 import java.util.concurrent._;
 
-import com.sgine.util._;
-import com.sgine.work._;
+import org.sgine.util._;
+import org.sgine.work._;
 
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -17,7 +17,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 class Window (val title:String, val width:Int, val height:Int, val workManager:WorkManager = DefaultWorkManager) {
-	import com.sgine.util.JavaConversions.clq2iterable;
+	import org.sgine.util.JavaConversions.clq2iterable;
 	
 	private var keepAlive = true;
 	private var renders:Long = 0;

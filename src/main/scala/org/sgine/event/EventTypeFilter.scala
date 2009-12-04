@@ -1,4 +1,4 @@
-package com.sgine.event
+package org.sgine.event
 
 class EventTypeFilter private (eventType: Class[_], inclusive: Boolean) extends Function1[Event, Boolean] {
 	def apply(evt: Event): Boolean = {

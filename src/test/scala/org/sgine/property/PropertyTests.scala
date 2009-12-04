@@ -1,4 +1,4 @@
-package com.sgine.property
+package org.sgine.property
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
