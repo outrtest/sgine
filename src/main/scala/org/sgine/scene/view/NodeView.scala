@@ -1,50 +1,65 @@
 package org.sgine.scene.view
 
-import org.sgine.util.Signal
-import org.sgine.scene.Node
+import java.util.concurrent._
+
+import org.sgine.event._
+
+import org.sgine.scene._
+import org.sgine.scene.event._
+import org.sgine.scene.query._
+import org.sgine.scene.view.event._
+
+import scala.collection.JavaConversions._
 
 /**
  * A view to some Nodes that match a query in a NodeContainer.
  */
-// (Temporary implementation notes):
-// A view implementation should listen to added and removed nodes in the collection that it monitors.
-// In addition, it needs to listen to any changes to the nodes that are relevant for its query.
-//
-// A simple implementaion could assume the nodes are just tested for equality.
-//
-// Later we can implement more complex queries that mtach against some Property values of the node
-//  - in these cases, the view would have to listen to all property changes that are relevant for it in all the nodes in the collection it monitors.
-// This can be somewhat heavy..  We're drifting towards a database like implementation there.
-// Maybe it could be optimized with some hints, or efficient datastructures.  Depends on the cases.
-//
-// We'll also need spatial views for monitoring all nodes inside some area.  For this, we can use spatial
-// query datatypes like quadtrees or r-trees, and should manage ok.
-trait NodeView extends Iterable[Node] {
+class NodeView private (container: NodeContainer, query: NodeQuery) extends Iterable[Node] with Listenable {
+	val parent = null
+	val listeners = new EventProcessor(this)
+	private val queue = new ConcurrentLinkedQueue[Node]
+	
+	def iterator = queue.iterator
+	
+	/**
+	 * Invokes the initial query to populate information into the NodeView
+	 */
+	private def refresh() = {
+		NodeQuery.queryInto(query, container, queue)
+	}
+	
+	private def containerEvent(evt: NodeContainerEvent) = {
+		if (evt.eventType == SceneEventType.ChildAdded) {
+			if (query.matches(evt.child)) {
+				add(evt.child)
+			}
+		} else if (evt.eventType == SceneEventType.ChildRemoved) {
+			remove(evt.child)
+		}
+	}
+	
+	private def add(n: Node) = {
+		if (queue.add(n)) {
+			Event.enqueue(NodeAddedEvent(this, n))
+		}
+	}
+	
+	private def remove(n: Node) = {
+		if (queue.remove(n)) {
+			Event.enqueue(NodeRemovedEvent(this, n))
+		}
+	}
+}
 
-  /**
-   * The nodes currently in this view.
-   */
-  def nodes: Iterable[Node]
-
-  /**
-   * Implementation of the Iterable trait.
-   */
-  def iterator = nodes.iterator
-
-  /**
-   * A signal that gets triggered when a Node appears in the view.
-   * You can register a listener with this signal to be notified about appearing nodes.
-   */
-  def nodeAppearance: Signal[Node]
-
-  /**
-   * A signal that gets triggered when a Node disappears from the view.
-   * You can register a listener with this signal to be notified about disappearing nodes.
-   */
-  def nodeDisappearance: Signal[Node]
-
-  /**
-   * Destroys this view, that is, stops listening to changes and empties the node collection.
-   */
-  def destroy()
+object NodeView {
+	def apply(container: NodeContainer, query: NodeQuery, asynchronous: Boolean): NodeView = {
+		val v = new NodeView(container, query)
+		v.refresh()
+		val h = container.listeners += v.containerEvent _
+		h.recursive = true
+		if (!asynchronous) {
+			h.processingMode = ProcessingMode.Blocking
+		}
+		v
+	}
 }

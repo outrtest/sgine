@@ -2,6 +2,8 @@ package org.sgine.scene.query
 
 import org.sgine.scene._
 
+import java.util._
+
 /**
  * A query for retrieving some subset of Nodes form a NodeContainer.
  */
@@ -13,25 +15,16 @@ trait NodeQuery {
 }
 
 object NodeQuery {
-	def query(q:NodeQuery, container: NodeContainer): List[Node] = {
-		query(q, container, Nil)
-	}
-	
-	private def query(q:NodeQuery, container: NodeContainer, list:List[Node]): List[Node] = {
-		// TODO: is List the best way to represent this?
-		// TODO: maybe a long-term modifiable collection?
-		var l = list
+	def queryInto(q: NodeQuery, container: NodeContainer, collection:Collection[Node]): Unit = {
 		for (n <- container) {
 			n match {
-				case nc: NodeContainer => l = query(q, container, l)
+				case nc: NodeContainer => queryInto(q, container, collection)
 				case _ => {
 					if (q.matches(n)) {
-						n :: l
+						collection.add(n)
 					}
 				}
 			}
 		}
-		
-		l
 	}
 }
