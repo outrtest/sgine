@@ -1,8 +1,6 @@
 package org.sgine.event
 
-class EventListener[E <: Event] private (f: Function1[E, Unit]) extends Function1[Event, Unit] {
-	lazy val eventClass:Class[E] = determineEventClass()
-	
+class EventListener[E <: Event] private (eventClass:Class[E], f: Function1[E, Unit]) extends Function1[Event, Unit] {
 	def apply(evt: Event) = {
 		if (isValidEvent(evt)) {
 			f(evt.asInstanceOf[E])
@@ -10,8 +8,21 @@ class EventListener[E <: Event] private (f: Function1[E, Unit]) extends Function
 	}
 	
 	def isValidEvent(evt: Event) = eventClass.isAssignableFrom(evt.getClass)
+}
+
+object EventListener {
+	def apply[E <: Event](f: E => Unit): Event => Unit = {
+		val eventClass:Class[E] = EventListener.determineEventClass(f)
+		if (eventClass == classOf[Event]) {
+			// Don't wrap in EventListener if Event
+			f.asInstanceOf[Function1[Event, Unit]]
+		} else {
+			// Wrap in EventListener for Event sub-classing
+			new EventListener[E](eventClass, f)
+		}
+	}
 	
-	private def determineEventClass():Class[E] = {
+	private def determineEventClass[E <: Event](f: Function1[E, Unit]):Class[E] = {
 		for (m <- f.getClass.getMethods) {
 			if (m.getName == "apply") {
 				if (m.getParameterTypes.length == 1) {
@@ -22,11 +33,5 @@ class EventListener[E <: Event] private (f: Function1[E, Unit]) extends Function
 			}
 		}
 		null
-	}
-}
-
-object EventListener {
-	def apply[E <: Event](f:E => Unit):EventListener[E] = {
-		new EventListener[E](f)
 	}
 }

@@ -7,7 +7,7 @@ import org.scalatest.matchers.ShouldMatchers
 /**
  * Tests Matrix4
  */
-class Matrix4Test extends FlatSpec with ShouldMatchers {
+class Matrix4Spec extends FlatSpec with ShouldMatchers {
 
   "A new matrix" should "be the identity matrix" in {
     val m = new Matrix4()

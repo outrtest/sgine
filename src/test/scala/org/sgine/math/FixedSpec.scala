@@ -8,7 +8,7 @@ import org.scalatest.matchers.ShouldMatchers
  * Tests Fixed point math
  */
 @Deprecated
-class FixedTest  extends FlatSpec with ShouldMatchers {
+class FixedSpec  extends FlatSpec with ShouldMatchers {
 
   "A Fixed point value" should "have the correct division factor" in {
     Fixed.ShiftAmount should equal (16)

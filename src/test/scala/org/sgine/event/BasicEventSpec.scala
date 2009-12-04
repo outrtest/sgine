@@ -5,7 +5,7 @@ import org.scalatest.matchers.ShouldMatchers
 
 import java.util.concurrent._
 
-class TestEvents extends FlatSpec with ShouldMatchers {
+class BasicEventSpec extends FlatSpec with ShouldMatchers {
 	val listenable = new SimpleListenable()
 	var handler1: EventHandler = _
 	var handler2: EventHandler = _

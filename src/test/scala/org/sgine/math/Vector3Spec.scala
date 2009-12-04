@@ -7,7 +7,7 @@ import org.scalatest.matchers.ShouldMatchers
 /**
  * Tests Vector3
  */
-class Vector3Test extends FlatSpec with ShouldMatchers {
+class Vector3Spec extends FlatSpec with ShouldMatchers {
 
   "A Vector3" should "default to all zero" in {
     val v = new Vector3()

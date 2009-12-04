@@ -3,7 +3,7 @@ package org.sgine.scene
 /**
  * A trait for a node container where Nodes can be added or removed.
  */
-trait EditableNodeContainer extends NodeContainer {
+trait MutableNodeContainer extends NodeContainer {
 
 	/**
 	 * Adds the specified node the NodeContainer.

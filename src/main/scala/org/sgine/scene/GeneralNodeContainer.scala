@@ -7,9 +7,9 @@ import view.NodeView
 import java.lang.UnsupportedOperationException
 
 /**
- * NodeContainer backed up by a simple collection.
+ * NodeContainer backed up by a thread-safe collection.
  */
-class SimpleNodeContainer extends EditableNodeContainer {
+class GeneralNodeContainer extends MutableNodeContainer {
 
   private val nodes = new ConcurrentLinkedQueue[Node]()
 
