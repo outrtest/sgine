@@ -25,16 +25,14 @@ class NodeView private (container: NodeContainer, query: NodeQuery) extends Iter
 	 * Invokes the initial query to populate information into the NodeView
 	 */
 	private def refresh() = {
-		NodeQuery.queryInto(query, container, queue)
+		NodeQuery.query(query, container, add)
 	}
 	
 	private def containerEvent(evt: NodeContainerEvent) = {
 		if (evt.eventType == SceneEventType.ChildAdded) {
-			if (query.matches(evt.child)) {
-				add(evt.child)
-			}
+			NodeQuery.query(query, evt.child, add)
 		} else if (evt.eventType == SceneEventType.ChildRemoved) {
-			remove(evt.child)
+			NodeQuery.query(query, evt.child, remove)
 		}
 	}
 	

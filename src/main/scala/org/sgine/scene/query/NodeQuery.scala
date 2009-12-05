@@ -15,14 +15,16 @@ trait NodeQuery {
 }
 
 object NodeQuery {
-	def queryInto(q: NodeQuery, container: NodeContainer, collection:Collection[Node]): Unit = {
-		for (n <- container) {
-			n match {
-				case nc: NodeContainer => queryInto(q, container, collection)
-				case _ => {
-					if (q.matches(n)) {
-						collection.add(n)
-					}
+	def query(q: NodeQuery, node: Node, f: Node => Unit): Unit = {
+		node match {
+			case container: NodeContainer => {
+				for (n <- container) {
+					query(q, n, f)
+				}
+			}
+			case _ => {
+				if (q.matches(node)) {
+					f(node)
 				}
 			}
 		}

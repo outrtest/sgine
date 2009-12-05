@@ -15,6 +15,7 @@ class NodeViewSpec extends FlatSpec with ShouldMatchers {
 	val query = AllQuery
 	val view = NodeView(container, query, false)
 	val node = new TestNode()
+	val subcontainer = new GeneralNodeContainer()
 	
 	var addedEvents = 0
 	var removedEvents = 0
@@ -50,6 +51,29 @@ class NodeViewSpec extends FlatSpec with ShouldMatchers {
 	
 	it should "invoke removed event upon node remove" in {
 		removedEvents should equal (1)
+	}
+	
+	it should "not receive add or remove events for an added container" in {
+		container += subcontainer
+		addedEvents should equal (1)
+	}
+	
+	it should "update when a node is added to the sub-container" in {
+		subcontainer += node
+		view.size should equal (1)
+	}
+	
+	it should "invoke added event upon node add to sub-container" in {
+		addedEvents should equal (2)
+	}
+	
+	it should "invoke removed event for node when sub-container is removed" in {
+		container -= subcontainer
+		removedEvents should equal (2)
+	}
+	
+	it should "now be empty" in {
+		view.size should equal (0)
 	}
 	
 	def addedToView(evt: NodeAddedEvent) = {

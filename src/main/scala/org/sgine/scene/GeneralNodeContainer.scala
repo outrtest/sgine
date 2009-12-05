@@ -42,10 +42,4 @@ class GeneralNodeContainer extends MutableNodeContainer {
 
     removed
   }
-
-  def createView(query: NodeQuery): NodeView = {
-    // TODO: Implement
-    // We'll need to notify the view about added and removed nodes in this container.
-    throw new UnsupportedOperationException("Not implemented yet")
-  }
 }
