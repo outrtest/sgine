@@ -14,19 +14,14 @@ trait NodeQuery {
 	def matches(node: Node): Boolean
 }
 
+
 object NodeQuery {
-	def query(q: NodeQuery, node: Node, f: Node => Unit): Unit = {
-		node match {
-			case container: NodeContainer => {
-				for (n <- container) {
-					query(q, n, f)
-				}
-			}
-			case _ => {
-				if (q.matches(node)) {
-					f(node)
-				}
-			}
-		}
+
+  /**
+   * Runs the specified query on the specified node, invoking the callback function f with all matches.
+   */
+	def query(q: NodeQuery, node: Node, f: Node => Unit): Unit = node match {
+		case container: NodeContainer => container foreach { query(q, _, f) }
+		case _ => if (q.matches(node)) f(node)
 	}
 }
