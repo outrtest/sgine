@@ -22,12 +22,12 @@ class GeneralNodeContainer extends MutableNodeContainer {
     require(node != null,"Can not add node, the node should not be null.")
     require(!nodes.contains(node), "Can not add node, node already in container.  " +
                                    "The node '"+node+"' is already in the container '"+this+"'.")
+    require(node.parent == null,"Can not add node, the node is already in another container '"+node.parent+"'.")
 
     nodes.add(node)
     node.parent = this
     
-    val evt = new NodeContainerEvent(this, node, SceneEventType.ChildAdded)
-    Event.enqueue(evt)
+    Event.enqueue(new NodeContainerEvent(this, node, SceneEventType.ChildAdded))
   }
 
   def -=(node: Node): Boolean = {
@@ -36,8 +36,7 @@ class GeneralNodeContainer extends MutableNodeContainer {
     if (removed) {
     	node.parent = null
     	
-    	val evt = new NodeContainerEvent(this, node, SceneEventType.ChildRemoved)
-    	Event.enqueue(evt)
+    	Event.enqueue(new NodeContainerEvent(this, node, SceneEventType.ChildRemoved))
     }
 
     removed
