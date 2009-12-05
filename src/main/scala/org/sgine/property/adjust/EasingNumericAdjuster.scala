@@ -1,6 +1,8 @@
 package org.sgine.property.adjust
 
-class EasingNumericAdjuster(easing:Function4[Double, Double, Double, Double, Double], multiplier:Double, dynamic:Boolean = true) extends PropertyAdjuster[Double] {
+import org.sgine.easing.Easing._
+
+class EasingNumericAdjuster(easing:EasingFunction, multiplier:Double, dynamic:Boolean = true) extends PropertyAdjuster[Double] {
 	private var target:Double = _
 	private var start:Double = _
 	private var timeToTarget:Double = _
