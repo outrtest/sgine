@@ -1,8 +1,7 @@
-package org.sgine.scene.space.composite
+package org.sgine.space.composite
 
-import org.sgine.scene._
-import org.sgine.scene.space._
-import query.NodeQuery
+import org.sgine.scene.query.NodeQuery
+import org.sgine.space.Space
 
 /**
  * A Space that combines the content of several other Spaces, and presents them all together as one Space.

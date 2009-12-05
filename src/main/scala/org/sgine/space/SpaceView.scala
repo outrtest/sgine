@@ -1,8 +1,8 @@
-package org.sgine.scene.space
+package org.sgine.space
 
 
 import org.sgine.scene.view.NodeView
-import org.sgine.scene._
+import org.sgine.scene.Node
 
 /**
  * Shows some Region of a Space at some DetailLevel.

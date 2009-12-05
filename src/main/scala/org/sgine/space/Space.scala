@@ -1,7 +1,7 @@
-package org.sgine.scene.space
+package org.sgine.space
 
-import org.sgine.scene._
-import query.NodeQuery
+import org.sgine.scene.query.NodeQuery
+import org.sgine.scene.NodeContainer
 
 /**
  * Contains positioned Nodes that have some bounding information and detail level information.
