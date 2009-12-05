@@ -38,6 +38,12 @@
 		<classpath refid="cp-test"/>
 	</taskdef>
 	
+	<target name="sbt-clean">
+		<java taskname="sbt" classpathref="cp" jar="sbt/xsbt-launch-0.6.0.jar" fork="true">
+			<arg value="clean"/>
+		</java>
+	</target>
+	
 	<target name="sbt-test">
 		<java taskname="sbt" classpathref="cp" jar="sbt/xsbt-launch-0.6.0.jar" fork="true">
 			<arg value="test"/>
