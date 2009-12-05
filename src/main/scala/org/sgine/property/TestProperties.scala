@@ -25,7 +25,7 @@ object TestProperties {
 		p(8, false)
 		p(10)
 		
-		p2.listeners.add(p2Changed)
+		p2.listeners += p2Changed _
 		p2(2)
 		p2(4)
 		
@@ -51,7 +51,7 @@ object TestProperties {
 		
 		println("PropertGroup: " + pg1.properties.length)
 		
-		ap1.listeners.add(ap1Changed)
+		ap1.listeners += ap1Changed _
 		ap1 := "One"
 		ap1 := "Two"
 		p4 bind ap1
@@ -60,11 +60,11 @@ object TestProperties {
 		println("ap1: " + ap1() + ", p4: " + p4() + ", p5: " + p5())
 	}
 	
-	def p2Changed(p:Property[Int], oldValue:Int, newValue:Int):Unit = {
-		println("p2Changed: " + oldValue + " to " + newValue)
+	def p2Changed(evt: PropertyChangeEvent[Int]):Unit = {
+		println("p2Changed: " + evt.oldValue + " to " + evt.newValue)
 	}
 	
-	def ap1Changed(p:Property[String], oldValue:String, newValue:String):Unit = {
-		println("ap1Changed: " + oldValue + " to " + newValue)
+	def ap1Changed(evt: PropertyChangeEvent[String]):Unit = {
+		println("ap1Changed: " + evt.oldValue + " to " + evt.newValue)
 	}
 }
