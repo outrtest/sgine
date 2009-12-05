@@ -74,14 +74,20 @@ class GLWindow (val title:String, val width:Int, val height:Int, val workManager
 	}
 	
 	private def determineDisplayMode():DisplayMode = {		// TODO: make better
+    var fallbackMode: DisplayMode = null
 		for (mode <- Display.getAvailableDisplayModes()) {
+      fallbackMode = mode
 			if (mode.getWidth() == width) {
 				if (mode.getHeight() == height) {
 					return mode;
 				}
 			}
 		}
-		return null;
+
+    // FIXME: This gives some picture even when the program doesn't know the users screen resolution, 
+    // but will leave width and height in an inconsistent state with the actual size of the display.
+    // Best would probably to select / allow the user to select from the available display modes.
+		return fallbackMode;
 	}
 	
 	def init() = {
