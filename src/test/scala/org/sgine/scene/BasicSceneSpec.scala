@@ -22,7 +22,7 @@ class BasicSceneSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "support adding listeners" in {
-		listener1Handler = container.listeners += EventHandler(listener1, ProcessingMode.Blocking, true)
+		listener1Handler = container.listeners += EventHandler(listener1, ProcessingMode.Blocking, Recursion.Parents)
 		container.listeners.size should equal (1)
 	}
 	
@@ -32,7 +32,7 @@ class BasicSceneSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "throw an event when a child is added" in {
-		container.listeners += EventHandler(containerEvent, ProcessingMode.Blocking, true)
+		container.listeners += EventHandler(containerEvent, ProcessingMode.Blocking, Recursion.Parents)
 		addedCount should equal (0)
 		removedCount should equal (0)
 		container += childNode

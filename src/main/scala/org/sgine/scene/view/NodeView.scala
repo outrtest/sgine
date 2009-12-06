@@ -54,7 +54,7 @@ object NodeView {
 		val v = new NodeView(container, query)
 		v.refresh()
 		val h = container.listeners += v.containerEvent _
-		h.recursive = true
+		h.recursion = Recursion.Parents
 		if (!asynchronous) {
 			h.processingMode = ProcessingMode.Blocking
 		}
