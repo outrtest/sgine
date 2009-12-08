@@ -342,7 +342,7 @@ class Matrix4 protected() {
     d
   }
 
-  private def determinant3x3( t00 : D, t01 : D, t02 : D,
+  protected def determinant3x3( t00 : D, t01 : D, t02 : D,
                       t10 : D, t11 : D, t12 : D,
                       t20 : D, t21 : D, t22 : D) : Double = {
     t00 * (t11 * t22 - t12 * t21) +
