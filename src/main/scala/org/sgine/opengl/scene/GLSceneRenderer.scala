@@ -8,7 +8,7 @@ class GLSceneRenderer(container: NodeContainer) extends Function1[Double, Unit] 
 	
 	def apply(time: Double) = {
 		for (n <- view) n match {
-			case s: GLSpatial => s(time)
+			case gl: GLNode => gl(time)
 		}
 	}
 }

@@ -12,7 +12,7 @@ import org.sgine.scene.view.event._
 
 class NodeViewSpec extends FlatSpec with ShouldMatchers {
 	val container = new GeneralNodeContainer()
-	val query = AllQuery
+	val query = AllLeafQuery
 	val view = NodeView(container, query, false)
 	val node = new TestNode()
 	val subcontainer = new GeneralNodeContainer()

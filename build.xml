@@ -68,11 +68,24 @@
     </target>
 	
 	<target name="jar-tests" depends="compile-tests">
+		<copy todir="${build}/resource">
+			<fileset dir="${tests}/resource">
+	            <include name="*.*"/>
+	        </fileset>
+		</copy>
 		<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
 	</target>
 	
-	<target name="run-opengl-test" depends="jar">
-		<java classpathref="cp" classname="com.sgine.opengl.TestWindow" fork="true" jvmargs="-Djava.library.path=Z:/programming/work/workspace_scala/sgine/lib/native/windows"/>
+	<target name="run-opengl-test" depends="jar-tests">
+		<java classpathref="cp-test" classname="org.sgine.opengl.TestWindow" fork="true">
+			<jvmarg value="-Djava.library.path=${lib}/native/windows"/>
+		</java>
+	</target>
+	
+	<target name="run-opengl-scene-test" depends="jar-tests">
+		<java classpathref="cp-test" classname="org.sgine.opengl.scene.TestGLScene" fork="true">
+			<jvmarg value="-Djava.library.path=${lib}/native/windows"/>
+		</java>
 	</target>
 	
 	<target name="run-work-test" depends="jar">

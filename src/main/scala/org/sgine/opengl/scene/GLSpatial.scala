@@ -6,13 +6,16 @@ import java.nio._
 
 import org.lwjgl.opengl.GL11._;
 
-trait GLSpatial extends Node with GLNode with Function1[Double, Unit] {
+trait GLSpatial extends Node with GLNode {
 	private lazy val buffer = GLSpatial.createBuffer()
 	
-	def apply(time: Double) = {
+	override def apply(time: Double) = {
+		super.apply(time)
+		
 		validateMatrix()					// Make sure world matrix is correct
 		
 		matrix.world.getTranspose(buffer)	// Update buffer
+		buffer.rewind()
 		glLoadMatrix(buffer)				// Load the matrix into the GL context
 		
 		render(time)
@@ -22,7 +25,7 @@ trait GLSpatial extends Node with GLNode with Function1[Double, Unit] {
 }
 
 object GLSpatial {
-	def createBuffer() = {
+	def createBuffer(): DoubleBuffer = {
 		val bb = ByteBuffer.allocateDirect(16 * 8)
 		bb.order(ByteOrder.nativeOrder())
 		bb.asDoubleBuffer()

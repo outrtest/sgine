@@ -22,6 +22,10 @@ class EasingNumericAdjuster(easing:EasingFunction, multiplier:Double, dynamic:Bo
 			timeElapsed += elapsed
 		}
 		
-		easing(timeElapsed, start, target - start, timeToTarget)
+		if (timeElapsed >= timeToTarget) {
+			target
+		} else {
+			easing(timeElapsed, start, target - start, timeToTarget)
+		}
 	}
 }

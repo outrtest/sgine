@@ -7,7 +7,7 @@ import org.sgine.property._
 
 import java.util.concurrent.atomic._
 
-trait GLNode extends Listenable with Node {
+trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	val location = new Location(this)
 	val matrix = new Transform()
 	
@@ -18,6 +18,12 @@ trait GLNode extends Listenable with Node {
 	location.x.listeners += lcHandler
 	location.y.listeners += lcHandler
 	location.z.listeners += lcHandler
+	
+	def apply(time: Double) = {
+		location.x.update(time)
+		location.y.update(time)
+		location.z.update(time)
+	}
 	
 	def invalidateMatrix() = {
 		matrixDirty.set(true)
