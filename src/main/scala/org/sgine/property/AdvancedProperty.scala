@@ -1,3 +1,9 @@
 package org.sgine.property
 
-class AdvancedProperty[T] extends MutableProperty[T] with ListenableProperty[T] with BindingProperty[T] with AdjustableProperty[T]
+class AdvancedProperty[T] extends MutableProperty[T] with ListenableProperty[T] with BindingProperty[T] with AdjustableProperty[T] {
+	def this(value: T) = {
+		this()
+		
+		apply(value)
+	}
+}

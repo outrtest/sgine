@@ -10,7 +10,7 @@ import org.scalatest.matchers.ShouldMatchers
 class Matrix4Spec extends FlatSpec with ShouldMatchers {
 
   "A new matrix" should "be the identity matrix" in {
-    val m = new Matrix4()
+    val m = Matrix4()
 
     m.m00 should equal (1.0)
     m.m01 should equal (0.0)

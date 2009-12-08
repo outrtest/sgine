@@ -4,55 +4,65 @@ import java.nio.DoubleBuffer
 import java.text.NumberFormat
 import Matrix4.D
 
-object Matrix4{
-
-  type D = Double
-
-  val Zero     = new Matrix4( 0, 0, 0, 0,
-                              0, 0, 0, 0,
-                              0, 0, 0, 0,
-                              0, 0, 0, 0 )
-
-  val Identity = new Matrix4( 1, 0, 0, 0,
-                              0, 1, 0, 0,
-                              0, 0, 1, 0,
-                              0, 0, 0, 1 )
-
-  /**
-   * Creates a new Matrix4 configured as an Identity matrix.
-   */
-  def apply() : Matrix4 = Identity
-
-
-  val matrixNumberFormat : NumberFormat = createMatrixNumberFormat
-
-  private def createMatrixNumberFormat : NumberFormat = {
-    val format = NumberFormat.getInstance()
-    format.setMinimumFractionDigits(3)
-    format.setMaximumFractionDigits(3)
-    format.setMinimumIntegerDigits(3)
-    format.setMaximumIntegerDigits(3)
-    format
-  }
-
-}
-
-
 /**
  * An immutable Matrix4 implementation.
  */
-case class Matrix4(
-        m00 : D, m01 : D, m02 : D, m03 : D,
-        m10 : D, m11 : D, m12 : D, m13 : D, 
-        m20 : D, m21 : D, m22 : D, m23 : D,
-        m30 : D, m31 : D, m32 : D, m33 : D ) {
-
-  def this() {
-    this(  1, 0, 0, 0,
-           0, 1, 0, 0,
-           0, 0, 1, 0,
-           0, 0, 0, 1 )
-  }
+class Matrix4 protected() {
+	var _m00: D = 1.0
+	var _m01: D = 0.0
+	var _m02: D = 0.0
+	var _m03: D = 0.0
+	
+	var _m10: D = 0.0
+	var _m11: D = 1.0
+	var _m12: D = 0.0
+	var _m13: D = 0.0
+	
+	var _m20: D = 0.0
+	var _m21: D = 0.0
+	var _m22: D = 1.0
+	var _m23: D = 0.0
+	
+	var _m30: D = 0.0
+	var _m31: D = 0.0
+	var _m32: D = 0.0
+	var _m33: D = 1.0
+	
+	def m00 = _m00
+	protected def m00_=(_m00: D) = this._m00 = _m00
+	def m01 = _m01
+	protected def m01_=(_m01: D) = this._m01 = _m01
+	def m02 = _m02
+	protected def m02_=(_m02: D) = this._m02 = _m02
+	def m03 = _m03
+	protected def m03_=(_m03: D) = this._m03 = _m03
+	
+	def m10 = _m10
+	protected def m10_=(_m10: D) = this._m10 = _m10
+	def m11 = _m11
+	protected def m11_=(_m11: D) = this._m11 = _m11
+	def m12 = _m12
+	protected def m12_=(_m12: D) = this._m12 = _m12
+	def m13 = _m13
+	protected def m13_=(_m13: D) = this._m13 = _m13
+	
+	def m20 = _m20
+	protected def m20_=(_m20: D) = this._m20 = _m20
+	def m21 = _m21
+	protected def m21_=(_m21: D) = this._m21 = _m21
+	def m22 = _m22
+	protected def m22_=(_m22: D) = this._m22 = _m22
+	def m23 = _m23
+	protected def m23_=(_m23: D) = this._m23 = _m23
+	
+	def m30 = _m30
+	protected def m30_=(_m30: D) = this._m30 = _m30
+	def m31 = _m31
+	protected def m31_=(_m31: D) = this._m31 = _m31
+	def m32 = _m32
+	protected def m32_=(_m32: D) = this._m32 = _m32
+	def m33 = _m33
+	protected def m33_=(_m33: D) = this._m33 = _m33
 
   // ------------------------------------------------
   // Transform
@@ -188,7 +198,7 @@ case class Matrix4(
   // Scale
 
   def scale( s : D ) : Matrix4 = {
-    new Matrix4( m00*s, m01*s, m02*s, m03,
+    Matrix4( m00*s, m01*s, m02*s, m03,
                  m10*s, m11*s, m12*s, m13,
                  m20*s, m21*s, m22*s, m23,
                  m30*s, m31*s, m32*s, m33 )
@@ -199,28 +209,28 @@ case class Matrix4(
   }
 
   def scale( x : D, y : D, z : D ) : Matrix4 = {
-    new Matrix4( m00*x, m01*y, m02*z, m03,
+    Matrix4( m00*x, m01*y, m02*z, m03,
                  m10*x, m11*y, m12*z, m13,
                  m20*x, m21*y, m22*z, m23,
                  m30*x, m31*y, m32*z, m33 )
   }
 
   def scaleX( s : D ) : Matrix4 = {
-    new Matrix4( m00*s, m01, m02, m03,
+    Matrix4( m00*s, m01, m02, m03,
                  m10*s, m11, m12, m13,
                  m20*s, m21, m22, m23,
                  m30*s, m31, m32, m33 )
   }
 
   def scaleY( s : D ) : Matrix4 = {
-    new Matrix4( m00, m01*s, m02, m03,
+    Matrix4( m00, m01*s, m02, m03,
                  m10, m11*s, m12, m13,
                  m20, m21*s, m22, m23,
                  m30, m31*s, m32, m33 )
   }
 
   def scaleZ( s : D ) : Matrix4 = {
-    new Matrix4( m00, m01, m02*s, m03,
+    Matrix4( m00, m01, m02*s, m03,
                  m10, m11, m12*s, m13,
                  m20, m21, m22*s, m23,
                  m30, m31, m32*s, m33 )
@@ -313,7 +323,7 @@ case class Matrix4(
 
     // transpose and divide by the determinant
     val inv = 1.0 / det
-    new Matrix4(  t00 * inv, t10 * inv, t20 * inv, t30 * inv,
+    Matrix4(  t00 * inv, t10 * inv, t20 * inv, t30 * inv,
                   t01 * inv, t11 * inv, t21 * inv, t31 * inv,
                   t02 * inv, t12 * inv, t22 * inv, t32 * inv,
                   t03 * inv, t13 * inv, t23 * inv, t33 * inv )
@@ -361,7 +371,7 @@ case class Matrix4(
     val t31 = m31 * d11 + m32 * d21
     val t32 = m31 * d12 + m32 * d22
 
-    new Matrix4( m00, t01, t02, m03,
+    Matrix4( m00, t01, t02, m03,
                  m10, t11, t12, m13,
                  m20, t21, t22, m23,
                  m30, t31, t32, m33 )
@@ -382,7 +392,7 @@ case class Matrix4(
     val t30 = m30 * d00 + m32 * d20;
     val t32 = m30 * d02 + m32 * d22;
 
-    new Matrix4( t00, m01, t02, m03,
+    Matrix4( t00, m01, t02, m03,
                  t10, m11, t12, m13,
                  t20, m21, t22, m23,
                  t30, m31, t32, m33 )
@@ -403,7 +413,7 @@ case class Matrix4(
     val t30 = m30 * d00 + m31 * d10
     val t31 = m30 * d01 + m31 * d11
 
-    new Matrix4( t00, t01, m02, m03,
+    Matrix4( t00, t01, m02, m03,
                  t10, t11, m12, m13,
                  t20, t21, m22, m23,
                  t30, t31, m32, m33 )
@@ -454,7 +464,7 @@ case class Matrix4(
     val t31 = m30 * d01 + m31 * d11 + m32 * d21
     val t32 = m30 * d02 + m31 * d12 + m32 * d22
 
-    new Matrix4( t00, t01, t02, m03,
+    Matrix4( t00, t01, t02, m03,
                  t10, t11, t12, m13,
                  t20, t21, t22, m23,
                  t30, t31, t32, m33 )
@@ -484,7 +494,7 @@ case class Matrix4(
     val t32 = m30 * m.m02 + m31 * m.m12 + m32 * m.m22 + m33 * m.m32
     val t33 = m30 * m.m03 + m31 * m.m13 + m32 * m.m23 + m33 * m.m33
 
-    new Matrix4( t00, t01, t02, t03,
+    Matrix4( t00, t01, t02, t03,
                  t10, t11, t12, t13,
                  t20, t21, t22, t23,
                  t30, t31, t32, t33 )
@@ -504,7 +514,7 @@ case class Matrix4(
     val t23 = m23 + m20 * x + m21 * y + m22 * z
     val t33 = m33 + m30 * x + m31 * y + m32 * z
 
-    new Matrix4( m00, m01, m02, t03,
+    Matrix4( m00, m01, m02, t03,
                  m10, m11, m12, t13,
                  m20, m21, m22, t23,
                  m30, m31, m32, t33 )
@@ -516,7 +526,7 @@ case class Matrix4(
     val t23 = m23 + m20 * x
     val t33 = m33 + m30 * x
 
-    new Matrix4( m00, m01, m02, t03,
+    Matrix4( m00, m01, m02, t03,
                  m10, m11, m12, t13,
                  m20, m21, m22, t23,
                  m30, m31, m32, t33 )
@@ -528,7 +538,7 @@ case class Matrix4(
     val t23 = m23 + m21 * y
     val t33 = m33 + m31 * y
 
-    new Matrix4( m00, m01, m02, t03,
+    Matrix4( m00, m01, m02, t03,
                  m10, m11, m12, t13,
                  m20, m21, m22, t23,
                  m30, m31, m32, t33 )
@@ -540,7 +550,7 @@ case class Matrix4(
     val t23 = m23 + m22 * z
     val t33 = m33 + m32 * z
 
-    new Matrix4( m00, m01, m02, t03,
+    Matrix4( m00, m01, m02, t03,
                  m10, m11, m12, t13,
                  m20, m21, m22, t23,
                  m30, m31, m32, t33 )
@@ -625,6 +635,65 @@ case class Matrix4(
 
 }
 
+object Matrix4 {
+  type D = Double
+
+  val Zero     = Matrix4( 0, 0, 0, 0,
+                          0, 0, 0, 0,
+                          0, 0, 0, 0,
+                          0, 0, 0, 0 )
+
+  val Identity = Matrix4( 1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 1, 0,
+                          0, 0, 0, 1 )
+
+  /**
+   * Creates a new Matrix4 configured as an Identity matrix.
+   */
+  def apply(): Matrix4 = Identity
+
+  def apply(
+			_m00: D, _m01: D, _m02: D, _m03: D,
+			_m10: D, _m11: D, _m12: D, _m13: D,
+			_m20: D, _m21: D, _m22: D, _m23: D,
+			_m30: D, _m31: D, _m32: D, _m33: D): Matrix4 = {
+		
+		val m = new Matrix4() 
+		m._m00 = _m00
+		m._m01 = _m01
+		m._m02 = _m02
+		m._m03 = _m03
+		
+		m._m10 = _m10
+		m._m11 = _m11
+		m._m12 = _m12
+		m._m13 = _m13
+		
+		m._m20 = _m20
+		m._m21 = _m21
+		m._m22 = _m22
+		m._m23 = _m23
+		
+		m._m30 = _m30
+		m._m31 = _m31
+		m._m32 = _m32
+		m._m33 = _m33
+		
+		m
+	}
+  
+  val matrixNumberFormat : NumberFormat = createMatrixNumberFormat
+
+  private def createMatrixNumberFormat : NumberFormat = {
+    val format = NumberFormat.getInstance()
+    format.setMinimumFractionDigits(3)
+    format.setMaximumFractionDigits(3)
+    format.setMinimumIntegerDigits(3)
+    format.setMaximumIntegerDigits(3)
+    format
+  }
+}
 
 
 /* Old code from jseamless:
