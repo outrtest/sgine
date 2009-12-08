@@ -410,6 +410,8 @@ class Matrix4 extends org.sgine.math.Matrix4 {
     	
     	this
     }
+    
+    override def identity(): Matrix4 = set(org.sgine.math.Matrix4.Identity)
 }
 
 object Matrix4 {

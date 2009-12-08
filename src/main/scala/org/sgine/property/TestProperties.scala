@@ -10,7 +10,9 @@ object TestProperties {
 	val p = new MutableProperty[Int] with ChangeableProperty[Int] {
 		override def changed(oldValue:Int, newValue:Int):Unit = println("Changed: " + oldValue + " to " + newValue)
 	}
-	val p2 = new MutableProperty[Int] with ListenableProperty[Int]
+	val p2 = new MutableProperty[Int] with ListenableProperty[Int] {
+		val parent = null
+	}
 	val p3 = new MutableProperty[Double] with AdjustableProperty[Double]
 	val p4 = new MutableProperty[String] with BindingProperty[String]
 	val p5 = new MutableProperty[String] with BindingProperty[String]

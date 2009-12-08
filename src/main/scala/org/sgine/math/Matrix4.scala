@@ -632,7 +632,8 @@ class Matrix4 protected() {
 
     buffer.toString()
   }
-
+  
+  def identity(): Matrix4 = Matrix4.Identity
 }
 
 object Matrix4 {

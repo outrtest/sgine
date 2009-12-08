@@ -10,7 +10,7 @@ object Event {
 	
 	def enqueue(evt: Event) = {
 		// Pre-Process Event on Listenable
-		evt.listenable.preProcessEvent(evt)
+		evt.listenable.processEvent(evt)
 		
 		// Process Event on blocking handlers
 		evt.listenable.listeners.filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
@@ -30,6 +30,7 @@ object Event {
 	
 	private def processParentRecursion(l: Listenable, evt: Event): Unit = {
 		if (l != null) {
+			l.processChildEvent(evt)
 			l.listeners.filter(parentRecursion).filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
 			
 			processParentRecursion(l.parent, evt)
@@ -40,7 +41,10 @@ object Event {
 		l match {
 			case i: Iterable[_] => {
 				for (child <- i) child match {
-					case lc: Listenable => lc.listeners.filter(childrenRecursion).filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
+					case lc: Listenable => {
+						lc.processParentEvent(evt)
+						lc.listeners.filter(childrenRecursion).filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
+					}
 					case _ =>
 				}
 				for (child <- i) child match {
@@ -53,7 +57,7 @@ object Event {
 	}
 	
 	private def parentRecursion(l: EventHandler) = {
-		if (l.recursion == Recursion.Parents) {
+		if (l.recursion == Recursion.Children) {
 			true
 		} else if (l.recursion == Recursion.All) {
 			true
@@ -63,7 +67,7 @@ object Event {
 	}
 	
 	private def childrenRecursion(l: EventHandler) = {
-		if (l.recursion == Recursion.Children) {
+		if (l.recursion == Recursion.Parents) {
 			true
 		} else if (l.recursion == Recursion.All) {
 			true

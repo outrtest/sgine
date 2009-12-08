@@ -32,7 +32,7 @@ class BasicSceneSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "throw an event when a child is added" in {
-		container.listeners += EventHandler(containerEvent, ProcessingMode.Blocking, Recursion.Parents)
+		container.listeners += EventHandler(containerEvent, ProcessingMode.Blocking, Recursion.Children)
 		addedCount should equal (0)
 		removedCount should equal (0)
 		container += childNode

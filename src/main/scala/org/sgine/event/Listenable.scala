@@ -4,12 +4,12 @@ trait Listenable {
 	def parent: Listenable
 	val listeners: EventProcessor
 	
-	def preProcessEvent(evt:Event):Unit = {
+	def processEvent(evt: Event): Unit = {
 	}
 	
-	def processEvent(evt:Event):Unit = {
+	def processChildEvent(evt: Event): Unit = {
 	}
 	
-	def postProcessEvent(evt:Event):Unit = {
+	def processParentEvent(evt: Event): Unit = {
 	}
 }
