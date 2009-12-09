@@ -2,7 +2,7 @@ package org.sgine.property
 
 import org.sgine._
 import org.sgine.property.adjust._
-import org.sgine.property.group._
+import org.sgine.property.properties._
 import org.sgine.work._
 import org.sgine.work.unit._
 
@@ -16,7 +16,7 @@ object TestProperties {
 	val p3 = new MutableProperty[Double] with AdjustableProperty[Double]
 	val p4 = new MutableProperty[String] with BindingProperty[String]
 	val p5 = new MutableProperty[String] with BindingProperty[String]
-	val pg1 = new PropertyGroup {
+	val pg1 = new StaticProperties {
 		val p1 = new MutableProperty[Int]
 		val p2 = new MutableProperty[String]
 	}

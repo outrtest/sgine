@@ -8,6 +8,12 @@ package org.sgine.property;
  * @author Matt Hicks
  */
 class MutableProperty[T] extends Property[T] {
+
+	def this(initialValue: T) = {
+		this()
+		apply(initialValue)
+	}
+
 	protected var value:T = _;
 
 	def apply():T = {
