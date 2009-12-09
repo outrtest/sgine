@@ -17,9 +17,10 @@ object TestGLScene {
 		// Create a container for our scene
 		val root = new GLNodeContainer()
 		val node = new GLShape()
+		node.rotation.z.adjuster = new EasingNumericAdjuster(Linear.easeOut, 10.0)
+		node.rotation.z := 3.0
 		node.location.z := -1000.0
 		node.location.z.adjuster = new EasingNumericAdjuster(Bounce.easeOut, 5.0)
-//		node.location.z.adjuster = new LinearNumericAdjuster(70.0)
 		node.location.z := -2000.0
 		node.location.z.listeners += zChanged _
 		root += node

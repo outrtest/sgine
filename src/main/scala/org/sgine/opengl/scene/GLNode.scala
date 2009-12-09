@@ -9,6 +9,7 @@ import java.util.concurrent.atomic._
 
 trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	val location = new Location(this)
+	val rotation = new Rotation(this)
 	val matrix = new Transform()
 	
 	private[scene] val matrixDirty = new AtomicBoolean()
@@ -18,11 +19,18 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	location.x.listeners += lcHandler
 	location.y.listeners += lcHandler
 	location.z.listeners += lcHandler
+	rotation.x.listeners += lcHandler
+	rotation.y.listeners += lcHandler
+	rotation.z.listeners += lcHandler
 	
 	def apply(time: Double) = {
 		location.x.update(time)
 		location.y.update(time)
 		location.z.update(time)
+		
+		rotation.x.update(time)
+		rotation.y.update(time)
+		rotation.z.update(time)
 	}
 	
 	def invalidateMatrix() = {
@@ -46,6 +54,7 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 			// Update local and world matrix
 			matrixDirty.set(false)														// Reset dirty flag
 			matrix.local.set(matrix.adjust)												// Set the local to represent the current adjust matrix
+			matrix.local.rotate(rotation.x() * Rotation.Radians, rotation.y() * Rotation.Radians, rotation.z() * Rotation.Radians)				// Rotate local to represent rotation
 			matrix.local.translate(location.x(), location.y(), location.z())			// Translate local to represent location
 			if (parentMatrix != null) {
 				matrix.world.mult(parentMatrix, matrix.local)
@@ -69,4 +78,14 @@ class Location(node: GLNode) {
 	val x = new AdvancedProperty[Double](0.0, node)
 	val y = new AdvancedProperty[Double](0.0, node)
 	val z = new AdvancedProperty[Double](0.0, node)
+}
+
+class Rotation(node: GLNode) {
+	val x = new AdvancedProperty[Double](0.0, node)
+	val y = new AdvancedProperty[Double](0.0, node)
+	val z = new AdvancedProperty[Double](0.0, node)
+}
+
+object Rotation {
+	val Radians = Math.Pi * 2.0
 }
