@@ -3,7 +3,7 @@ package org.sgine.raster
 import java.awt.image.BufferedImage
 
 /**
- * Contains a two dimensional array of values.
+ * Contains a two dimensional array of values, with separate channels for different values.
  *
  * Can be used to store a texture, picture, heightmap, etc.
  *

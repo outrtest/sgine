@@ -5,7 +5,7 @@ package org.sgine.raster
  *
  * Can be used to fill in a raster with the values for some area.
  */
-trait Function {
+trait Func {
 
   /**
    * The identifiers and descriptions of the parameters taken by this function.

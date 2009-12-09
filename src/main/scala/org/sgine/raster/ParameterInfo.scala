@@ -1,7 +1,7 @@
 package org.sgine.raster
 
 /**
- * Information on a parameter or return value used by a Function, or a channel used by a Raster.
+ * Information on a parameter or return value used by a Func, or a channel used by a Raster.
  *
  * Has an unique identifier (within the function/raster), and a user readable description.
  */
