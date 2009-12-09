@@ -21,6 +21,8 @@ class Shape(val shapeType:Int, val points:Vector3*) extends Function1[Double, Un
 		glEnd();
 	}
 	
+	// TODO: add support to update vertices, textureCoordinates, and texture
+	
 	private def drawVertex(vertex:Vector3, index:Int) = {
 		val coords = textureCoordinates(index);
 		glTexCoord2d(coords.x, coords.y);
@@ -46,20 +48,7 @@ object Shape {
 		s.textureCoordinates(2) = Vector2.UnitX;
 		s.textureCoordinates(3) = Vector2.Zero;
 		
-		if (s.texture.isValidImage(image)) {
-			s.texture(image, 0, 0, image.getWidth, image.getHeight, true);
-		} else {
-			val rg = GeneralReusableGraphic;
-			val g = rg(image.getWidth, image.getHeight, -1);
-			try {
-				g.drawImage(image, 0, 0, image.getWidth, image.getHeight, null);
-				g.dispose();
-				
-				s.texture(rg(), 0, 0, image.getWidth, image.getHeight, true);
-			} finally {
-				rg.release();
-			}
-		}
+		s.texture(image, 0, 0, image.getWidth, image.getHeight, true);
 		
 		s;
 	}

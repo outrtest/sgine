@@ -10,6 +10,7 @@ import java.util.concurrent.atomic._
 trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	val location = new Location(this)
 	val rotation = new Rotation(this)
+	val scale = new Scale(this)
 	val matrix = new Transform()
 	
 	private[scene] val matrixDirty = new AtomicBoolean()
@@ -22,6 +23,9 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	rotation.x.listeners += lcHandler
 	rotation.y.listeners += lcHandler
 	rotation.z.listeners += lcHandler
+	scale.x.listeners += lcHandler
+	scale.y.listeners += lcHandler
+	scale.z.listeners += lcHandler
 	
 	def apply(time: Double) = {
 		location.x.update(time)
@@ -31,6 +35,10 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 		rotation.x.update(time)
 		rotation.y.update(time)
 		rotation.z.update(time)
+		
+		scale.x.update(time)
+		scale.y.update(time)
+		scale.z.update(time)
 	}
 	
 	def invalidateMatrix() = {
@@ -56,6 +64,7 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 			matrix.local.set(matrix.adjust)												// Set the local to represent the current adjust matrix
 			matrix.local.rotate(rotation.x() * Rotation.Radians, rotation.y() * Rotation.Radians, rotation.z() * Rotation.Radians)				// Rotate local to represent rotation
 			matrix.local.translate(location.x(), location.y(), location.z())			// Translate local to represent location
+			matrix.local.scale(scale.x(), scale.y(), scale.z())							// Scale local to represent scale
 			if (parentMatrix != null) {
 				matrix.world.mult(parentMatrix, matrix.local)
 			} else {
@@ -63,6 +72,17 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 			}
 		}
 		dirty
+	}
+	
+	def translateResolution(width: Double, height: Double) = {
+		val m = matrix.adjust
+		m.identity()
+		m.translateZ(-1.21)
+		m.scale(1.0 / height)
+		m.translateX(-(width / 2.0))
+		m.translateY(height / 2.0)
+		
+		invalidateMatrix()
 	}
 	
 	private def locationChanged(evt: PropertyChangeEvent[Double]) = invalidateMatrix()
@@ -88,4 +108,10 @@ class Rotation(node: GLNode) {
 
 object Rotation {
 	val Radians = Math.Pi * 2.0
+}
+
+class Scale(node: GLNode) {
+	val x = new AdvancedProperty[Double](1.0, node)
+	val y = new AdvancedProperty[Double](1.0, node)
+	val z = new AdvancedProperty[Double](1.0, node)
 }

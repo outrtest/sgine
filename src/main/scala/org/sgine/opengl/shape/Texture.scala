@@ -27,7 +27,7 @@ class Texture {
 		tmp.get(0);
 	}
 	
-	def apply(image:BufferedImage, x:Int, y:Int, width:Int, height:Int, mipmap:Boolean) = {
+	def apply(image:BufferedImage, x:Int, y:Int, width:Int, height:Int, mipmap:Boolean): Unit = {
 		if (isValidImage(image)) {
 			val textureFormat = GL_RGBA;
 			val imageFormat = GL_RGBA;
@@ -45,7 +45,17 @@ class Texture {
 			
 			update = TextureUpdate(buffer, width, height, textureFormat, imageFormat, imageType, mipmap);
 		} else {
-			throw new RuntimeException("Invalid image type: " + image.getType());
+//			throw new RuntimeException("Invalid image type: " + image.getType());
+			val rg = GeneralReusableGraphic
+			val g = rg(image.getWidth, image.getHeight, -1)
+			try {
+				g.drawImage(image, 0, 0, image.getWidth, image.getHeight, null)
+				g.dispose()
+				
+				apply(rg(), x, y, width, height, mipmap)
+			} finally {
+				rg.release()
+			}
 		}
 	}
 	
