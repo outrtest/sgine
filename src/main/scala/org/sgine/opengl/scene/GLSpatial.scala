@@ -13,10 +13,13 @@ trait GLSpatial extends Node with GLNode {
 		super.apply(time)
 		
 		validateMatrix()					// Make sure world matrix is correct
+		validateAlpha()						// Make sure world alpha is correct
 		
 		matrix.world.getTranspose(buffer)	// Update buffer
 		buffer.rewind()
 		glLoadMatrix(buffer)				// Load the matrix into the GL context
+		
+		glColor4d(matrix.alpha, matrix.alpha, matrix.alpha, matrix.alpha)
 		
 		render(time)
 	}

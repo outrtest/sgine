@@ -12,8 +12,10 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	val rotation = new Rotation(this)
 	val scale = new Scale(this)
 	val matrix = new Transform()
+	val alpha = new AdvancedProperty[Double](1.0)
 	
 	private[scene] val matrixDirty = new AtomicBoolean()
+	private[scene] val alphaDirty = new AtomicBoolean()
 	
 	// Set up listeners
 	private val lcHandler = EventHandler(locationChanged, ProcessingMode.Blocking, Recursion.Children)
@@ -26,6 +28,8 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	scale.x.listeners += lcHandler
 	scale.y.listeners += lcHandler
 	scale.z.listeners += lcHandler
+	
+	alpha.listeners += EventHandler(alphaChanged, ProcessingMode.Blocking, Recursion.Children)
 	
 	def apply(time: Double) = {
 		location.x.update(time)
@@ -45,22 +49,21 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 		matrixDirty.set(true)
 	}
 	
-	private[scene] def validateMatrix(): Boolean = {
-		var dirty = matrixDirty.get()
-		var parentMatrix: Matrix4 = null
-		parent match {
-			case p: GLNodeContainer => {
-				if (p.validateMatrix()) {
-					dirty = true
+	def invalidateAlpha() = {
+		alphaDirty.set(true)
+	}
+	
+	private[scene] def validateMatrix(): Unit = {
+		if (matrixDirty.get()) {						// Only update matrix if dirty
+			matrixDirty.set(false)						// reset dirty flag
+			var parentMatrix: Matrix4 = null
+			parent match {								// make sure parent is validated
+				case p: GLNodeContainer => {
+					p.validateMatrix()
+					parentMatrix = p.matrix.world
 				}
-				parentMatrix = p.matrix.world
+				case _ =>
 			}
-			case _ =>
-		}
-		
-		if (dirty) {
-			// Update local and world matrix
-			matrixDirty.set(false)														// Reset dirty flag
 			matrix.local.set(matrix.adjust)												// Set the local to represent the current adjust matrix
 			matrix.local.rotate(rotation.x() * Rotation.Radians, rotation.y() * Rotation.Radians, rotation.z() * Rotation.Radians)				// Rotate local to represent rotation
 			matrix.local.translate(location.x(), location.y(), location.z())			// Translate local to represent location
@@ -71,7 +74,21 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 				matrix.world.set(matrix.local)
 			}
 		}
-		dirty
+	}
+	
+	private[scene] def validateAlpha(): Unit = {
+		if (alphaDirty.get()) {
+			alphaDirty.set(false)
+			var parentAlpha: Double = 1.0
+			parent match {
+				case p: GLNodeContainer => {
+					p.validateAlpha()
+					parentAlpha = p.matrix.alpha
+				}
+				case _ =>
+			}
+			matrix.alpha = alpha() * parentAlpha
+		}
 	}
 	
 	def translateResolution(width: Double, height: Double) = {
@@ -86,12 +103,15 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	}
 	
 	private def locationChanged(evt: PropertyChangeEvent[Double]) = invalidateMatrix()
+	
+	private def alphaChanged(evt: PropertyChangeEvent[Double]) = invalidateAlpha()
 }
 
 class Transform {
 	val adjust = Matrix4()
 	val local = Matrix4()
 	val world = Matrix4()
+	var alpha = 1.0
 }
 
 class Location(node: GLNode) {
