@@ -2,10 +2,9 @@ package org.sgine.property
 
 import org.sgine.event._
 
-class AdvancedProperty[T] extends MutableProperty[T] with ListenableProperty[T] with BindingProperty[T] with AdjustableProperty[T] {
+class AdvancedProperty[T] extends MutableProperty[T] with ListenableProperty[T] with NamedProperty with BindingProperty[T] with AdjustableProperty[T] {
 	private var _parent: Listenable = _
-	
-	def parent = _parent
+	private var _name: Symbol = _
 	
 	def this(value: T) = {
 		this()
@@ -14,10 +13,19 @@ class AdvancedProperty[T] extends MutableProperty[T] with ListenableProperty[T] 
 	}
 	
 	def this(value: T, parent: Listenable) = {
-		this()
+		this(value)
 		
 		_parent = parent
-		
-		apply(value)
 	}
+	
+	def this(value: T, parent: Listenable, name: Symbol) = {
+		this(value, parent)
+		
+		this.name = name
+	}
+	
+	def parent = _parent
+	
+	def name = _name
+	def name_=(name: Symbol) = _name = name
 }

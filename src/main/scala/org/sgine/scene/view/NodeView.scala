@@ -16,7 +16,6 @@ import scala.collection.JavaConversions._
  */
 class NodeView private (container: NodeContainer, query: NodeQuery) extends Iterable[Node] with Listenable {
 	val parent = null
-	val listeners = new EventProcessor(this)
 	private val queue = new ConcurrentLinkedQueue[Node]
 	
 	def iterator = queue.iterator

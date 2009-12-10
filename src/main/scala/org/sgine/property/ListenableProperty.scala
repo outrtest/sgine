@@ -14,8 +14,6 @@ import scala.collection.JavaConversions._
  * @author Matt Hicks
  */
 trait ListenableProperty[T] extends ChangeableProperty[T] with Listenable {
-	val listeners = new EventProcessor(this)
-	
 	abstract override def changed(oldValue:T, newValue:T):Unit = {
 		super.changed(oldValue, newValue)
 		

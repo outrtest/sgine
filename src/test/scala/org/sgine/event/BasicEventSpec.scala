@@ -108,7 +108,6 @@ class BasicEventSpec extends FlatSpec with ShouldMatchers {
 
 class SimpleListenable extends Listenable {
 	val parent = null
-	val listeners = new EventProcessor(this)
 }
 
 class SimpleEvent1(listenable: Listenable) extends Event(listenable)
