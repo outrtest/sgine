@@ -21,7 +21,9 @@ class ReusableGraphic {
 					image.flush();
 				}
 				val raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, w, h, 4, null);
-				image = new BufferedImage(ReusableGraphic.rgba, raster, false, new Hashtable[String, Object]());
+				val properties = new Hashtable[String, Object]()
+				properties.put("reusableGraphic", "yes")
+				image = new BufferedImage(ReusableGraphic.rgba, raster, false, properties);
 			}
 			val g = image.createGraphics();
 			g.setBackground(ReusableGraphic.clear);

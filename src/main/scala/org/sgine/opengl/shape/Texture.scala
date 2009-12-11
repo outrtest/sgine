@@ -13,8 +13,6 @@ import org.lwjgl.opengl.GL12._;
 import org.lwjgl.opengl.GL14._;
 import org.sgine.opengl.GLUtilities._;
 
-import org.newdawn.slick.opengl._
-
 class Texture {
 	private lazy val id = generateId();
 	@volatile private var update:TextureUpdate = _;
@@ -32,18 +30,12 @@ class Texture {
 		tmp.get(0);
 	}
 	
-	def apply(url: URL, width: Int, height: Int, mipmap: Boolean): Unit = {
-		val imageData = ImageDataFactory.getImageDataFor(url.toString)
-		val buffer = imageData.loadImage(new BufferedInputStream(url.openStream), false, null)
-		val textureFormat = GL_RGBA
-		val imageFormat = GL_RGBA8
-		val imageType = GL_UNSIGNED_BYTE
-		
-		update = TextureUpdate(buffer, width, height, textureFormat, imageFormat, imageType, mipmap)
-	}
-	
 	def apply(image:BufferedImage, x:Int, y:Int, width:Int, height:Int, mipmap:Boolean): Unit = {
 		if (isValidImage(image)) {
+			if (image.getProperty("reusableGraphic") != "yes") {
+				image.coerceData(true)
+			}
+			
 			val textureFormat = GL_RGBA;
 			val imageFormat = GL_RGBA;
 			val imageType = GL_UNSIGNED_BYTE;
@@ -60,7 +52,6 @@ class Texture {
 			
 			update = TextureUpdate(buffer, width, height, textureFormat, imageFormat, imageType, mipmap);
 		} else {
-//			throw new RuntimeException("Invalid image type: " + image.getType());
 			val rg = GeneralReusableGraphic
 			val g = rg(image.getWidth, image.getHeight, -1)
 			try {
