@@ -18,7 +18,7 @@ class Vector3Spec extends FlatSpec with ShouldMatchers {
   }
 
   it should "have correct coordinate mapping" in {
-    val v = new Vector3(1, 2, 3)
+    val v = Vector3(1, 2, 3)
 
     v.x should equal (1)
     v.y should equal (2)
@@ -49,31 +49,31 @@ class Vector3Spec extends FlatSpec with ShouldMatchers {
   }
 
   it should "calculate length correctly" in {
-    new Vector3( -1, 0, 0 ).length should equal (1)
-    new Vector3( 0, 0, 0 ).length should equal (0)
-    new Vector3( 0, 1, 0 ).length should equal (1)
-    new Vector3( 0, 3, 4 ).length should equal ( 5 )
-    new Vector3( 1, 2, 3 ).length should equal ( Math.sqrt(14) )
+    Vector3( -1, 0, 0 ).length should equal (1)
+    Vector3( 0, 0, 0 ).length should equal (0)
+    Vector3( 0, 1, 0 ).length should equal (1)
+    Vector3( 0, 3, 4 ).length should equal ( 5 )
+    Vector3( 1, 2, 3 ).length should equal ( Math.sqrt(14) )
   }
 
   it should "calculate squared length correctly" in {
-    new Vector3( -1, -2, 0 ).lengthSquared should equal (5)
-    new Vector3( 0, 0, 0 ).lengthSquared should equal (0)
-    new Vector3( 0, 1, 0 ).lengthSquared should equal (1)
-    new Vector3( 0, 3, 4 ).lengthSquared should equal ( 25 )
-    new Vector3( 1, 2, 3 ).lengthSquared should equal ( 14 )
+    Vector3( -1, -2, 0 ).lengthSquared should equal (5)
+    Vector3( 0, 0, 0 ).lengthSquared should equal (0)
+    Vector3( 0, 1, 0 ).lengthSquared should equal (1)
+    Vector3( 0, 3, 4 ).lengthSquared should equal ( 25 )
+    Vector3( 1, 2, 3 ).lengthSquared should equal ( 14 )
   }
 
   it should "convert to string correctly" in {
-    new Vector3(1.1, 2, -3).toString should equal ( "Vector3(1.1, 2.0, -3.0)" )
+    Vector3(1.1, 2, -3).toString should equal ( "Vector3(1.1, 2.0, -3.0)" )
   }
 
   it should "convert to a tuple" in {
-    new Vector3(1.1, 2, -3).toTuple should equal ( (1.1, 2.0, -3.0) )
+    Vector3(1.1, 2, -3).toTuple should equal ( (1.1, 2.0, -3.0) )
   }
 
   it should "convert to a list" in {
-    new Vector3(1.1, 2, -3).toList should equal ( 1.1 :: 2.0 :: -3.0 :: Nil )
+    Vector3(1.1, 2, -3).toList should equal ( 1.1 :: 2.0 :: -3.0 :: Nil )
   }
 
   it should "have default objects for common vectors" in {

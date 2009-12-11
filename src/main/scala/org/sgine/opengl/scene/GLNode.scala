@@ -4,6 +4,7 @@ import org.sgine.scene._
 import org.sgine.event._
 import org.sgine.math.mutable._
 import org.sgine.property._
+import org.sgine.property.container._
 
 import java.util.concurrent.atomic._
 
@@ -32,17 +33,10 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 	alpha.listeners += EventHandler(alphaChanged, ProcessingMode.Blocking, Recursion.Children)
 	
 	def apply(time: Double) = {
-		location.x.update(time)
-		location.y.update(time)
-		location.z.update(time)
-		
-		rotation.x.update(time)
-		rotation.y.update(time)
-		rotation.z.update(time)
-		
-		scale.x.update(time)
-		scale.y.update(time)
-		scale.z.update(time)
+		alpha.update(time)
+		location.update(time)
+		rotation.update(time)
+		scale.update(time)
 	}
 	
 	def invalidateMatrix() = {
@@ -114,13 +108,17 @@ class Transform {
 	var alpha = 1.0
 }
 
-class Location(node: GLNode) {
+class Location(node: GLNode) extends PropertyContainer {
+	override val parent = node
+	
 	val x = new AdvancedProperty[Double](0.0, node)
 	val y = new AdvancedProperty[Double](0.0, node)
 	val z = new AdvancedProperty[Double](0.0, node)
 }
 
-class Rotation(node: GLNode) {
+class Rotation(node: GLNode) extends PropertyContainer {
+	override val parent = node
+	
 	val x = new AdvancedProperty[Double](0.0, node)
 	val y = new AdvancedProperty[Double](0.0, node)
 	val z = new AdvancedProperty[Double](0.0, node)
@@ -130,7 +128,9 @@ object Rotation {
 	val Radians = Math.Pi * 2.0
 }
 
-class Scale(node: GLNode) {
+class Scale(node: GLNode) extends PropertyContainer {
+	override val parent = node
+	
 	val x = new AdvancedProperty[Double](1.0, node)
 	val y = new AdvancedProperty[Double](1.0, node)
 	val z = new AdvancedProperty[Double](1.0, node)

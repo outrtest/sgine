@@ -71,7 +71,7 @@ class Matrix4 protected() {
    * Uses this matrix to transform the specified vector.
    */
   def transform( v : Vector3 ) : Vector3 = {
-    new Vector3(
+    Vector3(
       m00 * v.x + m01 * v.y + m02 * v.z + m03,
       m10 * v.x + m11 * v.y + m12 * v.z + m13,
       m20 * v.x + m21 * v.y + m22 * v.z + m23 )

@@ -55,7 +55,6 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 			f.get(this) match {
 				case p: Property[_] => {
 					props.add(p)
-					println("*** Setting alias: " + f.getName)
 					aliases.put(Symbol(f.getName), p)
 				}
 				case _ =>
