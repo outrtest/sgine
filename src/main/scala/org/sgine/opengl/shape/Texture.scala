@@ -2,13 +2,18 @@ package org.sgine.opengl.shape
 
 import org.sgine.util._;
 
-import java.awt.image.BufferedImage;
-import java.nio._;
+import java.awt.AlphaComposite
+import java.awt.image.BufferedImage
+import java.io._
+import java.net._
+import java.nio._
 
 import org.lwjgl.opengl.GL11._;
 import org.lwjgl.opengl.GL12._;
 import org.lwjgl.opengl.GL14._;
 import org.sgine.opengl.GLUtilities._;
+
+import org.newdawn.slick.opengl._
 
 class Texture {
 	private lazy val id = generateId();
@@ -25,6 +30,16 @@ class Texture {
 		val tmp = IntBuffer.allocate(1);
 		glGenTextures(tmp);
 		tmp.get(0);
+	}
+	
+	def apply(url: URL, width: Int, height: Int, mipmap: Boolean): Unit = {
+		val imageData = ImageDataFactory.getImageDataFor(url.toString)
+		val buffer = imageData.loadImage(new BufferedInputStream(url.openStream), false, null)
+		val textureFormat = GL_RGBA
+		val imageFormat = GL_RGBA8
+		val imageType = GL_UNSIGNED_BYTE
+		
+		update = TextureUpdate(buffer, width, height, textureFormat, imageFormat, imageType, mipmap)
 	}
 	
 	def apply(image:BufferedImage, x:Int, y:Int, width:Int, height:Int, mipmap:Boolean): Unit = {
@@ -49,6 +64,7 @@ class Texture {
 			val rg = GeneralReusableGraphic
 			val g = rg(image.getWidth, image.getHeight, -1)
 			try {
+				g.setComposite(AlphaComposite.Src)
 				g.drawImage(image, 0, 0, image.getWidth, image.getHeight, null)
 				g.dispose()
 				

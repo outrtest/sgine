@@ -5,6 +5,7 @@ import org.sgine.math.mutable._;
 import org.sgine.util._;
 
 import java.awt.image._;
+import java.net._
 import javax.imageio._;
 
 import org.lwjgl.opengl.GL11._;
@@ -30,6 +31,17 @@ class Shape(val shapeType:Int, val points:Vector3*) extends Function1[Double, Un
 		points(3).set(-xb, yb, 0.0f)
 		
 		texture(image, 0, 0, image.getWidth, image.getHeight, true);
+	}
+	
+	def apply(url: URL, width: Int, height: Int, mipmap: Boolean) = {
+		val xb = width / 2.0
+		val yb = height / 2.0
+		points(0).set(-xb, -yb, 0.0)
+		points(1).set(xb, -yb, 0.0)
+		points(2).set(xb, yb, 0.0)
+		points(3).set(-xb, yb, 0.0f)
+		
+		texture(url, width, height, mipmap)
 	}
 	
 	private def drawVertex(vertex:Vector3, index:Int) = {

@@ -7,6 +7,7 @@ import org.sgine.opengl.scene.event._
 
 import java.net._
 import javax.imageio._
+import java.awt.image._;
 
 import org.lwjgl.opengl.GL11._;
 
@@ -20,10 +21,14 @@ class GLImage extends GLShape {
 	def load(url: URL) = {
 		Event.enqueue(new ImageLoadingEvent(this))
 		val f = () => {
-			shape()(ImageIO.read(url))
+			apply(ImageIO.read(url))
 			waitForRender()
 			Event.enqueue(new ImageLoadedEvent(this))
 		}
 		Event.workManager += f
+	}
+	
+	def apply(image: BufferedImage) = {
+		shape()(image)
 	}
 }
