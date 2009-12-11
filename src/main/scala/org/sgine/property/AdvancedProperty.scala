@@ -21,11 +21,10 @@ class AdvancedProperty[T] extends MutableProperty[T] with ListenableProperty[T] 
 	def this(value: T, parent: Listenable, name: Symbol) = {
 		this(value, parent)
 		
-		this.name = name
+		_name = name
 	}
 	
 	def parent = _parent
 	
 	def name = _name
-	def name_=(name: Symbol) = _name = name
 }

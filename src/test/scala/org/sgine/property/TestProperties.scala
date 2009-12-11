@@ -2,7 +2,7 @@ package org.sgine.property
 
 import org.sgine._
 import org.sgine.property.adjust._
-import org.sgine.property.properties._
+import org.sgine.property.container._
 import org.sgine.work._
 import org.sgine.work.unit._
 
@@ -16,7 +16,7 @@ object TestProperties {
 	val p3 = new MutableProperty[Double] with AdjustableProperty[Double]
 	val p4 = new MutableProperty[String] with BindingProperty[String]
 	val p5 = new MutableProperty[String] with BindingProperty[String]
-	val pg1 = new StaticProperties {
+	val pg1 = new PropertyContainer {
 		val p1 = new MutableProperty[Int]
 		val p2 = new MutableProperty[String]
 	}
@@ -51,7 +51,7 @@ object TestProperties {
 		p4 := "Three"
 		println("p4: " + p4() + ", p5: " + p5())
 		
-		println("PropertGroup: " + pg1.properties.length)
+		println("PropertyContainer: " + pg1.size)
 		
 		ap1.listeners += ap1Changed _
 		ap1 := "One"
