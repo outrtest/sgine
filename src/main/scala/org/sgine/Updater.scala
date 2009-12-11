@@ -12,3 +12,7 @@ class Updater(updatable:Updatable) extends Function0[Unit] {
 		lastUpdate = t;
 	}
 }
+
+object Updater {
+	def apply(updatable: Updatable) = new Updater(updatable)
+}

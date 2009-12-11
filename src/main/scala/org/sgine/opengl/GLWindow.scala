@@ -56,6 +56,7 @@ class GLWindow (val title:String, val width:Int, val height:Int, val workManager
 		Display.setDisplayMode(determineDisplayMode());
 		Display.setParent(canvas);
 		Display.create();		// TODO: incorporate PixelFormat
+		input.Keyboard.validate()
 		
 		// Initialize the GL context
 		init();

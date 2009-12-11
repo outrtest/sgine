@@ -22,3 +22,7 @@ class RepeatingUnit(unitRef:WeakReference[Function0[Unit]]) extends WorkUnit {
 		workManager += this;			// Re-queue
 	}
 }
+
+object RepeatingUnit {
+	def apply(unit: () => Unit) = new RepeatingUnit(unit)
+}
