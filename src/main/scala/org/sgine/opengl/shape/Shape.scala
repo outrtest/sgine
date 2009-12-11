@@ -1,7 +1,7 @@
 package org.sgine.opengl.shape
 
 import org.sgine.opengl._
-import org.sgine.math._;
+import org.sgine.math.mutable._;
 import org.sgine.util._;
 
 import java.awt.image._;
@@ -21,12 +21,23 @@ class Shape(val shapeType:Int, val points:Vector3*) extends Function1[Double, Un
 		glEnd();
 	}
 	
-	// TODO: add support to update vertices, textureCoordinates, and texture
+	def apply(image: BufferedImage) = {
+		val xb = image.getWidth / 2.0
+		val yb = image.getHeight / 2.0
+		points(0).set(-xb, -yb, 0.0)
+		points(1).set(xb, -yb, 0.0)
+		points(2).set(xb, yb, 0.0)
+		points(3).set(-xb, yb, 0.0f)
+		
+		texture(image, 0, 0, image.getWidth, image.getHeight, true);
+	}
 	
 	private def drawVertex(vertex:Vector3, index:Int) = {
 		val coords = textureCoordinates(index);
-		glTexCoord2d(coords.x, coords.y);
-		glVertex3d(vertex.x, vertex.y, vertex.z);
+		if (coords != null) {
+			glTexCoord2d(coords.x, coords.y);
+			glVertex3d(vertex.x, vertex.y, vertex.z);
+		}
 	}
 }
 
