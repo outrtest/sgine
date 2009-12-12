@@ -18,17 +18,17 @@ class GLImage extends GLShape {
 	shape().textureCoordinates(2) = Vector2.UnitX;
 	shape().textureCoordinates(3) = Vector2.Zero;
 	
-	def load(url: URL) = {
+	def load(url: URL, width: Int = -1, height: Int = -1) = {
 		Event.enqueue(new ImageLoadingEvent(this))
 		val f = () => {
-			apply(ImageIO.read(url))
+			apply(ImageIO.read(url), width, height)
 			waitForRender()
 			Event.enqueue(new ImageLoadedEvent(this))
 		}
 		Event.workManager += f
 	}
 	
-	def apply(image: BufferedImage) = {
-		shape()(image)
+	def apply(image: BufferedImage, width: Int = -1, height: Int = -1) = {
+		shape()(image, width, height)
 	}
 }

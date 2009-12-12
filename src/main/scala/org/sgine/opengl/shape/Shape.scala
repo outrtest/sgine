@@ -11,20 +11,35 @@ import javax.imageio._;
 import org.lwjgl.opengl.GL11._;
 
 class Shape(val shapeType:Int, val points:Vector3*) extends Function1[Double, Unit] {
-	lazy val vertices = points zipWithIndex;
+	lazy val vertices = points;
 	val texture = new Texture();
 	val textureCoordinates = new TextureCoordinates(vertices.length);
 	
 	def apply(time:Double) = {
 		texture.draw();
 		glBegin(shapeType);
-		vertices.foreach(Function.tupled(drawVertex));
+		for (i <- 0 until vertices.size) {
+			drawVertex(vertices(i), i)
+		}
 		glEnd();
 	}
 	
-	def apply(image: BufferedImage) = {
-		val xb = image.getWidth / 2.0
-		val yb = image.getHeight / 2.0
+	def apply(image: BufferedImage, width: Int = -1, height: Int = -1) = {
+		var w = width
+		var h = height
+		if ((width == -1) && (height == -1)) {			// Use image width and height
+			w = image.getWidth
+			h = image.getHeight
+		} else if (height == -1) {						// Constrain to width
+			val conversion = w.toDouble / image.getWidth.toDouble
+			h = Math.round(image.getHeight.toDouble * conversion).toInt
+		} else if (width == -1) {						// Constrain to height
+			val conversion = h.toDouble / image.getHeight.toDouble
+			w = Math.round(image.getWidth.toDouble * conversion).toInt
+		}
+		val xb = w / 2.0;
+		val yb = h / 2.0;
+		
 		points(0).set(-xb, -yb, 0.0)
 		points(1).set(xb, -yb, 0.0)
 		points(2).set(xb, yb, 0.0)
