@@ -20,8 +20,18 @@ trait AdjustableProperty[T] extends Property[T] with Updatable {
 		if (adjuster != null) {
 			target = value
 		} else {
-			super.apply(value)
+			set(value)
 		}
+		
+		this
+	}
+	
+	/**
+	 * Explicitly sets value to the target to avoid any "adjusting" from occurring
+	 */
+	def set(value: T): Property[T] = {
+		super.apply(value)
+		target = value
 		
 		this
 	}

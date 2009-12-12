@@ -59,8 +59,8 @@ trait GLNode extends Listenable with Node with Function1[Double, Unit] {
 				case _ =>
 			}
 			matrix.local.set(matrix.adjust)												// Set the local to represent the current adjust matrix
-			matrix.local.rotate(rotation.x() * Rotation.Radians, rotation.y() * Rotation.Radians, rotation.z() * Rotation.Radians)				// Rotate local to represent rotation
 			matrix.local.translate(location.x(), location.y(), location.z())			// Translate local to represent location
+			matrix.local.rotate(rotation.x() * Rotation.Radians, rotation.y() * Rotation.Radians, rotation.z() * Rotation.Radians)				// Rotate local to represent rotation
 			matrix.local.scale(scale.x(), scale.y(), scale.z())							// Scale local to represent scale
 			if (parentMatrix != null) {
 				matrix.world.mult(parentMatrix, matrix.local)

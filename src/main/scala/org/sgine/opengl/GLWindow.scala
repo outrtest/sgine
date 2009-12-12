@@ -18,7 +18,7 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-class GLWindow (val title:String, val width:Int, val height:Int, val workManager:WorkManager = DefaultWorkManager) {
+class GLWindow (val title:String, val width:Int, val height:Int, val fullscreen: Boolean = false, val workManager:WorkManager = DefaultWorkManager) {
 	private var keepAlive = true;
 	private var renders:Long = 0;
 	private var lastRender:Long = System.nanoTime();
@@ -51,8 +51,8 @@ class GLWindow (val title:String, val width:Int, val height:Int, val workManager
 		frame.setVisible(true);
 		
 		// Configure display
-		Display.setFullscreen(false);		// TODO: revisit
-		Display.setVSyncEnabled(false);		// TODO: revisit
+		Display.setFullscreen(fullscreen);		// TODO: revisit
+		Display.setVSyncEnabled(true);		// TODO: revisit
 		Display.setDisplayMode(determineDisplayMode());
 		Display.setParent(canvas);
 		Display.create();		// TODO: incorporate PixelFormat
@@ -75,19 +75,18 @@ class GLWindow (val title:String, val width:Int, val height:Int, val workManager
 	}
 	
 	private def determineDisplayMode():DisplayMode = {		// TODO: make better
-    var fallbackMode: DisplayMode = null
+		var fallbackMode: DisplayMode = Display.getDisplayMode()
+		println("Desktop Display: " + Display.getDesktopDisplayMode())
+		println("Display Mode: " + Display.getDisplayMode())
 		for (mode <- Display.getAvailableDisplayModes()) {
-      fallbackMode = mode
+			fallbackMode = mode
 			if (mode.getWidth() == width) {
 				if (mode.getHeight() == height) {
+					println("Changing to: " + mode)
 					return mode;
 				}
 			}
 		}
-
-    // FIXME: This gives some picture even when the program doesn't know the users screen resolution, 
-    // but will leave width and height in an inconsistent state with the actual size of the display.
-    // Best would probably to select / allow the user to select from the available display modes.
 		return fallbackMode;
 	}
 	

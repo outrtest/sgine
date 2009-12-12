@@ -1,13 +1,20 @@
 package org.sgine.property
 
+import java.util.concurrent._
+import scala.collection.JavaConversions._
+
 trait BindingProperty[T] extends ChangeableProperty[T] {
-	protected var bindings:List[BindingProperty[T]] = Nil
+	protected var bindings = new CopyOnWriteArraySet[BindingProperty[T]]()
 	
-	def bind(p:BindingProperty[T]) = {
-		p.bindings = this :: p.bindings
+	def bind(p: BindingProperty[T]) = {
+		p.bindings.add(this)
 	}
 	
-	abstract override def changed(oldValue:T, newValue:T):Unit = {
+	def unbind(p: BindingProperty[T]) = {
+		p.bindings.remove(this)
+	}
+	
+	abstract override def changed(oldValue: T, newValue: T): Unit = {
 		super.changed(oldValue, newValue)
 		
 		bindings.foreach(_ := newValue)
