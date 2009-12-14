@@ -12,7 +12,7 @@ import javax.imageio._
 object TestGLScene {
 	def main(args: Array[String]): Unit = {
 		// Create the GLWindow to render to
-		val w = new GLWindow("Test GL Scene", 1024, 768)
+		val w = GLWindow("Test GL Scene", 1024, 768)
 		
 		// Create a container for our scene
 		val root = new GLNodeContainer()
@@ -32,7 +32,7 @@ object TestGLScene {
 		
 		w.displayables.add(FPS())
 		
-		w.start()
+		w.begin()
 		
 		node.location.z.waitForTarget()
 		node.location.z := -500.0

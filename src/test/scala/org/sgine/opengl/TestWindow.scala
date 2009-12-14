@@ -10,7 +10,7 @@ import state._
 object TestWindow {
 	def main(args:Array[String]):Unit = {
 		// Create our window
-		val w = new GLWindow("Test Window", 1024, 768);
+		val w = GLWindow("Test Window", 1024, 768);
 		
 		// Translate back so we can see
 		w.displayables.add(TranslateState(0.0, 0.0, -1000.0));
@@ -23,6 +23,6 @@ object TestWindow {
 		w.displayables.add(FPS());
 		
 		// Start / Display the window
-		w.start();
+		w.begin();
 	}	
 }
