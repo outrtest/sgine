@@ -17,6 +17,13 @@ trait ListenableProperty[T] extends ChangeableProperty[T] with Listenable {
 	abstract override def changed(oldValue:T, newValue:T):Unit = {
 		super.changed(oldValue, newValue)
 		
-		Event.enqueue(new PropertyChangeEvent(this, oldValue, newValue))
+		var adjusting = false
+		if (this.isInstanceOf[AdjustableProperty[_]]) {
+			val ap = this.asInstanceOf[AdjustableProperty[T]]
+			if (ap.target != newValue) {
+				adjusting = true
+			}
+		}
+		Event.enqueue(new PropertyChangeEvent(this, oldValue, newValue, adjusting))
 	}
 }

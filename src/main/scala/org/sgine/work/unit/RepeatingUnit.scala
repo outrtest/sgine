@@ -3,6 +3,7 @@ package org.sgine.work.unit
 import java.lang.ref._;
 
 class RepeatingUnit(unitRef:WeakReference[Function0[Unit]]) extends WorkUnit {
+	protected var keepAlive = true
 	
 	def this(_unit:Function0[Unit]) = {
 		this(new WeakReference(_unit));
@@ -13,13 +14,17 @@ class RepeatingUnit(unitRef:WeakReference[Function0[Unit]]) extends WorkUnit {
 	override def apply():Unit = {
 		super.apply();
 		
-		if (unitRef != null) {
-			if (unit == null) {
-				return;					// Unit has lost its reference, so stop repeating
+		while (keepAlive) {
+			if (unitRef != null) {
+				if (unit == null) {
+					keepAlive = false;					// Unit has lost its reference, so stop repeating
+				} else {
+					unit();
+				}
 			}
-			unit();
+			Thread.sleep(1)
+			Thread.`yield`()
 		}
-		workManager += this;			// Re-queue
 	}
 }
 

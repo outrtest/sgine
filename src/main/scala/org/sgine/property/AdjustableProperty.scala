@@ -14,7 +14,7 @@ import org.sgine.property.adjust._;
 trait AdjustableProperty[T] extends Property[T] with Updatable {
 	var adjuster:Function3[T, T, Double, T] = null
 	
-	private var target:T = apply();
+	private[property] var target:T = apply();
 	
 	abstract override def apply(value:T):Property[T] = {
 		if (adjuster != null) {

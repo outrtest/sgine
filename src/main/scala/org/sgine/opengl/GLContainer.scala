@@ -27,7 +27,7 @@ trait GLContainer {
 	val containerWidth = new AdvancedProperty[Int](0)
 	val containerHeight = new AdvancedProperty[Int](0)
 	val fullscreen = new AdvancedProperty[Boolean](false)
-	val verticalSync = new AdvancedProperty[Boolean](false)
+	val verticalSync = new AdvancedProperty[Boolean](true)
 	val workManager = new MutableProperty[WorkManager](DefaultWorkManager)
 	
 	protected var keepAlive = true
