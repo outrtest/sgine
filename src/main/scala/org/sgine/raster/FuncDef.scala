@@ -1,31 +1,22 @@
 package org.sgine.raster
 
+
 /**
  * A function generator that can create a function with some constant parameters.
+ *
+ * Can contain constant as well as input and output parameters.
  */
+// TODO: Implement detection of Input and Output values on compilation, and add them.
 trait FuncDef {
 
   /**
-   * The identifiers and descriptions of the accepted constant parameters.
+   * Generates the java source for this function definition.
    */
-  def constants: List[ParameterInfo]
-
-  /**
-   * The identifiers and descriptions of the accepted input values.
-   */
-  def inputs: List[ParameterInfo]
-
-  /**
-   * The identifiers and descriptions of the provided output results.
-   */
-  def outputs: List[ParameterInfo]
-
-  def update(input: Symbol, source: FuncDef)
-  def apply(output: Symbol)
+  //def generateSouce() : String
 
   /**
    * Creates a function with the specified constant parameters.
    */
-  def createFunction(parameters: Map[Symbol, Float]): Func
+  //def createFunction(): Func
 
 }
