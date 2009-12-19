@@ -7,10 +7,18 @@ import java.awt.image._;
 import java.util._;
 import java.util.concurrent.locks._;
 
+/**
+ * A buffered image with thread support - allows reusing the same image instance and avoid unnecessarily allocating memory.
+ */
 class ReusableGraphic {
 	private var image:BufferedImage = _;
 	private lazy val lock = new ReentrantLock();
-	
+
+  /**
+   * Returns a Graphics2D instance for this image that the caller has exclusive access to,
+   * or null if some other thread is currently drawing on this image.
+   * The calling code should call release() after they are done drawing on the Graphics2D. 
+   */
 	def apply(width:Int, height:Int):Graphics2D = {
 		if (lock.tryLock()) {
 			if ((image == null) || (image.getWidth < width) || (image.getHeight < height)) {
@@ -40,6 +48,14 @@ class ReusableGraphic {
 		return null;
 	}
 	
+  /**
+   * Returns a Graphics2D instance for this image that the caller has exclusive access to,
+   * or null if some other thread is currently drawing on this image.
+   * The calling code should call release() after they are done drawing on the Graphics2D.
+   * 
+   * The timeout specifies the number of milliseconds the thread should wait for any other thread to release
+   * this image before returning null.
+   */
 	def apply(width:Int, height:Int, timeout:Long):Graphics2D = {
 		var g:Graphics2D = null;
 		val s = System.currentTimeMillis;
@@ -50,9 +66,15 @@ class ReusableGraphic {
 		}
 		return null;
 	}
-	
+
+  /**
+   * Returns the underlying BufferedImage.  Should only be called if the calling thread has a lock on this image.
+   */
 	def apply() = image;
-	
+
+  /**
+   * Releases the lock on this image by the calling thread.
+   */
 	def release() = lock.unlock();
 }
 
