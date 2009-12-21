@@ -5,12 +5,14 @@
 	
     <property name="src" location="src/main/scala"/>
 	<property name="tests" location="src/test/scala"/>
+	<property name="test-html" location="src/test/html"/>
     <property name="build" location="build"/>
     <property name="dist" location="dist"/>
     <property name="lib" location="lib"/>
     <property name="jar" value="${ant.project.name}.jar"/>
 	<property name="jar.tests" value="${ant.project.name}.tests.jar"/>
 	<property name="scala.home" location="${env.SCALA_HOME}"/>
+	<property name="keystore" value="sgine.tests.keystore"/>
 	
     <path id="cp">
     	<fileset dir="${lib}">
@@ -62,6 +64,46 @@
 	        </fileset>
 		</copy>
 		<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
+		
+		<mkdir dir="${dist}/test"/>
+		<copy todir="${dist}/test">
+			<fileset dir="${test-html}"/>
+			<fileset dir="${scala.home}/lib">
+				<include name="scala-library.jar"/>
+			</fileset>
+			<fileset dir="${lib}">
+				<include name="jinput.jar"/>
+				<include name="lwjgl.jar"/>
+				<include name="lwjgl_util.jar"/>
+				<include name="lwjgl_util_applet.jar"/>
+				<include name="lzma.jar"/>
+			</fileset>
+			<fileset dir="${dist}">
+				<include name="sgine.jar"/>
+				<include name="sgine.tests.jar"/>
+			</fileset>
+		</copy>
+		<jar destfile="${dist}/test/linux_natives.jar" basedir="${lib}/native/linux"/>
+		<jar destfile="${dist}/test/macosx_natives.jar" basedir="${lib}/native/macosx"/>
+		<jar destfile="${dist}/test/solaris_natives.jar" basedir="${lib}/native/solaris"/>
+		<jar destfile="${dist}/test/windows_natives.jar" basedir="${lib}/native/windows"/>
+		
+		<delete file="${dist}/test/${keystore}"/>
+				
+		<genkey alias="sgine" keystore="${dist}/test/${keystore}" storepass="sgine.tests">
+			<dname>
+				<param name="CN" value="sgine"/>
+				<param name="OU" value="sgine"/>
+				<param name="O" value="sgine.org"/>
+				<param name="C" value="US"/>
+			</dname>
+		</genkey>
+		
+		<signjar keystore="${dist}/test/${keystore}" alias="sgine" keypass="sgine.tests" storepass="sgine.tests" verbose="false">
+			<fileset dir="${dist}/test/">
+				<include name="*.jar"/>
+			</fileset>
+		</signjar>
 	</target>
 	
 	<target name="run-opengl-test" depends="jar-tests">
@@ -77,15 +119,15 @@
 	</target>
 	
 	<target name="run-work-test" depends="jar">
-		<java classpathref="cp" classname="com.sgine.work.TestPerformance"/>
+		<java classpathref="cp" classname="org.sgine.work.TestPerformance"/>
 	</target>
 	
 	<target name="run-properties-test" depends="jar">
-		<java classpathref="cp" classname="com.sgine.property.TestProperties"/>
+		<java classpathref="cp" classname="org.sgine.property.TestProperties"/>
 	</target>
 	
 	<target name="run-easing-test" depends="jar">
-		<java classpathref="cp" classname="com.sgine.easing.BackTest"/>
+		<java classpathref="cp" classname="org.sgine.easing.BackTest"/>
 	</target>
 
 	<target name="run-tests">
@@ -94,9 +136,16 @@
 			<arg value="."/>
 			<arg value="-oWD"/>
 			<arg value="-s"/>
-			<arg value="com.sgine.property.PropertyTests"/>
+			<arg value="org.sgine.property.PropertyTests"/>
 			<arg value="-s"/>
-			<arg value="com.sgine.event.TestEvents"/>
+			<arg value="org.sgine.event.TestEvents"/>
+		</java>
+	</target>
+	
+	<target name="run-applet-test" depends="jar-tests">
+		<java classpathref="cp-test" classname="org.sgine.util.Desktop" fork="true">
+			<arg value="browse"/>
+			<arg value="file:/${dist}/test/TestApplet.html"/>
 		</java>
 	</target>
 
