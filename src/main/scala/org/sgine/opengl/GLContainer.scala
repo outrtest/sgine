@@ -48,6 +48,7 @@ trait GLContainer {
 	
 	private def run() = {
 		awtContainer.setLayout(new BorderLayout())
+		canvas.setSize(containerWidth(), containerHeight())
 		awtContainer.add(BorderLayout.CENTER, canvas)
 		
 		awtContainer.setVisible(true)
