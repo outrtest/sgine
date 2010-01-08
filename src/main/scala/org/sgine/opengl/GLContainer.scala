@@ -54,8 +54,8 @@ trait GLContainer {
 		awtContainer.setVisible(true)
 		
 		// Configure display
-		Display.setFullscreen(fullscreen())		// TODO: revisit
-		Display.setVSyncEnabled(verticalSync())		// TODO: revisit
+		Display.setFullscreen(fullscreen())
+		Display.setVSyncEnabled(verticalSync())
 		Display.setDisplayMode(determineDisplayMode())
 		Display.setParent(canvas)
 		Display.create()		// TODO: incorporate PixelFormat
