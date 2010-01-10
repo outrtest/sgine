@@ -3,7 +3,7 @@ package org.sgine.visual
 import org.sgine.visual.material._
 
 trait Material {
-	val pigment: Pigment
-	val normal: Normal
-	val finish: Finish
+	def pigment: Pigment
+	def normal: Normal
+	def finish: Finish
 }
