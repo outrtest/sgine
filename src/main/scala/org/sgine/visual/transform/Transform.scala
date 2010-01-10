@@ -1,9 +1,11 @@
 package org.sgine.visual.transform
 
 import org.sgine.math._
+import org.sgine.property._
+import org.sgine.property.container._
 
-trait Transform {
-	def rotation: Vector3
-	def scale: Vector3
-	def translation: Vector3
+trait Transform extends PropertyContainer {
+	val rotation = new AdvancedProperty[Vector3](Vector3.Zero, this)
+	val scale = new AdvancedProperty[Vector3](Vector3.Zero, this)
+	val translation = new AdvancedProperty[Vector3](Vector3.Zero, this)
 }

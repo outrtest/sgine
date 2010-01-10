@@ -14,7 +14,7 @@ import scala.collection.JavaConversions._
 /**
  * A view to some Nodes that match a query in a NodeContainer.
  */
-class NodeView private (container: NodeContainer, query: NodeQuery) extends Iterable[Node] with Listenable {
+class NodeView private (container: NodeContainer, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
 	val parent = null
 	private val queue = new ConcurrentLinkedQueue[Node]
 	
@@ -49,7 +49,7 @@ class NodeView private (container: NodeContainer, query: NodeQuery) extends Iter
 }
 
 object NodeView {
-	def apply(container: NodeContainer, query: NodeQuery, asynchronous: Boolean): NodeView = {
+	def apply(container: NodeContainer, query: Node => Boolean, asynchronous: Boolean): NodeView = {
 		val v = new NodeView(container, query)
 		v.refresh()
 		val h = container.listeners += v.containerEvent _

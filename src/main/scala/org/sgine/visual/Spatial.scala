@@ -1,7 +1,9 @@
 package org.sgine.visual
 
 import org.sgine.math._
+import org.sgine.property._
+import org.sgine.property.container._
 
-trait Spatial {
-	def location: Vector3
+trait Spatial extends PropertyContainer {
+	val location = new AdvancedProperty[Vector3](null, this)
 }
