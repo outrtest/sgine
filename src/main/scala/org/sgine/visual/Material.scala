@@ -10,3 +10,14 @@ trait Material extends PropertyContainer {
 	val normal = new AdvancedProperty[Normal](null, this)
 	val finish = new AdvancedProperty[Finish](null, this)
 }
+
+object Material {
+	def apply(pigment: Pigment) = {
+		val m = new MaterialImpl
+		m.pigment := pigment
+		
+		m
+	}
+}
+
+class MaterialImpl extends Material
