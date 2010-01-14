@@ -15,5 +15,5 @@ trait Node extends Listenable {
 	/**
 	 * The container that this node is located in, or null if it is not located in any collection.
 	 */
-	def parent = parentContainer
+	override def parent = parentContainer
 }

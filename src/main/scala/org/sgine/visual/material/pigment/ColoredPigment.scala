@@ -1,8 +1,9 @@
 package org.sgine.visual.material.pigment
 
 import org.sgine.visual._
+import org.sgine.visual.material._
 
-trait ColoredPigment {
+trait ColoredPigment extends Pigment {
 	val color: Color
 }
 

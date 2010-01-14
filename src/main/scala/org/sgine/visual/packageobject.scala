@@ -1,4 +1,4 @@
-import org.sgine.visual._
+import org.sgine.visual.{Material}
 import org.sgine.visual.material._
 
 package object visual {
