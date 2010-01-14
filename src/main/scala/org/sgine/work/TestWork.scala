@@ -5,11 +5,11 @@ import org.sgine.work.unit._;
 object TestWork {
 	def main(args:Array[String]) = {
 		DefaultWorkManager += TestDependent;
-		DefaultWorkManager += testOne;
+		DefaultWorkManager += testOne _;
 		Thread.sleep(15000);
 	}
 	
-	def testOne() = {
+	def testOne(): Unit = {
 		println("Test One!");
 	}
 }

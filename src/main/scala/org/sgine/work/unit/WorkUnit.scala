@@ -6,6 +6,7 @@ trait WorkUnit extends Function0[Unit] {
 	private var _enqueued:Long = _;
 	private var _started = -1L;
 	var workManager:WorkManager = _;
+	var workThread:WorkThread = _;
 	
 	def enqueue() = {
 		_enqueued = WorkManager.time;
@@ -14,12 +15,10 @@ trait WorkUnit extends Function0[Unit] {
 	
 	def getEnqueued = _enqueued;
 	
-	def started() = {
-		_started = WorkManager.time;
-	}
+	def started() = _started = WorkManager.time
 	
 	def getStarted = _started;
 	
-	def apply():Unit = {
+	def apply(): Unit = {
 	}
 }

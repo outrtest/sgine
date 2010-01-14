@@ -20,23 +20,7 @@ private[work] class WorkThread (workManager:WorkManager) {
 		while (keepAlive) {
 			try {
 				work = workManager.request();
-				if (work != null) {
-					working = true;
-					work match {
-						case wu:WorkUnit => wu.workManager = workManager;
-						case _ =>
-					}
-					work match {
-						case tu:TimeoutUnit => tu.started();
-						case _ =>
-					}
-					work();
-				} else {
-					working = false;
-					workManager.monitor.synchronized {
-						workManager.monitor.wait(Math.round(workManager.threadWait * 1000));
-					}
-				}
+				doWork
 			} catch {
 				case exc:Throwable => {
 					workManager.uncaughtExceptionHandler(exc);
@@ -50,6 +34,37 @@ private[work] class WorkThread (workManager:WorkManager) {
 			
 			if (workManager.threadYielding) {
 				Thread.`yield`();
+			}
+		}
+	}
+	
+	private def doWork(): Unit = {
+		if (work != null) {
+			working = true;
+			work match {
+				case fu: FutureUnit[_] => {
+					if (fu.isCancelled) {
+						return
+					}
+				}
+				case _ =>
+			}
+			work match {
+				case wu:WorkUnit => {
+					wu.workManager = workManager;
+					wu.workThread = this;
+				}
+				case _ =>
+			}
+			work match {
+				case tu:TimeoutUnit => tu.started();
+				case _ =>
+			}
+			work();
+		} else {
+			working = false;
+			workManager.monitor.synchronized {
+				workManager.monitor.wait(Math.round(workManager.threadWait * 1000));
 			}
 		}
 	}
@@ -72,4 +87,6 @@ private[work] class WorkThread (workManager:WorkManager) {
 	def isWorking() = working;
 	
 	def hasWork() = work != null
+	
+	def interrupt() = thread.interrupt()
 }

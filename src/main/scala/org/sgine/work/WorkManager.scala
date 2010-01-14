@@ -113,10 +113,12 @@ class WorkManager {
 		w.init()
 	}
 	
-	def +=(work:() => Unit) = {
+	def +=[T <: () => Unit](work: T): T = {
 		init()
 		
 		queue.add(work)
+		
+		work
 	}
 	
 	def -=(work:() => Unit) = {
