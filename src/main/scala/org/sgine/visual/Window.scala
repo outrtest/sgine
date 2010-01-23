@@ -49,7 +49,7 @@ class Window private() extends PropertyContainer {
 		_renderer = renderer
 		
 		// Pass control to Renderer
-		renderer.init(awtContainer)
+		renderer.init(this)
 	}
 }
 
