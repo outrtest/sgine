@@ -28,9 +28,8 @@ class GLWindow private (val frame: Frame) extends GLContainer {
 }
 
 object GLWindow {
-	def apply(title: String, width: Int, height: Int, workManager: WorkManager = DefaultWorkManager): GLWindow = {
+	def apply(title: String, width: Int, height: Int, workManager: WorkManager = DefaultWorkManager, frame: Frame = new Frame()): GLWindow = {
 		// Create the frame
-		val frame = new Frame()
 		frame.setSize(width, height)
 		frame.setTitle(title)
 		frame.setResizable(false)		// TODO: support resizing at some point

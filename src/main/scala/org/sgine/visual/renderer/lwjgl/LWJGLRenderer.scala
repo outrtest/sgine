@@ -7,6 +7,6 @@ import org.sgine.visual.renderer.Renderer
 
 object LWJGLRenderer extends Renderer {
 	def init(window: Window) = {
-		println("init lwjgl renderer!")
+		new LWJGLRendererInstance(window)
 	}
 }
