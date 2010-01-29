@@ -5,21 +5,38 @@ import org.sgine.property.container._
 import org.sgine.scene._
 import org.sgine.scene.query._
 import org.sgine.scene.view._
+import org.sgine.visual.awt.AWTFrame
 import org.sgine.visual.renderer._
+import org.sgine.visual.scene.ShapeQuery
 
 class Window private() extends PropertyContainer {
+	/**
+	 * The title of this Window
+	 */
 	val title = new AdvancedProperty[String](null, this)
+	/**
+	 * The width of this Window
+	 */
 	val width = new AdvancedProperty[Int](0, this)
+	/**
+	 * The height of this Window
+	 */
 	val height = new AdvancedProperty[Int](0, this)
+	/**
+	 * The scene this Window renders
+	 */
 	val scene = new AdvancedProperty[MutableNodeContainer](null, this)
+	/**
+	 * A read-only NodeView for the Updatable Nodes in the scene
+	 */
 	val updateView = new DelegateProperty[NodeView](() => _updateView)
+	/**
+	 * A read-only NodeView for the ShapeNodes in the scene
+	 */
 	val shapesView = new DelegateProperty[NodeView](() => _shapesView)
 	/**
 	 * The java.awt.Container this Window is using to display.
 	 * This may be null if running in headless mode.
-	 * 
-	 * @return
-	 * 		java.awt.Container
 	 */
 	val awtContainer = new DelegateProperty[java.awt.Container](() => _awtContainer)
 	/**
@@ -34,12 +51,13 @@ class Window private() extends PropertyContainer {
 	
 	def reload() = {
 		// Register NodeView for updates
-		
+		_updateView = NodeView(scene(), UpdatablesQuery, false)
 		
 		// Register NodeView for Shapes
+		_shapesView = NodeView(scene(), ShapeQuery, false)
 	}
 	
-	def start(awtContainer: java.awt.Container = new java.awt.Frame(), renderer: Renderer = Renderer.Default) = {
+	def start(awtContainer: java.awt.Container = new AWTFrame(this), renderer: Renderer = Renderer.Default) = {
 		// Assign container
 		_awtContainer = awtContainer
 		width := awtContainer.getWidth()
@@ -50,6 +68,11 @@ class Window private() extends PropertyContainer {
 		
 		// Pass control to Renderer
 		renderer.init(this)
+	}
+	
+	def stop() = {
+		// TODO: support shutting down gracefully
+		System.exit(0)
 	}
 }
 

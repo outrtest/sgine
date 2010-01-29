@@ -7,6 +7,8 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 	protected var bindings = new CopyOnWriteArraySet[BindingProperty[T]]()
 	
 	def bind(p: BindingProperty[T]) = {
+		apply(p())		// Synchronize the values
+		
 		p.bindings.add(this)
 	}
 	
@@ -19,4 +21,6 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 		
 		bindings.foreach(_ := newValue)
 	}
+	
+	// TODO: support checking getter on update
 }

@@ -134,3 +134,9 @@ trait GLContainer {
 	    lastRender = currentRender
 	}
 }
+
+object GLContainer {
+	def apply(awtContainer: Container) = new GLContainerImpl(awtContainer)
+}
+
+class GLContainerImpl(val awtContainer: Container) extends GLContainer
