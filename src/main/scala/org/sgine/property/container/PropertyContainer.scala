@@ -87,43 +87,15 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 				for (f <- staticPropertyFields) {
 					val p = f.get(this).asInstanceOf[Property[_]]
 					this += p
-					aliases += f.getName -> p
+					if (!aliases.contains(f.getName)) {
+						aliases += f.getName -> p
+					}
 				}
 				
 				initialized = true
 			}
 		}
 	}
-	
-//	private def initializeDeclaredProperties(): CopyOnWriteArraySet[Property[_]] = {
-//		var props = new CopyOnWriteArraySet[Property[_]]()
-//		
-//		for (f <- getClass.getDeclaredFields) {
-//			f.setAccessible(true)
-//			
-//			f.get(this) match {
-//				case p: Property[_] => {
-//					props.add(p)
-//					p match {
-//						case np: NameableProperty => {
-//							if (np.name == null) {
-//								np.name = Symbol(f.getName)
-//							} else {
-//								aliases.put(np.name, p)
-//							}
-//						}
-//						case _ => println("NotNameable")
-//					}
-//					aliases.put(Symbol(f.getName), p)
-//				}
-//				case _ =>
-//			}
-//		}
-//		
-//		initialized = true
-//		
-//		props
-//	}
 }
 
 object PropertyContainer {

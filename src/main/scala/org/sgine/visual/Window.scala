@@ -57,7 +57,7 @@ class Window private(_renderer: Renderer) extends PropertyContainer with Listena
 	val updateTimer = new DelegateProperty[Timer](() => _updateTimer)
 	
 	private var _updateView: NodeView = _
-	private var _shapesView = new AdvancedProperty[NodeView](null, this)
+	private var _shapesView = new AdvancedProperty[NodeView](null, this, "shapesView")
 	private var _awtContainer: java.awt.Container = _
 	private var _updateTimer: Timer = _
 	
@@ -105,8 +105,6 @@ object Window {
 		// Set properties
 		w.title := title
 		w.scene := scene
-		
-		w.reload()
 		
 		w
 	}
