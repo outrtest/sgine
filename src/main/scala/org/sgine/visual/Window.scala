@@ -1,5 +1,12 @@
 package org.sgine.visual
 
+import org.sgine.scene.view.event.NodeRemovedEvent
+import org.sgine.scene.view.event.NodeAddedEvent
+import org.sgine.scene.event.NodeContainerEvent
+import org.sgine._
+import org.sgine.visual.time.RealtimeTimer
+import org.sgine.visual.time.Timer
+import org.sgine.event._
 import org.sgine.property._
 import org.sgine.property.container._
 import org.sgine.scene._
@@ -8,6 +15,7 @@ import org.sgine.scene.view._
 import org.sgine.visual.awt.AWTFrame
 import org.sgine.visual.renderer._
 import org.sgine.visual.scene.ShapeQuery
+import org.sgine.work._
 
 class Window private() extends PropertyContainer {
 	/**
@@ -43,21 +51,40 @@ class Window private() extends PropertyContainer {
 	 * The Renderer this Window instance is using to render.
 	 */
 	val renderer = new DelegateProperty[Renderer](() => _renderer)
+	/**
+	 * The Timer used for updates to updatables. Defaults to RealtimeTimer.
+	 */
+	val updateTimer = new DelegateProperty[Timer](() => _updateTimer)
 	
 	private var _updateView: NodeView = _
 	private var _shapesView: NodeView = _
 	private var _awtContainer: java.awt.Container = _
 	private var _renderer: Renderer = _
+	private var _updateTimer: Timer = _
+	
+	// Add listener to know when a new scene has been set
+	scene.listeners += EventHandler(sceneChanged _, processingMode = ProcessingMode.Blocking)
+	
+	private val shapeAddedHandler = EventHandler(shapeAdded, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
+	private val shapeRemovedHandler = EventHandler(shapeRemoved, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	
 	def reload() = {
 		// Register NodeView for updates
 		_updateView = NodeView(scene(), UpdatablesQuery, false)
 		
+		// Unregister listener if previous shapes view exists
+		if (_shapesView != null) {
+			_shapesView.listeners -= shapeAddedHandler
+			_shapesView.listeners -= shapeRemovedHandler
+		}
+		
 		// Register NodeView for Shapes
 		_shapesView = NodeView(scene(), ShapeQuery, false)
+		_shapesView.listeners += shapeAddedHandler
+		_shapesView.listeners += shapeRemovedHandler
 	}
 	
-	def start(awtContainer: java.awt.Container = new AWTFrame(this), renderer: Renderer = Renderer.Default) = {
+	def start(awtContainer: java.awt.Container = new AWTFrame(this), renderer: Renderer = Renderer.Default, updateTimer: Timer = new RealtimeTimer) = {
 		// Assign container
 		_awtContainer = awtContainer
 		width := awtContainer.getWidth()
@@ -68,11 +95,26 @@ class Window private() extends PropertyContainer {
 		
 		// Pass control to Renderer
 		renderer.init(this)
+		
+		// Initialize timer
+		_updateTimer = updateTimer
+		DefaultWorkManager += Updater(updateTimer)
 	}
 	
 	def stop() = {
-		// TODO: support shutting down gracefully
-		System.exit(0)
+		renderer().shutdown(this)
+	}
+	
+	private def sceneChanged(e: PropertyChangeEvent[MutableNodeContainer]) = {
+		reload()
+	}
+	
+	private def shapeAdded(e: NodeAddedEvent) = {
+		println("test: " + e.node)
+	}
+	
+	private def shapeRemoved(e: NodeRemovedEvent) = {
+		println("removed: " + e)
 	}
 }
 

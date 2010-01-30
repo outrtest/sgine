@@ -64,7 +64,9 @@
 	        </fileset>
 		</copy>
 		<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
+	</target>
 		
+	<target name="test-deploy">
 		<mkdir dir="${dist}/test"/>
 		<copy todir="${dist}/test">
 			<fileset dir="${test-html}"/>
@@ -118,6 +120,12 @@
 		</java>
 	</target>
 	
+	<target name="run-visual-test" depends="jar-tests">
+		<java classpathref="cp-test" classname="org.sgine.visual.BasicVisualTest" fork="true">
+			<jvmarg value="-Djava.library.path=${lib}/native/windows"/>
+		</java>
+	</target>
+	
 	<target name="run-work-test" depends="jar">
 		<java classpathref="cp" classname="org.sgine.work.TestPerformance"/>
 	</target>
@@ -142,7 +150,7 @@
 		</java>
 	</target>
 	
-	<target name="run-applet-test" depends="jar-tests">
+	<target name="run-applet-test" depends="jar-tests,test-deploy">
 		<java classpathref="cp-test" classname="org.sgine.util.Desktop" fork="true">
 			<arg value="browse"/>
 			<arg value="file:/${dist}/test/TestApplet.html"/>

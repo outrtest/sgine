@@ -1,5 +1,5 @@
 package org.sgine
 
 trait Updatable {
-	def update(time:Double);
+	def update(time: Double)
 }

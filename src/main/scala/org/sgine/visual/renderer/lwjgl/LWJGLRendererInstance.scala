@@ -6,9 +6,14 @@ import org.sgine.opengl.GLContainer
 import org.sgine.visual.Window
 
 class LWJGLRendererInstance (window: Window) {
-	val glWindow = GLContainer(window.awtContainer())
+	val glContainer = GLContainer(window.awtContainer())
 	
-	glWindow.displayables.add(FPS())
+	glContainer.displayables.add(FPS())
 	
-	glWindow.begin()
+	glContainer.begin()
+	
+	def shutdown() = {
+		// TODO: support shutting down gracefully
+		System.exit(0)
+	}
 }

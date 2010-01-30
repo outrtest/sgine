@@ -7,6 +7,8 @@ import java.awt.Container
 
 trait Renderer {
 	def init(window: Window): Unit
+	
+	def shutdown(window: Window): Boolean
 }
 
 object Renderer {

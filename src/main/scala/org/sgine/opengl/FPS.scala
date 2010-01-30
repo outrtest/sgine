@@ -1,10 +1,10 @@
 package org.sgine.opengl
 
 class FPS private() extends Function1[Double, Unit] {
-	private var elapsed:Double = 0.0;
-	private var frames:Long = 0;
+	private var elapsed: Double = 0.0
+	private var frames: Long = 0
 	
-	def apply(time:Double) = {
+	def apply(time: Double) = {
 		elapsed += time;
 		frames += 1;
 		if (elapsed > 1.0) {

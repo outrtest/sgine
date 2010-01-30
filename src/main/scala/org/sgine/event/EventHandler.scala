@@ -21,13 +21,7 @@ class EventHandler private (val listener: Event => Unit) {
 }
 
 object EventHandler {
-	def apply[E <: Event](listener: E => Unit): EventHandler = new EventHandler(EventListener(listener))
-	
-	def apply[E <: Event](listener: E => Unit, processingMode: ProcessingMode.Value): EventHandler = apply(listener, processingMode, Recursion.None, null)
-	
-	def apply[E <: Event](listener: E => Unit, processingMode: ProcessingMode.Value, recursion: Recursion.Value): EventHandler = apply(listener, processingMode, recursion, null)
-	
-	def apply[E <: Event](listener: E => Unit, processingMode: ProcessingMode.Value, recursion: Recursion.Value, filter: Event => Boolean): EventHandler = {
+	def apply[E <: Event](listener: E => Unit, processingMode: ProcessingMode.Value = ProcessingMode.Normal, recursion: Recursion.Value = Recursion.None, filter: Event => Boolean = null): EventHandler = {
 		val eh = new EventHandler(EventListener(listener))
 		eh.processingMode  = processingMode
 		eh.recursion = recursion
