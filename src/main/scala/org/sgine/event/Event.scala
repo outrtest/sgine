@@ -41,24 +41,26 @@ class Event (val listenable: Listenable) {
 object Event {
 	var workManager = DefaultWorkManager
 	
-	def enqueue(evt: Event) = {
+	def enqueue(evt: Event, target: Listenable = null) = {
+		val listenable = if (target != null) target else evt.listenable
+		
 		// Pre-Process Event on Listenable
-		evt.listenable.processEvent(evt)
+		listenable.processEvent(evt)
 		
 		// Process Event on blocking handlers
-		if (evt.processBlocking) evt.listenable.listeners.filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
+		if (evt.processBlocking) listenable.listeners.filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
 		
 		// Walk up the hierarchy for Recursion.Parents
-		processParentRecursion(evt.listenable.parent, evt)
+		processParentRecursion(listenable.parent, evt)
 		
 		// Walk down the hierarchy for Recursion.Children
-		processChildrenRecursion(evt.listenable, evt)
+		processChildrenRecursion(listenable, evt)
 		
 		// Enqueue Normal-blocking event
-		if (evt.processNormal) workManager += NormalEventWorkUnit(evt)
+		if (evt.processNormal) workManager += NormalEventWorkUnit(evt, listenable)
 		
 		// Iterate over and enqueue asynchronous entries
-		if (evt.processAsynchronous) evt.listenable.listeners.filter(_.processingMode == ProcessingMode.Asynchronous).foreach(workManager += AsynchronousWorkUnit(_, evt))
+		if (evt.processAsynchronous) listenable.listeners.filter(_.processingMode == ProcessingMode.Asynchronous).foreach(workManager += AsynchronousWorkUnit(_, evt))
 	}
 	
 	private def processParentRecursion(l: Listenable, evt: Event): Unit = {
@@ -118,8 +120,8 @@ case class AsynchronousWorkUnit(h: EventHandler, evt: Event) extends Function0[U
 	}
 }
 
-case class NormalEventWorkUnit(evt: Event) extends BlockingWorkUnit(evt.listenable) {
+case class NormalEventWorkUnit(evt: Event, listenable: Listenable) extends BlockingWorkUnit(listenable) {
 	def apply() = {
-		evt.listenable.listeners.filter(_.processingMode == ProcessingMode.Normal).foreach(_.process(evt));
+		listenable.listeners.filter(_.processingMode == ProcessingMode.Normal).foreach(_.process(evt));
 	}
 }

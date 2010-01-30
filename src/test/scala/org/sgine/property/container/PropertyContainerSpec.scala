@@ -23,7 +23,7 @@ class PropertyContainerSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "find 'p' by name" in {
-		container2('p) should equal (container2.p)
+		container2("p") should equal (Some(container2.p))
 	}
 	
 	"MutablePropertyContainer" should "have one entry" in {
@@ -31,7 +31,7 @@ class PropertyContainerSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "add a dynamic entry" in {
-		container3 += new AdvancedProperty[Int](2, container3, 'p2)
+		container3 += new AdvancedProperty[Int](2, container3, "p2")
 	}
 	
 	it should "have two entries" in {
@@ -39,10 +39,14 @@ class PropertyContainerSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "find 'p1' by name" in {
-		container3('p1) should equal (container3.p1)
+		container3("p1") should not equal (null)
+	}
+	
+	it should "find 'p1' and it should equal container3.p1" in {
+		container3("p1") should equal (Some(container3.p1))
 	}
 	
 	it should "find 'p2' by name" in {
-		container3('p2) should not equal (null)
+		container3("p2") should not equal (null)
 	}
 }

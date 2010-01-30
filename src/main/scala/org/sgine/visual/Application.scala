@@ -6,7 +6,7 @@ import java.applet.Applet
 import java.awt.Container
 
 class Application extends Applet {
-	val window = Window("sgine application")
+	val window = Window("sgine application", renderer = pickRenderer)
 	
 	/**
 	 * Overrides the Applet.init to initialize the display
@@ -15,7 +15,7 @@ class Application extends Applet {
 	override final def init = {			// Applet.init
 		super.init
 		
-		window.start(this, pickRenderer)
+		window.start(this)
 	}
 	
 	/**

@@ -1,21 +1,23 @@
 package org.sgine.property.container
 
+import scala.collection.immutable.HashMap
 import org.sgine._
 import org.sgine.event._
 import org.sgine.property._
 
 import scala.collection.JavaConversions._
 
-import java.util.concurrent._
-
 trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listenable {
 	def parent: Listenable = null
-	private lazy val properties = initializeDeclaredProperties()
-	protected val aliases = new ConcurrentHashMap[Symbol, Property[_]]()
+	private var properties: List[Property[_]] = Nil
+	private var aliases = new HashMap[String, Property[_]]()
+	private val staticPropertyFields = getStaticPropertyFields
 	
-	def apply(name: Symbol) = aliases.get(name)
+	private var initialized = false
 	
-	def contains(name: Symbol) = aliases.containsKey(name)
+	def apply(name: String) = aliases.get(name)
+	
+	def contains(name: String) = aliases.contains(name)
 	
 	def update(time: Double) = {
 		for (p <- this) p match {
@@ -24,19 +26,29 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 		}
 	}
 	
-	def iterator(): Iterator[Property[_]] = properties.iterator()
+	def iterator(): Iterator[Property[_]] = {
+		initialize()
+		properties.iterator
+	}
 	
-	protected def +=(p: Property[_]): PropertyContainer = {
-		properties.add(p)
-		p match {
-			case np: NamedProperty => aliases.put(np.name, p)
-			case _ =>
+	def +=(p: Property[_]): PropertyContainer = {
+		if (!properties.contains(p)) {			// No duplicates allowed
+			properties = p :: properties									// Add the property to the list
+
+			p match {														// Assign an alias if one already exists
+				case np: NamedProperty => {
+					if (np.name != null) {
+						aliases += np.name -> p
+					}
+				}
+				case _ =>
+			}
 		}
 		
 		this
 	}
 	
-	protected def -=(p: Property[_]): PropertyContainer = {
+	def -=(p: Property[_]): PropertyContainer = {
 		properties.remove(p)
 		p match {
 			case np: NamedProperty => aliases.remove(np.name)
@@ -46,23 +58,72 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 		this
 	}
 	
-	private def initializeDeclaredProperties() = {
-		var props = new CopyOnWriteArraySet[Property[_]]()
-		
+	def name(p: Property[_]) = getStaticPropertyName(p)
+	
+	private def getStaticPropertyName(p: Property[_]): String = {
+		for (f <- staticPropertyFields) {
+			if (f.get(this) == p) {
+				return f.getName
+			}
+		}
+		return null
+	}
+	
+	private def getStaticPropertyFields = {
+		var props: List[java.lang.reflect.Field] = Nil
 		for (f <- getClass.getDeclaredFields) {
-			f.setAccessible(true)
-			
-			f.get(this) match {
-				case p: Property[_] => {
-					props.add(p)
-					aliases.put(Symbol(f.getName), p)
-				}
-				case _ =>
+			if (classOf[Property[_]].isAssignableFrom(f.getType)) {
+				f.setAccessible(true)
+				props = f :: props
 			}
 		}
 		
 		props
 	}
+	
+	private def initialize() = {
+		synchronized {
+			if (!initialized) {
+				for (f <- staticPropertyFields) {
+					val p = f.get(this).asInstanceOf[Property[_]]
+					this += p
+					aliases += f.getName -> p
+				}
+				
+				initialized = true
+			}
+		}
+	}
+	
+//	private def initializeDeclaredProperties(): CopyOnWriteArraySet[Property[_]] = {
+//		var props = new CopyOnWriteArraySet[Property[_]]()
+//		
+//		for (f <- getClass.getDeclaredFields) {
+//			f.setAccessible(true)
+//			
+//			f.get(this) match {
+//				case p: Property[_] => {
+//					props.add(p)
+//					p match {
+//						case np: NameableProperty => {
+//							if (np.name == null) {
+//								np.name = Symbol(f.getName)
+//							} else {
+//								aliases.put(np.name, p)
+//							}
+//						}
+//						case _ => println("NotNameable")
+//					}
+//					aliases.put(Symbol(f.getName), p)
+//				}
+//				case _ =>
+//			}
+//		}
+//		
+//		initialized = true
+//		
+//		props
+//	}
 }
 
 object PropertyContainer {
