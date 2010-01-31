@@ -82,17 +82,19 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 	}
 	
 	private def initialize() = {
-		synchronized {
-			if (!initialized) {
-				for (f <- staticPropertyFields) {
-					val p = f.get(this).asInstanceOf[Property[_]]
-					this += p
-					if (!aliases.contains(f.getName)) {
-						aliases += f.getName -> p
+		if (!initialized) {
+			synchronized {
+				if (!initialized) {
+					for (f <- staticPropertyFields) {
+						val p = f.get(this).asInstanceOf[Property[_]]
+						this += p
+						if (!aliases.contains(f.getName)) {
+							aliases += f.getName -> p
+						}
 					}
+					
+					initialized = true
 				}
-				
-				initialized = true
 			}
 		}
 	}
