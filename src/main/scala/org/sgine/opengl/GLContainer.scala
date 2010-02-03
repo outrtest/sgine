@@ -22,7 +22,7 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
 trait GLContainer {
-	val awtContainer: Container
+	private var awtContainer: Container = _
 	
 	val containerWidth = new AdvancedProperty[Int](0)
 	val containerHeight = new AdvancedProperty[Int](0)
@@ -34,11 +34,14 @@ trait GLContainer {
 	private var renders:Long = 0
 	private var lastRender:Long = System.nanoTime()
 	private val canvas = new Canvas()
-	private val thread = new Thread(FunctionRunnable(run))
+	private lazy val thread = new Thread(FunctionRunnable(run))
 	
 	val displayables = new ConcurrentLinkedQueue[(Double) => Unit]()
 	
-	def begin() = {
+	def begin(awtContainer: Container) = {
+		this.awtContainer = awtContainer
+		
+		println("Values: " + containerWidth() + "x" + containerHeight()) 
 		thread.start()
 		
 		while(renders < 2) {
@@ -136,7 +139,13 @@ trait GLContainer {
 }
 
 object GLContainer {
-	def apply(awtContainer: Container) = new GLContainerImpl(awtContainer)
+	def apply() = new GLContainerImpl()
+	
+	def apply(awtContainer: Container) = {
+		val i = new GLContainerImpl()
+		i.awtContainer = awtContainer
+		i
+	}
 }
 
-class GLContainerImpl(val awtContainer: Container) extends GLContainer
+class GLContainerImpl extends GLContainer

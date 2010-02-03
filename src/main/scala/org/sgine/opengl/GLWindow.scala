@@ -20,7 +20,9 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
 class GLWindow private (val frame: Frame) extends GLContainer {
-	val awtContainer = frame
+	override def begin(awtContainer: java.awt.Container = frame) = {
+		super.begin(awtContainer)
+	}
 	
 	override protected def destroyAWT() = {
 		frame.dispose()

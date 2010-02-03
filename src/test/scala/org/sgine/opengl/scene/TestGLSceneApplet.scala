@@ -10,7 +10,7 @@ import org.sgine.property.adjust._
 import javax.imageio._
 
 class TestGLSceneApplet extends GLApplet {
-	override def begin() = {
+	override def begin(awtContainer: java.awt.Container = this) = {
 		// Create a container for our scene
 		val root = new GLNodeContainer()
 		val node = new GLShape()
@@ -28,7 +28,7 @@ class TestGLSceneApplet extends GLApplet {
 		
 		displayables.add(FPS())
 		
-		super.begin()
+		super.begin(this)
 		
 		node.location.z.waitForTarget()
 		node.location.z := -500.0

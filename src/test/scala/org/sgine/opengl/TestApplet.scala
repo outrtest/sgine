@@ -8,7 +8,7 @@ import org.sgine.math._
 import state._
 
 class TestApplet extends GLApplet {
-	override def begin() = {
+	override def begin(awtContainer: java.awt.Container = this) = {
 		// Translate back so we can see
 		displayables.add(TranslateState(0.0, 0.0, -1000.0));
 		
@@ -19,6 +19,6 @@ class TestApplet extends GLApplet {
 		// Add an FPS counter to see how fast we're going
 		displayables.add(FPS());
 		
-		super.begin()
+		super.begin(awtContainer)
 	}
 }

@@ -1,7 +1,8 @@
 package org.sgine.opengl.shape
 
 import org.sgine.opengl._
-import org.sgine.math.mutable._;
+import org.sgine.math._;
+import org.sgine.math.mutable.{Vector3 => MutableVector3}
 import org.sgine.util._;
 
 import java.awt.image._;
@@ -10,13 +11,14 @@ import javax.imageio._;
 
 import org.lwjgl.opengl.GL11._;
 
-class Shape(val shapeType:Int, val points:Vector3*) extends Function1[Double, Unit] {
+class Shape private (val shapeType:Int, val points: Vector3*) extends Function1[Double, Unit] {
 	lazy val vertices = points;
 	val texture = new Texture();
 	val textureCoordinates = new TextureCoordinates(vertices.length);
 	
 	def apply(time:Double) = {
 		texture.draw();
+		glColor3d(1.0, 1.0, 1.0)
 		glBegin(shapeType);
 		for (i <- 0 until vertices.size) {
 			drawVertex(vertices(i), i)
@@ -40,10 +42,10 @@ class Shape(val shapeType:Int, val points:Vector3*) extends Function1[Double, Un
 		val xb = w / 2.0;
 		val yb = h / 2.0;
 		
-		points(0).set(-xb, -yb, 0.0)
-		points(1).set(xb, -yb, 0.0)
-		points(2).set(xb, yb, 0.0)
-		points(3).set(-xb, yb, 0.0f)
+		points(0) match { case p: MutableVector3 => p.set(-xb, -yb, 0.0) }
+		points(1) match { case p: MutableVector3 => p.set(xb, -yb, 0.0) }
+		points(2) match { case p: MutableVector3 => p.set(xb, yb, 0.0) }
+		points(3) match { case p: MutableVector3 => p.set(-xb, yb, 0.0) }
 		
 		texture(image, 0, 0, image.getWidth, image.getHeight, true);
 	}
@@ -58,7 +60,7 @@ class Shape(val shapeType:Int, val points:Vector3*) extends Function1[Double, Un
 }
 
 object Shape {
-	def apply(shapeType:Int, vertices:Vector3*) = new Shape(shapeType, vertices:_*);
+	def apply(shapeType:Int, vertices:Vector3*) = new Shape(shapeType, vertices: _*);
 	
 	def apply(image:BufferedImage):Shape = {
 		val xb = image.getWidth / 2.0;
