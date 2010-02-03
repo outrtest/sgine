@@ -54,9 +54,8 @@ class LWJGLRendererInstance (window: Window) {
 		for (v <- m.vertices) {
 			println("vertice: " + v)
 		}
-		// TODO: this should be triangles
 		val gls = GLShape(
-			GL_QUADS,
+			GL_TRIANGLES,
 			m.vertices: _*
 		);
 		// TODO: these should reflect the coordinates associated with the Shape
@@ -64,6 +63,8 @@ class LWJGLRendererInstance (window: Window) {
 		gls.textureCoordinates(1) = Vector2.Ones;
 		gls.textureCoordinates(2) = Vector2.UnitX;
 		gls.textureCoordinates(3) = Vector2.Zero;
+		gls.textureCoordinates(4) = Vector2.UnitY;
+		gls.textureCoordinates(5) = Vector2.UnitX;
 		glContainer.displayables.add(gls)
 	}
 	

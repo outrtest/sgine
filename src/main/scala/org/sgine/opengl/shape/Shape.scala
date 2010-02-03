@@ -66,16 +66,20 @@ object Shape {
 		val xb = image.getWidth / 2.0;
 		val yb = image.getHeight / 2.0;
 		val s = Shape(
-				GL_QUADS,
-				Vector3(-xb, -yb, 0.0),
-				Vector3(xb, -yb, 0.0),
-				Vector3(xb, yb, 0.0),
-				Vector3(-xb, yb, 0.0)
+				GL_TRIANGLES,
+				Vector3(-xb, -yb, 0.0),		// Bottom-Left
+				Vector3(xb, -yb, 0.0),		// Bottom-Right
+				Vector3(xb, yb, 0.0),		// Top-Right
+				Vector3(-xb, yb, 0.0),		// Top-Left
+				Vector3(-xb, -yb, 0.0),		// Bottom-Left
+				Vector3(xb, yb, 0.0)		// Top-Right
 			);
 		s.textureCoordinates(0) = Vector2.UnitY;
 		s.textureCoordinates(1) = Vector2.Ones;
 		s.textureCoordinates(2) = Vector2.UnitX;
 		s.textureCoordinates(3) = Vector2.Zero;
+		s.textureCoordinates(4) = Vector2.UnitY;
+		s.textureCoordinates(5) = Vector2.UnitX;
 		
 		s.texture(image, 0, 0, image.getWidth, image.getHeight, true);
 		
