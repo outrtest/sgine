@@ -11,14 +11,13 @@ import javax.imageio._;
 
 import org.lwjgl.opengl.GL11._;
 
-class Shape private (val shapeType:Int, val points: Vector3*) extends Function1[Double, Unit] {
+class Shape (val shapeType:Int, val points: Vector3*) extends Function1[Double, Unit] {
 	lazy val vertices = points;
 	val texture = new Texture();
 	val textureCoordinates = new TextureCoordinates(vertices.length);
 	
 	def apply(time:Double) = {
 		texture.draw();
-		glColor3d(1.0, 1.0, 1.0)
 		glBegin(shapeType);
 		for (i <- 0 until vertices.size) {
 			drawVertex(vertices(i), i)
@@ -52,10 +51,10 @@ class Shape private (val shapeType:Int, val points: Vector3*) extends Function1[
 	
 	private def drawVertex(vertex:Vector3, index:Int) = {
 		val coords = textureCoordinates(index);
-		if (coords != null) {
+		if (coords != null) {			// Texture coordinates optional
 			glTexCoord2d(coords.x, coords.y);
-			glVertex3d(vertex.x, vertex.y, vertex.z);
 		}
+		glVertex3d(vertex.x, vertex.y, vertex.z);
 	}
 }
 

@@ -9,7 +9,6 @@ import org.sgine.event._
 
 import org.sgine.opengl.FPS
 import org.sgine.opengl.GLContainer
-import org.sgine.opengl.shape.{Shape => GLShape}
 import org.sgine.opengl.state._
 
 import org.sgine.visual.Window
@@ -26,7 +25,7 @@ class LWJGLRendererInstance (window: Window) {
 	window.listeners += EventHandler(propertyChanged, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	window.listeners += EventHandler(nodeAdded, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	
-	private var shapes: List[Shape] = Nil
+	private var shapes: List[LWJGLShape] = Nil
 	
 	def start() = {
 		glContainer.displayables.add(FPS())
@@ -50,21 +49,7 @@ class LWJGLRendererInstance (window: Window) {
 	
 	private def nodeAdded(evt: NodeAddedEvent) = {
 		val s = evt.node.asInstanceOf[Shape]
-		val m = s.mesh()
-		for (v <- m.vertices) {
-			println("vertice: " + v)
-		}
-		val gls = GLShape(
-			GL_TRIANGLES,
-			m.vertices: _*
-		);
-		// TODO: these should reflect the coordinates associated with the Shape
-		gls.textureCoordinates(0) = Vector2.UnitY;
-		gls.textureCoordinates(1) = Vector2.Ones;
-		gls.textureCoordinates(2) = Vector2.UnitX;
-		gls.textureCoordinates(3) = Vector2.Zero;
-		gls.textureCoordinates(4) = Vector2.UnitY;
-		gls.textureCoordinates(5) = Vector2.UnitX;
+		val gls = LWJGLShape(s)
 		glContainer.displayables.add(gls)
 	}
 	
