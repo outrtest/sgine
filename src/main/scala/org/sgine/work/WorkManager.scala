@@ -6,8 +6,6 @@ import org.sgine.work.unit._
 import java.util.concurrent._
 import java.util.concurrent.locks._
 
-import scala.collection.JavaConversions._
-
 class WorkManager {
 	/**
 	 * @see WorkManager#DEFAULT_THREAD_SETTLING
@@ -47,9 +45,13 @@ class WorkManager {
 	var uncaughtExceptionHandler = (exc:Throwable) => {
 		exc.printStackTrace()
 	}
+	/**
+	 * @see WorkManager#DEFAULT_MAX_QUEUE
+	 */
+	var maxQueue = WorkManager.DEFAULT_MAX_QUEUE
 	
-	private val queue = new ConcurrentLinkedQueue[() => Unit]()
-	private val workers = new ConcurrentLinkedQueue[WorkThread]()
+	private lazy val queue = new ArrayBlockingQueue[() => Unit](maxQueue)
+	private var workers: List[WorkThread] = Nil
 	
 	private[work] val monitor = new Thread(FunctionRunnable(run))
 	
@@ -70,23 +72,28 @@ class WorkManager {
 		}
 	}
 	
+	private var time: Double = 0.0
+	private var allProcessing = true
+	
+	private val updateWorkThread = (w: WorkThread) => {
+		w.update(time)
+		if (w.isWorking) {
+			allProcessing = false
+		}
+	}
+	
 	private def run():Unit = {
 		while (keepAlive) {
 			val lastTime = WorkManager.time
 			WorkManager._time = System.currentTimeMillis
 			
-			val time = (WorkManager.time - lastTime) / 1000.0
+			time = (WorkManager.time - lastTime) / 1000.0
 			val threadCount = workers.size
 			val workCount = queue.size
-			var allProcessing = true
+			allProcessing = true
 			
 			// Update WorkThreads
-			workers.foreach(w => {
-				w.update(time)
-				if (!w.isWorking) {
-					allProcessing = false
-				}
-			})
+			workers.foreach(updateWorkThread)
 			
 			// Check to see if overloaded with work
 			if (threadCount < maxThreads) {
@@ -109,14 +116,15 @@ class WorkManager {
 	
 	private def addWorker() = {
 		val w = new WorkThread(this)
-		workers.add(w)
+//		workers.add(w)
+		workers = w :: workers
 		w.init()
 	}
 	
 	def +=[T <: () => Unit](work: T): T = {
 		init()
 		
-		queue.add(work)
+		queue.put(work)
 		
 		work
 	}
@@ -126,12 +134,12 @@ class WorkManager {
 	}
 	
 	def request():() => Unit = {
-		var w = queue.poll()
+		var w = queue.take()
 		var first:Function0[Unit] = null
 		
 		do {
 			if ((first == w) && (first != null)) {
-				queue.add(w)
+				queue.put(w)
 				return null
 			}
 			w match {
@@ -139,15 +147,15 @@ class WorkManager {
 				case f:Function0[_] => return f
 				case _ =>
 			}
-			if (w != null) queue.add(w)
+			if (w != null) queue.put(w)
 			if (first == null) first = w
-			w = queue.poll()
+			w = queue.take()
 		} while(w != null)
 		
 		return null
 	}
 	
-	def threadCount = workers.size()
+	def threadCount = workers.length
 	
 	def waitForIdle(timeout:Long, unit:TimeUnit):Boolean = {
 		val t = System.currentTimeMillis + TimeUnit.MILLISECONDS.convert(timeout, unit)
@@ -259,6 +267,13 @@ object WorkManager {
 	 * Default value: true.
 	 */
 	val DEFAULT_THREAD_YIELDING = true
+	/**
+	 * The default maximum queue size for new WorkManagers. If the number of items in the queue
+	 * is full callers will block until space is available for additional elements to be added.
+	 * 
+	 * Default value: 100000
+	 */
+	val DEFAULT_MAX_QUEUE = 100000
 	
 	private var _time = System.currentTimeMillis()
 	
