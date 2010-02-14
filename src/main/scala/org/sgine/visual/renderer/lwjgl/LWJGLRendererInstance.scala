@@ -1,5 +1,8 @@
 package org.sgine.visual.renderer.lwjgl
 
+import org.sgine.opengl.renderable.ColorRenderItem
+import org.sgine.visual.material.pigment.ColoredPigment
+import org.sgine.opengl.renderable.BasicRenderable
 import org.sgine.math._
 import org.sgine.opengl.GLWindow
 import org.sgine.visual.Shape
@@ -17,7 +20,6 @@ import org.lwjgl.opengl.GL11._;
 
 class LWJGLRendererInstance (window: Window) {
 	lazy val glContainer = GLContainer()
-	glContainer.displayables.add(TranslateState(0.0, 0.0, -1000.0));		// TODO: use camera instead
 	
 	glContainer.containerWidth bind window.width
 	glContainer.containerHeight bind window.height
@@ -25,7 +27,7 @@ class LWJGLRendererInstance (window: Window) {
 	window.listeners += EventHandler(propertyChanged, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	window.listeners += EventHandler(nodeAdded, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	
-	private var shapes: List[LWJGLShape] = Nil
+	private var shapes: List[BasicRenderable] = Nil
 	
 	def start() = {
 		glContainer.displayables.add(FPS())
@@ -49,8 +51,15 @@ class LWJGLRendererInstance (window: Window) {
 	
 	private def nodeAdded(evt: NodeAddedEvent) = {
 		val s = evt.node.asInstanceOf[Shape]
-		val gls = LWJGLShape(s)
-		glContainer.displayables.add(gls)
+		val material = s.material()
+		val mesh = s.mesh()
+		val r = BasicRenderable(mesh.vertices)
+		r.matrixItem.matrix = Matrix4.Identity.translateZ(-1000.0)		// TODO: integrate properly
+		material.pigment() match {
+			case cp: ColoredPigment => r.colorItem = new ColorRenderItem(cp.color)
+			case _ =>
+		}
+		glContainer.displayables.add(r)
 	}
 	
 	def shutdown() = {

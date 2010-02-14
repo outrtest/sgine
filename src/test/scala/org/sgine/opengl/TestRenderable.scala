@@ -27,9 +27,9 @@ object TestRenderable {
 		w.displayables.add(s)
 		
 		// Use BasicRenderable
-		val r = new BasicRenderable(6)
+		val r = BasicRenderable(6)
 		r.matrixItem.matrix = Matrix4.Identity.translateZ(-900.0).translateX(50.0).rotate(0.0, 0.0, Math.Pi / 4.0)
-		r.textureItem = new ColorRenderItem(Color.Red)
+		r.colorItem = new ColorRenderItem(Color.Red)
 		r.vertices(0) = Vector3(-50.0, -50.0, 0.0)
 		r.vertices(1) = Vector3(50.0, -50.0, 0.0)
 		r.vertices(2) = Vector3(50.0, 50.0, 0.0)
