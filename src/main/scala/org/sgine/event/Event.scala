@@ -48,7 +48,7 @@ object Event {
 		listenable.processEvent(evt)
 		
 		// Process Event on blocking handlers
-		if (evt.processBlocking) listenable.listeners.filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
+		if (evt.processBlocking) listenable.listeners.filter(isBlocking).foreach(_.process(evt))
 		
 		// Walk up the hierarchy for Recursion.Parents
 		processParentRecursion(listenable.parent, evt)
@@ -60,8 +60,12 @@ object Event {
 		if (evt.processNormal) workManager += NormalEventWorkUnit(evt, listenable)
 		
 		// Iterate over and enqueue asynchronous entries
-		if (evt.processAsynchronous) listenable.listeners.filter(_.processingMode == ProcessingMode.Asynchronous).foreach(workManager += AsynchronousWorkUnit(_, evt))
+		if (evt.processAsynchronous) listenable.listeners.filter(isAsynchronous).foreach(workManager += AsynchronousWorkUnit(_, evt))
 	}
+	
+	private val isBlocking = (h: EventHandler) => h.processingMode == ProcessingMode.Blocking
+	
+	private val isAsynchronous = (h: EventHandler) => h.processingMode == ProcessingMode.Asynchronous
 	
 	private def processParentRecursion(l: Listenable, evt: Event): Unit = {
 		if ((evt.recursionParents) && (l != null)) {
@@ -121,7 +125,5 @@ case class AsynchronousWorkUnit(h: EventHandler, evt: Event) extends Function0[U
 }
 
 case class NormalEventWorkUnit(evt: Event, listenable: Listenable) extends BlockingWorkUnit(listenable) {
-	def apply() = {
-		listenable.listeners.filter(_.processingMode == ProcessingMode.Normal).foreach(_.process(evt));
-	}
+	def apply() = listenable.listeners.filter(_.processingMode == ProcessingMode.Normal).foreach(_.process(evt));
 }

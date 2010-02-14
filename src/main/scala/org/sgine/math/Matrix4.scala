@@ -1,5 +1,7 @@
 package org.sgine.math
 
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.DoubleBuffer
 import java.text.NumberFormat
 import Matrix4.D
@@ -135,30 +137,39 @@ class Matrix4 protected() {
     }
   }
 
-  def toBuffer(dst : DoubleBuffer ) {
-    val pos = dst.position()
-
-    dst.put(pos +  0, m00);
-    dst.put(pos +  1, m01);
-    dst.put(pos +  2, m02);
-    dst.put(pos +  3, m03);
-
-    dst.put(pos +  4, m10);
-    dst.put(pos +  5, m11);
-    dst.put(pos +  6, m12);
-    dst.put(pos +  7, m13);
-
-    dst.put(pos +  8, m20);
-    dst.put(pos +  9, m21);
-    dst.put(pos + 10, m22);
-    dst.put(pos + 11, m23);
-
-    dst.put(pos + 12, m30);
-    dst.put(pos + 13, m31);
-    dst.put(pos + 14, m32);
-    dst.put(pos + 15, m33);
-
-    dst.position(pos + 16);
+  def toBuffer(destination: DoubleBuffer) = {
+	  var dst = destination
+	  if (dst == null) {
+	 	  val bb = ByteBuffer.allocateDirect(128)
+	 	  bb.order(ByteOrder.nativeOrder())
+	 	  dst = bb.asDoubleBuffer()
+	  }
+	  
+	  val pos = dst.position()
+	
+	  dst.put(pos +  0, m00);
+	  dst.put(pos +  1, m01);
+	  dst.put(pos +  2, m02);
+	  dst.put(pos +  3, m03);
+	
+	  dst.put(pos +  4, m10);
+	  dst.put(pos +  5, m11);
+	  dst.put(pos +  6, m12);
+	  dst.put(pos +  7, m13);
+	
+	  dst.put(pos +  8, m20);
+	  dst.put(pos +  9, m21);
+	  dst.put(pos + 10, m22);
+	  dst.put(pos + 11, m23);
+	
+	  dst.put(pos + 12, m30);
+	  dst.put(pos + 13, m31);
+	  dst.put(pos + 14, m32);
+	  dst.put(pos + 15, m33);
+	
+	  dst.position(pos + 16);
+	
+	  dst
   }
 
   def toBuffer : DoubleBuffer = {
@@ -263,7 +274,14 @@ class Matrix4 protected() {
   }
 
 
-  def getTranspose(dst : DoubleBuffer ) {
+  def getTranspose(destination: DoubleBuffer, updatePosition: Boolean = true): DoubleBuffer = {
+	  var dst = destination
+	  if (dst == null) {
+	 	  val bb = ByteBuffer.allocateDirect(128)
+	 	  bb.order(ByteOrder.nativeOrder())
+	 	  dst = bb.asDoubleBuffer()
+	  }
+	  
     val pos = dst.position()
 
     dst.put(pos +  0, m00);
@@ -286,7 +304,9 @@ class Matrix4 protected() {
     dst.put(pos + 14, m23);
     dst.put(pos + 15, m33);
 
-    dst.position(pos + 16);
+    if (updatePosition) dst.position(pos + 16);
+    
+    dst
   }
 
 

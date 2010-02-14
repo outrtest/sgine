@@ -134,12 +134,13 @@ class WorkManager {
 	}
 	
 	def request():() => Unit = {
-		var w = queue.take()
+		// TODO: migrate toward take and put for better blocking
+		var w = queue.poll()
 		var first:Function0[Unit] = null
 		
 		do {
 			if ((first == w) && (first != null)) {
-				queue.put(w)
+				queue.add(w)
 				return null
 			}
 			w match {
@@ -147,9 +148,9 @@ class WorkManager {
 				case f:Function0[_] => return f
 				case _ =>
 			}
-			if (w != null) queue.put(w)
+			if (w != null) queue.add(w)
 			if (first == null) first = w
-			w = queue.take()
+			w = queue.poll()
 		} while(w != null)
 		
 		return null

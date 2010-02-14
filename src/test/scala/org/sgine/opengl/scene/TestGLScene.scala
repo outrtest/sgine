@@ -13,6 +13,7 @@ object TestGLScene {
 	def main(args: Array[String]): Unit = {
 		// Create the GLWindow to render to
 		val w = GLWindow("Test GL Scene", 1024, 768)
+//		w.verticalSync := false
 		
 		// Create a container for our scene
 		val root = new GLNodeContainer()
@@ -34,12 +35,16 @@ object TestGLScene {
 		
 		w.begin()
 		
-		node.location.z.waitForTarget()
-		node.location.z := -500.0
-		node.location.z.waitForTarget()
+		while (true) {
+			node.location.z.waitForTarget()
+			node.location.z := -500.0
+			node.location.z.waitForTarget()
+			node.location.z := -1000.0
+			node.location.z.waitForTarget()
+		}
 	}
 	
 	private def zChanged(evt: PropertyChangeEvent[Double]) = {
-//		println(evt.newValue)
+		if (!evt.adjusting) println("Z changed: " + evt.newValue)
 	}
 }

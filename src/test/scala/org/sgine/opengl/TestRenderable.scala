@@ -1,6 +1,8 @@
 package org.sgine.opengl
 
-import org.sgine.opengl.renderable.ShapeRenderable
+import org.sgine.math.Matrix4
+import org.sgine.core.Color
+import org.sgine.opengl.renderable._
 import org.sgine.opengl.state.TranslateState
 import org.sgine.math.Vector3;
 
@@ -8,16 +10,33 @@ object TestRenderable {
 	def main(args: Array[String]): Unit = {
 		// Create our window
 		val w = GLWindow("Test Window", 1024, 768);
+		w.verticalSync := false
 		
-		// Translate back so we can see
-		w.displayables.add(TranslateState(0.0, 0.0, -1000.0));
-		
-		// Create a quad shape with a texture and add it
-//		val s = Shape(ImageIO.read(classOf[GLWindow].getClassLoader().getResource("resource/puppies.jpg")));
-//		w.displayables.add(s);
-		
-		val s = new TestRenderable()
+		// Create a quad shape
+		val s = new MutableRenderable(3, 6)
+		val m = Matrix4.Identity.translateZ(-1000.0)
+		s.renderItems(0) = new MatrixRenderItem(m)							// Position
+		s.renderItems(1) = new ColorRenderItem(Color.Blue)					// Colorize
+		s.renderItems(2) = new ShapeRenderItem()							// Draw
+		s.vertices(0) = Vector3(-50.0, -50.0, 0.0)
+		s.vertices(1) = Vector3(50.0, -50.0, 0.0)
+		s.vertices(2) = Vector3(50.0, 50.0, 0.0)
+		s.vertices(3) = Vector3(-50.0, 50.0, 0.0)
+		s.vertices(4) = Vector3(-50.0, -50.0, 0.0)
+		s.vertices(5) = Vector3(50.0, 50.0, 0.0)
 		w.displayables.add(s)
+		
+		// Use BasicRenderable
+		val r = new BasicRenderable(6)
+		r.matrixItem.matrix = Matrix4.Identity.translateZ(-900.0).translateX(50.0).rotate(0.0, 0.0, Math.Pi / 4.0)
+		r.textureItem = new ColorRenderItem(Color.Red)
+		r.vertices(0) = Vector3(-50.0, -50.0, 0.0)
+		r.vertices(1) = Vector3(50.0, -50.0, 0.0)
+		r.vertices(2) = Vector3(50.0, 50.0, 0.0)
+		r.vertices(3) = Vector3(-50.0, 50.0, 0.0)
+		r.vertices(4) = Vector3(-50.0, -50.0, 0.0)
+		r.vertices(5) = Vector3(50.0, 50.0, 0.0)
+		w.displayables.add(r)
 		
 		// Add an FPS counter to see how fast we're going
 		w.displayables.add(FPS());
@@ -25,14 +44,4 @@ object TestRenderable {
 		// Start / Display the window
 		w.begin();
 	}
-}
-
-class TestRenderable extends ShapeRenderable {
-	val points = Vector3(-50.0, -50.0, 0.0) ::
-				 Vector3(50.0, -50.0, 0.0) ::
-				 Vector3(50.0, 50.0, 0.0) ::
-				 Vector3(-50.0, 50.0, 0.0) ::
-				 Vector3(-50.0, -50.0, 0.0) ::
-				 Vector3(50.0, 50.0, 0.0) ::
-				 Nil
 }
