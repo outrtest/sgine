@@ -1,24 +1,37 @@
 package org.sgine.core
 
 class Color private() {
+	protected var _red: Double = _
+	protected var _green: Double = _
+	protected var _blue: Double = _
+	protected var _alpha: Double = _
+	
 	protected var _value: Int = _
 	
-	/**
-	 * Value represents the backing Int value for the color in ARGB (0xaarrggbb)
-	 */
-	def value = _value
+	def alpha = _alpha
+	def red = _red
+	def green = _green
+	def blue = _blue
 	
-	def alpha = (value >> 24 & 0xff) / 255.0
-	def red = (value >> 16 & 0xff) / 255.0
-	def green = (value >> 8 & 0xff) / 255.0
-	def blue = (value >> 0 & 0xff) / 255.0
+	def add(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 0.0) = Color(_red + red, _green + green, _blue + blue, _alpha + alpha)
+	def subtract(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 0.0) = Color(_red - red, _green - green, _blue - blue, _alpha - alpha)
+	def multiply(red: Double = 1.0, green: Double = 1.0, blue: Double = 1.0, alpha: Double = 1.0) = Color(_red * red, _green * green, _blue * blue, _alpha * alpha)
+	def divide(red: Double = 1.0, green: Double = 1.0, blue: Double = 1.0, alpha: Double = 1.0) = Color(_red / red, _green / green, _blue / blue, _alpha / alpha)
+	def set(red: Double = -1.0, green: Double = -1.0, blue: Double = -1.0, alpha: Double = -1.0) = {
+		val r = if (red != -1.0) red else _red
+		val g = if (green != -1.0) red else _green
+		val b = if (blue != -1.0) red else _blue
+		val a = if (alpha != -1.0) red else _alpha
+		Color(r, g, b, a)
+	}
 	
-	def hex = value.toHexString
-	
-	private def this(_value: Int) = {
+	private def this(value: Int) = {
 		this()
 		
-		this._value = _value
+		_alpha = (value >> 24 & 0xff) / 255.0
+		_red = (value >> 16 & 0xff) / 255.0
+		_green = (value >> 8 & 0xff) / 255.0
+		_blue = (value >> 0 & 0xff) / 255.0
 	}
 }
 
@@ -167,6 +180,15 @@ object Color {
 	lazy val values = loadValues()
 	
 	def apply(value: Int) = new Color(value)
+	
+	def apply(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 1.0) = {
+		val c = new Color()
+		c._red = red
+		c._green = green
+		c._blue = blue
+		c._alpha = alpha
+		c
+	}
 	
 	private def loadValues() = {
 		var values: List[Color] = Nil

@@ -5,7 +5,7 @@ import org.sgine.math.Vector3
 import org.lwjgl.opengl.GL11._;
 
 class ColorRenderItem(color: Color) extends RenderItem {
-	def begin(renderable: Renderable, time: Double) = glColor4d(color.red, color.green, color.blue, color.alpha)
+	def begin(renderable: Renderable, time: Double) = glColor4d(color.red * color.alpha, color.green * color.alpha, color.blue * color.alpha, color.alpha)
 	
 	def vertex(renderable: Renderable, time: Double, index: Int, vertex: Vector3) = {}
 	

@@ -29,7 +29,7 @@ object TestRenderable {
 		// Use BasicRenderable
 		val r = BasicRenderable(6)
 		r.matrixItem.matrix = Matrix4.Identity.translateZ(-900.0).translateX(50.0).rotate(0.0, 0.0, Math.Pi / 4.0)
-		r.colorItem = new ColorRenderItem(Color.Red)
+		r.colorItem = new ColorRenderItem(Color.Red.subtract(alpha = 0.5))
 		r.vertices(0) = Vector3(-50.0, -50.0, 0.0)
 		r.vertices(1) = Vector3(50.0, -50.0, 0.0)
 		r.vertices(2) = Vector3(50.0, 50.0, 0.0)
