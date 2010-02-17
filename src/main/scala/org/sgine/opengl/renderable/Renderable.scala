@@ -26,7 +26,7 @@ trait Renderable extends Function1[Double, Unit] {
 	private val renderVertices = (index: Int) => {
 		for (item <- renderItems) {
 			if (item != null) {
-				item.vertex(this, time, index, vertices(index))
+				item.vertex(this, time, index)
 			}
 		}
 	}

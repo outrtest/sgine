@@ -6,8 +6,6 @@ class Color private() {
 	protected var _blue: Double = _
 	protected var _alpha: Double = _
 	
-	protected var _value: Int = _
-	
 	def alpha = _alpha
 	def red = _red
 	def green = _green

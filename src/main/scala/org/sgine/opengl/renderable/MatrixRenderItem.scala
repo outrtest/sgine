@@ -15,7 +15,7 @@ class MatrixRenderItem(private var _matrix: Matrix4) extends RenderItem {
 	
 	def begin(renderable: Renderable, time: Double) = glLoadMatrix(buffer)
 	
-	def vertex(renderable: Renderable, time: Double, index: Int, vertex: Vector3) = {}
+	def vertex(renderable: Renderable, time: Double, index: Int) = {}
 	
 	def end(renderable: Renderable, time: Double) = {}
 }
