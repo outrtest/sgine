@@ -1,4 +1,4 @@
-package org.sgine.opengl.shape
+package org.sgine.opengl
 
 import org.sgine.util._;
 

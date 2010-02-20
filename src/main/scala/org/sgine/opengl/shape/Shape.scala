@@ -85,5 +85,3 @@ object Shape {
 		s;
 	}
 }
-
-object GeneralReusableGraphic extends ReusableGraphic;

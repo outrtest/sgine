@@ -1,10 +1,13 @@
 package org.sgine.opengl
 
+import org.sgine.math.mutable.Vector2
 import org.sgine.math.Matrix4
 import org.sgine.core.Color
 import org.sgine.opengl.renderable._
 import org.sgine.opengl.state.TranslateState
 import org.sgine.math.Vector3;
+
+import javax.imageio._
 
 object TestRenderable {
 	def main(args: Array[String]): Unit = {
@@ -29,13 +32,30 @@ object TestRenderable {
 		// Use BasicRenderable
 		val r = BasicRenderable(6)
 		r.matrixItem.matrix = Matrix4.Identity.translateZ(-900.0).translateX(50.0).rotate(0.0, 0.0, Math.Pi / 4.0)
-		r.colorItem = new ColorRenderItem(Color.Red.subtract(alpha = 0.5))
+		r.colorItem = new ColorRenderItem(Color.White.subtract(alpha = 0.5))
 		r.vertices(0) = Vector3(-50.0, -50.0, 0.0)
 		r.vertices(1) = Vector3(50.0, -50.0, 0.0)
 		r.vertices(2) = Vector3(50.0, 50.0, 0.0)
 		r.vertices(3) = Vector3(-50.0, 50.0, 0.0)
 		r.vertices(4) = Vector3(-50.0, -50.0, 0.0)
 		r.vertices(5) = Vector3(50.0, 50.0, 0.0)
+		
+		// Texture coordinates
+		val coords = new Array[Vector2](6)
+		coords(0) = Vector2.UnitY
+		coords(1) = Vector2.Ones
+		coords(2) = Vector2.UnitX
+		coords(3) = Vector2.Zero
+		coords(4) = Vector2.UnitY
+		coords(5) = Vector2.UnitX
+		r.textureCoordinatesItem = new TextureCoordinatesRenderItem(coords)
+		
+		// Texture
+		val t = new Texture()
+		val image = ImageIO.read(classOf[GLWindow].getClassLoader().getResource("resource/puppies.jpg"))
+		t(image, 0, 0, image.getWidth, image.getHeight, true)
+		r.textureItem = new TextureRenderItem(t)
+		
 		w.displayables.add(r)
 		
 		// Add an FPS counter to see how fast we're going
