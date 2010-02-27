@@ -7,7 +7,6 @@ import org.sgine.math.Vector3
 class BasicRenderable private (vertexCount: Int) extends MutableRenderable(5, vertexCount) {
 	renderItems(0) = new MatrixRenderItem(Matrix4.Identity)
 	renderItems(1) = new ColorRenderItem(Color.White)
-	renderItems(4) = new ShapeRenderItem()
 	
 	def matrixItem = renderItems(0).asInstanceOf[MatrixRenderItem]
 	def matrixItem_=(item: MatrixRenderItem) = renderItems(0) = item
@@ -24,13 +23,13 @@ class BasicRenderable private (vertexCount: Int) extends MutableRenderable(5, ve
 object BasicRenderable {
 	def apply(vertexCount: Int) = new BasicRenderable(vertexCount)
 	
-	def apply(vertices: Seq[Vector3]) = {
-		val r = new BasicRenderable(vertices.length)
-		
-		for (i <- 0 until vertices.length) {
-			r.vertices(i) = vertices(i)
-		}
-		
-		r
-	}
+//	def apply(vertices: Seq[Vector3]) = {
+//		val r = new BasicRenderable(vertices.length)
+//		
+//		for (i <- 0 until vertices.length) {
+//			r.vertices(i) = vertices(i)
+//		}
+//		
+//		r
+//	}
 }

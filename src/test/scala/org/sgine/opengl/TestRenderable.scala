@@ -2,6 +2,7 @@ package org.sgine.opengl
 
 import org.sgine.math.mutable.Vector2
 import org.sgine.math.Matrix4
+import org.sgine.math.VertexBuffer
 import org.sgine.core.Color
 import org.sgine.opengl.renderable._
 import org.sgine.opengl.state.TranslateState
@@ -20,25 +21,28 @@ object TestRenderable {
 		val m = Matrix4.Identity.translateZ(-1000.0)
 		s.renderItems(0) = new MatrixRenderItem(m)							// Position
 		s.renderItems(1) = new ColorRenderItem(Color.Blue)					// Colorize
-		s.renderItems(2) = new ShapeRenderItem()							// Draw
-		s.vertices(0) = Vector3(-50.0, -50.0, 0.0)
-		s.vertices(1) = Vector3(50.0, -50.0, 0.0)
-		s.vertices(2) = Vector3(50.0, 50.0, 0.0)
-		s.vertices(3) = Vector3(-50.0, 50.0, 0.0)
-		s.vertices(4) = Vector3(-50.0, -50.0, 0.0)
-		s.vertices(5) = Vector3(50.0, 50.0, 0.0)
+		val vertices1 = VertexBuffer(3, 6)
+		vertices1.set(0, -50.0f, -50.0f, 0.0f)
+		vertices1.set(1, 50.0f, -50.0f, 0.0f)
+		vertices1.set(2, 50.0f, 50.0f, 0.0f)
+		vertices1.set(3, -50.0f, 50.0f, 0.0f)
+		vertices1.set(4, -50.0f, -50.0f, 0.0f)
+		vertices1.set(5, 50.0f, 50.0f, 0.0f)
+		s.renderItems(2) = new ShapeRenderItem(vertices1)					// Draw
 		w.displayables.add(s)
 		
 		// Use BasicRenderable
 		val r = BasicRenderable(6)
 		r.matrixItem.matrix = Matrix4.Identity.translateZ(-900.0).translateX(50.0).rotate(0.0, 0.0, Math.Pi / 4.0)
 		r.colorItem = new ColorRenderItem(Color.White.subtract(alpha = 0.5))
-		r.vertices(0) = Vector3(-50.0, -50.0, 0.0)
-		r.vertices(1) = Vector3(50.0, -50.0, 0.0)
-		r.vertices(2) = Vector3(50.0, 50.0, 0.0)
-		r.vertices(3) = Vector3(-50.0, 50.0, 0.0)
-		r.vertices(4) = Vector3(-50.0, -50.0, 0.0)
-		r.vertices(5) = Vector3(50.0, 50.0, 0.0)
+		val vertices2 = VertexBuffer(3, 6)
+		vertices2.set(0, -50.0f, -50.0f, 0.0f)
+		vertices2.set(1, 50.0f, -50.0f, 0.0f)
+		vertices2.set(2, 50.0f, 50.0f, 0.0f)
+		vertices2.set(3, -50.0f, 50.0f, 0.0f)
+		vertices2.set(4, -50.0f, -50.0f, 0.0f)
+		vertices2.set(5, 50.0f, 50.0f, 0.0f)
+		r.shapeItem = new ShapeRenderItem(vertices2)
 		
 		// Texture coordinates
 		val coords = new Array[Vector2](6)

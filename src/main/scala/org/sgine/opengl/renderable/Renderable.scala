@@ -4,16 +4,16 @@ import org.sgine.math.Vector3
 
 trait Renderable extends Function1[Double, Unit] {
 	def renderItems: Seq[RenderItem]
-	def vertices: Seq[Vector3]
+	def vertexCount: Int
 	
 	private var time: Double = 0.0
 	private var indices: Range = 0 until 0
 	
 	def apply(time: Double) = {
 		this.time = time
-		val vertices = this.vertices
-		if (indices.length != vertices.length) {
-			indices = 0 until vertices.length
+		val vertexCount = this.vertexCount
+		if (indices.length != vertexCount) {
+			indices = 0 until vertexCount
 		}
 		
 		renderItems.foreach(renderBegin)

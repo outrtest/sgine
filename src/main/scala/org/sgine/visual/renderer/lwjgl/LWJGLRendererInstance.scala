@@ -50,16 +50,16 @@ class LWJGLRendererInstance (window: Window) {
 	}
 	
 	private def nodeAdded(evt: NodeAddedEvent) = {
-		val s = evt.node.asInstanceOf[Shape]
-		val material = s.material()
-		val mesh = s.mesh()
-		val r = BasicRenderable(mesh.vertices)
-		r.matrixItem.matrix = Matrix4.Identity.translateZ(-1000.0)		// TODO: integrate properly
-		material.pigment() match {
-			case cp: ColoredPigment => r.colorItem = new ColorRenderItem(cp.color)
-			case _ =>
-		}
-		glContainer.displayables.add(r)
+//		val s = evt.node.asInstanceOf[Shape]
+//		val material = s.material()
+//		val mesh = s.mesh()
+//		val r = BasicRenderable(mesh.vertexCount)
+//		r.matrixItem.matrix = Matrix4.Identity.translateZ(-1000.0)		// TODO: integrate properly
+//		material.pigment() match {
+//			case cp: ColoredPigment => r.colorItem = new ColorRenderItem(cp.color)
+//			case _ =>
+//		}
+//		glContainer.displayables.add(r)
 	}
 	
 	def shutdown() = {
