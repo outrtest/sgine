@@ -45,7 +45,7 @@ object TestRenderable {
 		r.shapeItem = new ShapeRenderItem(vertices2)
 		
 		// Texture coordinates
-		val coords = new Array[Vector2](6)
+		val coords = VertexBuffer(2, 6)
 		coords(0) = Vector2.UnitY
 		coords(1) = Vector2.Ones
 		coords(2) = Vector2.UnitX

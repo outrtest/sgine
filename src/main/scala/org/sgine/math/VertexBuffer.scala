@@ -2,16 +2,16 @@ package org.sgine.math
 
 import java.nio._
 
-class VertexBuffer(val depth: Int, var buffer: FloatBuffer) {
-	def set(index: Int, vertices: Float*): Unit = {
+class VertexBuffer private (val depth: Int, var buffer: DoubleBuffer) {
+	def set(index: Int, vertices: Double*): Unit = {
 		for (depth <- 0 until vertices.length) {
 			set(depth, index, vertices(depth))
 		}
 	}
 	
-	def set(depth: Int, index: Int, vertex: Float) = buffer.put((index * this.depth) + depth, vertex)
+	def set(depth: Int, index: Int, vertex: Double) = buffer.put((index * this.depth) + depth, vertex)
 	
-	def set(vertices: Float*): Unit = {
+	def set(vertices: Double*): Unit = {
 		for (index <- 0 until vertices.length) {
 			buffer.put(index, vertices(index))
 		}
@@ -19,16 +19,29 @@ class VertexBuffer(val depth: Int, var buffer: FloatBuffer) {
 	
 	def apply(depth: Int, index: Int) = buffer.get((index * this.depth) + depth)
 	
-	def apply(index: Int, f: (Float, Float, Float) => Unit): Unit = f(apply(0, index), apply(1, index), apply(2, index))
+	def apply(index: Int, f: (Double, Double, Double) => Unit): Unit = f(apply(0, index), apply(1, index), apply(2, index))
+	
+	def apply(index: Int, f: (Double, Double) => Unit): Unit = f(apply(0, index), apply(1, index))
+	
+	def update(index: Int, v: Vector2) = {
+		set(0, index, v.x)
+		set(1, index, v.y)
+	}
+	
+	def update(index: Int, v: Vector3) = {
+		set(0, index, v.x)
+		set(1, index, v.y)
+		set(2, index, v.z)
+	}
 }
 
 object VertexBuffer {
-	def apply(depth: Int, vertices: Float*): VertexBuffer = {
+	def apply(depth: Int, vertices: Double*): VertexBuffer = {
 		val length = vertices.length / depth
 		val vb = apply(depth, length)
 		vb.set(vertices: _*)
 		vb
 	}
 	
-	def apply(depth: Int, length: Int): VertexBuffer = new VertexBuffer(depth, ByteBuffer.allocateDirect((depth * length) * 4).order(ByteOrder.nativeOrder).asFloatBuffer())
+	def apply(depth: Int, length: Int): VertexBuffer = new VertexBuffer(depth, ByteBuffer.allocateDirect((depth * length) * 8).order(ByteOrder.nativeOrder).asDoubleBuffer())
 }
