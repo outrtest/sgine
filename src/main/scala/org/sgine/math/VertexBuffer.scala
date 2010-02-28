@@ -2,7 +2,7 @@ package org.sgine.math
 
 import java.nio._
 
-class VertexBuffer private (val depth: Int, var buffer: DoubleBuffer) {
+class VertexBuffer private (val depth: Int, val length: Int, var buffer: DoubleBuffer) {
 	def set(index: Int, vertices: Double*): Unit = {
 		for (depth <- 0 until vertices.length) {
 			set(depth, index, vertices(depth))
@@ -33,6 +33,15 @@ class VertexBuffer private (val depth: Int, var buffer: DoubleBuffer) {
 		set(1, index, v.y)
 		set(2, index, v.z)
 	}
+	
+	def clone(newLength: Int): VertexBuffer = {
+		val vb = VertexBuffer(depth, newLength)
+		for (index <- 0 until buffer.capacity) {
+			vb.buffer.put(index, buffer.get(index))
+		}
+		
+		vb
+	}
 }
 
 object VertexBuffer {
@@ -43,5 +52,5 @@ object VertexBuffer {
 		vb
 	}
 	
-	def apply(depth: Int, length: Int): VertexBuffer = new VertexBuffer(depth, ByteBuffer.allocateDirect((depth * length) * 8).order(ByteOrder.nativeOrder).asDoubleBuffer())
+	def apply(depth: Int, length: Int): VertexBuffer = new VertexBuffer(depth, length, ByteBuffer.allocateDirect((depth * length) * 8).order(ByteOrder.nativeOrder).asDoubleBuffer())
 }
