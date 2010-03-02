@@ -4,7 +4,7 @@ import org.sgine.event._
 import org.sgine.property.event._
 
 object TestPropertyTransactions {
-	val p = new AdvancedProperty[String]("Initial")
+	val p = new AdvancedProperty[String]("Initial") with TransactionalProperty[String]
 	
 	def main(args: Array[String]): Unit = {
 		p.listeners += EventHandler(events, processingMode = ProcessingMode.Blocking)
