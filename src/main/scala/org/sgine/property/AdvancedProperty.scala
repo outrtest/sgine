@@ -4,7 +4,7 @@ import org.sgine.event._
 
 import org.sgine.property.container._
 
-class AdvancedProperty[T] extends MutableProperty[T] with ListenableProperty[T] with NamedProperty with BindingProperty[T] with AdjustableProperty[T] with EventDelegationProperty[T] with TransactionalProperty[T] {
+class AdvancedProperty[T] extends MutableProperty[T] with ListenableProperty[T] with NamedProperty with BindingProperty[T] with AdjustableProperty[T] with EventDelegationProperty[T] {
 	private var _name: String = _
 	
 	override lazy val name = determineName
