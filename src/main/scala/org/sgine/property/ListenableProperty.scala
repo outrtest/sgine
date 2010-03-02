@@ -8,6 +8,8 @@ import java.util.concurrent._
 
 import scala.collection.JavaConversions._
 
+import event._
+
 /**
  * ListenableProperty trait extends ChangeableProperty trait to
  * provide <code>listeners</code> to allow multiple sources to

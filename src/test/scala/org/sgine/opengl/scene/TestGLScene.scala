@@ -6,6 +6,7 @@ import org.sgine.opengl.scene._
 import org.sgine.opengl.shape._
 import org.sgine.property._
 import org.sgine.property.adjust._
+import org.sgine.property.event._
 
 import javax.imageio._
 

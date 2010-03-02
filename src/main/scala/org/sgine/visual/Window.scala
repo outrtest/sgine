@@ -9,6 +9,7 @@ import org.sgine.visual.time.Timer
 import org.sgine.event._
 import org.sgine.property._
 import org.sgine.property.container._
+import org.sgine.property.event._
 import org.sgine.scene._
 import org.sgine.scene.query._
 import org.sgine.scene.view._

@@ -5,6 +5,7 @@ import org.sgine.visual.material.pigment.ColoredPigment
 import org.sgine.opengl.renderable.BasicRenderable
 import org.sgine.math._
 import org.sgine.opengl.GLWindow
+import org.sgine.property.event._
 import org.sgine.visual.Shape
 import org.sgine.scene.view.event.NodeAddedEvent
 import org.sgine.property._

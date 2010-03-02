@@ -1,7 +1,8 @@
-package org.sgine.property
+package org.sgine.property.event
 
 import java.util.concurrent.ArrayBlockingQueue
 import org.sgine.event._
+import org.sgine.property._
 
 class PropertyChangeEvent[T] private (var property: ListenableProperty[T], var oldValue: T, var newValue: T, var adjusting: Boolean) extends Event(property)
 

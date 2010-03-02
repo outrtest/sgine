@@ -5,6 +5,7 @@ import org.sgine.event._
 import org.sgine.math.mutable._
 import org.sgine.property._
 import org.sgine.property.container._
+import org.sgine.property.event._
 
 import java.util.concurrent.atomic._
 

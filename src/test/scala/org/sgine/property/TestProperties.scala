@@ -3,6 +3,7 @@ package org.sgine.property
 import org.sgine._
 import org.sgine.property.adjust._
 import org.sgine.property.container._
+import org.sgine.property.event._
 import org.sgine.work._
 import org.sgine.work.unit._
 

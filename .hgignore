@@ -5,3 +5,5 @@ syntax: regexp
 ^\.project$
 syntax: regexp
 ^bin$
+syntax: regexp
+^project/boot$
