@@ -7,3 +7,5 @@ syntax: regexp
 ^bin$
 syntax: regexp
 ^project/boot$
+syntax: regexp
+^target$
