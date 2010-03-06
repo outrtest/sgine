@@ -1,5 +1,7 @@
 package org.sgine.render
 
+import scala.io.Source
+
 import java.awt.Canvas
 import java.awt.event.WindowEvent
 import java.awt.event.WindowAdapter
@@ -9,6 +11,7 @@ import javax.imageio._
 
 import java.nio._
 
+import org.sgine.core.Color
 import org.sgine.render.lwjgl._
 
 import org.lwjgl.opengl.Display
@@ -24,6 +27,7 @@ object RenderTest {
 	var frames = 0L
 	
 	var texture: LWJGLTexture = _
+	var image: LWJGLImage = _
 	
 	def main(args: Array[String]): Unit = {
 		f.setSize(1024, 768)
@@ -72,6 +76,10 @@ object RenderTest {
 		LWJGLRenderContext.texCoord(2, 1.0, 0.0)
 		LWJGLRenderContext.texCoord(3, 0.0, 0.0)
 		
+		image = new LWJGLImage(texture, 0.0, 0.0, 350.0, 183.0)
+		
+		LWJGLFont(Source.fromInputStream(getClass.getClassLoader.getResourceAsStream("resource/Arial.fnt")))
+		
 		// Rendering
 		while (keepAlive) {
 			Display.update()
@@ -108,10 +116,14 @@ object RenderTest {
 	def render() = {
 		LWJGLRenderContext.translate(0.0, 0.0, -100.0)
 		
-		texture.bind()		// Use LWJGLRenderContext instead and support unbinding
+		LWJGLRenderContext.setTexture(texture)
 		LWJGLRenderContext.drawRect(-35.0, -18.0, 70.0, 36.0)
-		LWJGLRenderContext.setColor(blue = 1.0)
-		LWJGLRenderContext.drawRect(-5.0, -20.0, 10.0, 10.0)
+		LWJGLRenderContext.setTexture(null)
+		LWJGLRenderContext.setColor(blue = 1.0, alpha = 0.5)
+		LWJGLRenderContext.drawRect(0.0, 0.0, 10.0, 10.0)
+		
+		LWJGLRenderContext.setColor(0.8, 0.8, 0.8, 0.8)
+		LWJGLRenderContext.drawImage(image, 0.0, -40.0, 35.0, 18.0)
 		
 		LWJGLRenderContext.flush()
 	}

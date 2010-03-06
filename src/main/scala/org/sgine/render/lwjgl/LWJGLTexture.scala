@@ -13,8 +13,8 @@ class LWJGLTexture private[lwjgl](var tu: TextureUpdate) {
 	
 	private var x: Int = _
 	private var y: Int = _
-	private var width: Int = _
-	private var height: Int = _
+	var width: Int = _
+	var height: Int = _
 	private var imageFormat: Int = _
 	private var mipmap: Boolean = _
 	
