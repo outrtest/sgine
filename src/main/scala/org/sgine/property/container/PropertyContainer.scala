@@ -15,9 +15,21 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 	
 	private var initialized = false
 	
-	def apply(name: String) = aliases.get(name)
+	def apply(name: String): Option[Property[_]] = {
+		initialize()
+		
+		for ((n, p) <- aliases) {
+			if (name.equalsIgnoreCase(n)) {
+				return new Some(p)
+			}
+		}
+		None
+	}
 	
-	def contains(name: String) = aliases.contains(name)
+	def contains(name: String) = {
+		initialize()
+		aliases.contains(name)
+	}
 	
 	def update(time: Double) = {
 		for (p <- this) p match {
