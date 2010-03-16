@@ -7,7 +7,7 @@ package org.sgine.property;
  * @author Matt Hicks
  */
 trait Property[T] extends (() => T) with (T => Property[T]) {
-	def :=(value:T):Property[T] = {
+	def :=(value: T): Property[T] = {
 		apply(value);
 	}
 }
