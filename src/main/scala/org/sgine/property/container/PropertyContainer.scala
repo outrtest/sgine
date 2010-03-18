@@ -26,6 +26,51 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 		None
 	}
 	
+	def apply(map: Map[String, Any], autoCommit: Boolean): Unit = {
+		for ((key, value) <- map) {
+			apply(key, value, autoCommit)
+		}
+	}
+	
+	def apply[T](key: String, value: T, autoCommit: Boolean): Unit = {
+		apply(key) match {
+			case s: Some[Property[T]] => {
+				val p = s.get
+				p := value
+				if (autoCommit) {
+					p match {
+						case tp: TransactionalProperty[T] => tp.commit
+					}
+				}
+			}
+			case None =>
+		}
+	}
+	
+	def commit() = {
+		var changed = false
+		for (p <- this) p match {
+			case tp: TransactionalProperty[_] => {
+				if (tp.commit()) changed = true
+			}
+			case _ =>
+		}
+		
+		changed
+	}
+	
+	def revert() = {
+		var changed = false
+		for (p <- this) p match {
+			case tp: TransactionalProperty[_] => {
+				if (tp.revert()) changed = true
+			}
+			case _ =>
+		}
+		
+		changed
+	}
+	
 	def contains(name: String) = {
 		initialize()
 		aliases.contains(name)
@@ -105,6 +150,7 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 						}
 					}
 					
+					properties = properties.reverse
 					initialized = true
 				}
 			}
