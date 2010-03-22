@@ -1,35 +1,35 @@
 package org.sgine.core
 
-class Color private() {
-	protected var _red: Double = _
-	protected var _green: Double = _
-	protected var _blue: Double = _
-	protected var _alpha: Double = _
+class Color private[core]() {
+	protected var _red: Float = _
+	protected var _green: Float = _
+	protected var _blue: Float = _
+	protected var _alpha: Float = _
 	
-	def alpha = _alpha
 	def red = _red
 	def green = _green
 	def blue = _blue
+	def alpha = _alpha
 	
-	def add(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 0.0) = Color(_red + red, _green + green, _blue + blue, _alpha + alpha)
-	def subtract(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 0.0) = Color(_red - red, _green - green, _blue - blue, _alpha - alpha)
-	def multiply(red: Double = 1.0, green: Double = 1.0, blue: Double = 1.0, alpha: Double = 1.0) = Color(_red * red, _green * green, _blue * blue, _alpha * alpha)
-	def divide(red: Double = 1.0, green: Double = 1.0, blue: Double = 1.0, alpha: Double = 1.0) = Color(_red / red, _green / green, _blue / blue, _alpha / alpha)
-	def set(red: Double = -1.0, green: Double = -1.0, blue: Double = -1.0, alpha: Double = -1.0) = {
-		val r = if (red != -1.0) red else _red
-		val g = if (green != -1.0) red else _green
-		val b = if (blue != -1.0) red else _blue
-		val a = if (alpha != -1.0) red else _alpha
+	def add(red: Float = 0.0f, green: Float = 0.0f, blue: Float = 0.0f, alpha: Float = 0.0f) = Color(_red + red, _green + green, _blue + blue, _alpha + alpha)
+	def subtract(red: Float = 0.0f, green: Float = 0.0f, blue: Float = 0.0f, alpha: Float = 0.0f) = Color(_red - red, _green - green, _blue - blue, _alpha - alpha)
+	def multiply(red: Float = 1.0f, green: Float = 1.0f, blue: Float = 1.0f, alpha: Float = 1.0f) = Color(_red * red, _green * green, _blue * blue, _alpha * alpha)
+	def divide(red: Float = 1.0f, green: Float = 1.0f, blue: Float = 1.0f, alpha: Float = 1.0f) = Color(_red / red, _green / green, _blue / blue, _alpha / alpha)
+	def set(red: Float = -1.0f, green: Float = -1.0f, blue: Float = -1.0f, alpha: Float = -1.0f) = {
+		val r = if (red != -1.0f) red else _red
+		val g = if (green != -1.0f) red else _green
+		val b = if (blue != -1.0f) red else _blue
+		val a = if (alpha != -1.0f) red else _alpha
 		Color(r, g, b, a)
 	}
 	
 	private def this(value: Int) = {
 		this()
 		
-		_alpha = (value >> 24 & 0xff) / 255.0
-		_red = (value >> 16 & 0xff) / 255.0
-		_green = (value >> 8 & 0xff) / 255.0
-		_blue = (value >> 0 & 0xff) / 255.0
+		_alpha = (value >> 24 & 0xff) / 255.0f
+		_red = (value >> 16 & 0xff) / 255.0f
+		_green = (value >> 8 & 0xff) / 255.0f
+		_blue = (value >> 0 & 0xff) / 255.0f
 	}
 }
 
@@ -179,7 +179,7 @@ object Color {
 	
 	def apply(value: Int) = new Color(value)
 	
-	def apply(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 1.0) = {
+	def apply(red: Float = 0.0f, green: Float = 0.0f, blue: Float = 0.0f, alpha: Float = 1.0f) = {
 		val c = new Color()
 		c._red = red
 		c._green = green
