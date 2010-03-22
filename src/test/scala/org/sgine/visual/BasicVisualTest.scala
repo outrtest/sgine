@@ -10,7 +10,7 @@ object BasicVisualTest {
 		val w = Window("Simple Example")
 		
 		val blue = Color.Blue
-		val blueMaterial = ColoredPigment(blue.subtract(alpha = 0.5))
+		val blueMaterial = ColoredPigment(blue.subtract(alpha = 0.5f))
 		val quad = new Quad(200.0, 100.0, blueMaterial)
 		w.scene() += quad
 		

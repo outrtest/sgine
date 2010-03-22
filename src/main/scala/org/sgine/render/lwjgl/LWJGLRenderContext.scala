@@ -33,9 +33,13 @@ object LWJGLRenderContext {
 	}
 	
 	def drawRect(x: Double, y: Double, width: Double, height: Double) = {
+		if (texture != null) {
+			glEnable(GL_TEXTURE_2D);
+		}
 		if (currentShape != GL_QUADS) {
 			flush()
-			glBegin(GL_QUADS)
+			currentShape = GL_QUADS
+			glBegin(currentShape)
 		}
 
 		if (texture != null) coordinatesBuffer(0, tc2d)
@@ -60,7 +64,8 @@ object LWJGLRenderContext {
 		
 		if (currentShape != GL_QUADS) {
 			flush()
-			glBegin(GL_QUADS)
+			currentShape = GL_QUADS
+			glBegin(currentShape)
 		}
 		
 		glTexCoord2d(ix, ih)
