@@ -1,4 +1,4 @@
-package org.sgine.render.lwjgl
+package org.sgine.render
 
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL12._
 import org.lwjgl.opengl.GL14._
 import org.sgine.opengl.GLUtilities._
 
-class LWJGLTexture private[lwjgl](var tu: TextureUpdate) {
+class Texture private[render](var tu: TextureUpdate) {
 	lazy val id = generateId()
 	
 	private var x: Int = _
