@@ -1,10 +1,6 @@
 package org.sgine.render
 
-import java.awt.AlphaComposite
-import java.awt.image.BufferedImage
-
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.nio.IntBuffer
 
 import org.lwjgl.opengl.GL11._
@@ -13,25 +9,17 @@ import org.lwjgl.opengl.GL14._
 import org.lwjgl.opengl.GLContext
 
 import org.sgine.property.AdvancedProperty
-import org.sgine.util.GeneralReusableGraphic
-import org.sgine.util.ReusableGraphic
 
 /**
  * Represents a texture in the renderer.
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Texture {
+class Texture (val width: Int, val height: Int) {
 	lazy val id = generateId()
 	var mipmap: Boolean = true
 	
-	private var _width: Int = _
-	private var _height: Int = _
-	
-	def width = _width
-	def height = _height
-	
-	private var update: TextureUpdate = _
+	private val updates = new java.util.concurrent.ArrayBlockingQueue[TextureUpdate](10)
 	
 	/**
 	 * Generates the texture id
@@ -59,6 +47,8 @@ class Texture {
 	/**
 	 * Update the texture with the passed ByteBuffer. This is a thread-safe operation.
 	 * 
+	 * @param x
+	 * @param y
 	 * @param width
 	 * @param height
 	 * @param buffer
@@ -66,67 +56,18 @@ class Texture {
 	 * @param imageFormat
 	 * @param imageType
 	 */
-	def apply(width: Int, height: Int, buffer: ByteBuffer, textureFormat: Int = GL_RGBA, imageFormat: Int = GL_RGBA, imageType: Int = GL_UNSIGNED_BYTE): Unit = {
-		update = new TextureUpdate(width, height, buffer, textureFormat, imageFormat, imageType)
+	def apply(x: Int, y: Int, width: Int, height: Int, buffer: ByteBuffer, textureFormat: Int = GL_RGBA, imageFormat: Int = GL_RGBA, imageType: Int = GL_UNSIGNED_BYTE): Unit = {
+		updates.add(new TextureUpdate(x, y, width, height, buffer, textureFormat, imageFormat, imageType))
 	}
 	
-	/**
-	 * Update the texture with the passed BufferedImage. This is a thread-safe operation.
-	 * 
-	 * @param image
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 */
-	def apply(image: BufferedImage, x: Int, y: Int, width: Int, height: Int): Unit = {
-		if (isValidImage(image)) {
-			if (image.getProperty("reusableGraphic") != "yes") {
-				image.coerceData(true)		// Make sure the data is compatible
-			}
-			
-			val data = new Array[Byte](width * 4)
-			val raster = image.getRaster
-			val buffer = ByteBuffer.allocateDirect((width * height) * 4).order(ByteOrder.nativeOrder)
-			
-			for (i <- 0 until height) {
-				raster.getDataElements(x, y + i, width, 1, data)
-				buffer.put(data)
-			}
-			buffer.flip()
-			
-			apply(width, height, buffer)
-		} else {
-			val rg = GeneralReusableGraphic
-			val g = rg(image.getWidth, image.getHeight, -1)
-			try {
-				g.setComposite(AlphaComposite.Src)
-				g.drawImage(image, 0, 0, image.getWidth, image.getHeight, null)
-				g.dispose()
-				
-				apply(rg(), x, y, width, height)
-			} finally {
-				rg.release()
-			}
-		}
-	}
-	
-	/**
-	 * Verify the color model of the image is directly compatible
-	 * 
-	 * @param image
-	 * @return
-	 * 		Boolean
-	 */
-	private def isValidImage(image: BufferedImage) = image.getColorModel() == ReusableGraphic.rgba
+	private var created = false
 	
 	/**
 	 * Verifies and updates the texture as necessary
 	 */
 	private def validateTexture() = {
-		val u = update
-		update = null
-		
+		val u = updates.poll()
+
 		if (u != null) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, if (mipmap) GL_LINEAR_MIPMAP_LINEAR else GL_LINEAR)
@@ -137,24 +78,23 @@ class Texture {
 			if ((mipmap) && (GLContext.getCapabilities.GL_SGIS_generate_mipmap)) {		// Use mipmapping, it's supported and requested
 				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE)
 			}
-			var x = 0
-			var y = 0
+			var x = u.x
+			var y = u.y
 			var w = u.width
 			var h = u.height
-			if ((u.width != width) || (u.height != height)) {
-				if (GLContext.getCapabilities.GL_ARB_texture_non_power_of_two) {
-					x = 0
-					y = 0
-				} else {		// NPOT not supported, need to adjust
-					w = nextPOT(w)
-					h = nextPOT(h)
-					x = Math.round((w - u.width) / 2.0f)
-					y = Math.round((h - u.height) / 2.0f)
-				}
+//			if ((u.width != width) || (u.height != height)) {
+//				if (GLContext.getCapabilities.GL_ARB_texture_non_power_of_two) {
+//					x = 0
+//					y = 0
+//				} else {		// NPOT not supported, need to adjust
+//					w = nextPOT(w)
+//					h = nextPOT(h)
+//					x = Math.round((w - u.width) / 2.0f)
+//					y = Math.round((h - u.height) / 2.0f)
+//				}
+			if (!created) {
 				glTexImage2D(GL_TEXTURE_2D, 0, u.imageFormat, w, h, 0, u.textureFormat, u.imageType, null.asInstanceOf[ByteBuffer])
-				
-				_width = u.width
-				_height = u.height
+				created = true
 			}
 			glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, u.width, u.height, u.textureFormat, u.imageType, u.buffer)
 		}
@@ -176,4 +116,4 @@ class Texture {
 	}
 }
 
-case class TextureUpdate(width: Int, height: Int, buffer: ByteBuffer, textureFormat: Int = GL_RGBA, imageFormat: Int = GL_RGBA, imageType: Int = GL_UNSIGNED_BYTE)
+case class TextureUpdate(x: Int, y: Int, width: Int, height: Int, buffer: ByteBuffer, textureFormat: Int = GL_RGBA, imageFormat: Int = GL_RGBA, imageType: Int = GL_UNSIGNED_BYTE)
