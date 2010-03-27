@@ -6,79 +6,108 @@ import java.nio.IntBuffer
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL12._
 import org.lwjgl.opengl.GL14._
-import org.sgine.opengl.GLUtilities._
+import org.lwjgl.opengl.GLContext
 
-class Texture private[render](var tu: TextureUpdate) {
+import org.sgine.property.AdvancedProperty
+
+/**
+ * Represents a texture in the renderer.
+ * 
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
+class Texture (val width: Int, val height: Int) {
 	lazy val id = generateId()
+	var mipmap: Boolean = true
 	
-	private var x: Int = _
-	private var y: Int = _
-	var width: Int = _
-	var height: Int = _
-	private var imageFormat: Int = _
-	private var mipmap: Boolean = _
+	private val updates = new java.util.concurrent.ArrayBlockingQueue[TextureUpdate](10)
 	
+	/**
+	 * Generates the texture id
+	 * 
+	 * @return
+	 * 		textureId
+	 */
 	private def generateId() = {
-		val tmp = IntBuffer.allocate(1)
-		glGenTextures(tmp)
-		tmp.get(0)
+		val tmp = IntBuffer.allocate(1);
+		glGenTextures(tmp);
+		tmp.get(0);
 	}
 	
+	/**
+	 * Bind the texture to be used. Must be called within the OpenGL thread.
+	 */
 	def bind() = {
 		glBindTexture(GL_TEXTURE_2D, id)
 		
-		if (tu != null) {
-			updateTexture()
-		}
+		validateTexture()
 		
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
-		
-		var w: Float = width
-		var h: Float = height
-		if (!isNPOT) {
-			w = nextPOT(width)
-			h = nextPOT(height)
-		}
-		w = w / 2.0f
-		h = h / 2.0f
 	}
 	
-	private def updateTexture() = {
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, if (tu.mipmap) GL_LINEAR_MIPMAP_LINEAR else GL_LINEAR);
-		if (isVersion12) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		}
-		if ((tu.mipmap) && (isMipmap)) {
-			glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-		}
-		if ((tu.width != width) || (tu.height != height) || (tu.imageFormat != imageFormat) || (tu.mipmap != mipmap)) {
-			var w = tu.width;
-			var h = tu.height;
-			if (isNPOT) {
-				x = 0;
-				y = 0;
-			} else {
-				w = nextPOT(w);
-				h = nextPOT(h);
-				x = Math.round((w - tu.width) / 2.0f);
-				y = Math.round((h - tu.height) / 2.0f);
+	/**
+	 * Update the texture with the passed ByteBuffer. This is a thread-safe operation.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param buffer
+	 * @param textureFormat
+	 * @param imageFormat
+	 * @param imageType
+	 */
+	def apply(x: Int, y: Int, width: Int, height: Int, buffer: ByteBuffer, textureFormat: Int = GL_RGBA, imageFormat: Int = GL_RGBA, imageType: Int = GL_UNSIGNED_BYTE): Unit = {
+		updates.add(new TextureUpdate(x, y, width, height, buffer, textureFormat, imageFormat, imageType))
+	}
+	
+	private var created = false
+	
+	/**
+	 * Verifies and updates the texture as necessary
+	 */
+	private def validateTexture() = {
+		val u = updates.poll()
+
+		if (u != null) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, if (mipmap) GL_LINEAR_MIPMAP_LINEAR else GL_LINEAR)
+			if (GLContext.getCapabilities.OpenGL12) {		// Only available in 1.2+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 			}
-			glTexImage2D(GL_TEXTURE_2D, 0, tu.imageFormat, w, h, 0, tu.textureFormat, tu.imageType, null.asInstanceOf[ByteBuffer]);
-			
-			width = tu.width;
-			height = tu.height;
-			imageFormat = tu.imageFormat;
-			mipmap = tu.mipmap;
-		}
-		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, tu.width, tu.height, tu.textureFormat, tu.imageType, tu.buffer);
-		if ((tu.mipmap) && (!isMipmap)) {
-			println("**** TODO: implement glu mipmap generation ****");		// TODO: implement
+			if ((mipmap) && (GLContext.getCapabilities.GL_SGIS_generate_mipmap)) {		// Use mipmapping, it's supported and requested
+				glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE)
+			}
+			var x = u.x
+			var y = u.y
+			var w = u.width
+			var h = u.height
+//			if ((u.width != width) || (u.height != height)) {
+//				if (GLContext.getCapabilities.GL_ARB_texture_non_power_of_two) {
+//					x = 0
+//					y = 0
+//				} else {		// NPOT not supported, need to adjust
+//					w = nextPOT(w)
+//					h = nextPOT(h)
+//					x = Math.round((w - u.width) / 2.0f)
+//					y = Math.round((h - u.height) / 2.0f)
+//				}
+			if (!created) {
+				glTexImage2D(GL_TEXTURE_2D, 0, u.imageFormat, w, h, 0, u.textureFormat, u.imageType, null.asInstanceOf[ByteBuffer])
+				created = true
+			}
+			glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, u.width, u.height, u.textureFormat, u.imageType, u.buffer)
 		}
 	}
 	
-	private def nextPOT(value:Int) = {
+	/**
+	 * The next power-of-two value
+	 * 
+	 * @param value
+	 * @return
+	 * 		Int
+	 */
+	private def nextPOT(value: Int) = {
 		var ret = 1
 		while (ret < value) {
 			ret <<= 1
@@ -87,4 +116,4 @@ class Texture private[render](var tu: TextureUpdate) {
 	}
 }
 
-case class TextureUpdate(buffer: ByteBuffer, width: Int, height: Int, textureFormat: Int, imageFormat: Int, imageType: Int, mipmap: Boolean)
+case class TextureUpdate(x: Int, y: Int, width: Int, height: Int, buffer: ByteBuffer, textureFormat: Int = GL_RGBA, imageFormat: Int = GL_RGBA, imageType: Int = GL_UNSIGNED_BYTE)
