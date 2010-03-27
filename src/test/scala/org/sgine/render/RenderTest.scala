@@ -68,7 +68,7 @@ object RenderTest {
 		// Setup
 		texture = new Texture(700, 366)
 		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")), 0, 0, 700, 366)
-		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/Arial.png")), 0, 0, 256, 256, 256)
+//		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/Arial.png")), 0, 0, 256, 256, 256)
 		image = new Image()
 		image.texture = texture
 		image.width = 700
