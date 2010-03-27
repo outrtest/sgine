@@ -28,9 +28,6 @@ object RenderTest {
 	var texture: Texture = _
 	var image: Image = _
 	
-	var texture2: Texture = _
-	var image2: Image = _
-	
 	def main(args: Array[String]): Unit = {
 		f.setSize(1024, 768)
 		f.setTitle("Test Scala")
@@ -77,13 +74,6 @@ object RenderTest {
 		image.width = 700
 		image.height = 366
 		
-//		texture2 = new Texture(256, 256)
-//		texture2(ImageIO.read(getClass.getClassLoader.getResource("resource/Arial.png")), 0, 0, 256, 256)
-//		image2 = new Image()
-//		image2.texture = texture2
-//		image2.width = 256
-//		image2.height = 256
-		
 		// Rendering
 		while (keepAlive) {
 			Display.update()
@@ -121,6 +111,5 @@ object RenderTest {
 		glTranslatef(0.0f, 0.0f, -1000.0f)
 		
 		image.draw(0.0f, 0.0f)
-//		image2.draw()
 	}
 }
