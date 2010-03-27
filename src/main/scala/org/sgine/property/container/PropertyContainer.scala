@@ -71,6 +71,17 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 		changed
 	}
 	
+	def uncommitted = {
+		var u = false
+		for (p <- this) p match {
+			case tp: TransactionalProperty[_] => {
+				if (tp.uncommitted) u = true
+			}
+			case _ =>
+		}
+		u
+	}
+	
 	def contains(name: String) = {
 		initialize()
 		aliases.contains(name)
