@@ -208,7 +208,7 @@ class Matrix4 protected() extends Iterable[Double] {
 	
 	def invert() = copy().invertLocal()
 	
-	def rotate(x: Double = 1.0, y: Double = 1.0, z: Double = 1.0) = copy().rotateLocal(x, y, z)
+	def rotate(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = copy().rotateLocal(x, y, z)
 	
 	def rotate(v: Vector3): Matrix4 = rotate(v.x, v.y, v.z)
 	
@@ -337,7 +337,7 @@ class Matrix4 protected() extends Iterable[Double] {
 	
 	protected def rotateLocal(v: Vector3): Matrix4 = rotateLocal(v.x, v.y, v.z)
 	
-	protected def rotateLocal(x: Double = 1.0, y: Double = 1.0, z: Double = 1.0) = {
+	protected def rotateLocal(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = {
 		val negY = -y
 
 	    val cx = Math.cos(x)

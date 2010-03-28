@@ -1,0 +1,130 @@
+package org.sgine.render
+
+import org.lwjgl.opengl.Display
+import org.lwjgl.opengl.GL11._
+
+import org.lwjgl.util.glu.GLU._
+
+import org.sgine.property.AdvancedProperty
+import org.sgine.property.container.PropertyContainer
+
+import org.sgine.util.FunctionRunnable
+
+class Renderer extends PropertyContainer {
+	private var _renders: Long = 0
+	private var keepAlive = true
+	private var lastRender = -1L
+	
+	val canvas = new java.awt.Canvas()
+	lazy val thread = new Thread(FunctionRunnable(run))
+	def renders = _renders
+	
+	val renderable = new AdvancedProperty[() => Unit](null)
+	
+	def start() = {
+		thread.start()
+		
+		while(_renders < 2) {		// Make sure the rendering has started
+			Thread.sleep(1)
+		}
+	}
+	
+	def shutdown() = keepAlive = false
+	
+	private def run(): Unit = {
+		initGL()
+
+		while ((keepAlive) && (!Display.isCloseRequested)) {
+			Display.update()
+			
+			render()
+		}
+		
+		destroy()
+	}
+	
+	
+	private def initGL() = {
+		Display.setFullscreen(false)
+		Display.setVSyncEnabled(false)
+		Display.setParent(canvas)
+		Display.create()
+		
+		glClearDepth(1.0)
+		glEnable(GL_BLEND)
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
+		glEnable(GL_TEXTURE_2D)
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+		reshapeGL()
+	}
+	
+	private def reshapeGL() = {
+		val width = canvas.getWidth
+		val height = canvas.getHeight
+		val h = width.toFloat / height.toFloat
+		glViewport(0, 0, width, height)
+		glMatrixMode(GL_PROJECTION)
+		glLoadIdentity()
+		gluPerspective(45.0f, h, 1.0f, 20000.0f)
+		glMatrixMode(GL_MODELVIEW)
+		glLoadIdentity()
+	}
+	
+	private def render() = {
+		val currentRender = System.nanoTime
+		if (lastRender != -1) {
+			val time = (currentRender - lastRender) / 1000000000.0
+			
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+			
+			glLoadIdentity()
+			glColor3f(1.0f, 1.0f, 1.0f)
+			
+			Renderer.time.set(time)
+			Renderer.fps.set((1.0 / time).round.toInt)
+			
+			val r = renderable()
+			if (r != null) r()
+			
+			_renders += 1
+		    if (_renders == Long.MaxValue) {
+		    	_renders = 0
+		    }
+		}
+		lastRender = currentRender
+	}
+	
+	private def destroy() = {
+		Display.destroy()
+	}
+}
+
+object Renderer {
+	val time = new ThreadLocal[Double]
+	val fps = new ThreadLocal[Int]
+	
+	def createFrame(width: Int, height: Int, title: String) = {
+		val r = new Renderer()
+		
+		val f = new java.awt.Frame
+		f.setSize(width, height)
+		f.setTitle(title)
+		f.setResizable(false)
+		f.setLayout(new java.awt.BorderLayout())
+		f.addWindowListener(new java.awt.event.WindowAdapter() {
+			override def windowClosing(e: java.awt.event.WindowEvent): Unit = {
+				r.shutdown()
+				f.dispose()
+			}
+		})
+		
+		r.canvas.setSize(width, height)		// TODO: fix
+		f.add(java.awt.BorderLayout.CENTER, r.canvas)
+		
+		f.setVisible(true)
+		
+		r.start()
+		
+		r
+	}
+}

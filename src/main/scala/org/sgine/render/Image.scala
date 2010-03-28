@@ -2,12 +2,14 @@ package org.sgine.render
 
 import org.lwjgl.opengl.GL11._
 
-class Image {
+class Image private() extends Function0[Unit] {
 	var texture: Texture = _
 	var x: Float = _
 	var y: Float = _
 	var width: Float = _
 	var height: Float = _
+	
+	def apply() = draw()
 	
 	def draw(offsetX: Float = 0.0f, offsetY: Float = 0.0f, insetX1: Float = 0.0f, insetY1: Float = 0.0f, insetX2: Float = 0.0f, insetY2: Float = 0.0f) = {
 		if (texture != null) {
@@ -40,5 +42,18 @@ class Image {
 		glVertex3f(-w + offsetX, h + offsetY, 0.0f)
 		
 		glEnd()
+	}
+}
+
+object Image {
+	def apply() = new Image()
+	
+	def apply(texture: Texture) = {
+		val i = new Image()
+		i.texture = texture
+		i.width = texture.width
+		i.height = texture.height
+		
+		i
 	}
 }
