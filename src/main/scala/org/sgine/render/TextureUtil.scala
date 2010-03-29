@@ -11,6 +11,14 @@ import org.sgine.util.GeneralReusableGraphic
 import org.sgine.util.ReusableGraphic
 
 object TextureUtil {
+	def apply(image: BufferedImage): Texture = {
+		val texture = new Texture(image.getWidth, image.getHeight)
+		
+		apply(texture, image, 0, 0, texture.width, texture.height)
+		
+		texture
+	}
+	
 	/**
 	 * Update a texture with the passed BufferedImage. This is a thread-safe operation.
 	 * 
