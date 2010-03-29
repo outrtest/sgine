@@ -29,6 +29,8 @@ class Renderer extends PropertyContainer {
 		}
 	}
 	
+	def isAlive = keepAlive
+	
 	def shutdown() = keepAlive = false
 	
 	private def run(): Unit = {
@@ -39,6 +41,8 @@ class Renderer extends PropertyContainer {
 			
 			render()
 		}
+		
+		keepAlive = false
 		
 		destroy()
 	}

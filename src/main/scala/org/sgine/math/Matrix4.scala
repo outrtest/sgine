@@ -338,50 +338,63 @@ class Matrix4 protected() extends Iterable[Double] {
 	protected def rotateLocal(v: Vector3): Matrix4 = rotateLocal(v.x, v.y, v.z)
 	
 	protected def rotateLocal(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = {
-		val negY = -y
+		if ((x != 0.0) || (y != 0.0) || (z != 0.0)) {
+			val cx = Math.cos(x)
+			val sx = Math.sin(x)
+			val cy = Math.cos(-y)
+			val sy = Math.sin(-y)
+			val cz = Math.cos(z)
+			val sz = Math.sin(z)
+			
+			val cxsy = cx * sy
+			val sxsy = sx * sy
+			
+			val d00 = cy * cz
+			val d01 = -cy * sz
+			val d02 = -sy
+			
+			val d10 = -sxsy * cz + cx * sz
+			val d11 = sxsy * sz + cx * cz
+			val d12 = -sx * cy
+			
+			val d20 = cxsy * cz + sx * sz
+			val d21 = -cxsy * sz + sx * cz
+			val d22 = cx * cy
+			
+			val t00 = m00 * d00 + m01 * d10 + m02 * d20
+			val t01 = m00 * d01 + m01 * d11 + m02 * d21;
+			val t02 = m00 * d02 + m01 * d12 + m02 * d22;
+	
+			val t10 = m10 * d00 + m11 * d10 + m12 * d20;
+			val t11 = m10 * d01 + m11 * d11 + m12 * d21;
+			val t12 = m10 * d02 + m11 * d12 + m12 * d22;
+	
+			val t20 = m20 * d00 + m21 * d10 + m22 * d20;
+			val t21 = m20 * d01 + m21 * d11 + m22 * d21;
+			val t22 = m20 * d02 + m21 * d12 + m22 * d22;
+	
+			val t30 = m30 * d00 + m31 * d10 + m32 * d20;
+			val t31 = m30 * d01 + m31 * d11 + m32 * d21;
+			val t32 = m30 * d02 + m31 * d12 + m32 * d22;
 
-	    val cx = Math.cos(x)
-	    val sx = Math.sin(x)
-	    val cy = Math.cos(negY)
-	    val sy = Math.sin(negY)
-	    val cz = Math.cos(z)
-	    val sz = Math.sin( z )
+			m00 = t00
+			m01 = t01
+			m02 = t02
 	
-	    val cxsy = cx * sy
-	    val sxsy = sx * sy
+			m10 = t10
+			m11 = t11
+			m12 = t12
 	
-	    val d00 = +cy * +cz
-	    val d01 = -cy * +sz
-	    val d02 = -sy
+			m20 = t20
+			m21 = t21
+			m22 = t22
 	
-	    val d10 = -sxsy * cz + cx * sz
-	    val d11 = +sxsy * sz + cx * cz
-	    val d12 = -sx * +cy
-	
-	    val d20 = +cxsy * cz + sx * sz
-	    val d21 = -cxsy * sz + sx * cz
-	    val d22 = +cx * +cy
-	
-	    val t00 = m00 * d00 + m01 * d10 + m02 * d20
-	    val t01 = m00 * d01 + m01 * d11 + m02 * d21
-	    val t02 = m00 * d02 + m01 * d12 + m02 * d22
-	
-	    val t10 = m10 * d00 + m11 * d10 + m12 * d20
-	    val t11 = m10 * d01 + m11 * d11 + m12 * d21
-	    val t12 = m10 * d02 + m11 * d12 + m12 * d22
-	
-	    val t20 = m20 * d00 + m21 * d10 + m22 * d20
-	    val t21 = m20 * d01 + m21 * d11 + m22 * d21
-	    val t22 = m20 * d02 + m21 * d12 + m22 * d22
-	
-	    val t30 = m30 * d00 + m31 * d10 + m32 * d20
-	    val t31 = m30 * d01 + m31 * d11 + m32 * d21
-	    val t32 = m30 * d02 + m31 * d12 + m32 * d22
-	
-	    setLocal(t00, t01, t02, m03,
-	    		 t10, t11, t12, m13,
-	    		 t20, t21, t22, m23,
-	    		 t30, t31, t32, m33)
+			m30 = t30
+			m31 = t31
+			m32 = t32
+		}
+		
+		this
 	}
 	
 	protected def multLocal(m: Matrix4) = {

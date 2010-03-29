@@ -55,7 +55,7 @@ class Matrix4 protected() extends ImmutableMatrix4 {
 	
 	override def invert() = invertLocal().asInstanceOf[Matrix4]
 	
-	override def rotate(x: Double = 1.0, y: Double = 1.0, z: Double = 1.0) = rotateLocal(x, y, z).asInstanceOf[Matrix4]
+	override def rotate(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = rotateLocal(x, y, z).asInstanceOf[Matrix4]
 	
 	override def rotate(v: ImmutableVector3): Matrix4 = rotate(v.x, v.y, v.z).asInstanceOf[Matrix4]
 	
