@@ -16,8 +16,11 @@ object TestRenderer {
 		val i = Image(t)
 		val fps = FPS(1.0)
 		
-		val l = MatrixState(m) :: i :: fps :: Nil
-		r.renderable := RenderList(l)
+		val a = new Array[() => Unit](3)
+		a(0) = MatrixState(m)
+		a(1) = i
+		a(2) = fps
+		r.renderable := RenderList(a)
 		
 		println("Renderer started!")
 		while (r.isAlive) {
