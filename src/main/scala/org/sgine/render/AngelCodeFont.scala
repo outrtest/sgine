@@ -4,7 +4,7 @@ import java.net.URL
 
 import scala.io.Source
 
-class AngelCodeFont private(texture: Texture) extends TextureMap(texture) {
+class AngelCodeFont private(texture: Texture) extends TextureMap[Int](texture) {
 	private var _face: String = null
 	private var _size: Int = 0
 	private var _bold: Int = 0
@@ -39,9 +39,18 @@ class AngelCodeFont private(texture: Texture) extends TextureMap(texture) {
 	def scaleW = _scaleW
 	def scaleH = _scaleH
 	
-	def apply(c: Char): AngelCodeFontChar = apply(c.toString).asInstanceOf[AngelCodeFontChar]
+	override def apply(c: Int): AngelCodeFontChar = super.apply(c).asInstanceOf[AngelCodeFontChar]
 	
 	override protected def createImage() = new AngelCodeFontChar()
+	
+	def drawString(s: String) = {
+		var previous: AngelCodeFontChar = null
+		for (c <- s) {
+			val current = apply(c)
+			current.drawChar(previous)
+			previous = current
+		}
+	}
 }
 
 object AngelCodeFont {
@@ -53,10 +62,16 @@ object AngelCodeFont {
 		processInfo(font, lines(0))
 		processCommon(font, lines(1))
 		
+		// Process Characters
 		var offset = 2
 		for (i <- 0 until font._pages) {
 			offset = processPage(font, lines, offset)
 		}
+		
+		val kerningsCount = processLine(lines(offset))("count").toInt
+		offset += 1
+		
+		processKernings(font, lines, offset, kerningsCount)
 		
 		font
 	}
@@ -116,14 +131,27 @@ object AngelCodeFont {
 			val y = m("y").toDouble
 			val width = m("width").toDouble
 			val height = m("height").toDouble
-			val fontChar = font.create(id.toChar.toString, x, y, width, height).asInstanceOf[AngelCodeFontChar]
+			val fontChar = font.create(id, x, y, width, height).asInstanceOf[AngelCodeFontChar]
+			fontChar._font = font
+			fontChar._code = id
 			fontChar._xOffset = m("xoffset").toDouble
 			fontChar._yOffset = m("yoffset").toDouble
+			fontChar._xAdvance = m("xadvance").toDouble
 			
 			line += 1
 		}
 		
 		line
+	}
+	
+	private def processKernings(font: AngelCodeFont, lines: List[String], offset: Int, kerningsCount: Int) = {
+		for (i <- offset until lines.length) {
+			val m = processLine(lines(i))
+			
+			val k = AngelCodeFontKerning(m("first").toInt, m("amount").toInt)
+			val next = font(m("second").toInt)
+			next._kernings = k :: next._kernings
+		}
 	}
 	
 	private def processLine(s: String) = {

@@ -1,9 +1,9 @@
 package org.sgine.render
 
-class TextureMap protected(val texture: Texture) {
-	private var map = Map.empty[String, Image]
+class TextureMap[T] protected(val texture: Texture) {
+	private var map = Map.empty[Any, Image]
 	
-	def create(name: String, x: Double, y: Double, width: Double, height: Double) = {
+	def create(name: T, x: Double, y: Double, width: Double, height: Double) = {
 		val image = createImage()
 		image.texture = texture
 		image.x = x
@@ -20,7 +20,9 @@ class TextureMap protected(val texture: Texture) {
 	
 	protected def createImage() = Image()
 	
-	def apply(name: String) = map(name)
+	def apply(name: T) = map(name)
+	
+	def length = map.size
 }
 
 object TextureMap {
