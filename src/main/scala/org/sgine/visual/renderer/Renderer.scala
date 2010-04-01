@@ -1,7 +1,6 @@
 package org.sgine.visual.renderer
 
 import org.sgine.visual.Window
-import org.sgine.visual.renderer.lwjgl.LWJGLRenderer
 
 import java.awt.Container
 
@@ -23,5 +22,5 @@ trait Renderer {
 }
 
 object Renderer {
-	var Default: Renderer = LWJGLRenderer
+	var Default: Renderer = null
 }
