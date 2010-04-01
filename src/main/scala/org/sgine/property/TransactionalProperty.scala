@@ -26,6 +26,8 @@ trait TransactionalProperty[T] extends ListenableProperty[T] {
 	
 	def uncommitted = _uncommitted
 	
+	def setUncommitted() = _uncommitted = true
+	
 	def commit() = {
 		if (uncommitted) {
 			val e = PropertyTransactionEvent(this, _originalValue, apply(), true)
