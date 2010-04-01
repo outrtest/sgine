@@ -1,7 +1,5 @@
 package org.sgine.render
 
-//import org.newdawn.slick.AngelCodeFont
-//import org.newdawn.slick.Font
 import scala.io.Source
 
 import java.awt.Canvas
@@ -14,7 +12,6 @@ import javax.imageio._
 import java.nio._
 
 import org.sgine.core.Color
-import org.sgine.render.lwjgl._
 
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11._
@@ -28,11 +25,8 @@ object RenderTest {
 	var elapsed = 0.0
 	var frames = 0L
 	
-	var texture: LWJGLTexture = _
-	var image: LWJGLImage = _
-	
-	val r = new Renderer
-//	var arial: Font = _
+	var texture: Texture = _
+	var image: Image = _
 	
 	def main(args: Array[String]): Unit = {
 		f.setSize(1024, 768)
@@ -71,24 +65,14 @@ object RenderTest {
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
 		
-		// Set up texture
-		val awtImage = ImageIO.read(getClass.getClassLoader.getResource("resource/Arial.png"))
-		texture = LWJGLTextureManager(awtImage, 0, 0, 256, 256, true)
-		
-		// Set up texture coordinates
-		LWJGLRenderContext.texCoord(0, 0.0, 1.0)
-		LWJGLRenderContext.texCoord(1, 1.0, 1.0)
-		LWJGLRenderContext.texCoord(2, 1.0, 0.0)
-		LWJGLRenderContext.texCoord(3, 0.0, 0.0)
-		
-		image = new LWJGLImage(texture, 0.0, 0.0, 256.0, 256.0)
-		
-		r.matrix.translateZ(-100.0)
-		r.matrix.rotZ(0.2)
-		
-//		arial = new AngelCodeFont("Arial", getClass.getClassLoader.getResourceAsStream("resource/Arial.fnt"), getClass.getClassLoader.getResourceAsStream("resource/Arial.png"))
-//		r.g .setFont(arial)
-//		r.g.setFont(new AngelCodeFont("org/newdawn/slick/data/defaultfont.fnt", "org/newdawn/slick/data/defaultfont.png"))
+		// Setup
+		texture = new Texture(700, 366)
+		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")), 0, 0, 700, 366)
+//		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/Arial.png")), 0, 0, 256, 256, 256)
+		image = Image()
+		image.texture = texture
+		image.width = 700
+		image.height = 366
 		
 		// Rendering
 		while (keepAlive) {
@@ -124,24 +108,8 @@ object RenderTest {
 	}
 	
 	def render() = {
-		LWJGLRenderContext.translate(0.0, 0.0, -100.0)
-//		
-		LWJGLRenderContext.setTexture(texture)
-		LWJGLRenderContext.drawRect(-50.0, -50.0, 32.0, 32.0)
-//		LWJGLRenderContext.setTexture(null)
-//		LWJGLRenderContext.setColor(blue = 1.0, alpha = 0.5)
-//		LWJGLRenderContext.drawRect(0.0, 0.0, 10.0, 10.0)
-//		
-//		LWJGLRenderContext.setColor(0.8, 0.8, 0.8, 0.8)
-//		LWJGLRenderContext.drawImage(image, 0.0, -40.0, 35.0, 18.0)
-//		
-		LWJGLRenderContext.flush()
+		glTranslatef(0.0f, 0.0f, -1000.0f)
 		
-//		r.color = Color.Red
-//		r.g.drawOval(0.0f, 0.0f, 5.0f, 5.0f)
-		r.color = Color.Green
-		r.drawRect(0.0f, -30.0f, 10.0f, 10.0f)
-		
-//		r.g.drawString("Testing", 0.0f, 0.0f)
+		image.draw(0.0f, 0.0f)
 	}
 }

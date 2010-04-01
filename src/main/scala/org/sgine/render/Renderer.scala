@@ -1,103 +1,134 @@
 package org.sgine.render
 
-import org.sgine.core.Color
-import org.sgine.core.mutable.{Color => MutableColor}
-import org.sgine.math.mutable.{Matrix4 => MutableMatrix4}
-
+import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11._
 
-/**
- * Renderer provides an abstract context to gain access to the rendering
- * implementation in order to provide a simple and swappable rendering
- * abstraction.
- * 
- * @author Matt Hicks
- */
-class Renderer {
-	val matrix = MutableMatrix4().identity()
+import org.lwjgl.util.glu.GLU._
+
+import org.sgine.property.AdvancedProperty
+import org.sgine.property.container.PropertyContainer
+
+import org.sgine.util.FunctionRunnable
+
+class Renderer extends PropertyContainer {
+	private var _renders: Long = 0
+	private var keepAlive = true
+	private var lastRender = -1L
 	
-	private val backgroundColor = new MutableColor()
-	private val foregroundColor = new MutableColor()
-	private val buffer = matrix.getTranspose(null, false)
+	val canvas = new java.awt.Canvas()
+	lazy val thread = new Thread(FunctionRunnable(run))
+	def renders = _renders
 	
-	var lineWidth = 1.0f
+	val renderable = new AdvancedProperty[() => Unit](null)
 	
-	def background_=(color: Color): Unit = background(color.red, color.green, color.blue, color.alpha)
-	
-	def background(red: Float = 0.0f, green: Float = 0.0f, blue: Float = 0.0f, alpha: Float = 1.0f): Unit = {
-		backgroundColor.red = red
-		backgroundColor.green = green
-		backgroundColor.blue = blue
-		backgroundColor.alpha = alpha
+	def start() = {
+		thread.start()
 		
-		glClearColor(red, green, blue, alpha)
-	}
-	
-	def background: Color = backgroundColor
-	
-	def clear() = glClear(GL_COLOR_BUFFER_BIT)
-	
-	def color_=(c: Color): Unit = color(c.red, c.green, c.blue, c.alpha)
-	
-	def color(red: Float = 0.0f, green: Float = 0.0f, blue: Float = 0.0f, alpha: Float = 1.0f): Unit = {
-		foregroundColor.red = red
-		foregroundColor.green = green
-		foregroundColor.blue = blue
-		foregroundColor.alpha = alpha
-		
-		glColor4f(red, green, blue, alpha)
-	}
-	
-	def color: Color = foregroundColor
-	
-	def drawRect(x: Float, y: Float, width: Float, height: Float) = {
-		drawLine(x, y, x + width, y)
-		drawLine(x + width, y, x + width, y + height)
-		drawLine(x + width, y + height, x, y + height)
-		drawLine(x, y + height, x, y)
-	}
-	
-	def drawLine(x1: Float, y1: Float, x2: Float, y2: Float) = {
-		val lineWidth = this.lineWidth - 1.0f
-		if (x1 == x2) {
-			var _y1 = y1
-			var _y2 = y2
-			if (y1 > y2) {
-				_y2 = y1
-				_y1 = y2
-			}
-			fillRect(x1 - (lineWidth / 2.0f), _y1 - (lineWidth / 2.0f), lineWidth + 1.0f, (_y2 - _y1) + lineWidth + 1.0f)
-		} else if (y1 == y2) {
-			var _x1 = x1
-			var _x2 = x2
-			if (x1 > x2) {
-				_x2 = x1
-				_x1 = x2
-			}
-			fillRect(_x1 - (lineWidth / 2.0f), y1 - (lineWidth / 2.0f), (_x2 - _x1) + lineWidth + 1.0f, lineWidth + 1.0f)
-		} else {
-			// TODO: draw vertex
-			throw new RuntimeException("Unimplemented feature!")
+		while(_renders < 2) {		// Make sure the rendering has started
+			Thread.sleep(1)
 		}
 	}
 	
-	def fillRect(x: Float, y: Float, width: Float, height: Float) = {
-		glDisable(GL_TEXTURE_2D);
+	def isAlive = keepAlive
+	
+	def shutdown() = keepAlive = false
+	
+	private def run(): Unit = {
+		initGL()
+
+		while ((keepAlive) && (!Display.isCloseRequested)) {
+			Display.update()
+			
+			render()
+		}
 		
-		glBegin(GL_QUADS)
-		glVertex2f(x, y)
-		glVertex2f(x + width, y)
-		glVertex2f(x + width, y + height)
-		glVertex2f(x, y + height)
-		glEnd()
+		keepAlive = false
+		
+		destroy()
 	}
 	
-	def drawImage(image: Image, x: Float, y: Float) = {
-//		image.draw(x, y, y)
+	
+	private def initGL() = {
+		Display.setFullscreen(false)
+		Display.setVSyncEnabled(false)
+		Display.setParent(canvas)
+		Display.create()
+		
+		glClearDepth(1.0)
+		glEnable(GL_BLEND)
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
+		glEnable(GL_TEXTURE_2D)
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+		reshapeGL()
 	}
 	
-	def transform() = {
-		matrix.getTranspose(buffer, false)
-		glLoadMatrix(buffer)
+	private def reshapeGL() = {
+		val width = canvas.getWidth
+		val height = canvas.getHeight
+		val h = width.toFloat / height.toFloat
+		glViewport(0, 0, width, height)
+		glMatrixMode(GL_PROJECTION)
+		glLoadIdentity()
+		gluPerspective(45.0f, h, 1.0f, 20000.0f)
+		glMatrixMode(GL_MODELVIEW)
+		glLoadIdentity()
+	}
+	
+	private def render() = {
+		val currentRender = System.nanoTime
+		if (lastRender != -1) {
+			val time = (currentRender - lastRender) / 1000000000.0
+			
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+			
+			glLoadIdentity()
+			glColor3f(1.0f, 1.0f, 1.0f)
+			
+			Renderer.time.set(time)
+			Renderer.fps.set((1.0 / time).round.toInt)
+			
+			val r = renderable()
+			if (r != null) r()
+			
+			_renders += 1
+		    if (_renders == Long.MaxValue) {
+		    	_renders = 0
+		    }
+		}
+		lastRender = currentRender
+	}
+	
+	private def destroy() = {
+		Display.destroy()
+	}
+}
+
+object Renderer {
+	val time = new ThreadLocal[Double]
+	val fps = new ThreadLocal[Int]
+	
+	def createFrame(width: Int, height: Int, title: String) = {
+		val r = new Renderer()
+		
+		val f = new java.awt.Frame
+		f.setSize(width, height)
+		f.setTitle(title)
+		f.setResizable(false)
+		f.setLayout(new java.awt.BorderLayout())
+		f.addWindowListener(new java.awt.event.WindowAdapter() {
+			override def windowClosing(e: java.awt.event.WindowEvent): Unit = {
+				r.shutdown()
+				f.dispose()
+			}
+		})
+		
+		r.canvas.setSize(width, height)		// TODO: fix
+		f.add(java.awt.BorderLayout.CENTER, r.canvas)
+		
+		f.setVisible(true)
+		
+		r.start()
+		
+		r
 	}
 }
