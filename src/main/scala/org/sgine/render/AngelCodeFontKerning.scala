@@ -1,3 +1,3 @@
 package org.sgine.render
 
-case class AngelCodeFontKerning(previous: Int, amount: Int)
+case class AngelCodeFontKerning(previous: Int, amount: Double)
