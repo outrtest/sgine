@@ -36,6 +36,8 @@ class AngelCodeFontChar extends Image {
 		glTranslated(adjust + (xAdvance / 2.0) + k, 0.0, 0.0)
 		
 		// Draw character to screen
-		draw(xOffset, -yOffset / 2.0)
+		draw(xOffset, -yOffset + ((font.lineHeight / 2.0) - (height / 2.0)))
 	}
+	
+	override def toString() = code + " (" + code.toChar + ") Offset: " + xOffset + "x" + yOffset + " xAdvance: " + xAdvance
 }
