@@ -17,11 +17,25 @@ class AngelCodeFontChar extends Image {
 	def xAdvance = _xAdvance
 	def kernings = _kernings
 	
-	def drawChar(previous: AngelCodeFontChar = null, kerning: Boolean = true) = {
+	def kerning(previous: AngelCodeFontChar): Double = {
+		if (previous != null) {
+			kernings.find(k => k.previous == previous.code) match {
+				case s: Some[AngelCodeFontKerning] => s.get.amount
+				case _ => 0.0
+			}
+		} else {
+			0.0
+		}
+	}
+	
+	def drawChar(previous: AngelCodeFontChar = null, kern: Boolean = true) = {
+		val k = if (kern) kerning(previous) else 0.0
+		
+		// Adjust before we draw
 		val adjust = if (previous != null) previous.xAdvance / 2.0 else 0.0
-		glTranslated(adjust + (xAdvance / 2.0), 0.0, 0.0)
-//		glTranslated(xAdvance / 2.0, 0.0, 0.0)
+		glTranslated(adjust + (xAdvance / 2.0) + k, 0.0, 0.0)
+		
+		// Draw character to screen
 		draw(xOffset, -yOffset / 2.0)
-//		glTranslated(xAdvance / 2.0, 0.0, 0.0)
 	}
 }

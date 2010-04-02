@@ -43,11 +43,11 @@ class AngelCodeFont private(texture: Texture) extends TextureMap[Int](texture) {
 	
 	override protected def createImage() = new AngelCodeFontChar()
 	
-	def drawString(s: String) = {
+	def drawString(s: String, kern: Boolean = true) = {
 		var previous: AngelCodeFontChar = null
 		for (c <- s) {
 			val current = apply(c)
-			current.drawChar(previous)
+			current.drawChar(previous, kern)
 			previous = current
 		}
 	}
