@@ -68,10 +68,10 @@ object AngelCodeFont {
 			offset = processPage(font, lines, offset)
 		}
 		
-		val kerningsCount = processLine(lines(offset))("count").toInt
-		offset += 1
-		
-		processKernings(font, lines, offset, kerningsCount)
+//		val kerningsCount = processLine(lines(offset))("count").toInt
+//		offset += 1
+//		
+//		processKernings(font, lines, offset, kerningsCount)
 		
 		font
 	}
@@ -124,21 +124,30 @@ object AngelCodeFont {
 		line += 1
 		
 		// Process "char"
-		for (index <- 0 to count) {
-			val m = processLine(lines(line))
-			val id = m("id").toInt
-			val x = m("x").toDouble
-			val y = m("y").toDouble
-			val width = m("width").toDouble
-			val height = m("height").toDouble
-			val fontChar = font.create(id, x, y, width, height).asInstanceOf[AngelCodeFontChar]
-			fontChar._font = font
-			fontChar._code = id
-			fontChar._xOffset = m("xoffset").toDouble
-			fontChar._yOffset = m("yoffset").toDouble
-			fontChar._xAdvance = m("xadvance").toDouble
+		for (index <- line until lines.length) {
+			val m = processLine(lines(index))
 			
-			line += 1
+			if (m.contains("char")) {
+				val id = m("id").toInt
+				val x = m("x").toDouble
+				val y = m("y").toDouble
+				val width = m("width").toDouble
+				val height = m("height").toDouble
+				val fontChar = font.create(id, x, y, width, height).asInstanceOf[AngelCodeFontChar]
+				fontChar._font = font
+				fontChar._code = id
+				fontChar._xOffset = m("xoffset").toDouble
+				fontChar._yOffset = m("yoffset").toDouble
+				fontChar._xAdvance = m("xadvance").toDouble
+			} else if (m.contains("kernings")) {
+				// Ignore
+			} else if (m.contains("kerning")) {
+				val k = AngelCodeFontKerning(m("first").toInt, m("amount").toInt)
+				val next = font(m("second").toInt)
+				next._kernings = k :: next._kernings
+			} else {
+				throw new RuntimeException("Error parsing: " + lines(index))
+			}
 		}
 		
 		line
@@ -170,6 +179,8 @@ object AngelCodeFont {
 				value = buffer.toString
 				if ((key != null) && (value.length > 0)) {
 					m += key -> value
+				} else if (value.length > 0) {
+					m += value -> "true"
 				}
 				
 				key = null
