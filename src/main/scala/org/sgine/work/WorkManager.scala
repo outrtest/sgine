@@ -77,7 +77,7 @@ class WorkManager {
 	
 	private val updateWorkThread = (w: WorkThread) => {
 		w.update(time)
-		if (w.isWorking) {
+		if (!w.isWorking) {
 			allProcessing = false
 		}
 	}
@@ -94,7 +94,7 @@ class WorkManager {
 			
 			// Update WorkThreads
 			workers.foreach(updateWorkThread)
-			
+
 			// Check to see if overloaded with work
 			if (threadCount < maxThreads) {
 				val nextWork = queue.peek()
@@ -106,18 +106,29 @@ class WorkManager {
 					}
 					case _ =>
 				}
-				
-				if ((allProcessing) && (workCount > workLoadThreshold) && (allowOverloading)) {
-					addWorker()
+				if (allProcessing) {						// All threads are processing
+					if (workers.length < maxThreads) {		// We haven't reached maximum thread count
+						addWorker()
+					} else if ((workCount > workLoadThreshold) && (allowOverloading)) {		// Too much work and cap has been reached, but we allow overloading
+						addWorker()
+					}
 				}
+//				println("Test: " + allProcessing + ", " + workCount + ", " + workLoadThreshold + ", " + allowOverloading + ", " + workers.length)
+//				if ((allProcessing) && (workCount > workLoadThreshold) && (allowOverloading)) {
+//					addWorker()
+//				}
 			}
+			
+			Thread.sleep(10)
 		}
 	}
 	
 	private def addWorker() = {
 		val w = new WorkThread(this)
 //		workers.add(w)
-		workers = w :: workers
+		synchronized {
+			workers = w :: workers
+		}
 		w.init()
 	}
 	
@@ -205,6 +216,8 @@ class WorkManager {
 		}
 		count
 	}
+	
+	def workQueue = queue.size
 }
 
 object WorkManager {

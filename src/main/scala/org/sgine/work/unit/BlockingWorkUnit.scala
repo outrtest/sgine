@@ -3,7 +3,7 @@ package org.sgine.work.unit
 import java.util.concurrent._
 
 abstract class BlockingWorkUnit(blocker: AnyRef) extends DependentUnit with FinishedUnit {
-	def isReady(): Boolean = BlockingWorkUnit.block(blocker)
+	def isReady() = BlockingWorkUnit.block(blocker)
 	
 	def finished() = {
 		BlockingWorkUnit.unblock(blocker)
