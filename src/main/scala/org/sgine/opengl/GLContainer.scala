@@ -62,7 +62,6 @@ trait GLContainer {
 		Display.setDisplayMode(determineDisplayMode())
 		Display.setParent(canvas)
 		Display.create()		// TODO: incorporate PixelFormat
-		input.Keyboard.validate()
 		
 		// Initialize the GL context
 		initGL()

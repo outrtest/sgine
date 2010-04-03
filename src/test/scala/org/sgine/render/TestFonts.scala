@@ -1,6 +1,13 @@
 package org.sgine.render
 
+import org.sgine.event._
+
+import org.sgine.input.Keyboard
+import org.sgine.input.event.KeyEvent
+
 import org.sgine.math.Matrix4
+
+import org.sgine.work._
 
 import javax.imageio.ImageIO
 
@@ -27,5 +34,11 @@ object TestFonts {
 		a(3) = () => arialFont.drawString("Standard Arial", false)
 		a(4) = fps
 		r.renderable := RenderList(a)
+		
+		Keyboard.listeners += EventHandler(test, ProcessingMode.Normal)
+	}
+	
+	private def test(evt: KeyEvent) ={
+		println("test: " + evt)
 	}
 }

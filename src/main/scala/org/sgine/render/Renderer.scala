@@ -5,28 +5,27 @@ import org.lwjgl.opengl.GL11._
 
 import org.lwjgl.util.glu.GLU._
 
+import org.sgine.input.Keyboard
+
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.container.PropertyContainer
 
 import org.sgine.util.FunctionRunnable
 
 class Renderer extends PropertyContainer {
-	private var _renders: Long = 0
+	private var rendered = false
 	private var keepAlive = true
 	private var lastRender = -1L
 	
 	val canvas = new java.awt.Canvas()
 	lazy val thread = new Thread(FunctionRunnable(run))
-	def renders = _renders
 	
 	val renderable = new AdvancedProperty[() => Unit](null)
 	
 	def start() = {
 		thread.start()
 		
-		while(_renders < 2) {		// Make sure the rendering has started
-			Thread.sleep(1)
-		}
+		waitForRender()
 	}
 	
 	def isAlive = keepAlive
@@ -59,6 +58,9 @@ class Renderer extends PropertyContainer {
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
 		glEnable(GL_TEXTURE_2D)
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+		
+		Keyboard.validate()
+		
 		reshapeGL()
 	}
 	
@@ -89,13 +91,19 @@ class Renderer extends PropertyContainer {
 			
 			val r = renderable()
 			if (r != null) r()
-			
-			_renders += 1
-		    if (_renders == Long.MaxValue) {
-		    	_renders = 0
-		    }
 		}
 		lastRender = currentRender
+		
+		rendered = true
+		thread.synchronized {
+			thread.notifyAll()
+		}
+	}
+	
+	def waitForRender() = {
+		thread.synchronized {
+			while (!rendered) thread.wait()
+		}
 	}
 	
 	private def destroy() = {

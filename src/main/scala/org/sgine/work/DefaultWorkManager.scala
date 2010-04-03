@@ -1,4 +1,3 @@
 package org.sgine.work
 
-object DefaultWorkManager extends WorkManager {
-}
+object DefaultWorkManager extends WorkManager

@@ -13,8 +13,7 @@ import org.sgine.scene.event._
  * NodeContainer backed up by a thread-safe collection.
  */
 class GeneralNodeContainer extends MutableNodeContainer {
-
-  private val nodes = new ConcurrentLinkedQueue[Node]()
+  private var nodes: List[Node] = Nil
 
   def iterator = nodes.iterator
 
@@ -24,7 +23,10 @@ class GeneralNodeContainer extends MutableNodeContainer {
                                    "The node '"+node+"' is already in the container '"+this+"'.")
     require(node.parent == null,"Can not add node, the node is already in another container '"+node.parent+"'.")
 
-    nodes.add(node)
+    synchronized {
+	    nodes = node :: nodes
+    }
+    
     node.parent = this
     
     Event.enqueue(new NodeContainerEvent(this, node, SceneEventType.ChildAdded))
