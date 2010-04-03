@@ -2,6 +2,7 @@ package org.sgine.input
 
 import org.sgine._
 import org.sgine.event._
+import org.sgine.work.Updatable
 import org.sgine.work.unit._
 
 import org.lwjgl.input.{Keyboard => GLKeyboard}
@@ -9,8 +10,6 @@ import org.lwjgl.input.Keyboard._
 
 object Keyboard extends Listenable with Updatable {
 	val parent = null
-	val updater = Updater(this)
-	Event.workManager += RepeatingUnit(updater)
 	
 	private var lControl = false
 	private var rControl = false

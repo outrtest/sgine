@@ -3,6 +3,8 @@ package org.sgine.property
 import org.sgine._;
 import org.sgine.property.adjust._;
 
+import org.sgine.work.Updatable
+
 /**
  * AdjustableProperty trait provides time-based changes to occur over
  * time rather than immediate change when <code>apply(t:T)</code> is

@@ -66,9 +66,6 @@ class Window private(_renderer: Renderer) extends PropertyContainer with Listena
 	scene.listeners += EventHandler(sceneChanged _, processingMode = ProcessingMode.Blocking)
 	
 	def reload() = {
-		// Register NodeView for updates
-		_updateView = NodeView(scene(), UpdatablesQuery, false)
-		
 		// Register NodeView for Shapes
 		_shapesView := NodeView(scene(), ShapeQuery, false)
 	}
@@ -85,8 +82,6 @@ class Window private(_renderer: Renderer) extends PropertyContainer with Listena
 		// Initialize timer
 		_updateTimer = updateTimer
 //		DefaultWorkManager += Updater(updateTimer)
-		
-		DefaultWorkManager += Updater(this)
 	}
 	
 	def stop() = {

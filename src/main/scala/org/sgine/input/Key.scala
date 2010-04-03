@@ -214,7 +214,6 @@ object Key {
 		}
 		
 		return null
-		// TODO: add logic here to find the right key
 	}
 	
 	private def processValues() = {
@@ -231,9 +230,5 @@ object Key {
 		}
 		
 		list
-	}
-	
-	def main(args: Array[String]): Unit = {
-		println(values)
 	}
 }
