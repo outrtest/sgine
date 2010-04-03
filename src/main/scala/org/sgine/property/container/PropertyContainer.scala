@@ -8,7 +8,6 @@ import org.sgine.property._
 import scala.collection.JavaConversions._
 
 trait PropertyContainer extends Iterable[Property[_]] with Listenable {
-	def parent: Listenable = null
 	private var properties: List[Property[_]] = Nil
 	private var aliases = new HashMap[String, Property[_]]()
 	private val staticPropertyFields = getStaticPropertyFields

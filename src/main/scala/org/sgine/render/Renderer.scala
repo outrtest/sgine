@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11._
 import org.lwjgl.util.glu.GLU._
 
 import org.sgine.input.Keyboard
+import org.sgine.input.Mouse
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.container.PropertyContainer
@@ -60,6 +61,7 @@ class Renderer extends PropertyContainer {
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
 		
 		Keyboard.validate()
+		Mouse.validate()
 		
 		reshapeGL()
 	}
@@ -123,8 +125,13 @@ object Renderer {
 		f.setTitle(title)
 		f.setResizable(false)
 		f.setLayout(new java.awt.BorderLayout())
+		f.addFocusListener(new java.awt.event.FocusAdapter() {
+			override def focusGained(e: java.awt.event.FocusEvent) = {
+				r.canvas.requestFocus()
+			}
+		});
 		f.addWindowListener(new java.awt.event.WindowAdapter() {
-			override def windowClosing(e: java.awt.event.WindowEvent): Unit = {
+			override def windowClosing(e: java.awt.event.WindowEvent) = {
 				r.shutdown()
 				f.dispose()
 			}
