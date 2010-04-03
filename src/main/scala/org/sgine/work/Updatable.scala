@@ -2,6 +2,20 @@ package org.sgine.work
 
 import java.lang.ref.WeakReference
 
+/**
+ * Updatable provides a simple trait that can be mixed-in to
+ * provide asynchronous updates via a long-running job in
+ * WorkManager.
+ * 
+ * All updatables are managed within a single thread, so the
+ * update(Double) method not do any blocking work that may
+ * cause pausing in the updating thread.
+ * 
+ * The only requirement to make this work is to simply mix
+ * it in and provide an implementation of update(Double).
+ * 
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
 trait Updatable {
 	def update(time: Double): Unit
 	
