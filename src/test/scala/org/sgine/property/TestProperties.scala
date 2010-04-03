@@ -31,8 +31,8 @@ object TestProperties {
 		p2(4)
 		
 		p3 := 0.0
-		val updater = new Updater(p3)							// Must keep a reference lest it go away
-		DefaultWorkManager += new RepeatingUnit(updater)
+//		val updater = new Updater(p3)							// Must keep a reference lest it go away
+//		DefaultWorkManager += new RepeatingUnit(updater)
 		p3.adjuster = new LinearNumericAdjuster(5.0)
 		p3 := 50.0
 		val time = System.currentTimeMillis

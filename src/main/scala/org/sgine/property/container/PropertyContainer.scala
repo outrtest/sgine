@@ -7,7 +7,7 @@ import org.sgine.property._
 
 import scala.collection.JavaConversions._
 
-trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listenable {
+trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	def parent: Listenable = null
 	private var properties: List[Property[_]] = Nil
 	private var aliases = new HashMap[String, Property[_]]()
@@ -85,13 +85,6 @@ trait PropertyContainer extends Iterable[Property[_]] with Updatable with Listen
 	def contains(name: String) = {
 		initialize()
 		aliases.contains(name)
-	}
-	
-	def update(time: Double) = {
-		for (p <- this) p match {
-			case u: Updatable => u.update(time)
-			case _ =>
-		}
 	}
 	
 	def iterator(): Iterator[Property[_]] = {

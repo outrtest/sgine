@@ -1,8 +1,6 @@
 package org.sgine.visual.time
 
-import org.sgine.Updatable
-
-trait Timer extends Updatable {
+trait Timer {
 	def time: Double
 	
 	def fps: Double
