@@ -25,7 +25,7 @@ class FPS private(frequency: Double, font: AngelCodeFont, matrix: Matrix4) exten
 		if (font != null) {
 			glLoadMatrix(matrix.buffer)
 			
-			font.drawString(accurate + " fps", true)
+			font.drawString(accurate.toString, true)
 		}
 	}
 }

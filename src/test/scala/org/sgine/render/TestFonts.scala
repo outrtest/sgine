@@ -35,7 +35,7 @@ object TestFonts {
 		a(4) = fps
 		r.renderable := RenderList(a)
 		
-		Keyboard.listeners += EventHandler(test, ProcessingMode.Normal)
+		Keyboard.listeners += test _
 	}
 	
 	private def test(evt: KeyEvent) ={

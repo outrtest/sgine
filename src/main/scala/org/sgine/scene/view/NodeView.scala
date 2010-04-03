@@ -15,7 +15,6 @@ import scala.collection.JavaConversions._
  * A view to some Nodes that match a query in a NodeContainer.
  */
 class NodeView private (container: NodeContainer, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
-	val parent = null
 	private val queue = new ConcurrentLinkedQueue[Node]
 	
 	def iterator = queue.iterator

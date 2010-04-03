@@ -20,7 +20,7 @@ import event._
 trait ListenableProperty[T] extends ChangeableProperty[T] with Listenable {
 	private var _parent: Listenable = _
 	
-	def parent = _parent
+	override def parent = _parent
 	
 	protected def parent_=(_parent: Listenable) = this._parent = _parent
 	
