@@ -121,6 +121,8 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	def name(p: Property[_]) = getStaticPropertyName(p)
 	
 	private def getStaticPropertyName(p: Property[_]): String = {
+		initialize()
+		
 		for (f <- staticPropertyFields) {
 			if (f.get(this) == p) {
 				return f.getName
@@ -144,18 +146,16 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	private def initialize() = {
 		if (!initialized) {
 			synchronized {
-				if (!initialized) {
-					for (f <- staticPropertyFields) {
-						val p = f.get(this).asInstanceOf[Property[_]]
-						this += p
-						if (!aliases.contains(f.getName)) {
-							aliases += f.getName -> p
-						}
+				for (f <- staticPropertyFields) {
+					val p = f.get(this).asInstanceOf[Property[_]]
+					this += p
+					if (!aliases.contains(f.getName)) {
+						aliases += f.getName -> p
 					}
-					
-					properties = properties.reverse
-					initialized = true
 				}
+				
+				properties = properties.reverse
+				initialized = true
 			}
 		}
 	}
