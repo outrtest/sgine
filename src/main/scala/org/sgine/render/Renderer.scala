@@ -9,6 +9,8 @@ import org.sgine.input.Keyboard
 import org.sgine.input.Mouse
 
 import org.sgine.property.AdvancedProperty
+import org.sgine.property.TransactionalProperty
+
 import org.sgine.property.container.PropertyContainer
 
 import org.sgine.util.FunctionRunnable
@@ -21,7 +23,9 @@ class Renderer extends PropertyContainer {
 	val canvas = new java.awt.Canvas()
 	lazy val thread = new Thread(FunctionRunnable(run))
 	
-	val renderable = new AdvancedProperty[() => Unit](null)
+	val fullscreen = new AdvancedProperty[Boolean](false, this) with TransactionalProperty[Boolean]
+	val verticalSync = new AdvancedProperty[Boolean](true, this) with TransactionalProperty[Boolean]
+	val renderable = new AdvancedProperty[() => Unit](null, this)
 	
 	def start() = {
 		thread.start()
@@ -49,8 +53,8 @@ class Renderer extends PropertyContainer {
 	
 	
 	private def initGL() = {
-		Display.setFullscreen(false)
-		Display.setVSyncEnabled(false)
+		Display.setFullscreen(fullscreen())
+		Display.setVSyncEnabled(verticalSync())
 		Display.setParent(canvas)
 		Display.create()
 		
@@ -79,6 +83,15 @@ class Renderer extends PropertyContainer {
 	}
 	
 	private def render() = {
+		if (fullscreen.uncommitted) {
+			fullscreen.commit()
+			Display.setFullscreen(fullscreen())
+		}
+		if (verticalSync.uncommitted) {
+			verticalSync.commit()
+			Display.setVSyncEnabled(verticalSync())
+		}
+		
 		val currentRender = System.nanoTime
 		if (lastRender != -1) {
 			val time = (currentRender - lastRender) / 1000000000.0

@@ -4,18 +4,17 @@ import org.sgine.event._
 import event._
 
 trait TransactionalProperty[T] extends ListenableProperty[T] {
-	private var firstChange = true
+	private var firstChanged: Boolean = _
 	private var _originalValue: T = _
 	private var _uncommitted = false
 	
 	abstract override def apply(value: T): Property[T] = {
 		val p = super.apply(value)
 		
-		// First call should come across before setting uncommitted status
-		if (firstChange) {
-			firstChange = false
+		if (!firstChanged) {
+			firstChanged = true
 			_originalValue = value
-		} else {	// Set uncommitted state
+		} else {
 			_uncommitted = originalValue != value
 		}
 		
