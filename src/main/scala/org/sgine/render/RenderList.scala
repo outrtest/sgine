@@ -1,7 +1,7 @@
 package org.sgine.render
 
-case class RenderList(i: Iterable[() => Unit]) extends Function0[Unit] {
-	def apply() = i.foreach(render)
+case class RenderList(i: Iterable[() => Unit]) extends Renderable {
+	def render() = i.foreach(renderItem)
 	
-	private val render = (r: () => Unit) => r()
+	private val renderItem = (r: () => Unit) => r()
 }

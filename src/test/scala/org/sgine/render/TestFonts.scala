@@ -7,6 +7,8 @@ import org.sgine.input.event.KeyEvent
 
 import org.sgine.math.Matrix4
 
+import org.sgine.render.font.AngelCodeFont
+
 import org.sgine.work._
 
 import javax.imageio.ImageIO
@@ -23,8 +25,8 @@ object TestFonts {
 		val arialFont = AngelCodeFont(Source.fromURL(getClass.getClassLoader.getResource("resource/Arial.fnt")), getClass.getClassLoader.getResource("resource/Arial.png"))
 		val lcdFont = AngelCodeFont(Source.fromURL(getClass.getClassLoader.getResource("resource/lcd.fnt")), getClass.getClassLoader.getResource("resource/lcd.png"))
 		
-		val m1 = Matrix4().translate(x = -400.0, z = -1000.0)
-		val m2 = Matrix4().translate(x = -100.0, y = -50.0, z = -1000.0)
+		val m1 = Matrix4().translate(z = -1000.0)
+		val m2 = Matrix4().translate(y = -50.0, z = -1000.0)
 		val fps = FPS(1.0, lcdFont)
 		
 		val a = new Array[() => Unit](5)
@@ -36,6 +38,10 @@ object TestFonts {
 		r.renderable := RenderList(a)
 		
 		Keyboard.listeners += test _
+		
+		r.verticalSync := false
+		
+		println(franklinFont.measureWidth("Franklin Gothic Heavy with a blue gradient.", true))
 	}
 	
 	private def test(evt: KeyEvent) ={

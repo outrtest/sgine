@@ -25,7 +25,7 @@ class Renderer extends PropertyContainer {
 	
 	val fullscreen = new AdvancedProperty[Boolean](false, this) with TransactionalProperty[Boolean]
 	val verticalSync = new AdvancedProperty[Boolean](true, this) with TransactionalProperty[Boolean]
-	val renderable = new AdvancedProperty[() => Unit](null, this)
+	val renderable = new AdvancedProperty[Renderable](null, this)
 	
 	def start() = {
 		thread.start()
@@ -105,7 +105,7 @@ class Renderer extends PropertyContainer {
 			Renderer.fps.set((1.0 / time).round.toInt)
 			
 			val r = renderable()
-			if (r != null) r()
+			if (r != null) r.render()
 		}
 		lastRender = currentRender
 		

@@ -61,7 +61,11 @@ class Matrix4 protected() extends ImmutableMatrix4 {
 	
 	override def translate(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = translateLocal(x, y, z).asInstanceOf[Matrix4]
 	
-	def identity() = identityLocal()
+	def identity() = {
+		identityLocal()
+		
+		this
+	}
 	
 	override def copy() = Matrix4(this)
 	

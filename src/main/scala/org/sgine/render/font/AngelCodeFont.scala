@@ -1,8 +1,14 @@
-package org.sgine.render
+package org.sgine.render.font
 
 import java.net.URL
 
 import scala.io.Source
+
+import org.lwjgl.opengl.GL11._
+
+import org.sgine.render.Texture
+import org.sgine.render.TextureMap
+import org.sgine.render.TextureUtil
 
 class AngelCodeFont private(texture: Texture) extends TextureMap[Int](texture) {
 	private var _face: String = null
@@ -44,12 +50,26 @@ class AngelCodeFont private(texture: Texture) extends TextureMap[Int](texture) {
 	override protected def createImage() = new AngelCodeFontChar()
 	
 	def drawString(s: String, kern: Boolean = true) = {
+		glTranslated(measureWidth(s, kern) / -2.0, 0.0, 0.0)
+		
 		var previous: AngelCodeFontChar = null
 		for (c <- s) {
 			val current = apply(c)
 			current.drawChar(previous, kern)
 			previous = current
 		}
+	}
+	
+	def measureWidth(s: String, kern: Boolean = true) = {
+		var width = 0.0
+		var previous: AngelCodeFontChar = null
+		for (c <- s) {
+			val current = apply(c)
+			width += current.measureCharWidth(previous, kern)
+			previous = current
+		}
+		
+		width
 	}
 }
 
