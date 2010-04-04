@@ -1,4 +1,6 @@
-package org.sgine.render
+package org.sgine.render.font
+
+import org.sgine.render.Image
 
 import org.lwjgl.opengl.GL11._
 
@@ -37,6 +39,12 @@ class AngelCodeFontChar extends Image {
 		
 		// Draw character to screen
 		draw(xOffset, -yOffset + ((font.lineHeight / 2.0) - (height / 2.0)))
+	}
+	
+	def measureCharWidth(previous: AngelCodeFontChar = null, kern: Boolean = true) = {
+		val k = if (kern) kerning(previous) else 0.0
+		
+		xAdvance + k
 	}
 	
 	override def toString() = code + " (" + code.toChar + ") Offset: " + xOffset + "x" + yOffset + " xAdvance: " + xAdvance
