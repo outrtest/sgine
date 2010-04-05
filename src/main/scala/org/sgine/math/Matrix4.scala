@@ -267,7 +267,7 @@ class Matrix4 protected() extends Iterable[Double] {
 		this
 	}
 	
-	protected def setLocal(m: Matrix4) = toBuffer(m.b, false); this
+	protected def setLocal(m: Matrix4) = m.toBuffer(b, false); this
 	
 	protected def multLocal(row: Int, column: Int, m: Double) = setEntryLocal(row, column, get(row, column) * m)
 	
