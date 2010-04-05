@@ -2,6 +2,10 @@ package org.sgine.ui
 
 import org.sgine.core.Resource
 
+import org.sgine.easing.Elastic
+
+import org.sgine.property.adjust.EasingNumericAdjuster
+
 import org.sgine.render.Renderer
 import org.sgine.render.scene.RenderableScene
 
@@ -13,7 +17,7 @@ object TestImage {
 		
 		val scene = new GeneralNodeContainer()
 		val component = new Image()
-		component.matrix().translate(z = -1000.0)
+		component.location.z := -1000.0
 		component.source := Resource("resource/puppies.jpg")
 		scene += component
 		

@@ -49,6 +49,7 @@ class Renderer extends PropertyContainer {
 		keepAlive = false
 		
 		destroy()
+		System.exit(0)
 	}
 	
 	
