@@ -4,6 +4,8 @@ import java.nio._
 
 import Matrix4._
 
+import org.sgine.math.mutable.{Vector3 => MutableVector3}
+
 /**
  * An immutable Matrix4 implementation that utilizes a backing
  * DoubleBuffer in column form for direct translation to OpenGL.
@@ -61,6 +63,14 @@ class Matrix4 protected() extends Iterable[Double] {
 				m10 * v.x + m11 * v.y + m12 * v.z + m13,
 				m20 * v.x + m21 * v.y + m22 * v.z + m23
 			)
+	}
+	
+	def transformLocal(v: MutableVector3): MutableVector3 = {
+		v.x = m00 * v.x + m01 * v.y + m02 * v.z + m03
+		v.y = m10 * v.x + m11 * v.y + m12 * v.z + m13
+		v.z = m20 * v.x + m21 * v.y + m22 * v.z + m23
+		
+		v
 	}
 	
 	def transform(src: DoubleBuffer , dst: DoubleBuffer ) {

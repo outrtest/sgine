@@ -104,4 +104,13 @@ class Vector3 protected() extends org.sgine.math.Vector3 {
 		
 		this
 	}
+	
+	def normalize() = {
+		val li = 1.0 / Math.sqrt(x * x + y * y + z * z)
+		x *= li
+		y *= li
+		z *= li
+		
+		this
+	}
 }
