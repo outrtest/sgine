@@ -20,13 +20,23 @@ trait Component extends PropertyContainer with Renderable with MatrixPropertyCon
 	val id = new AdvancedProperty[String](null, this)
 	val visible = new AdvancedProperty[Boolean](true, this)
 	
+	private var firstRender = true
+	
 	def render() = {
 		if (visible()) {				// Only render if the component is visible
+			if (firstRender) {
+				firstRender = false
+				initComponent()
+			}
+			
 			preRender()
 			glLoadMatrix(matrix().buffer)
 			
 			drawComponent()
 		}
+	}
+	
+	protected def initComponent() = {
 	}
 	
 	protected def preRender() = {

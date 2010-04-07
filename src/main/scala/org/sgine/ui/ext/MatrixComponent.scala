@@ -6,7 +6,7 @@ import org.sgine.math.mutable.MatrixPropertyContainer
 
 import org.sgine.property.MutableProperty
 
-import org.sgine.scene.NodeContainer
+import org.sgine.scene.Node
 
 import org.sgine.ui.Component
 
@@ -32,7 +32,7 @@ trait MatrixComponent extends Component {
 		applyParentMatrix(parent)
 	}
 	
-	private def applyParentMatrix(container: NodeContainer) {
+	private def applyParentMatrix(container: Node) {
 		if (container != null) {
 			container match {
 				case mpc: MatrixPropertyContainer => matrix().set(mpc.matrix())			// Apply the first parent that has a matrix

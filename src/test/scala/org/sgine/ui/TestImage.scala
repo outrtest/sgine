@@ -18,8 +18,6 @@ object TestImage {
 		val scene = new GeneralNodeContainer()
 		val component = new Image()
 		component.location.z := -1000.0
-		component.scale.y bind component.scale.x
-		component.scale.x := 0.5
 		component.source := Resource("resource/puppies.jpg")
 		scene += component
 		

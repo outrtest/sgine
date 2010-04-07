@@ -8,9 +8,9 @@ import org.sgine.event._
  * Can be something visible, or just pure information organized in a searchable tree.
  */
 trait Node extends Listenable {
-	private var parentContainer: NodeContainer = _
+	private var parentContainer: Node = _
 	
-	protected[scene] def parent_=(parent: NodeContainer) = this.parentContainer = parent
+	def parent_=(parent: Node) = this.parentContainer = parent
 	
 	/**
 	 * The container that this node is located in, or null if it is not located in any collection.
