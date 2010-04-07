@@ -61,6 +61,7 @@ class Renderer extends PropertyContainer {
 		
 		glClearDepth(1.0)
 		glEnable(GL_BLEND)
+		glEnable(GL_DEPTH_TEST)
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
 		glEnable(GL_TEXTURE_2D)
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)

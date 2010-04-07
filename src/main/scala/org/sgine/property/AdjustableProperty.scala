@@ -14,7 +14,7 @@ import org.sgine.work.Updatable
  * @author Matt Hicks
  */
 trait AdjustableProperty[T] extends Property[T] with Updatable {
-	var adjuster:Function3[T, T, Double, T] = null
+	var adjuster: Function3[T, T, Double, T] = null
 	
 	private[property] var target:T = apply();
 	
