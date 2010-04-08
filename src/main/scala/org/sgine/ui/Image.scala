@@ -10,11 +10,9 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.{Image => RenderImage, TextureUtil}
 
-import org.sgine.ui.ext.LocationComponent
-import org.sgine.ui.ext.RotationComponent
-import org.sgine.ui.ext.ScaleComponent
+import org.sgine.ui.ext.AdvancedComponent
 
-class Image extends Component with LocationComponent with RotationComponent with ScaleComponent {
+class Image extends AdvancedComponent {
 	private var image: RenderImage = _
 	
 	val source = new AdvancedProperty[Resource](null, this)
