@@ -2,13 +2,12 @@ package org.sgine.ui
 
 import org.sgine.core.Resource
 
-import org.sgine.easing._
+import org.sgine.easing.Elastic
+import org.sgine.easing.Linear
 
-import org.sgine.event.EventHandler
-
-import org.sgine.input.Key
-import org.sgine.input.Keyboard
-import org.sgine.input.event.KeyPressEvent
+import org.sgine.effect.CompositeEffect
+import org.sgine.effect.PropertyChangeEffect
+import org.sgine.effect.PropertySetEffect
 
 import org.sgine.math.mutable.MatrixPropertyContainer
 
@@ -20,35 +19,51 @@ import org.sgine.render.scene.RenderableScene
 import org.sgine.scene.GeneralNodeContainer
 
 object TestCube {
-	val cube = new ImageCube()
-	
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Cube")
+		val r = Renderer.createFrame(1024, 768, "Test Cube", 4, 8, 4, 4)
 		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer()
 		
-		cube.location.z := -1000.0
-		cube.rotation.x.adjuster = new EasingNumericAdjuster(Cubic.easeIn, 1.0)
-		cube.rotation.y.adjuster = new EasingNumericAdjuster(Cubic.easeIn, 1.0)
+		val cube = new ImageCube()
+		cube.location.z := -1500.0
+		cube.rotation.x.adjuster = new EasingNumericAdjuster(Linear.easeIn, 2.0)
+		cube.rotation.y.adjuster = new EasingNumericAdjuster(Linear.easeIn, 4.0)
+		cube.rotation.z.adjuster = new EasingNumericAdjuster(Linear.easeIn, 6.0)
+		cube.location.x.adjuster = new EasingNumericAdjuster(Elastic.easeInOut, 4.0)
 		cube(Resource("resource/sgine_256.png"), 256.0, 256.0)
 		scene += cube
 		
-		r.renderable := RenderableScene(scene)
+		r.renderable := RenderableScene(scene, showFPS = true)
 		
-		Keyboard.listeners += EventHandler(keyPress _)
-	}
-	
-	private def keyPress(evt: KeyPressEvent) = {
-		println("KeyPress: " + evt)
-		if (evt.key == Key.Left) {
-			cube.rotation.y := cube.rotation.y.target + (Math.Pi / 2.0)
-		} else if (evt.key == Key.Right) {
-			cube.rotation.y := cube.rotation.y.target + (Math.Pi / -2.0)
-		} else if (evt.key == Key.Up) {
-			cube.rotation.x := cube.rotation.x.target + (Math.Pi / 2.0)
-		} else if (evt.key == Key.Down) {
-			cube.rotation.x := cube.rotation.x.target + (Math.Pi / -2.0)
-		}
+		// Rotate the cube perpetually on the x-axis
+		val rx1 = new PropertyChangeEffect(cube.rotation.x, Math.Pi * 2.0)
+		val rx2 = new PropertySetEffect(cube.rotation.x, 0.0)
+		val rotateX = new CompositeEffect(rx1, rx2)
+		rotateX.repeat = -1
+		
+		// Rotate the cube perpetually on the y-axis
+		val ry1 = new PropertyChangeEffect(cube.rotation.y, Math.Pi * 2.0)
+		val ry2 = new PropertySetEffect(cube.rotation.y, 0.0)
+		val rotateY = new CompositeEffect(ry1, ry2)
+		rotateY.repeat = -1
+		
+		// Rotate the cube perpetually on the z-axis
+		val rz1 = new PropertyChangeEffect(cube.rotation.z, Math.Pi * 2.0)
+		val rz2 = new PropertySetEffect(cube.rotation.z, 0.0)
+		val rotateZ = new CompositeEffect(rz1, rz2)
+		rotateZ.repeat = -1
+		
+		// Move the cube back and forth perpetually on the x-axis
+		val me1 = new PropertyChangeEffect(cube.location.x, -600.0)
+		val me2 = new PropertyChangeEffect(cube.location.x, 600.0)
+		val move = new CompositeEffect(me1, me2)
+		move.repeat = -1
+		
+		// Start effects
+		rotateX.start()
+		rotateY.start()
+		rotateZ.start()
+		move.start()
 	}
 }

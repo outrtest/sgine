@@ -23,11 +23,12 @@ trait Updatable {
 }
 
 object Updatable extends Function0[Unit] {
+	var useWorkManager = false
+	var workManager = DefaultWorkManager
+	
 	private var list: List[WeakReference[Updatable]] = Nil
 	
-	var workManager: WorkManager = DefaultWorkManager
-	
-	lazy val initted = initialize()
+	private var initialized = false
 	
 	/**
 	 * The number of times per second all updatables will be updated.
@@ -37,42 +38,53 @@ object Updatable extends Function0[Unit] {
 	var Rate = 60.0
 	
 	private def initialize() = {
-		workManager += this
-		true
-	}
-	
-	def apply() = {
-		var lastTime: Long = System.nanoTime
-		while (true) {
-			val time = System.nanoTime
-			val frequency = (time - lastTime) / 1000000000.0
-			lastTime = time
-			val shouldElapse = Math.round(1000.0 / Rate)
-			val l = list
-			for (wr <- l) {
-				val u = wr.get
-				if (u == null) {
-					list -= wr
-				} else {
-					u.update(frequency)
+		synchronized {
+			if (!initialized) {
+				if (useWorkManager) {
+					initialized = true
+					workManager += this
 				}
-			}
-			val elapsed = (System.nanoTime - time) / 1000000
-			val shouldWait = shouldElapse - elapsed
-			if (shouldWait > 0) {
-//				println("Should wait: " + shouldWait + " - " + shouldElapse)
-				Thread.sleep(shouldWait)
-			} else {
-//				println("Updatable is updating slower than it should by: " + shouldWait)
 			}
 		}
 	}
 	
-	private def add(u: Updatable) = {
-		if (initted) {
-			synchronized {
-				list = new WeakReference(u) :: list
+	def apply() = {
+		while (true) {
+			val shouldWait = update()
+			
+			if (shouldWait > 0) {
+//				println("Should wait: " + shouldWait + " - " + shouldElapse)
+				Thread.sleep(shouldWait)
 			}
+		}
+	}
+	
+	var lastTime: Long = System.nanoTime
+	
+	def update() = {
+		val time = System.nanoTime
+		val frequency = (time - lastTime) / 1000000000.0
+		lastTime = time
+		val shouldElapse = Math.round(1000.0 / Rate)
+		val l = list
+		for (wr <- l) {
+			val u = wr.get
+			if (u == null) {
+				list -= wr
+			} else {
+				u.update(frequency)
+			}
+		}
+		val elapsed = (System.nanoTime - time) / 1000000
+		
+		shouldElapse - elapsed
+	}
+	
+	private def add(u: Updatable) = {
+		initialize()
+		
+		synchronized {
+			list = new WeakReference(u) :: list
 		}
 	}
 	
