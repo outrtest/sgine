@@ -13,7 +13,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	
 	def render() = {
 		view.foreach(renderItem)
-		fps()
+		if (showFPS) fps()
 	}
 	
 	private val renderItem = (n: Node) => n.asInstanceOf[Renderable].render()

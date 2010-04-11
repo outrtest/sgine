@@ -2,6 +2,7 @@ package org.sgine.render
 
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11._
+import org.lwjgl.opengl.PixelFormat
 
 import org.lwjgl.util.glu.GLU._
 
@@ -13,9 +14,11 @@ import org.sgine.property.TransactionalProperty
 
 import org.sgine.property.container.PropertyContainer
 
+import org.sgine.work.Updatable
+
 import org.sgine.util.FunctionRunnable
 
-class Renderer extends PropertyContainer {
+class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) extends PropertyContainer {
 	private var rendered = false
 	private var keepAlive = true
 	private var lastRender = -1L
@@ -38,18 +41,23 @@ class Renderer extends PropertyContainer {
 	def shutdown() = keepAlive = false
 	
 	private def run(): Unit = {
-		initGL()
-
-		while ((keepAlive) && (!Display.isCloseRequested)) {
-			Display.update()
+		try {
+			initGL()
+	
+			while ((keepAlive) && (!Display.isCloseRequested)) {
+				Display.update()
+				
+				Updatable.update()
+				render()
+			}
+		} catch {
+			case t: Throwable => t.printStackTrace()
+		} finally {
+			keepAlive = false
 			
-			render()
+			destroy()
+			System.exit(0)
 		}
-		
-		keepAlive = false
-		
-		destroy()
-		System.exit(0)
 	}
 	
 	
@@ -57,7 +65,9 @@ class Renderer extends PropertyContainer {
 		Display.setFullscreen(fullscreen())
 		Display.setVSyncEnabled(verticalSync())
 		Display.setParent(canvas)
-		Display.create()
+		
+		val format = new PixelFormat(bpp, alpha, depth, stencil, samples, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
+		Display.create(format)
 		
 		glClearDepth(1.0)
 		glEnable(GL_BLEND)
@@ -66,7 +76,7 @@ class Renderer extends PropertyContainer {
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
 		glEnable(GL_TEXTURE_2D)
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
-		
+
 		Keyboard.validate()
 		Mouse.validate()
 		
@@ -133,8 +143,8 @@ object Renderer {
 	val time = new ThreadLocal[Double]
 	val fps = new ThreadLocal[Int]
 	
-	def createFrame(width: Int, height: Int, title: String) = {
-		val r = new Renderer()
+	def createFrame(width: Int, height: Int, title: String, alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) = {
+		val r = new Renderer(alpha, depth, stencil, samples, bpp, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
 		
 		val f = new java.awt.Frame
 		f.setSize(width, height)

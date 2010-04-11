@@ -13,7 +13,9 @@ final class EventProcessor(listenable: Listenable) extends Iterable[EventHandler
 	}
 	
 	def +=(handler: EventHandler): EventHandler = {
-		handlers.add(handler)
+		if (!handlers.contains(handler)) {
+			handlers.add(handler)
+		}
 		handler
 	}
 	

@@ -15,7 +15,7 @@ trait Cube[T <: Component with RotationComponent]extends CompositeComponent with
 	
 	back().rotation.y := Math.Pi
 	top().rotation.x := Math.Pi / -2.0
-	bottom().rotation.x := Math.Pi / -2.0
+	bottom().rotation.x := Math.Pi / 2.0
 	left().rotation.y := Math.Pi / -2.0
 	right().rotation.y := Math.Pi / 2.0
 	

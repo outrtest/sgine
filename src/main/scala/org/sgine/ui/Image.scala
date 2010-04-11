@@ -6,6 +6,7 @@ import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
+import org.sgine.property.MutableProperty
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.{Image => RenderImage, TextureUtil}
@@ -13,15 +14,15 @@ import org.sgine.render.{Image => RenderImage, TextureUtil}
 import org.sgine.ui.ext.AdvancedComponent
 
 class Image extends AdvancedComponent {
-	private var image: RenderImage = _
+	val renderImage = new MutableProperty[RenderImage](null)
 	
 	val source = new AdvancedProperty[Resource](null, this)
 	
 	configureListeners()
 	
 	def drawComponent() = {
-		if (image != null) {
-			image.draw()
+		if (renderImage() != null) {
+			renderImage().draw()
 		}
 	}
 	
@@ -31,6 +32,6 @@ class Image extends AdvancedComponent {
 	
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
 		val t = TextureUtil(source().url)
-		image = RenderImage(t)
+		renderImage := RenderImage(t)
 	}
 }

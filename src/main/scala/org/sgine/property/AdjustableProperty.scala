@@ -16,7 +16,7 @@ import org.sgine.work.Updatable
 trait AdjustableProperty[T] extends Property[T] with Updatable {
 	var adjuster: Function3[T, T, Double, T] = null
 	
-	private[property] var _target:T = apply();
+	private[property] var _target: T = apply();
 	
 	def target = _target
 	
@@ -37,15 +37,19 @@ trait AdjustableProperty[T] extends Property[T] with Updatable {
 		super.apply(value)
 		_target = value
 		
+		if (adjuster != null) {
+			adjuster(_target, _target, 1.0)
+		}
+		
 		this
 	}
 	
 	def update(time:Double) = {
 		if (adjuster != null) {
-			val current:T = apply()
+			val current: T = apply()
 			
 			if (current != _target) {
-				val result:T = adjuster(current, _target, time)
+				val result: T = adjuster(current, _target, time)
 				
 				super.apply(result)
 			}

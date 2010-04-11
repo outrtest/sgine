@@ -2,13 +2,13 @@ package org.sgine.property.adjust
 
 import org.sgine.easing.Easing._
 
-class EasingNumericAdjuster(easing:EasingFunction, multiplier:Double, dynamic:Boolean = true) extends PropertyAdjuster[Double] {
-	private var target:Double = _
-	private var start:Double = _
-	private var timeToTarget:Double = _
-	private var timeElapsed:Double = _
+class EasingNumericAdjuster(easing: EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAdjuster[Double] {
+	private var target: Double = _
+	private var start: Double = _
+	private var timeToTarget: Double = _
+	private var timeElapsed: Double = _
 	
-	def apply(current:Double, target:Double, elapsed:Double):Double = {
+	def apply(current: Double, target: Double, elapsed: Double): Double = {
 		if (this.target != target) {		// Target changed
 			this.target = target
 			start = current
