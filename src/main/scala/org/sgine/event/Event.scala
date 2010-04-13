@@ -1,9 +1,16 @@
 package org.sgine.event
 
+import org.sgine.util.Cacheable
+import org.sgine.util.ObjectCache
+
 import org.sgine.work._
 import org.sgine.work.unit._
 
-class Event (val listenable: Listenable) {
+class Event (_listenable: Listenable) {
+	def listenable = _listenable
+	
+	protected[event] var counter = new java.util.concurrent.atomic.AtomicInteger(0)			// Keep track of current listener count currently being invoked
+	
 	/**
 	 * Enables or disables recursion to be passed to children upon invocation
 	 * of this event.
@@ -119,11 +126,31 @@ object Event {
 }
 
 case class AsynchronousWorkUnit(h: EventHandler, evt: Event) extends Function0[Unit] {
+	evt.counter.incrementAndGet
+	
 	def apply() = {
 		h.process(evt)
+		
+		if (evt.counter.decrementAndGet == 0) {
+			evt match {
+				case c: Cacheable[Event] => c.cache.release(c)
+				case _ =>
+			}
+		}
 	}
 }
 
 case class NormalEventWorkUnit(evt: Event, listenable: Listenable) extends BlockingWorkUnit(listenable) {
-	def apply() = listenable.listeners.filter(_.processingMode == ProcessingMode.Normal).foreach(_.process(evt));
+	evt.counter.incrementAndGet
+	
+	def apply() = {
+		listenable.listeners.filter(_.processingMode == ProcessingMode.Normal).foreach(_.process(evt));
+		
+		if (evt.counter.decrementAndGet == 0) {
+			evt match {
+				case c: Cacheable[Event] => c.cache.release(c)
+				case _ =>
+			}
+		}
+	}
 }
