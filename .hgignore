@@ -1,0 +1,13 @@
+
+syntax: regexp
+^\.classpath$
+syntax: regexp
+^\.project$
+syntax: regexp
+^bin$
+syntax: regexp
+^project/boot$
+syntax: regexp
+^target$
+syntax: regexp
+^\.settings$
