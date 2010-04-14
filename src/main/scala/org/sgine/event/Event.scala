@@ -55,7 +55,13 @@ object Event {
 		listenable.processEvent(evt)
 		
 		// Process Event on blocking handlers
-		if (evt.processBlocking) listenable.listeners.filter(isBlocking).foreach(_.process(evt))
+		if (evt.processBlocking) {
+			for (h <- listenable.listeners) {
+				if (isBlocking(h)) {
+					h.process(evt)
+				}
+			}
+		}
 		
 		// Walk up the hierarchy for Recursion.Parents
 		processParentRecursion(listenable.parent, evt)
@@ -67,7 +73,13 @@ object Event {
 		if (evt.processNormal) workManager += NormalEventWorkUnit(evt, listenable)
 		
 		// Iterate over and enqueue asynchronous entries
-		if (evt.processAsynchronous) listenable.listeners.filter(isAsynchronous).foreach(workManager += AsynchronousWorkUnit(_, evt))
+		if (evt.processAsynchronous) {
+			for (h <- listenable.listeners) {
+				if (isAsynchronous(h)) {
+					workManager += AsynchronousWorkUnit(h, evt)
+				}
+			}
+		}
 	}
 	
 	private val isBlocking = (h: EventHandler) => h.processingMode == ProcessingMode.Blocking
@@ -77,7 +89,14 @@ object Event {
 	private def processParentRecursion(l: Listenable, evt: Event): Unit = {
 		if ((evt.recursionParents) && (l != null)) {
 			l.processChildEvent(evt)
-			l.listeners.filter(parentRecursion).filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
+			
+			for (h <- l.listeners) {
+				if (parentRecursion(h)) {
+					if (isBlocking(h)) {
+						h.process(evt)
+					}
+				}
+			}
 			
 			processParentRecursion(l.parent, evt)
 		}
@@ -90,7 +109,13 @@ object Event {
 					for (child <- i) child match {
 						case lc: Listenable => {
 							lc.processParentEvent(evt)
-							lc.listeners.filter(childrenRecursion).filter(_.processingMode == ProcessingMode.Blocking).foreach(_.process(evt))
+							for (h <- lc.listeners) {
+								if (childrenRecursion(h)) {
+									if (isBlocking(h)) {
+										h.process(evt)
+									}
+								}
+							}
 						}
 						case _ =>
 					}
@@ -144,7 +169,11 @@ case class NormalEventWorkUnit(evt: Event, listenable: Listenable) extends Block
 	evt.counter.incrementAndGet
 	
 	def apply() = {
-		listenable.listeners.filter(_.processingMode == ProcessingMode.Normal).foreach(_.process(evt));
+		for (h <- listenable.listeners) {
+			if (h.processingMode == ProcessingMode.Normal) {
+				h.process(evt)
+			}
+		}
 		
 		if (evt.counter.decrementAndGet == 0) {
 			evt match {

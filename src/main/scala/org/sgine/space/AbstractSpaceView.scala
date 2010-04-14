@@ -24,7 +24,6 @@ trait AbstractSpaceView extends SpaceView {
   final def detailLevel = _detail
   final def region = _region
 
-
   final def nodes = currentNodes
 
   final def containsNode(node: Node) = currentNodes.contains( node )

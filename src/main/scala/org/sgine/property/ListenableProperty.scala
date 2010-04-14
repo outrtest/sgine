@@ -6,8 +6,6 @@ import org.sgine.property.container._
 
 import java.util.concurrent._
 
-import scala.collection.JavaConversions._
-
 import event._
 
 /**

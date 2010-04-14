@@ -2,7 +2,6 @@ package org.sgine.scene
 
 import query.NodeQuery
 import java.util.concurrent.ConcurrentLinkedQueue
-import scala.collection.JavaConversions._
 import view.NodeView
 import java.lang.UnsupportedOperationException
 
@@ -33,14 +32,17 @@ class GeneralNodeContainer extends MutableNodeContainer {
   }
 
   def -=(node: Node): Boolean = {
-    val removed = nodes.remove( node )
-    
-    if (removed) {
-    	node.parent = null
-    	
-    	Event.enqueue(new NodeContainerEvent(this, node, SceneEventType.ChildRemoved))
-    }
-
-    removed
+	  synchronized {
+	 	  if (nodes.contains(node)) {
+	 	 	  nodes -= node
+	 	 	  node.parent = null
+	 	 	  
+	 	 	  Event.enqueue(new NodeContainerEvent(this, node, SceneEventType.ChildRemoved))
+	 	 	  
+	 	 	  true
+	 	  } else {
+	 	 	  false
+	 	  }
+	 }
   }
 }
