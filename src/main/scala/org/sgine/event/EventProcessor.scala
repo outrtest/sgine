@@ -1,11 +1,7 @@
 package org.sgine.event
 
-import java.util.concurrent._
-
-import scala.collection.JavaConversions._
-
 final class EventProcessor(listenable: Listenable) extends Iterable[EventHandler] {
-	private val handlers = new CopyOnWriteArraySet[EventHandler]
+	private var handlers: List[EventHandler] = Nil
 	
 	def +=[E <: Event](listener: E => Unit): EventHandler = {
 		val h = EventHandler(EventListener(listener))
@@ -13,18 +9,22 @@ final class EventProcessor(listenable: Listenable) extends Iterable[EventHandler
 	}
 	
 	def +=(handler: EventHandler): EventHandler = {
-		if (!handlers.contains(handler)) {
-			handlers.add(handler)
+		synchronized {
+			if (!handlers.contains(handler)) {
+				handlers = handler :: handlers
+			}
 		}
 		handler
 	}
 	
 	def -=(handler: EventHandler): EventHandler = {
-		if (handler != null) {
-			handlers.remove(handler)
+		synchronized {
+			if (handler != null) {
+				handlers -= handler
+			}
 		}
 		handler
 	}
 	
-	def iterator: Iterator[EventHandler] = handlers.iterator()
+	def iterator = handlers.iterator
 }
