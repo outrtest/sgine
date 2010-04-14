@@ -43,6 +43,8 @@ trait FutureUnit[T] extends WorkUnit with FinishedUnit with Future[T] {
 	
 	def isInterrupted() = interrupted
 	
+	def isCancelled() = cancelled
+	
 	def finished() = {
 		_finished = true
 	}
