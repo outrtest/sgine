@@ -5,8 +5,6 @@ import org.sgine._
 import org.sgine.event._
 import org.sgine.property._
 
-import scala.collection.JavaConversions._
-
 trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	private var properties: List[Property[_]] = Nil
 	private var aliases = new HashMap[String, Property[_]]()
@@ -109,9 +107,9 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	}
 	
 	def -=(p: Property[_]): PropertyContainer = {
-		properties.remove(p)
+		properties -= p
 		p match {
-			case np: NamedProperty => aliases.remove(np.name)
+			case np: NamedProperty => aliases -= np.name
 			case _ =>
 		}
 		

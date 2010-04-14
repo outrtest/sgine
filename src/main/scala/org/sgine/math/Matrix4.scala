@@ -122,9 +122,24 @@ class Matrix4 protected() extends Iterable[Double] {
 		// Original order was m00, m01, m02
 		// New order is m00, m10, m20
 		val pos = dst.position
-		for (i <- 0 until 16) {
-			dst.put(pos + i, b.get(i))
-		}
+		
+		// Done this way for performance efficiency - was creating too much garbage
+		dst.put(pos + 0, b.get(0))
+		dst.put(pos + 1, b.get(1))
+		dst.put(pos + 2, b.get(2))
+		dst.put(pos + 3, b.get(3))
+		dst.put(pos + 4, b.get(4))
+		dst.put(pos + 5, b.get(5))
+		dst.put(pos + 6, b.get(6))
+		dst.put(pos + 7, b.get(7))
+		dst.put(pos + 8, b.get(8))
+		dst.put(pos + 9, b.get(9))
+		dst.put(pos + 10, b.get(10))
+		dst.put(pos + 11, b.get(11))
+		dst.put(pos + 12, b.get(12))
+		dst.put(pos + 13, b.get(13))
+		dst.put(pos + 14, b.get(14))
+		dst.put(pos + 15, b.get(15))
 		
 		if (updatePosition) {
 			dst.position(pos + 16)
@@ -254,25 +269,46 @@ class Matrix4 protected() extends Iterable[Double] {
 				m20: Double = Double.NaN, m21: Double = Double.NaN, m22: Double = Double.NaN, m23: Double = Double.NaN,
 				m30: Double = Double.NaN, m31: Double = Double.NaN, m32: Double = Double.NaN, m33: Double = Double.NaN
 			) = {
-		if (!m00.isNaN) this.m00 = m00
-		if (!m01.isNaN) this.m01 = m01
-		if (!m02.isNaN) this.m02 = m02
-		if (!m03.isNaN) this.m03 = m03
+		// TODO: Caused excessive object creation but needs to be handled
+//		if (!m00.isNaN) this.m00 = m00
+//		if (!m01.isNaN) this.m01 = m01
+//		if (!m02.isNaN) this.m02 = m02
+//		if (!m03.isNaN) this.m03 = m03
+//		
+//		if (!m10.isNaN) this.m10 = m10
+//		if (!m11.isNaN) this.m11 = m11
+//		if (!m12.isNaN) this.m12 = m12
+//		if (!m13.isNaN) this.m13 = m13
+//		
+//		if (!m20.isNaN) this.m20 = m20
+//		if (!m21.isNaN) this.m21 = m21
+//		if (!m22.isNaN) this.m22 = m22
+//		if (!m23.isNaN) this.m23 = m23
+//		
+//		if (!m30.isNaN) this.m30 = m30
+//		if (!m31.isNaN) this.m31 = m31
+//		if (!m32.isNaN) this.m32 = m32
+//		if (!m33.isNaN) this.m33 = m33
 		
-		if (!m10.isNaN) this.m10 = m10
-		if (!m11.isNaN) this.m11 = m11
-		if (!m12.isNaN) this.m12 = m12
-		if (!m13.isNaN) this.m13 = m13
+		if (!java.lang.Double.isNaN(m00)) this.m00 = m00
+		if (!java.lang.Double.isNaN(m01)) this.m01 = m01
+		if (!java.lang.Double.isNaN(m02)) this.m02 = m02
+		if (!java.lang.Double.isNaN(m03)) this.m03 = m03
 		
-		if (!m20.isNaN) this.m20 = m20
-		if (!m21.isNaN) this.m21 = m21
-		if (!m22.isNaN) this.m22 = m22
-		if (!m23.isNaN) this.m23 = m23
+		if (!java.lang.Double.isNaN(m10)) this.m10 = m10
+		if (!java.lang.Double.isNaN(m11)) this.m11 = m11
+		if (!java.lang.Double.isNaN(m12)) this.m12 = m12
+		if (!java.lang.Double.isNaN(m13)) this.m13 = m13
 		
-		if (!m30.isNaN) this.m30 = m30
-		if (!m31.isNaN) this.m31 = m31
-		if (!m32.isNaN) this.m32 = m32
-		if (!m33.isNaN) this.m33 = m33
+		if (!java.lang.Double.isNaN(m20)) this.m20 = m20
+		if (!java.lang.Double.isNaN(m21)) this.m21 = m21
+		if (!java.lang.Double.isNaN(m22)) this.m22 = m22
+		if (!java.lang.Double.isNaN(m23)) this.m23 = m23
+		
+		if (!java.lang.Double.isNaN(m30)) this.m30 = m30
+		if (!java.lang.Double.isNaN(m31)) this.m31 = m31
+		if (!java.lang.Double.isNaN(m32)) this.m32 = m32
+		if (!java.lang.Double.isNaN(m33)) this.m33 = m33
 		
 		this
 	}
@@ -286,9 +322,10 @@ class Matrix4 protected() extends Iterable[Double] {
 	protected def multLocal(row: Int, column: Int, m: Double) = setEntryLocal(row, column, get(row, column) * m)
 	
 	protected def multRowLocal(row: Int, m: Double) = {
-		for (i <- 0 until 4) {
-			multLocal(row, i, m)
-		}
+		multLocal(row, 0, m)
+		multLocal(row, 1, m)
+		multLocal(row, 2, m)
+		multLocal(row, 3, m)
 		
 		this
 	}

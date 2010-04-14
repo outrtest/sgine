@@ -21,7 +21,7 @@ import org.sgine.scene.GeneralNodeContainer
 object TestCube {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test Cube", 4, 8, 4, 4)
-		r.verticalSync := false
+		r.verticalSync := true
 		
 		val scene = new GeneralNodeContainer()
 		

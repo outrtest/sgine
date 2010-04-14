@@ -9,13 +9,11 @@ import org.sgine.scene.event._
 import org.sgine.scene.query._
 import org.sgine.scene.view.event._
 
-import scala.collection.JavaConversions._
-
 /**
  * A view to some Nodes that match a query in a NodeContainer.
  */
 class NodeView private (container: NodeContainer, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
-	private val queue = new ConcurrentLinkedQueue[Node]
+	private var queue: List[Node] = Nil
 	
 	def iterator = queue.iterator
 	
@@ -35,14 +33,22 @@ class NodeView private (container: NodeContainer, query: Function1[Node, Boolean
 	}
 	
 	private def add(n: Node) = {
-		if (queue.add(n)) {
-			Event.enqueue(NodeAddedEvent(this, n))
+		synchronized {
+			if (!queue.contains(n)) {
+				queue = n :: queue
+				
+				Event.enqueue(NodeAddedEvent(this, n))
+			}
 		}
 	}
 	
 	private def remove(n: Node) = {
-		if (queue.remove(n)) {
-			Event.enqueue(NodeRemovedEvent(this, n))
+		synchronized {
+			if (queue.contains(n)) {
+				queue -= n
+				
+				Event.enqueue(NodeRemovedEvent(this, n))
+			}
 		}
 	}
 }
