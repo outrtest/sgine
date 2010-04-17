@@ -7,7 +7,7 @@ import org.sgine.input.event.KeyEvent
 
 import org.sgine.math.Matrix4
 
-import org.sgine.render.font.AngelCodeFont
+import org.sgine.render.font.BitmapFont
 
 import org.sgine.work._
 
@@ -21,9 +21,9 @@ object TestFonts {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test Fonts")
 
-		val franklinFont = AngelCodeFont(Source.fromURL(getClass.getClassLoader.getResource("resource/Franklin.fnt")), getClass.getClassLoader.getResource("resource/Franklin.png"))
-		val arialFont = AngelCodeFont(Source.fromURL(getClass.getClassLoader.getResource("resource/Arial.fnt")), getClass.getClassLoader.getResource("resource/Arial.png"))
-		val lcdFont = AngelCodeFont(Source.fromURL(getClass.getClassLoader.getResource("resource/lcd.fnt")), getClass.getClassLoader.getResource("resource/lcd.png"))
+		val franklinFont = BitmapFont(Source.fromURL(getClass.getClassLoader.getResource("resource/Franklin.fnt")), getClass.getClassLoader.getResource("resource/Franklin.png"))
+		val arialFont = BitmapFont(Source.fromURL(getClass.getClassLoader.getResource("resource/Arial.fnt")), getClass.getClassLoader.getResource("resource/Arial.png"))
+		val lcdFont = BitmapFont(Source.fromURL(getClass.getClassLoader.getResource("resource/lcd.fnt")), getClass.getClassLoader.getResource("resource/lcd.png"))
 		
 		val m1 = Matrix4().translate(z = -1000.0)
 		val m2 = Matrix4().translate(y = -50.0, z = -1000.0)

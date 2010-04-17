@@ -10,7 +10,9 @@ import org.sgine.work.Updatable
 trait Effect extends Listenable with Updatable {
 	var repeat: Int = 0
 	
-	private var playing: Boolean = false
+	private var _playing: Boolean = false
+	
+	def playing = _playing
 	
 	private var repeated: Int = 0
 	
@@ -18,7 +20,7 @@ trait Effect extends Listenable with Updatable {
 		Event.enqueue(EffectEvent(EffectEvent.Start, this))			// Throw start event
 		
 		play()
-		playing = true
+		_playing = true
 		Effect.started(this)
 	}
 	
@@ -27,8 +29,8 @@ trait Effect extends Listenable with Updatable {
 	def finished: Boolean
 	
 	def update(time: Double) = {
-		if ((playing) && (finished)) {
-			playing = false
+		if ((_playing) && (finished)) {
+			_playing = false
 			
 			Event.enqueue(EffectEvent(EffectEvent.End, this))			// Throw end event
 		

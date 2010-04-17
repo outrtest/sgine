@@ -13,7 +13,7 @@ class MutableProperty[T] extends Property[T] {
 		apply(initialValue)
 	}
 
-	protected var value: T = _
+	@volatile protected var value: T = _
 
 	def apply(): T = {
 		value;
