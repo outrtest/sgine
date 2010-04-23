@@ -10,6 +10,8 @@ object Vector3 {
 		v
 	}
 	
+	def apply() = new Vector3()
+	
 	def apply(tuple3 : (Double,Double,Double) ) : Vector3 = Vector3(tuple3._1, tuple3._2, tuple3._3)
 	
 	/**
