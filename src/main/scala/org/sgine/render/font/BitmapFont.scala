@@ -6,6 +6,8 @@ import scala.io.Source
 
 import org.lwjgl.opengl.GL11._
 
+import org.sgine.core.Resource
+
 import org.sgine.render.Texture
 import org.sgine.render.TextureMap
 import org.sgine.render.TextureUtil
@@ -74,9 +76,13 @@ class BitmapFont private(texture: Texture) extends TextureMap[Int](texture) with
 }
 
 object BitmapFont {
-	def apply(source: Source, url: URL) = {
-		val font = new BitmapFont(TextureUtil(url))
+	def apply(name: String, imageType: String = "png") = {
+		val fnt = Resource(name + ".fnt")
+		val png = Resource(name + "." + imageType)
 		
+		val font = new BitmapFont(TextureUtil(png.url))
+		
+		val source = Source.fromURL(fnt.url)
 		val lines = source.getLines().toList
 		
 		processInfo(font, lines(0))
@@ -88,13 +94,30 @@ object BitmapFont {
 			offset = processPage(font, lines, offset)
 		}
 		
-//		val kerningsCount = processLine(lines(offset))("count").toInt
-//		offset += 1
-//		
-//		processKernings(font, lines, offset, kerningsCount)
-		
 		font
 	}
+	
+//	def apply(source: Source, url: URL) = {
+//		val font = new BitmapFont(TextureUtil(url))
+//		
+//		val lines = source.getLines().toList
+//		
+//		processInfo(font, lines(0))
+//		processCommon(font, lines(1))
+//		
+//		// Process Characters
+//		var offset = 2
+//		for (i <- 0 until font._pages) {
+//			offset = processPage(font, lines, offset)
+//		}
+//		
+////		val kerningsCount = processLine(lines(offset))("count").toInt
+////		offset += 1
+////		
+////		processKernings(font, lines, offset, kerningsCount)
+//		
+//		font
+//	}
 	
 	private def processInfo(font: BitmapFont, s: String) = {
 		val m = processLine(s)

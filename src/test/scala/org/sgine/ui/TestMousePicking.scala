@@ -25,7 +25,7 @@ object TestMousePicking {
 		component.location.z := -500.0
 		component.scale.x := 1.5
 		component.rotation.y := Math.Pi / -4.0
-		component.source := Resource("resource/puppies.jpg")			// 700x366
+		component.source := Resource("puppies.jpg")			// 700x366
 		scene += component
 		
 		// Add our scene to the renderer

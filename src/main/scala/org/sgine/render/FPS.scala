@@ -33,5 +33,5 @@ class FPS private(frequency: Double, font: Font, matrix: Matrix4) extends Functi
 }
 
 object FPS {
-	def apply(frequency: Double = 1.0, font: Font = null, matrix: Matrix4 = Matrix4().translate(x = -630.0, y = 470.0, z = -1200.0)) = new FPS(frequency, font, matrix);
+	def apply(frequency: Double = 1.0, font: Font = null, matrix: Matrix4 = Matrix4().translate(x = -630.0, y = 470.0, z = -500.0)) = new FPS(frequency, font, matrix);
 }

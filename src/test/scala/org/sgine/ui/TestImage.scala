@@ -18,7 +18,7 @@ object TestImage {
 		val scene = new GeneralNodeContainer()
 		val component = new Image()
 		component.location.z := -1000.0
-		component.source := Resource("resource/puppies.jpg")
+		component.source := Resource("puppies.jpg")
 		scene += component
 		
 		r.renderable := RenderableScene(scene)
