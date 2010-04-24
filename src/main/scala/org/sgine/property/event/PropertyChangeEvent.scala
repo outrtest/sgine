@@ -21,6 +21,8 @@ class PropertyChangeEvent[T] protected() extends Event(null) with Cacheable[Prop
 	def adjusting = _adjusting
 	
 	def cache = PropertyChangeEventCache
+	
+	def retarget(target: org.sgine.event.Listenable): Event = PropertyChangeEvent(target.asInstanceOf[ListenableProperty[T]], oldValue, newValue, adjusting)
 }
 
 object PropertyChangeEvent {

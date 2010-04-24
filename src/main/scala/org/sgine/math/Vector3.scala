@@ -51,9 +51,9 @@ object Vector3 {
  * Calculation operations will return a result Vector3 instead of modifying this one.
  */
 class Vector3 protected() {
-	var _x: Double = 0.0
-	var _y: Double = 0.0
-	var _z: Double = 0.0
+	protected var _x: Double = 0.0
+	protected var _y: Double = 0.0
+	protected var _z: Double = 0.0
 	
 	def x = _x
 	protected def x_=(_x: Double) = this._x = _x

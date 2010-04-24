@@ -101,7 +101,6 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		glViewport(0, 0, width, height)
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
-//		gluPerspective(45.0f, h, 1.0f, 20000.0f)
 		glFrustum(-1.0f * h, 1.0f * h, -1.0f, 1.0f, nearDistance, farDistance)
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
@@ -132,7 +131,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			Mouse.update(this)
 			
 			val r = renderable()
-			if (r != null) r.render()
+			if (r != null) r.render(this)
 		}
 		lastRender = currentRender
 		

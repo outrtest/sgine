@@ -4,15 +4,23 @@ import org.sgine.effect.Effect
 
 import org.sgine.event.Event
 
-class EffectEvent protected(val effect: Effect, val eventType: Int) extends Event(effect)
+abstract class EffectEvent protected(val effect: Effect, val eventType: Int) extends Event(effect)
 
-class EffectStartEvent(effect: Effect) extends EffectEvent(effect, EffectEvent.Start)
+class EffectStartEvent(effect: Effect) extends EffectEvent(effect, EffectEvent.Start) {
+	def retarget(target: org.sgine.event.Listenable): Event = new EffectStartEvent(target.asInstanceOf[Effect])
+}
 
-class EffectPauseEvent(effect: Effect) extends EffectEvent(effect, EffectEvent.Pause)
+class EffectPauseEvent(effect: Effect) extends EffectEvent(effect, EffectEvent.Pause) {
+	def retarget(target: org.sgine.event.Listenable): Event = new EffectPauseEvent(target.asInstanceOf[Effect])
+}
 
-class EffectStopEvent(effect: Effect) extends EffectEvent(effect, EffectEvent.Stop)
+class EffectStopEvent(effect: Effect) extends EffectEvent(effect, EffectEvent.Stop) {
+	def retarget(target: org.sgine.event.Listenable): Event = new EffectStopEvent(target.asInstanceOf[Effect])
+}
 
-class EffectEndEvent(effect: Effect) extends EffectEvent(effect, EffectEvent.End)
+class EffectEndEvent(effect: Effect) extends EffectEvent(effect, EffectEvent.End) {
+	def retarget(target: org.sgine.event.Listenable): Event = new EffectEndEvent(target.asInstanceOf[Effect])
+}
 
 object EffectEvent {
 	val Start = 1

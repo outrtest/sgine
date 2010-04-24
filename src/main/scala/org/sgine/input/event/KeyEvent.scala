@@ -1,11 +1,12 @@
 package org.sgine.input.event
 
 import org.sgine.event.Event
+import org.sgine.event.Listenable
 
 import org.sgine.input.Key
 import org.sgine.input.Keyboard
 
-class KeyEvent protected(val key: Key,
+abstract class KeyEvent protected(val key: Key,
 					val state: Boolean,
 					val time: Long,
 					val keyChar: Char,
@@ -14,7 +15,8 @@ class KeyEvent protected(val key: Key,
 					val metaDown: Boolean,
 					val menuDown: Boolean,
 					val appsDown: Boolean,
-					val capsDown: Boolean) extends Event(Keyboard) {
+					val capsDown: Boolean,
+					listenable: Listenable = Keyboard) extends Event(listenable) {
 	override def toString() = key + (if (state) " Pressed" else " Released") + ". Modifiers: " + (if (controlDown) "Control " else "") + (if (shiftDown) "Shift " else "") + (if (metaDown) "Meta " else "") + (if (menuDown) "Menu " else "") + (if (appsDown) "Apps " else "") 
 }
 
@@ -26,7 +28,10 @@ class KeyPressEvent protected(key: Key,
 					metaDown: Boolean,
 					menuDown: Boolean,
 					appsDown: Boolean,
-					capsDown: Boolean) extends KeyEvent(key, true, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown)
+					capsDown: Boolean,
+					listenable: Listenable = Keyboard) extends KeyEvent(key, true, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable) {
+	def retarget(target: org.sgine.event.Listenable): Event = new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, target)
+}
 
 class KeyReleaseEvent protected(key: Key,
 					time: Long,
@@ -36,7 +41,10 @@ class KeyReleaseEvent protected(key: Key,
 					metaDown: Boolean,
 					menuDown: Boolean,
 					appsDown: Boolean,
-					capsDown: Boolean) extends KeyEvent(key, false, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown)
+					capsDown: Boolean,
+					listenable: Listenable = Keyboard) extends KeyEvent(key, false, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable) {
+	def retarget(target: org.sgine.event.Listenable): Event = new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, target)
+}
 
 object KeyEvent {
 	def apply(key: Key,

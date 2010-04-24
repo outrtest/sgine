@@ -7,6 +7,8 @@ class PropertyTransactionEvent[T]  private (val property: ListenableProperty[T],
 	def isCommit = commit
 	
 	def isRevert = !commit
+	
+	def retarget(target: org.sgine.event.Listenable): Event = PropertyTransactionEvent(target.asInstanceOf[ListenableProperty[T]], oldValue, newValue, commit)
 }
 
 object PropertyTransactionEvent {
