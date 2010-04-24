@@ -2,6 +2,7 @@ package org.sgine.ui.ext
 
 import org.sgine.event.Event
 
+import org.sgine.math.Matrix4
 import org.sgine.math.mutable.MatrixPropertyContainer
 
 import org.sgine.property.MutableProperty

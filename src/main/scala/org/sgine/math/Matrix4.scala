@@ -5,6 +5,7 @@ import java.nio._
 import Matrix4._
 
 import org.sgine.math.mutable.{Vector3 => MutableVector3}
+//import org.sgine.math.mutable.{Vector4 => MutableVector4}
 
 /**
  * An immutable Matrix4 implementation that utilizes a backing
@@ -65,13 +66,55 @@ class Matrix4 protected() extends Iterable[Double] {
 			)
 	}
 	
+	def transform(v: Vector3, w: Double): Vector3 = {
+		Vector3(
+				m00 * v.x + m01 * v.y + m02 * v.z + m03 * w,
+				m10 * v.x + m11 * v.y + m12 * v.z + m13 * w,
+				m20 * v.x + m21 * v.y + m22 * v.z + m23 * w
+			)
+	}
+	
+	def transform(v: Vector4): Vector4 = {
+		Vector4(
+				m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w,
+				m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w,
+				m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w,
+				m30 * v.x + m31 * v.y + m32 * v.z + m33 * v.w
+			)
+	}
+	
 	def transformLocal(v: MutableVector3): MutableVector3 = {
-		v.x = m00 * v.x + m01 * v.y + m02 * v.z + m03
-		v.y = m10 * v.x + m11 * v.y + m12 * v.z + m13
-		v.z = m20 * v.x + m21 * v.y + m22 * v.z + m23
+		val x = m00 * v.x + m01 * v.y + m02 * v.z + m03
+		val y = m10 * v.x + m11 * v.y + m12 * v.z + m13
+		val z = m20 * v.x + m21 * v.y + m22 * v.z + m23
+		
+		v.x = x
+		v.y = y
+		v.z = z
 		
 		v
 	}
+	
+	def transformLocal(v: MutableVector3, w: Double): MutableVector3 = {
+		val x = m00 * v.x + m01 * v.y + m02 * v.z + m03 * w
+		val y = m10 * v.x + m11 * v.y + m12 * v.z + m13 * w
+		val z = m20 * v.x + m21 * v.y + m22 * v.z + m23 * w
+		
+		v.x = x
+		v.y = y
+		v.z = z
+		
+		v
+	}
+	
+//	def transformLocal(v: MutableVector4): MutableVector4 = {
+//		v.x = m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w
+//		v.y = m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w
+//		v.z = m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w
+//		v.w = m30 * v.x + m31 * v.y + m32 * v.z + m33 * v.w
+//		
+//		v
+//	}
 	
 	def transform(src: DoubleBuffer , dst: DoubleBuffer ) {
 		transform(src, dst, 0, src.capacity() / 3)

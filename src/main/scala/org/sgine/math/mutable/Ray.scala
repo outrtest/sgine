@@ -2,24 +2,34 @@ package org.sgine.math.mutable
 
 import org.sgine.math.{Ray => ImmutableRay, Matrix4 => ImmutableMatrix4}
 
-class Ray(override val origin: Vector3, override val normal: Vector3) extends ImmutableRay(origin, normal) {
+class Ray protected(override val origin: Vector3, override val direction: Vector3) extends ImmutableRay(origin, direction) {
 	def pointAtDistance(d: Double, store: Vector3) = {
-		store.x = origin.x + (normal.x + d)
-		store.y = origin.y + (normal.y + d)
-		store.z = origin.z + (normal.z + d)
+		store.x = origin.x + (direction.x + d)
+		store.y = origin.y + (direction.y + d)
+		store.z = origin.z + (direction.z + d)
 		
 		store
 	}
 	
 	override def transform(matrix: ImmutableMatrix4) = {
 		matrix.transformLocal(origin)
-		pointAtDistance(1.0, normal)
-		matrix.transformLocal(normal)
-		normal.x = normal.x - origin.x
-		normal.y = normal.y - origin.y
-		normal.z = normal.z - origin.z
-		normal.normalize()
+		matrix.transformLocal(direction, 0.0).normalize()
 		
 		this
 	}
+	
+	def translateLocal(v: Vector3) = {
+		val t = -origin.z / direction.z
+		v.x = origin.x + direction.x * t
+		v.y = origin.y + direction.y * t
+		v.z = origin.z + direction.z * t
+		
+		v
+	}
+}
+
+object Ray {
+	def apply(origin: Vector3, direction: Vector3) = new Ray(origin, direction)
+	
+	def apply() = new Ray(Vector3(), Vector3())
 }

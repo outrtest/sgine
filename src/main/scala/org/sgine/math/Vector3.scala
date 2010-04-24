@@ -62,20 +62,19 @@ class Vector3 protected() {
 	def z = _z
 	protected def z_=(_z: Double) = this._z = _z
 
-	def + ( other : Vector3 ) : Vector3 = Vector3( x + other.x, y + other.y, z + other.z )
-	def - ( other : Vector3 ) : Vector3 = Vector3( x - other.x, y - other.y, z - other.z )
-	def * ( scalar : Double ) : Vector3 = Vector3( x * scalar, y * scalar, z * scalar )
-	def / ( scalar : Double ) : Vector3 = Vector3( x / scalar, y / scalar, z / scalar )
+	def +(other: Vector3 ): Vector3 = Vector3(x + other.x, y + other.y, z + other.z)
+	def -(other: Vector3 ): Vector3 = Vector3(x - other.x, y - other.y, z - other.z)
+	def *(scalar: Double ): Vector3 = Vector3(x * scalar, y * scalar, z * scalar)
+	def /(scalar: Double ): Vector3 = Vector3(x / scalar, y / scalar, z / scalar)
+	def +(ox: Double, oy: Double, oz: Double): Vector3 = Vector3(x + ox, y + oy, z + oz)
+	def -(ox: Double, oy: Double, oz: Double): Vector3 = Vector3(x - ox, y - oy, z - oz)
 
-	def + ( ox : Double, oy : Double, oz : Double ) : Vector3 = Vector3( x + ox, y + oy, z + oz )
-	def - ( ox : Double, oy : Double, oz : Double ) : Vector3 = Vector3( x - ox, y - oy, z - oz )
-
-	def unary_- : Vector3 = Vector3( -x, -y, -z )
+	def unary_- : Vector3 = Vector3(-x, -y, -z)
 
 	/**
 	 *	Calculates the length of the vector.
 	 */
-	def length : Double = Math.sqrt( x*x + y*y + z*z )
+	def length: Double = Math.sqrt(x * x + y * y + z * z)
 
 	/**
 	 * Calculates the squared length of the vector.
@@ -84,7 +83,7 @@ class Vector3 protected() {
 	 * <p/>
 	 * Useful for quickly comparing the relative length of vectors.
 	 */
-	def lengthSquared : Double = x*x + y*y + z*z
+	def lengthSquared: Double = x * x + y * y + z * z
 
 	/**
 	 * The distance to the position specified by the other vector from the position specified by this vector.
@@ -111,9 +110,11 @@ class Vector3 protected() {
 	 * The normalized vector for (0,0,0) is (0,0,0).
 	 */
 	def normalized : Vector3 = {
-		if (isZero) Vector3.Zero else {
-			val len = length
-			Vector3( x / len, y / len, z / len )
+		if (isZero) {
+			Vector3.Zero
+		} else {
+			val len = 1.0 / length
+			Vector3(x * len, y * len, z * len)
 		}
 	}
 

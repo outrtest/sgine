@@ -10,7 +10,7 @@ import org.sgine.render.Texture
 import org.sgine.render.TextureMap
 import org.sgine.render.TextureUtil
 
-class AngelCodeFont private(texture: Texture) extends TextureMap[Int](texture) {
+class BitmapFont private(texture: Texture) extends TextureMap[Int](texture) with Font {
 	private var _face: String = null
 	private var _size: Int = 0
 	private var _bold: Int = 0
@@ -45,14 +45,14 @@ class AngelCodeFont private(texture: Texture) extends TextureMap[Int](texture) {
 	def scaleW = _scaleW
 	def scaleH = _scaleH
 	
-	override def apply(c: Int): AngelCodeFontChar = super.apply(c).asInstanceOf[AngelCodeFontChar]
+	override def apply(c: Int): BitmapFontChar = super.apply(c).asInstanceOf[BitmapFontChar]
 	
-	override protected def createImage() = new AngelCodeFontChar()
+	override protected def createImage() = new BitmapFontChar()
 	
 	def drawString(s: String, kern: Boolean = true) = {
 		glTranslated(measureWidth(s, kern) / -2.0, 0.0, 0.0)
 		
-		var previous: AngelCodeFontChar = null
+		var previous: BitmapFontChar = null
 		for (c <- s) {
 			val current = apply(c)
 			current.drawChar(previous, kern)
@@ -62,7 +62,7 @@ class AngelCodeFont private(texture: Texture) extends TextureMap[Int](texture) {
 	
 	def measureWidth(s: String, kern: Boolean = true) = {
 		var width = 0.0
-		var previous: AngelCodeFontChar = null
+		var previous: BitmapFontChar = null
 		for (c <- s) {
 			val current = apply(c)
 			width += current.measureCharWidth(previous, kern)
@@ -73,9 +73,9 @@ class AngelCodeFont private(texture: Texture) extends TextureMap[Int](texture) {
 	}
 }
 
-object AngelCodeFont {
+object BitmapFont {
 	def apply(source: Source, url: URL) = {
-		val font = new AngelCodeFont(TextureUtil(url))
+		val font = new BitmapFont(TextureUtil(url))
 		
 		val lines = source.getLines().toList
 		
@@ -96,7 +96,7 @@ object AngelCodeFont {
 		font
 	}
 	
-	private def processInfo(font: AngelCodeFont, s: String) = {
+	private def processInfo(font: BitmapFont, s: String) = {
 		val m = processLine(s)
 		font._face = m("face")
 		font._size = m("size").toInt
@@ -117,7 +117,7 @@ object AngelCodeFont {
 		font._spacing(1) = p(1).toInt
 	}
 	
-	private def processCommon(font: AngelCodeFont, s: String) = {
+	private def processCommon(font: BitmapFont, s: String) = {
 		val m = processLine(s)
 		font._lineHeight = m("lineHeight").toInt
 		font._base = m("base").toInt
@@ -127,7 +127,7 @@ object AngelCodeFont {
 		font._packed = m("packed").toInt
 	}
 	
-	private def processPage(font: AngelCodeFont, lines: List[String], offset: Int) = {
+	private def processPage(font: BitmapFont, lines: List[String], offset: Int) = {
 		var line = offset
 		
 		// Process "page"
@@ -153,7 +153,7 @@ object AngelCodeFont {
 				val y = m("y").toDouble
 				val width = m("width").toDouble
 				val height = m("height").toDouble
-				val fontChar = font.create(id, x, y, width, height).asInstanceOf[AngelCodeFontChar]
+				val fontChar = font.create(id, x, y, width, height).asInstanceOf[BitmapFontChar]
 				fontChar._font = font
 				fontChar._code = id
 				fontChar._xOffset = m("xoffset").toDouble
@@ -162,7 +162,7 @@ object AngelCodeFont {
 			} else if (m.contains("kernings")) {
 				// Ignore
 			} else if (m.contains("kerning")) {
-				val k = AngelCodeFontKerning(m("first").toInt, m("amount").toInt)
+				val k = FontKerning(m("first").toInt, m("amount").toInt)
 				val next = font(m("second").toInt)
 				next._kernings = k :: next._kernings
 			} else {
@@ -173,11 +173,11 @@ object AngelCodeFont {
 		line
 	}
 	
-	private def processKernings(font: AngelCodeFont, lines: List[String], offset: Int, kerningsCount: Int) = {
+	private def processKernings(font: BitmapFont, lines: List[String], offset: Int, kerningsCount: Int) = {
 		for (i <- offset until lines.length) {
 			val m = processLine(lines(i))
 			
-			val k = AngelCodeFontKerning(m("first").toInt, m("amount").toInt)
+			val k = FontKerning(m("first").toInt, m("amount").toInt)
 			val next = font(m("second").toInt)
 			next._kernings = k :: next._kernings
 		}
