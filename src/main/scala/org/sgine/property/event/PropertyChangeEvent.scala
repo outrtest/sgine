@@ -36,6 +36,6 @@ object PropertyChangeEvent {
 	}
 }
 
-object PropertyChangeEventCache extends ObjectCache[PropertyChangeEvent[_]] {
+object PropertyChangeEventCache extends ObjectCache[PropertyChangeEvent[_]](10000) {
 	def create() = new PropertyChangeEvent[Any]()
 }
