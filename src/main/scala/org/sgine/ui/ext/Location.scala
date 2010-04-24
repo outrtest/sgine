@@ -8,4 +8,9 @@ class Location(override val parent: Component) extends PropertyContainer {
 	val x = new HorizontalNumericProperty(0.0, this)
 	val y = new VerticalNumericProperty(0.0, this)
 	val z = new DepthNumericProperty(0.0, this)
+	
+	def set(x: Double, y: Double) = {
+		this.x := x
+		this.y := y
+	}
 }

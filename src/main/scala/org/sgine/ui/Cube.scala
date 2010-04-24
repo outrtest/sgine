@@ -1,17 +1,17 @@
 package org.sgine.ui
 
-import org.sgine.property.AdvancedProperty
+import org.sgine.property.ImmutableProperty
 
 import org.sgine.ui.ext.AdvancedComponent
 import org.sgine.ui.ext.RotationComponent
 
-trait Cube[T <: Component with RotationComponent]extends CompositeComponent with AdvancedComponent {
-	val front = new AdvancedProperty[T](createComponent(), this)
-	val back = new AdvancedProperty[T](createComponent(), this)
-	val top = new AdvancedProperty[T](createComponent(), this)
-	val bottom = new AdvancedProperty[T](createComponent(), this)
-	val left = new AdvancedProperty[T](createComponent(), this)
-	val right = new AdvancedProperty[T](createComponent(), this)
+trait Cube[T <: Component with RotationComponent] extends CompositeComponent with AdvancedComponent {
+	val front = new ImmutableProperty[T](createComponent())
+	val back = new ImmutableProperty[T](createComponent())
+	val top = new ImmutableProperty[T](createComponent())
+	val bottom = new ImmutableProperty[T](createComponent())
+	val left = new ImmutableProperty[T](createComponent())
+	val right = new ImmutableProperty[T](createComponent())
 	
 	back().rotation.y := Math.Pi
 	top().rotation.x := Math.Pi / -2.0

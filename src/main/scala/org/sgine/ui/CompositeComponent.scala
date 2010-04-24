@@ -15,6 +15,11 @@ trait CompositeComponent extends MatrixComponent with NodeContainer {
 	override protected def initComponent() = {
 		for (c <- children) {
 			c.parent = this
+			
+			c match {
+				case mc: MatrixComponent => mc.invalidateMatrix()
+				case _ =>
+			}
 		}
 	}
 	
