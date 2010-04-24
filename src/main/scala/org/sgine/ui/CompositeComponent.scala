@@ -26,7 +26,7 @@ trait CompositeComponent extends MatrixComponent {
 	
 	def drawComponent() = {
 		for (c <- children) {
-			c.render()
+			c.render(renderer())
 		}
 	}
 }

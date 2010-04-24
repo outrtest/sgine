@@ -108,8 +108,8 @@ class BasicEventSpec extends FlatSpec with ShouldMatchers {
 
 class SimpleListenable extends Listenable
 
-class SimpleEvent1(listenable: Listenable) extends Event(listenable)
-class SimpleEvent2(listenable: Listenable) extends Event(listenable)
-class SimpleEvent3(listenable: Listenable) extends Event(listenable)
+class SimpleEvent1(listenable: Listenable) extends BasicEvent(listenable)
+class SimpleEvent2(listenable: Listenable) extends BasicEvent(listenable)
+class SimpleEvent3(listenable: Listenable) extends BasicEvent(listenable)
 class SimpleEvent4(listenable: Listenable) extends SimpleEvent1(listenable)
-class ExclusiveEvent1(listenable: Listenable) extends Event(listenable)
+class ExclusiveEvent1(listenable: Listenable) extends BasicEvent(listenable)
