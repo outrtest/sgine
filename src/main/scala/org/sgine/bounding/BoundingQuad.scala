@@ -12,6 +12,8 @@ class BoundingQuad protected() extends Bounding {
 	protected def height_=(_height: Double) = this._height = _height
 	
 	def within(v: Vector3) = v.x >= width / -2.0 && v.x <= width / 2.0 && v.y >= height / -2.0 && v.y <= height / 2.0
+	
+	override def toString() = "BoundingQuad(" + width + "x" + height + ")"
 }
 
 object BoundingQuad {

@@ -2,10 +2,15 @@ package org.sgine.ui
 
 import org.sgine.event.Event
 
+import org.sgine.scene.NodeContainer
+
 import org.sgine.ui.ext.MatrixComponent
 
-trait CompositeComponent extends MatrixComponent {
+// TODO: should this remain a Component or should it just be a NodeContainer?
+trait CompositeComponent extends MatrixComponent with NodeContainer {
 	def children: List[Component]
+	
+	def iterator = children.iterator
 	
 	override protected def initComponent() = {
 		for (c <- children) {
@@ -25,8 +30,6 @@ trait CompositeComponent extends MatrixComponent {
 	}
 	
 	def drawComponent() = {
-		for (c <- children) {
-			c.render(renderer())
-		}
+		// Rendering of children handled by the scene
 	}
 }

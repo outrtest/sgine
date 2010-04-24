@@ -53,16 +53,25 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	}
 	
 	private val pickTest = (n: Node) => {
-		n match {
-			case c: MatrixPropertyContainer with BoundingObject => {
-				renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
-				if (c.bounding().within(storeVector3)) {
-					val evt = currentMouseEvent.retarget(c, storeVector3.x, storeVector3.y)
-					Event.enqueue(evt)
-				}
+		if ((n.isInstanceOf[MatrixPropertyContainer]) && (n.isInstanceOf[BoundingObject])) {
+			val c = n.asInstanceOf[MatrixPropertyContainer with BoundingObject with Node]
+			renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
+			if (c.bounding().within(storeVector3)) {
+				val evt = currentMouseEvent.retarget(c, storeVector3.x, storeVector3.y)
+				Event.enqueue(evt)
 			}
-			case _ =>
 		}
+		// TODO: for some reason the following doesn't work!
+//		n match {
+//			case c: MatrixPropertyContainer with BoundingObject => {
+//				renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
+//				if (c.bounding().within(storeVector3)) {
+//					val evt = currentMouseEvent.retarget(c, storeVector3.x, storeVector3.y)
+//					Event.enqueue(evt)
+//				}
+//			}
+//			case _ =>
+//		}
 	}
 }
 

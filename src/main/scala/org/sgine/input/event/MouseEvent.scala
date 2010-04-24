@@ -11,18 +11,18 @@ object MouseEvent {
 	val Move = 3
 	val Wheel = 4
 	
-	def apply(button: Int, state: Boolean, wheel: Int, x: Double, y: Double, dx: Double, dy: Double): MouseEvent = {
+	def apply(button: Int, state: Boolean, wheel: Int, x: Double, y: Double, dx: Double, dy: Double, listenable: Listenable = Mouse): MouseEvent = {
 		if (button == -1) {		// Not a button event
 			if (wheel != 0) {	// Wheel
-				new MouseWheelEvent(x, y, wheel, dx, dy)
+				new MouseWheelEvent(x, y, wheel, dx, dy, listenable)
 			} else {			// Move
-				new MouseMoveEvent(x, y, dx, dy)
+				new MouseMoveEvent(x, y, dx, dy, listenable)
 			}
 		} else {				// Button event
 			if (state) {		// Pressed
-				new MousePressEvent(button, x, y, dx, dy)
+				new MousePressEvent(button, x, y, dx, dy, listenable)
 			} else {			// Released
-				new MouseReleaseEvent(button, x, y, dx, dy)
+				new MouseReleaseEvent(button, x, y, dx, dy, listenable)
 			}
 		}
 	}
@@ -52,7 +52,7 @@ class MousePressEvent(button: Int,
 					  deltaX: Double,
 					  deltaY: Double,
 					  listenable: Listenable = Mouse) extends MouseButtonEvent(MouseEvent.Press, button, true, x, y, deltaX, deltaY, listenable) {
-	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = new MousePressEvent(button, x, y, deltaX, deltaY, target)
+	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(button, true, 0, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
 	
@@ -65,7 +65,7 @@ class MouseReleaseEvent(button: Int,
 						deltaX: Double,
 						deltaY: Double,
 						listenable: Listenable = Mouse) extends MouseButtonEvent(MouseEvent.Release, button, false, x, y, deltaX, deltaY, listenable) {
-	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = new MouseReleaseEvent(button, x, y, deltaX, deltaY, target)
+	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(button, false, 0, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
 	
@@ -77,7 +77,7 @@ class MouseMoveEvent(x: Double,
 					 deltaX: Double,
 					 deltaY: Double,
 					 listenable: Listenable = Mouse) extends MouseEvent(MouseEvent.Move, x, y, deltaX, deltaY, listenable) {
-	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = new MouseMoveEvent(x, y, deltaX, deltaY, target)
+	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(-1, false, 0, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
 	
@@ -90,7 +90,7 @@ class MouseWheelEvent(x: Double,
 					  deltaX: Double,
 					  deltaY: Double,
 					  listenable: Listenable = Mouse) extends MouseEvent(MouseEvent.Wheel, x, y, deltaX, deltaY, listenable) {
-	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = new MouseWheelEvent(x, y, wheel, deltaX, deltaY, target)
+	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(-1, false, -1, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
 	
