@@ -20,13 +20,14 @@ import scala.io.Source
 object TestFonts {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test Fonts")
+		r.verticalSync := true
 
-		val franklinFont = BitmapFont(Source.fromURL(getClass.getClassLoader.getResource("resource/Franklin.fnt")), getClass.getClassLoader.getResource("resource/Franklin.png"))
-		val arialFont = BitmapFont(Source.fromURL(getClass.getClassLoader.getResource("resource/Arial.fnt")), getClass.getClassLoader.getResource("resource/Arial.png"))
-		val lcdFont = BitmapFont(Source.fromURL(getClass.getClassLoader.getResource("resource/lcd.fnt")), getClass.getClassLoader.getResource("resource/lcd.png"))
+		val franklinFont = BitmapFont("Franklin")
+		val arialFont = BitmapFont("Arial")
+		val lcdFont = BitmapFont("lcd")
 		
-		val m1 = Matrix4().translate(z = -1000.0)
-		val m2 = Matrix4().translate(y = -50.0, z = -1000.0)
+		val m1 = Matrix4().translate(z = -500.0)
+		val m2 = Matrix4().translate(y = -50.0, z = -500.0)
 		val fps = FPS(1.0, lcdFont)
 		
 		val a = new Array[() => Unit](5)
@@ -38,8 +39,6 @@ object TestFonts {
 		r.renderable := RenderList(a)
 		
 		Keyboard.listeners += test _
-		
-		r.verticalSync := false
 		
 		println(franklinFont.measureWidth("Franklin Gothic Heavy with a blue gradient.", true))
 	}

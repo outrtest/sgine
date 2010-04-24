@@ -31,7 +31,7 @@ object TestCube {
 		cube.rotation.y.adjuster = new EasingNumericAdjuster(Linear.easeIn, 4.0)
 		cube.rotation.z.adjuster = new EasingNumericAdjuster(Linear.easeIn, 6.0)
 		cube.location.x.adjuster = new EasingNumericAdjuster(Elastic.easeInOut, 4.0)
-		cube(Resource("resource/sgine_256.png"), 256.0, 256.0)
+		cube(Resource("sgine_256.png"), 256.0, 256.0)
 		cube.front.listeners += test _
 		scene += cube
 		
