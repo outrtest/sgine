@@ -48,7 +48,7 @@ object TestProperties {
 		p4 := "Three"
 		println("p4: " + p4() + ", p5: " + p5())
 		
-		println("PropertyContainer: " + pg1.size)
+		println("PropertyContainer: " + pg1.properties.size)
 		
 		ap1.listeners += ap1Changed _
 		ap1 := "One"

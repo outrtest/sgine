@@ -5,8 +5,8 @@ import org.sgine._
 import org.sgine.event._
 import org.sgine.property._
 
-trait PropertyContainer extends Iterable[Property[_]] with Listenable {
-	private var properties: List[Property[_]] = Nil
+trait PropertyContainer extends Listenable {
+	private var _properties: List[Property[_]] = Nil
 	private var aliases = new HashMap[String, Property[_]]()
 	private val staticPropertyFields = getStaticPropertyFields
 	
@@ -46,7 +46,7 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	
 	def commit() = {
 		var changed = false
-		for (p <- this) p match {
+		for (p <- properties) p match {
 			case tp: TransactionalProperty[_] => {
 				if (tp.commit()) changed = true
 			}
@@ -58,7 +58,7 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	
 	def revert() = {
 		var changed = false
-		for (p <- this) p match {
+		for (p <- properties) p match {
 			case tp: TransactionalProperty[_] => {
 				if (tp.revert()) changed = true
 			}
@@ -70,7 +70,7 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	
 	def uncommitted = {
 		var u = false
-		for (p <- this) p match {
+		for (p <- properties) p match {
 			case tp: TransactionalProperty[_] => {
 				if (tp.uncommitted) u = true
 			}
@@ -84,14 +84,11 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 		aliases.contains(name)
 	}
 	
-	def iterator(): Iterator[Property[_]] = {
-		initialize()
-		properties.iterator
-	}
+	def properties = _properties
 	
 	def +=(p: Property[_]): PropertyContainer = {
-		if (!properties.contains(p)) {			// No duplicates allowed
-			properties = p :: properties									// Add the property to the list
+		if (!_properties.contains(p)) {			// No duplicates allowed
+			_properties = p :: _properties									// Add the property to the list
 
 			p match {														// Assign an alias if one already exists
 				case np: NamedProperty => {
@@ -107,7 +104,7 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 	}
 	
 	def -=(p: Property[_]): PropertyContainer = {
-		properties -= p
+		_properties -= p
 		p match {
 			case np: NamedProperty => aliases -= np.name
 			case _ =>
@@ -152,7 +149,7 @@ trait PropertyContainer extends Iterable[Property[_]] with Listenable {
 					}
 				}
 				
-				properties = properties.reverse
+				_properties = _properties.reverse
 				initialized = true
 			}
 		}

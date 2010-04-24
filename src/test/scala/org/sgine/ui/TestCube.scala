@@ -26,12 +26,13 @@ object TestCube {
 		val scene = new GeneralNodeContainer()
 		
 		val cube = new ImageCube()
-		cube.location.z := -1500.0
+		cube.location.z := -1000.0
 		cube.rotation.x.adjuster = new EasingNumericAdjuster(Linear.easeIn, 2.0)
 		cube.rotation.y.adjuster = new EasingNumericAdjuster(Linear.easeIn, 4.0)
 		cube.rotation.z.adjuster = new EasingNumericAdjuster(Linear.easeIn, 6.0)
 		cube.location.x.adjuster = new EasingNumericAdjuster(Elastic.easeInOut, 4.0)
 		cube(Resource("resource/sgine_256.png"), 256.0, 256.0)
+		cube.front.listeners += test _
 		scene += cube
 		
 		r.renderable := RenderableScene(scene, showFPS = true)
@@ -65,5 +66,9 @@ object TestCube {
 		rotateY.start()
 		rotateZ.start()
 		move.start()
+	}
+	
+	private def test(evt: org.sgine.event.Event) = {
+		println(evt)
 	}
 }

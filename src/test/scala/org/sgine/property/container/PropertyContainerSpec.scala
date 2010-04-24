@@ -15,11 +15,11 @@ class PropertyContainerSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	"PropertyContainer" should "be empty" in {
-		container1.size should equal (0)
+		container1.properties.size should equal (0)
 	}
 	
 	it should "have one entry" in {
-		container2.size should equal (1)
+		container2.properties.size should equal (1)
 	}
 	
 	it should "find 'p' by name" in {
@@ -27,7 +27,7 @@ class PropertyContainerSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	"MutablePropertyContainer" should "have one entry" in {
-		container3.size should equal (1)
+		container3.properties.size should equal (1)
 	}
 	
 	it should "add a dynamic entry" in {
@@ -35,7 +35,7 @@ class PropertyContainerSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "have two entries" in {
-		container3.size should equal (2)
+		container3.properties.size should equal (2)
 	}
 	
 	it should "find 'p1' by name" in {
