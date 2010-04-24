@@ -32,7 +32,7 @@ object TestCube {
 		cube.rotation.z.adjuster = new EasingNumericAdjuster(Linear.easeIn, 6.0)
 		cube.location.x.adjuster = new EasingNumericAdjuster(Elastic.easeInOut, 4.0)
 		cube(Resource("sgine_256.png"), 256.0, 256.0)
-		cube.front.listeners += test _
+		cube.front().listeners += test _
 		scene += cube
 		
 		r.renderable := RenderableScene(scene, showFPS = true)
