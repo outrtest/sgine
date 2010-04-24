@@ -9,6 +9,11 @@ import org.lwjgl.util.glu.GLU._
 import org.sgine.input.Keyboard
 import org.sgine.input.Mouse
 
+import org.sgine.math.Matrix4
+import org.sgine.math.mutable.{Matrix4 => MutableMatrix4}
+import org.sgine.math.mutable.{Ray => MutableRay}
+import org.sgine.math.mutable.{Vector3 => MutableVector3}
+
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.TransactionalProperty
 
@@ -22,6 +27,12 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	private var rendered = false
 	private var keepAlive = true
 	private var lastRender = -1L
+
+	val nearDistance = 1.0
+	val farDistance = 20000.0
+	
+	private val storeRay = MutableRay()
+	private val storeMatrix = MutableMatrix4()
 	
 	val canvas = new java.awt.Canvas()
 	lazy val thread = new Thread(FunctionRunnable(run))
@@ -90,7 +101,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		glViewport(0, 0, width, height)
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
-		gluPerspective(45.0f, h, 1.0f, 20000.0f)
+//		gluPerspective(45.0f, h, 1.0f, 20000.0f)
+		glFrustum(-1.0f * h, 1.0f * h, -1.0f, 1.0f, nearDistance, farDistance)
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
 	}
@@ -117,6 +129,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			Renderer.time.set(time)
 			Renderer.fps.set((1.0 / time).round.toInt)
 			
+			Mouse.update(this)
+			
 			val r = renderable()
 			if (r != null) r.render()
 		}
@@ -125,6 +139,20 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		rendered = true
 		thread.synchronized {
 			thread.notifyAll()
+		}
+	}
+	
+	def translateLocal(x: Double, y: Double, m: Matrix4, store: MutableVector3) = {
+		synchronized {
+			storeRay.origin.set(0.0, 0.0, 0.0)
+			storeRay.direction.set(x, y, -nearDistance)
+			
+			storeMatrix.set(m)
+			storeMatrix.invert()
+			storeRay.transform(storeMatrix)
+			storeRay.translateLocal(store)
+			
+			store
 		}
 	}
 	

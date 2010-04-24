@@ -28,7 +28,7 @@ class Texture (val width: Int, val height: Int) {
 	 * 		textureId
 	 */
 	private def generateId() = {
-		val tmp = IntBuffer.allocate(1);
+		val tmp = ByteBuffer.allocateDirect(4).asIntBuffer;
 		glGenTextures(tmp);
 		tmp.get(0);
 	}
