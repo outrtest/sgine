@@ -16,5 +16,12 @@ abstract class ObjectCache[T] (val max: Int = 1000) {
 	
 	def create(): T
 	
-	def release(t: T) = cache.add(t)
+	def release(t: T) = {
+		try {
+			cache.add(t)
+		} catch {
+			case ise: IllegalStateException => // Ignore queue full exceptions
+			case t: Throwable => throw t
+		}
+	}
 }

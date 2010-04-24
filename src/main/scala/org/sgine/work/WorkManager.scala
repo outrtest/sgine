@@ -6,7 +6,7 @@ import org.sgine.work.unit._
 import java.util.concurrent._
 import java.util.concurrent.locks._
 
-class WorkManager {
+class WorkManager (val name: String) {
 	/**
 	 * @see WorkManager#DEFAULT_THREAD_SETTLING
 	 */
