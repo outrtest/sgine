@@ -6,9 +6,9 @@ import org.sgine.property.container.PropertyContainer
 class State(val name: String) {
 	private var items: List[StateItem] = Nil
 	
-	def add(key: String, value: Any) = {
+	def add(key: String, value: Any, restore: Any = null) = {
 		synchronized {
-			items = StateItem(key, value) :: items
+			items = StateItem(key, value, null) :: items
 		}
 	}
 	
@@ -28,9 +28,14 @@ class State(val name: String) {
 	}
 }
 
-case class StateItem(key: String, value: Any) {
+case class StateItem(key: String, value: Any, restore: Any = null) {
 	def activate(o: Any) = {
-		process(o, key, value)
+		val original = process(o, key, value)
+		if (restore != null) {
+			restore
+		} else {
+			original
+		}
 	}
 	
 	def deactivate(o: Any, original: Any) = {

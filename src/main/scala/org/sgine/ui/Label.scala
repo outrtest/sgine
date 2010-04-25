@@ -1,8 +1,10 @@
 package org.sgine.ui
 
 import org.sgine.bounding.BoundingObject
+import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
+import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
@@ -40,6 +42,9 @@ class Label extends AdvancedComponent with BoundingObject {
 			_bounding.width = 0
 			_bounding.height = 0
 		}
+		
+		val evt = new BoundingChangeEvent(this, _bounding)
+		Event.enqueue(evt)
 	}
 	
 	override def toString() = "Label(" + text + ")"

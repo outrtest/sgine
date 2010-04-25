@@ -9,14 +9,10 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.IntBuffer
 
-import javax.imageio.ImageIO
-
 import org.sgine.util.GeneralReusableGraphic
 import org.sgine.util.ReusableGraphic
 
 object TextureUtil {
-	def apply(url: URL): Texture = apply(ImageIO.read(url))
-	
 	def apply(image: BufferedImage): Texture = {
 		val texture = new Texture(image.getWidth, image.getHeight)
 		

@@ -3,11 +3,11 @@ package org.sgine.ui
 import org.sgine.core.Resource
 
 import org.sgine.render.{Image => RenderImage}
-import org.sgine.render.TextureUtil
+import org.sgine.render.TextureManager
 
 class ImageCube extends Cube[Image] {
 	def apply(resource: Resource, width: Double, height: Double) = {
-		val t = TextureUtil(resource.url)
+		val t = TextureManager(resource)
 		val renderImage = RenderImage(t)
 		
 		front().renderImage := renderImage

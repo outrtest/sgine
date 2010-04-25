@@ -1,10 +1,12 @@
 package org.sgine.ui
 
 import org.sgine.bounding.BoundingObject
+import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
 import org.sgine.core.Resource
 
+import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
@@ -13,7 +15,7 @@ import org.sgine.property.ListenableProperty
 import org.sgine.property.MutableProperty
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.render.{Image => RenderImage, TextureUtil}
+import org.sgine.render.{Image => RenderImage, TextureManager}
 
 import org.sgine.ui.ext.AdvancedComponent
 
@@ -38,7 +40,7 @@ class Image extends AdvancedComponent with BoundingObject {
 	}
 	
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
-		val t = TextureUtil(source().url)
+		val t = TextureManager(source())
 		renderImage := RenderImage(t)
 	}
 	
@@ -46,6 +48,9 @@ class Image extends AdvancedComponent with BoundingObject {
 		val i = evt.newValue
 		_bounding.width = i.width
 		_bounding.height = i.height
+		
+		val e = new BoundingChangeEvent(this, _bounding)
+		Event.enqueue(e)
 	}
 	
 	override def toString() = "Image(" + source + ")"

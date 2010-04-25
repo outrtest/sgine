@@ -10,7 +10,7 @@ import org.sgine.core.Resource
 
 import org.sgine.render.Texture
 import org.sgine.render.TextureMap
-import org.sgine.render.TextureUtil
+import org.sgine.render.TextureManager
 
 class BitmapFont private(texture: Texture) extends TextureMap[Int](texture) with Font {
 	private var _face: String = null
@@ -80,7 +80,7 @@ object BitmapFont {
 		val fnt = Resource(name + ".fnt")
 		val png = Resource(name + "." + imageType)
 		
-		val font = new BitmapFont(TextureUtil(png.url))
+		val font = new BitmapFont(TextureManager(png))
 		
 		val source = Source.fromURL(fnt.url)
 		val lines = source.getLines().toList

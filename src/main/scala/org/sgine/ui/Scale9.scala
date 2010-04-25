@@ -1,6 +1,7 @@
 package org.sgine.ui
 
 import org.sgine.bounding.BoundingObject
+import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
 import org.sgine.core.Resource
@@ -10,8 +11,9 @@ import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
+import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.render.{Image => RenderImage, TextureUtil}
+import org.sgine.render.{Image => RenderImage, Texture, TextureManager}
 
 import org.sgine.ui.ext.AdvancedComponent
 
@@ -29,10 +31,12 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 	private var x1, y1, x2, y2: Double = _
 	
 	protected val _bounding = new BoundingQuad()
-	
+
+	val source = new AdvancedProperty[Resource](null, this)
 	val width = new AdvancedProperty[Double](0.0, this)
 	val height = new AdvancedProperty[Double](0.0, this)
 	
+	source.listeners += EventHandler(updateResource, ProcessingMode.Blocking)
 	width.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
 	height.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
 	
@@ -45,82 +49,63 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 		this.y2 = y2
 		
 		// Load texture
-		val t = TextureUtil(source.url)
+		this.source := source
+		val t = topLeft.renderImage().texture
 		
 		// Create properly defined RenderImages
-		val tli = RenderImage()
-		tli.texture = t
+		val tli = topLeft.renderImage()
 		tli.x = 0.0
 		tli.y = 0.0
 		tli.width = x1
 		tli.height = y1
 		
-		val ti = RenderImage()
-		ti.texture = t
+		val ti = top.renderImage()
 		ti.x = x1
 		ti.y = 0.0
 		ti.width = x2 - x1
 		ti.height = y1
 		
-		val tri = RenderImage()
-		tri.texture = t
+		val tri = topRight.renderImage()
 		tri.x = x2
 		tri.y = 0.0
 		tri.width = t.width - x2
 		tri.height = y1
 		
-		val li = RenderImage()
-		li.texture = t
+		val li = left.renderImage()
 		li.x = 0.0
 		li.y = y1
 		li.width = x1
 		li.height = y2 - y1
 		
-		val ci = RenderImage()
-		ci.texture = t
+		val ci = center.renderImage()
 		ci.x = x1
 		ci.y = y1
 		ci.width = x2 - x1
 		ci.height = y2 - y1
 		
-		val ri = RenderImage()
-		ri.texture = t
+		val ri = right.renderImage()
 		ri.x = x2
 		ri.y = y1
 		ri.width = t.width - x2
 		ri.height = y2 - y1
 		
-		val bli = RenderImage()
-		bli.texture = t
+		val bli = bottomLeft.renderImage()
 		bli.x = 0.0
 		bli.y = y2
 		bli.width = x1
 		bli.height = t.height - y2
 		
-		val bi = RenderImage()
-		bi.texture = t
+		val bi = bottom.renderImage()
 		bi.x = x1
 		bi.y = y2
 		bi.width = x2 - x1
 		bi.height = t.height - y2
 		
-		val bri = RenderImage()
-		bri.texture = t
+		val bri = bottomRight.renderImage()
 		bri.x = x2
 		bri.y = y2
 		bri.width = t.width - x2
 		bri.height = t.height - y2
-		
-		// Assign RenderImages to Images
-		topLeft.renderImage := tli
-		top.renderImage := ti
-		topRight.renderImage := tri
-		left.renderImage := li
-		center.renderImage := ci
-		right.renderImage := ri
-		bottomLeft.renderImage := bli
-		bottom.renderImage := bi
-		bottomRight.renderImage := bri
 		
 		// Update width and height if zero
 		if (width() == 0.0) {
@@ -179,6 +164,36 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 			
 			_bounding.width = width()
 			_bounding.height = height()
+			
+			val evt = new BoundingChangeEvent(this, _bounding)
+			Event.enqueue(evt)
 		}
+	}
+	
+	private def updateResource(evt: PropertyChangeEvent[Resource]) = {
+		// Load texture
+		val t = TextureManager(source())
+		
+		if (topLeft.renderImage() == null) {
+			topLeft.renderImage := new RenderImage()
+			top.renderImage := new RenderImage()
+			topRight.renderImage := new RenderImage()
+			left.renderImage := new RenderImage()
+			center.renderImage := new RenderImage()
+			right.renderImage := new RenderImage()
+			bottomLeft.renderImage := new RenderImage()
+			bottom.renderImage := new RenderImage()
+			bottomRight.renderImage := new RenderImage()
+		}
+		
+		topLeft.renderImage().texture = t
+		top.renderImage().texture = t
+		topRight.renderImage().texture = t
+		left.renderImage().texture = t
+		center.renderImage().texture = t
+		right.renderImage().texture = t
+		bottomLeft.renderImage().texture = t
+		bottom.renderImage().texture = t
+		bottomRight.renderImage().texture = t
 	}
 }
