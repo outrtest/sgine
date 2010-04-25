@@ -55,8 +55,6 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 		tli.width = x1
 		tli.height = y1
 		
-		println("tli: " + x1 + "x" + y1)
-		
 		val ti = RenderImage()
 		ti.texture = t
 		ti.x = x1

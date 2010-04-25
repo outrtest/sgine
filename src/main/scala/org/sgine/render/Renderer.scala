@@ -6,6 +6,8 @@ import org.lwjgl.opengl.PixelFormat
 
 import org.lwjgl.util.glu.GLU._
 
+import org.sgine.core.Color
+
 import org.sgine.input.Keyboard
 import org.sgine.input.Mouse
 
@@ -40,6 +42,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	val fullscreen = new AdvancedProperty[Boolean](false, this) with TransactionalProperty[Boolean]
 	val verticalSync = new AdvancedProperty[Boolean](true, this) with TransactionalProperty[Boolean]
 	val renderable = new AdvancedProperty[Renderable](null, this)
+	val background = new AdvancedProperty[Color](Color.Black, this) with TransactionalProperty[Color]
 	
 	def start() = {
 		thread.start()
@@ -81,9 +84,11 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		Display.create(format)
 		
 		glClearDepth(1.0)
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 		glEnable(GL_BLEND)
 		glEnable(GL_DEPTH_TEST)
 		glDepthFunc(GL_LEQUAL)
+		glEnable(GL_POLYGON_OFFSET_FILL)
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
 		glEnable(GL_TEXTURE_2D)
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
@@ -114,6 +119,11 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		if (verticalSync.uncommitted) {
 			verticalSync.commit()
 			Display.setVSyncEnabled(verticalSync())
+		}
+		if (background.uncommitted) {
+			background.commit()
+			val c = background()
+			glClearColor(c.red.toFloat, c.green.toFloat, c.blue.toFloat, c.alpha.toFloat)
 		}
 		
 		val currentRender = System.nanoTime

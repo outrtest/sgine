@@ -21,7 +21,7 @@ object TestStates {
 		
 		r.renderable := RenderableScene(scene)
 		
-		val state = new State()
+		val state = new State("Test")
 		state.add("rotation.z", Math.Pi / 4.0)
 		state.add("location.x", 200.0)
 		state.add("location.y", -200.0)

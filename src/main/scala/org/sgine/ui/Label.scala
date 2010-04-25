@@ -41,4 +41,6 @@ class Label extends AdvancedComponent with BoundingObject {
 			_bounding.height = 0
 		}
 	}
+	
+	override def toString() = "Label(" + text + ")"
 }
