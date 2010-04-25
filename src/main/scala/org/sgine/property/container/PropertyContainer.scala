@@ -5,12 +5,16 @@ import org.sgine._
 import org.sgine.event._
 import org.sgine.property._
 
-trait PropertyContainer extends Listenable {
+trait PropertyContainer extends Listenable with Property[Int] {
 	private var _properties: List[Property[_]] = Nil
 	private var aliases = new HashMap[String, Property[_]]()
 	private val staticPropertyFields = getStaticPropertyFields
 	
 	private var initialized = false
+	
+	def apply() = -1
+	
+	def apply(value: Int) = throw new UnsupportedOperationException("Not supported!")
 	
 	def apply(name: String): Option[Property[_]] = {
 		initialize()

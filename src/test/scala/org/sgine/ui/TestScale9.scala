@@ -14,7 +14,7 @@ object TestScale9 {
 		val scene = new GeneralNodeContainer()
 		
 		val component = new Scale9()
-		component(Resource("scale9/windows/button/normal.png"), 3.0, 3.0, 4.0, 5.0)
+		component(Resource("scale9/windows/button/hover.png"), 3.0, 3.0, 4.0, 5.0)
 		component.width := 200.0
 		component.height := 50.0
 		component.location.z := -500.0
