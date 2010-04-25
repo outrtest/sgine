@@ -47,4 +47,6 @@ class Image extends AdvancedComponent with BoundingObject {
 		_bounding.width = i.width
 		_bounding.height = i.height
 	}
+	
+	override def toString() = "Image(" + source + ")"
 }

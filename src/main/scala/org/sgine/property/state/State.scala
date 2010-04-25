@@ -3,7 +3,7 @@ package org.sgine.property.state
 import org.sgine.property.Property
 import org.sgine.property.container.PropertyContainer
 
-class State {
+class State(val name: String) {
 	private var items: List[StateItem] = Nil
 	
 	def add(key: String, value: Any) = {
