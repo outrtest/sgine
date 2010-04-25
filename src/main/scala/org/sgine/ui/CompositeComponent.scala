@@ -23,15 +23,13 @@ trait CompositeComponent extends MatrixComponent with NodeContainer {
 		}
 	}
 	
-	override def invalidateMatrix(evt: Event = null) = {
-		val b = super.invalidateMatrix()
+	override protected def updateMatrix() = {
+		super.updateMatrix()
 		
 		for (c <- children) c match {
 			case mc: MatrixComponent => mc.invalidateMatrix()
 			case _ =>
 		}
-		
-		b
 	}
 	
 	def drawComponent() = {

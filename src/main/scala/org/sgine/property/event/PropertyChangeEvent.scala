@@ -1,7 +1,5 @@
 package org.sgine.property.event
 
-import java.util.concurrent.ArrayBlockingQueue
-
 import org.sgine.event._
 import org.sgine.property._
 
