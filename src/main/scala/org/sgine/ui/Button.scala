@@ -53,7 +53,7 @@ class Button extends CompositeComponent with AdvancedComponent with BoundingObje
 	// TODO: make skinnable
 	asset(normalResource, 3.0, 3.0, 4.0, 5.0)
 	
-	font := FontManager("Arial")			// TODO: default font?
+	font := FontManager("Arial32")			// TODO: default font?
 		
 	private def configureListeners() = {
 		// Listen for size changes to font

@@ -5,7 +5,9 @@ import java.net.URL
 class Resource private(val url: URL)
 
 object Resource {
-	private var paths: List[ResourcePath] = ResourcePath("resource/", ClassLoaderResourceFinder) :: Nil
+	private var paths: List[ResourcePath] = Nil
+	addPath("resource/")
+	addPath("resource/font/")
 	
 	def addPath(path: String, finder: ResourceFinder = ClassLoaderResourceFinder) = {
 		var p = path
