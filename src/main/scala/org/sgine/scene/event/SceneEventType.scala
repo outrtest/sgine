@@ -5,4 +5,5 @@ object SceneEventType extends Enumeration {
 	
 	val ChildAdded = Value
 	val ChildRemoved = Value
+	val ParentChanged = Value
 }

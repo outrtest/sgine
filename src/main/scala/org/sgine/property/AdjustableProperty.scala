@@ -21,6 +21,8 @@ trait AdjustableProperty[T] extends Property[T] with Updatable {
 	def target = _target
 	
 	abstract override def apply(value:T):Property[T] = {
+		initUpdatable()
+		
 		if (adjuster != null) {
 			_target = value
 		} else {

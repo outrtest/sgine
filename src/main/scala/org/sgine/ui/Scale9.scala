@@ -40,7 +40,16 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 	width.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
 	height.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
 	
-	val children = topLeft :: top :: topRight :: left :: center :: right :: bottomLeft :: bottom :: bottomRight :: Nil
+//	val children = topLeft :: top :: topRight :: left :: center :: right :: bottomLeft :: bottom :: bottomRight :: Nil
+	this += topLeft
+	this += top
+	this += topRight
+	this += left
+	this += center
+	this += right
+	this += bottomLeft
+	this += bottom
+	this += bottomRight
 	
 	def apply(source: Resource, x1: Double, y1: Double, x2: Double, y2: Double) = {
 		this.x1 = x1
@@ -50,6 +59,7 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 		
 		// Load texture
 		this.source := source
+		updateResource(null)
 		val t = topLeft.renderImage().texture
 		
 		// Create properly defined RenderImages
@@ -120,7 +130,7 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 	}
 	
 	private def updateSize(evt: Event = null) = {
-		if ((width() > 0.0) && (height() > 0.0)) {
+		if ((width() > 0.0) && (height() > 0.0) && (topLeft.renderImage() != null)) {
 			val textureWidth = topLeft.renderImage().texture.width
 			val textureHeight = topLeft.renderImage().texture.height
 			val preWidth = x1 + (textureWidth - x2)

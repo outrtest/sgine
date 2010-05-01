@@ -12,13 +12,13 @@ import org.sgine.input.Mouse
 import org.sgine.input.event.MouseEvent
 import org.sgine.input.event.MouseMoveEvent
 
-import org.sgine.math.mutable.MatrixPropertyContainer
 import org.sgine.math.mutable.Vector3
 
 import org.sgine.render.FPS
 import org.sgine.render.Renderable
 import org.sgine.render.Renderer
 
+import org.sgine.scene.MatrixNode
 import org.sgine.scene.Node
 import org.sgine.scene.NodeContainer
 import org.sgine.scene.view.NodeView
@@ -91,14 +91,14 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	}
 	
 	private def translateLocal(evt: MouseEvent, n: Node) = {
-		val c = n.asInstanceOf[MatrixPropertyContainer with BoundingObject with Node]
-		renderer.translateLocal(evt.x, evt.y, c.matrix(), storeVector3)
+		val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
+		renderer.translateLocal(evt.x, evt.y, c.worldMatrix(), storeVector3)
 		
 		c
 	}
 	
 	private val pickTest = (n: Node) => {
-		if ((n.isInstanceOf[MatrixPropertyContainer]) && (n.isInstanceOf[BoundingObject])) {
+		if ((n.isInstanceOf[MatrixNode]) && (n.isInstanceOf[BoundingObject])) {
 			val c = translateLocal(currentMouseEvent, n)
 //			renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
 			if (c.bounding().within(storeVector3)) {

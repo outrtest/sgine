@@ -12,13 +12,14 @@ import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.font.Font
+import org.sgine.render.font.FontManager
 
 import org.sgine.ui.ext.AdvancedComponent
 
 class Label extends AdvancedComponent with BoundingObject {
 	protected val _bounding = BoundingQuad()
 	
-	val font = new AdvancedProperty[Font](null, this)
+	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
 	val text = new AdvancedProperty[String]("", this)
 	
 	configureListeners()

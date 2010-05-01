@@ -31,7 +31,7 @@ class PropertyContainerSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "add a dynamic entry" in {
-		container3 += new AdvancedProperty[Int](2, container3, "p2")
+		container3.addProperty(new AdvancedProperty[Int](2, container3, "p2"))
 	}
 	
 	it should "have two entries" in {

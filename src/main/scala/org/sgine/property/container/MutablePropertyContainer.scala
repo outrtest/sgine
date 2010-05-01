@@ -4,9 +4,9 @@ import org.sgine.event._
 import org.sgine.property._
 
 trait MutablePropertyContainer extends PropertyContainer {
-	override def +=(p: Property[_]): PropertyContainer = super.+=(p)
+	override def addProperty(p: Property[_]): PropertyContainer = super.addProperty(p)
 	
-	override def -=(p: Property[_]): PropertyContainer = super.-=(p)
+	override def removeProperty(p: Property[_]): PropertyContainer = super.removeProperty(p)
 }
 
 object MutablePropertyContainer {
