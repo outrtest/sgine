@@ -33,6 +33,8 @@ object Keyboard extends Listenable with Updatable {
 		if (!GLKeyboard.isCreated) {
 			GLKeyboard.create()
 		}
+		
+		initUpdatable()
 	}
 	
 	def update(time: Double) = {

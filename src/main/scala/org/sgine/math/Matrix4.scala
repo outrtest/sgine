@@ -14,40 +14,46 @@ import org.sgine.math.mutable.{Vector3 => MutableVector3}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Matrix4 protected() extends Iterable[Double] {
-	val b = createBuffer()
+	/**
+	 * Get a reference to the backing DoubleBuffer. Direct modification of
+	 * this backing buffer will modify the Matrix4.
+	 */
+	val buffer = createBuffer()
 	
-	def m00 = b.get(0)
-	protected def m00_=(v: Double) = b.put(0, v)
-	def m10 = b.get(1)
-	protected def m10_=(v: Double) = b.put(1, v)
-	def m20 = b.get(2)
-	protected def m20_=(v: Double) = b.put(2, v)
-	def m30 = b.get(3)
-	protected def m30_=(v: Double) = b.put(3, v)
-	def m01 = b.get(4)
-	protected def m01_=(v: Double) = b.put(4, v)
-	def m11 = b.get(5)
-	protected def m11_=(v: Double) = b.put(5, v)
-	def m21 = b.get(6)
-	protected def m21_=(v: Double) = b.put(6, v)
-	def m31 = b.get(7)
-	protected def m31_=(v: Double) = b.put(7, v)
-	def m02 = b.get(8)
-	protected def m02_=(v: Double) = b.put(8, v)
-	def m12 = b.get(9)
-	protected def m12_=(v: Double) = b.put(9, v)
-	def m22 = b.get(10)
-	protected def m22_=(v: Double) = b.put(10, v)
-	def m32 = b.get(11)
-	protected def m32_=(v: Double) = b.put(11, v)
-	def m03 = b.get(12)
-	protected def m03_=(v: Double) = b.put(12, v)
-	def m13 = b.get(13)
-	protected def m13_=(v: Double) = b.put(13, v)
-	def m23 = b.get(14)
-	protected def m23_=(v: Double) = b.put(14, v)
-	def m33 = b.get(15)
-	protected def m33_=(v: Double) = b.put(15, v)
+	def m00 = buffer.get(0)
+	protected def m00_=(v: Double) = buf(0, v)
+	def m10 = buffer.get(1)
+	protected def m10_=(v: Double) = buf(1, v)
+	def m20 = buffer.get(2)
+	protected def m20_=(v: Double) = buf(2, v)
+	def m30 = buffer.get(3)
+	protected def m30_=(v: Double) = buf(3, v)
+	def m01 = buffer.get(4)
+	protected def m01_=(v: Double) = buf(4, v)
+	def m11 = buffer.get(5)
+	protected def m11_=(v: Double) = buf(5, v)
+	def m21 = buffer.get(6)
+	protected def m21_=(v: Double) = buf(6, v)
+	def m31 = buffer.get(7)
+	protected def m31_=(v: Double) = buf(7, v)
+	def m02 = buffer.get(8)
+	protected def m02_=(v: Double) = buf(8, v)
+	def m12 = buffer.get(9)
+	protected def m12_=(v: Double) = buf(9, v)
+	def m22 = buffer.get(10)
+	protected def m22_=(v: Double) = buf(10, v)
+	def m32 = buffer.get(11)
+	protected def m32_=(v: Double) = buf(11, v)
+	def m03 = buffer.get(12)
+	protected def m03_=(v: Double) = buf(12, v)
+	def m13 = buffer.get(13)
+	protected def m13_=(v: Double) = buf(13, v)
+	def m23 = buffer.get(14)
+	protected def m23_=(v: Double) = buf(14, v)
+	def m33 = buffer.get(15)
+	protected def m33_=(v: Double) = buf(15, v)
+	
+	protected def buf(index: Int, v: Double): Unit = buffer.put(index, v)
 	
 /////// Transforms ////////////
 	
@@ -151,7 +157,7 @@ class Matrix4 protected() extends Iterable[Double] {
 	
 /////// Get ////////////
 	
-	def get(row: Int, column: Int) = b.get((row * 4) + column)
+	def get(row: Int, column: Int) = buffer.get((row * 4) + column)
 	
 	def getColumn(column: Int): Vector4 = Vector4(column * 4, column * 4 + 1, column * 4 + 2, column * 4 + 3)
 	
@@ -167,22 +173,22 @@ class Matrix4 protected() extends Iterable[Double] {
 		val pos = dst.position
 		
 		// Done this way for performance efficiency - was creating too much garbage
-		dst.put(pos + 0, b.get(0))
-		dst.put(pos + 1, b.get(1))
-		dst.put(pos + 2, b.get(2))
-		dst.put(pos + 3, b.get(3))
-		dst.put(pos + 4, b.get(4))
-		dst.put(pos + 5, b.get(5))
-		dst.put(pos + 6, b.get(6))
-		dst.put(pos + 7, b.get(7))
-		dst.put(pos + 8, b.get(8))
-		dst.put(pos + 9, b.get(9))
-		dst.put(pos + 10, b.get(10))
-		dst.put(pos + 11, b.get(11))
-		dst.put(pos + 12, b.get(12))
-		dst.put(pos + 13, b.get(13))
-		dst.put(pos + 14, b.get(14))
-		dst.put(pos + 15, b.get(15))
+		dst.put(pos + 0, buffer.get(0))
+		dst.put(pos + 1, buffer.get(1))
+		dst.put(pos + 2, buffer.get(2))
+		dst.put(pos + 3, buffer.get(3))
+		dst.put(pos + 4, buffer.get(4))
+		dst.put(pos + 5, buffer.get(5))
+		dst.put(pos + 6, buffer.get(6))
+		dst.put(pos + 7, buffer.get(7))
+		dst.put(pos + 8, buffer.get(8))
+		dst.put(pos + 9, buffer.get(9))
+		dst.put(pos + 10, buffer.get(10))
+		dst.put(pos + 11, buffer.get(11))
+		dst.put(pos + 12, buffer.get(12))
+		dst.put(pos + 13, buffer.get(13))
+		dst.put(pos + 14, buffer.get(14))
+		dst.put(pos + 15, buffer.get(15))
 		
 		if (updatePosition) {
 			dst.position(pos + 16)
@@ -285,7 +291,7 @@ class Matrix4 protected() extends Iterable[Double] {
 /////// Modify local ////////////
 	
 	protected def setEntryLocal(row: Int, column: Int, v: Double) = {
-		b.put((row * 4) + column, v)
+		buf((row * 4) + column, v)
 		
 		this
 	}
@@ -357,7 +363,7 @@ class Matrix4 protected() extends Iterable[Double] {
 	}
 	
 	protected def setLocal(m: Matrix4) = {
-		m.toBuffer(b, false)
+		m.toBuffer(buffer, false)
 		
 		this
 	}
@@ -569,12 +575,6 @@ class Matrix4 protected() extends Iterable[Double] {
 	def copy() = Matrix4(this)
 	
 	/**
-	 * Get a reference to the backing DoubleBuffer. Direct modification of
-	 * this backing buffer will modify the Matrix4.
-	 */
-	def buffer = b
-	
-	/**
 	 * Creates a copy of the backing DoubleBuffer and returns it.
 	 */
 	def bufferCopy = {
@@ -590,7 +590,7 @@ class Matrix4Iterator protected(m: Matrix4) extends Iterator[Double] {
 	var position = 0
 	
 	def next() = {
-		val f = m.b.get(position)
+		val f = m.buffer.get(position)
 		position += 1
 		
 		f
@@ -608,7 +608,7 @@ object Matrix4 {
 	def apply(m: Matrix4) = {
 		val nm = new Matrix4()
 		
-		m.toBuffer(nm.b, false)
+		m.toBuffer(nm.buffer, false)
 		
 		nm
 	}

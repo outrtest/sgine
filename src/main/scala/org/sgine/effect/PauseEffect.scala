@@ -7,6 +7,8 @@ class PauseEffect(duration: Double) extends Effect with Updatable {
 	private var elapsed: Double = 0.0
 	
 	def play() = {
+		initUpdatable()
+		
 		elapsed = 0.0
 		running = true
 	}

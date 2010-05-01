@@ -9,8 +9,6 @@ import org.sgine.effect.CompositeEffect
 import org.sgine.effect.PropertyChangeEffect
 import org.sgine.effect.PropertySetEffect
 
-import org.sgine.math.mutable.MatrixPropertyContainer
-
 import org.sgine.property.adjust.EasingNumericAdjuster
 
 import org.sgine.render.Renderer

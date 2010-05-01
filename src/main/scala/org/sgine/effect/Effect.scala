@@ -17,6 +17,7 @@ trait Effect extends Listenable with Updatable {
 	private var repeated: Int = 0
 	
 	def start() = {
+		initUpdatable()
 		Event.enqueue(EffectEvent(EffectEvent.Start, this))			// Throw start event
 		
 		play()

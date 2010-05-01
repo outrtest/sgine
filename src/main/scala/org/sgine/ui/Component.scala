@@ -6,7 +6,7 @@ import org.sgine.core.Color
 
 import org.sgine.event.Listenable
 
-import org.sgine.math.mutable.MatrixPropertyContainer
+import org.sgine.scene.MatrixNode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.DelegateProperty
@@ -21,7 +21,7 @@ import org.sgine.scene.NodeContainer
 
 import org.sgine.ui.ext._
 
-trait Component extends PropertyContainer with Renderable with MatrixPropertyContainer with Stateful {
+trait Component extends PropertyContainer with Renderable with MatrixNode with Stateful {
 	val id = new AdvancedProperty[String](null, this)
 	val visible = new AdvancedProperty[Boolean](true, this)
 	val color = new AdvancedProperty[Color](null, this)
@@ -41,11 +41,15 @@ trait Component extends PropertyContainer with Renderable with MatrixPropertyCon
 			}
 			
 			preRender()
-			glLoadMatrix(matrix().buffer)
+			glLoadMatrix(worldMatrix().buffer)
 			
 			preColor()
 			drawComponent()
 		}
+	}
+	
+	override protected def updateLocalMatrix(): Unit = {
+		localMatrix().identity()
 	}
 	
 	protected def initComponent() = {
@@ -66,5 +70,5 @@ trait Component extends PropertyContainer with Renderable with MatrixPropertyCon
 		}
 	}
 	
-	def drawComponent()
+	protected def drawComponent()
 }

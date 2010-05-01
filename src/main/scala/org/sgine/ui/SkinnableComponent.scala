@@ -30,12 +30,15 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject {
 	protected def skinX2: Double
 	protected def skinY2: Double
 	
-	val children = face :: skin :: Nil
-	
-	skin(normalResource, skinX1, skinY1, skinX2, skinY2)
-	
 	listeners += EventHandler(boundingChanged, ProcessingMode.Blocking)
 
+	override protected def initComponent() = {
+		this += face
+		this += skin
+		
+		skin(normalResource, skinX1, skinY1, skinX2, skinY2)
+	}
+	
 	private def boundingChanged(evt: BoundingChangeEvent) = {
 		skin.width := _bounding.width
 		skin.height := _bounding.height

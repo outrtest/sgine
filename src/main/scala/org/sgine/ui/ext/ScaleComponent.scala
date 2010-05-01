@@ -4,14 +4,18 @@ import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 import org.sgine.event.Recursion
 
-trait ScaleComponent extends MatrixComponent {
+import org.sgine.ui.Component
+
+trait ScaleComponent extends Component {
 	val scale = new Scale(this)
 	
 	scale.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	
-	abstract override def updateMatrix() = {
-		super.updateMatrix()
+	abstract override protected def updateLocalMatrix() = {
+		super.updateLocalMatrix()
 		
-		matrix().scale(scale.x(), scale.y(), scale.z())
+		if (scale != null) {
+			localMatrix().scale(scale.x(), scale.y(), scale.z())
+		}
 	}
 }

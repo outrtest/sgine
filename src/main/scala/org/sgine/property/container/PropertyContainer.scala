@@ -90,7 +90,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	
 	def properties = _properties
 	
-	def +=(p: Property[_]): PropertyContainer = {
+	def addProperty(p: Property[_]): PropertyContainer = {
 		if (!_properties.contains(p)) {			// No duplicates allowed
 			_properties = p :: _properties									// Add the property to the list
 
@@ -107,7 +107,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 		this
 	}
 	
-	def -=(p: Property[_]): PropertyContainer = {
+	def removeProperty(p: Property[_]): PropertyContainer = {
 		_properties -= p
 		p match {
 			case np: NamedProperty => aliases -= np.name
@@ -147,7 +147,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 			synchronized {
 				for (f <- staticPropertyFields) {
 					val p = f.get(this).asInstanceOf[Property[_]]
-					this += p
+					addProperty(p)
 					if (!aliases.contains(f.getName)) {
 						aliases += f.getName -> p
 					}

@@ -28,7 +28,8 @@ class GeneralNodeContainer extends MutableNodeContainer {
     
     node.parent = this
     
-    Event.enqueue(new NodeContainerEvent(this, node, SceneEventType.ChildAdded))
+    Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildAdded))
+    Event.enqueue(SceneEvent(node, SceneEventType.ParentChanged))
   }
 
   def -=(node: Node): Boolean = {
@@ -37,7 +38,8 @@ class GeneralNodeContainer extends MutableNodeContainer {
 	 	 	  nodes -= node
 	 	 	  node.parent = null
 	 	 	  
-	 	 	  Event.enqueue(new NodeContainerEvent(this, node, SceneEventType.ChildRemoved))
+	 	 	  Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildRemoved))
+	 	 	  Event.enqueue(SceneEvent(node, SceneEventType.ParentChanged))
 	 	 	  
 	 	 	  true
 	 	  } else {

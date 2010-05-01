@@ -4,22 +4,32 @@ import org.sgine.math.{Matrix4 => ImmutableMatrix4}
 import org.sgine.math.{Vector3 => ImmutableVector3}
 
 class Matrix4 protected() extends ImmutableMatrix4 {
-	override def m00_=(v: Double) = b.put(0, v)
-	override def m10_=(v: Double) = b.put(1, v)
-	override def m20_=(v: Double) = b.put(2, v)
-	override def m30_=(v: Double) = b.put(3, v)
-	override def m01_=(v: Double) = b.put(4, v)
-	override def m11_=(v: Double) = b.put(5, v)
-	override def m21_=(v: Double) = b.put(6, v)
-	override def m31_=(v: Double) = b.put(7, v)
-	override def m02_=(v: Double) = b.put(8, v)
-	override def m12_=(v: Double) = b.put(9, v)
-	override def m22_=(v: Double) = b.put(10, v)
-	override def m32_=(v: Double) = b.put(11, v)
-	override def m03_=(v: Double) = b.put(12, v)
-	override def m13_=(v: Double) = b.put(13, v)
-	override def m23_=(v: Double) = b.put(14, v)
-	override def m33_=(v: Double) = b.put(15, v)
+	override def m00_=(v: Double) = buf(0, v)
+	override def m10_=(v: Double) = buf(1, v)
+	override def m20_=(v: Double) = buf(2, v)
+	override def m30_=(v: Double) = buf(3, v)
+	override def m01_=(v: Double) = buf(4, v)
+	override def m11_=(v: Double) = buf(5, v)
+	override def m21_=(v: Double) = buf(6, v)
+	override def m31_=(v: Double) = buf(7, v)
+	override def m02_=(v: Double) = buf(8, v)
+	override def m12_=(v: Double) = buf(9, v)
+	override def m22_=(v: Double) = buf(10, v)
+	override def m32_=(v: Double) = buf(11, v)
+	override def m03_=(v: Double) = buf(12, v)
+	override def m13_=(v: Double) = buf(13, v)
+	override def m23_=(v: Double) = buf(14, v)
+	override def m33_=(v: Double) = buf(15, v)
+	
+	override protected def buf(index: Int, v: Double) = {
+		super.buf(index, v)
+		
+		if (changeDelegate != null) {
+			changeDelegate()
+		}
+	}
+	
+	var changeDelegate: () => Unit = _
 	
 	override def setEntry(row: Int, column: Int, v: Double) = setEntryLocal(row, column, v).asInstanceOf[Matrix4]
 	

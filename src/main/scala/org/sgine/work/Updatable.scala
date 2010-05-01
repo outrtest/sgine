@@ -17,9 +17,17 @@ import java.lang.ref.WeakReference
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Updatable {
-	def update(time: Double): Unit
+	private var initializedUpdatable = false
 	
-	Updatable.add(this)
+	def initUpdatable() = {
+		if (!initializedUpdatable) {
+			initializedUpdatable = true
+			
+			Updatable.add(this)
+		}
+	}
+	
+	def update(time: Double): Unit
 }
 
 object Updatable extends Function0[Unit] {
