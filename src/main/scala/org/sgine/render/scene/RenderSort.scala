@@ -1,7 +1,7 @@
 package org.sgine.render.scene
 
-import org.sgine.scene.ColorNode
-import org.sgine.scene.MatrixNode
+import org.sgine.scene.ext.ColorNode
+import org.sgine.scene.ext.MatrixNode
 import org.sgine.scene.Node
 
 object RenderSort extends Function2[Node, Node, Boolean] {

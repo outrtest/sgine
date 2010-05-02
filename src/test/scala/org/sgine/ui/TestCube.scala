@@ -22,8 +22,8 @@ import scala.math._
 
 object TestCube {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Cube", 4, 8, 4, 4)
-		r.verticalSync := true
+		val r = Renderer.createFrame(640, 480, "Test Cube", 4, 8, 4, 4)
+		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer()
 		

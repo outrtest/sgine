@@ -1,4 +1,4 @@
-package org.sgine.scene
+package org.sgine.scene.ext
 
 import org.sgine.core.Color
 import org.sgine.core.mutable.{Color => MutableColor}
@@ -11,6 +11,9 @@ import org.sgine.property.ImmutableProperty
 import org.sgine.property.ModifiableProperty
 import org.sgine.property.MutableProperty
 import org.sgine.property.event.PropertyChangeEvent
+
+import org.sgine.scene.Node
+import org.sgine.scene.NodeContainer
 
 import org.sgine.work.Updatable
 

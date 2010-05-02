@@ -12,10 +12,13 @@ import org.sgine.event.ProcessingMode
 
 import org.sgine.input.event._
 
+import org.sgine.property.event.PropertyChangeEvent
+
 import org.sgine.ui.ext.AdvancedComponent
+import org.sgine.scene.ext.FocusableNode
 import org.sgine.ui.ext.PaddingComponent
 
-trait SkinnableComponent extends CompositeComponent with BoundingObject with PaddingComponent {
+trait SkinnableComponent extends CompositeComponent with BoundingObject with PaddingComponent with FocusableNode {
 	protected val skin = new Scale9()
 	
 	protected val _bounding = new BoundingQuad()
@@ -42,6 +45,7 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 		this += skin
 		
 		skin(normalResource, skinX1, skinY1, skinX2, skinY2)
+		updateState()
 	}
 	
 	protected def setSize(width: Double, height: Double) = {
@@ -60,6 +64,9 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 		listeners += EventHandler(mouseOut, ProcessingMode.Blocking)
 		listeners += EventHandler(mouseDown, ProcessingMode.Blocking)
 		listeners += EventHandler(mouseUp, ProcessingMode.Blocking)
+		
+		// Focus states for button
+		focused.listeners += EventHandler(focusChange, ProcessingMode.Blocking)
 	}
 	
 	private def boundingChanged(evt: BoundingChangeEvent) = {
@@ -83,30 +90,37 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 	
 	private def mouseOver(evt: MouseOverEvent) = {
 		over = true
-		updateButtonState()
+		updateState()
 	}
 	
 	private def mouseOut(evt: MouseOutEvent) = {
 		over = false
 		pressed = false
-		updateButtonState()
+		updateState()
 	}
 	
 	private def mouseDown(evt: MousePressEvent) = {
 		pressed = true
-		updateButtonState()
+		focused := true
+		updateState()
 	}
 	
 	private def mouseUp(evt: MouseReleaseEvent) = {
 		pressed = false
-		updateButtonState()
+		updateState()
 	}
 	
-	private def updateButtonState() = {
+	private def focusChange(evt: PropertyChangeEvent[Boolean]) = {
+		updateState()
+	}
+	
+	private def updateState() = {
 		if (pressed) {
 			skin.source := pressedResource
 		} else if (over) {
 			skin.source := hoverResource
+		} else if (focused()) {
+			skin.source := focusedResource
 		} else {
 			skin.source := normalResource
 		}
