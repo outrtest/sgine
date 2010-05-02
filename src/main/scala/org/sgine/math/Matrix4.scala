@@ -7,6 +7,8 @@ import Matrix4._
 import org.sgine.math.mutable.{Vector3 => MutableVector3}
 //import org.sgine.math.mutable.{Vector4 => MutableVector4}
 
+import scala.math._
+
 /**
  * An immutable Matrix4 implementation that utilizes a backing
  * DoubleBuffer in column form for direct translation to OpenGL.
@@ -220,7 +222,7 @@ class Matrix4 protected() extends Iterable[Double] {
 		var sum = 0.0
 		
 		def addDiff(a: Double, b: Double) {
-			sum += Math.abs(a - b)
+			sum += abs(a - b)
 		}
 		
 		addDiff(m00, m.m00)
@@ -439,12 +441,12 @@ class Matrix4 protected() extends Iterable[Double] {
 	
 	protected def rotateLocal(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = {
 		if ((x != 0.0) || (y != 0.0) || (z != 0.0)) {
-			val cx = Math.cos(x)
-			val sx = Math.sin(x)
-			val cy = Math.cos(-y)
-			val sy = Math.sin(-y)
-			val cz = Math.cos(z)
-			val sz = Math.sin(z)
+			val cx = cos(x)
+			val sx = sin(x)
+			val cy = cos(-y)
+			val sy = sin(-y)
+			val cz = cos(z)
+			val sz = sin(z)
 			
 			val cxsy = cx * sy
 			val sxsy = sx * sy

@@ -14,7 +14,7 @@ trait ChangeableProperty[T] extends Property[T] {
 		apply(value, true)
 	}
 	
-	def apply(value:T, invokeListeners: Boolean): Property[T] = {
+	def apply(value: T, invokeListeners: Boolean): Property[T] = {
 		val p = super.apply(value)
 		
 		if (invokeListeners) {

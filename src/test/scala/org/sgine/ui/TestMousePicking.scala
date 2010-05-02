@@ -11,6 +11,8 @@ import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
 
+import scala.math._
+
 object TestMousePicking {
 	def main(args: Array[String]): Unit = {
 		// Create the Renderer
@@ -24,7 +26,7 @@ object TestMousePicking {
 		component.location.x := -200.0
 		component.location.z := -500.0
 		component.scale.x := 1.5
-		component.rotation.y := Math.Pi / -4.0
+		component.rotation.y := Pi / -4.0
 		component.source := Resource("puppies.jpg")			// 700x366
 		scene += component
 		

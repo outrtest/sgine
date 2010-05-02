@@ -66,7 +66,7 @@ object Effect {
 	
 	protected def finished(effect: Effect) = {
 		synchronized {
-			active -= effect
+			active = active.filterNot(_ == effect)
 		}
 	}
 }

@@ -108,7 +108,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	}
 	
 	def removeProperty(p: Property[_]): PropertyContainer = {
-		_properties -= p
+		_properties = _properties.filterNot(_ == p)
 		p match {
 			case np: NamedProperty => aliases -= np.name
 			case _ =>

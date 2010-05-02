@@ -155,6 +155,7 @@ object Event {
 case class AsynchronousWorkUnit(h: EventHandler, evt: Event) extends Function0[Unit] {
 	evt.counter.incrementAndGet
 	
+	@unchecked
 	def apply() = {
 		h.process(evt)
 		

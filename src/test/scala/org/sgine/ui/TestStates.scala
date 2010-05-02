@@ -9,6 +9,8 @@ import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
 
+import scala.math._
+
 object TestStates {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test States")
@@ -20,7 +22,7 @@ object TestStates {
 		component.source := Resource("puppies.jpg")
 		
 		val state = new State("Test1")
-		state.add("rotation.z", Math.Pi / 4.0)
+		state.add("rotation.z", Pi / 4.0)
 		state.add("location.x", 200.0)
 		state.add("location.y", -200.0)
 		component.states += state

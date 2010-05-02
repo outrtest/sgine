@@ -35,7 +35,7 @@ class GeneralNodeContainer extends MutableNodeContainer {
   def -=(node: Node): Boolean = {
 	  synchronized {
 	 	  if (nodes.contains(node)) {
-	 	 	  nodes -= node
+	 	 	  nodes = nodes.filterNot(_ == node)
 	 	 	  node.parent = null
 	 	 	  
 	 	 	  Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildRemoved))

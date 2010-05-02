@@ -15,7 +15,7 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 	
 	def unbind(p: BindingProperty[T]) = {
 		p.synchronized {
-			p.bindings -= this
+			p.bindings = p.bindings.filterNot(_ == this)
 		}
 	}
 	

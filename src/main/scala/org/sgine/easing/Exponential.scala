@@ -1,11 +1,13 @@
 package org.sgine.easing
 
+import scala.math._
+
 object Exponential {
 	def easeIn(time:Double, start:Double, change:Double, duration:Double):Double = {
 		if (time == 0.0) {
 			start
 		} else {
-			change * Math.pow(2.0, 10.0 * (time / duration - 1.0)) + start
+			change * pow(2.0, 10.0 * (time / duration - 1.0)) + start
 		}
 	}
 	
@@ -13,7 +15,7 @@ object Exponential {
 		if (time == duration) {
 			start + change
 		} else {
-			change * (-Math.pow(2.0, -10.0 * time / duration) + 1.0) + start
+			change * (-pow(2.0, -10.0 * time / duration) + 1.0) + start
 		}
 	}
 	
@@ -24,9 +26,9 @@ object Exponential {
 		} else if (time == duration) {
 			start + change
 		} else if (t < 1.0) {
-			change / 2.0 * Math.pow(2.0, 10.0 * (t - 1.0)) + start
+			change / 2.0 * pow(2.0, 10.0 * (t - 1.0)) + start
 		} else {
-			change / 2.0 * (-Math.pow(2.0, -10.0 * (t - 1.0)) + 2.0) + start
+			change / 2.0 * (-pow(2.0, -10.0 * (t - 1.0)) + 2.0) + start
 		}
 	}
 }

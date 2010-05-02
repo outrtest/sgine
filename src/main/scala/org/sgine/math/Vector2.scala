@@ -1,5 +1,7 @@
 package org.sgine.math
 
+import scala.math._
+
 object Vector2 {
 	def apply(x: Double, y: Double) = {
 		val v = new Vector2()
@@ -64,7 +66,7 @@ class Vector2 protected() {
 	/**
 	 *	Calculates the length of the vector.
 	 */
-	def length : Double = Math.sqrt( x*x + y*y )
+	def length : Double = sqrt( x*x + y*y )
 
 	/**
 	 * Calculates the squared length of the vector.
@@ -78,7 +80,7 @@ class Vector2 protected() {
 	/**
 	 * The distance to the position specified by the other vector from the position specified by this vector.
 	 */
-	def distance( other : Vector2 ) : Double = Math.sqrt( distanceSquared( other ) )
+	def distance( other : Vector2 ) : Double = sqrt( distanceSquared( other ) )
 
 	/**
 	 * The squared distance to the position specified by the other vector from the position specified by this vector.

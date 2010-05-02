@@ -3,6 +3,8 @@ package org.sgine.math
 import org.sgine.util.PerformanceProfiler
 import java.nio.{DoubleBuffer, FloatBuffer}
 
+import scala.math._
+
 /**
  * Times various math operations and outputs results.
  *
@@ -59,7 +61,7 @@ object MathPerformanceTest {
   def createTestData(size : Int) : (DoubleBuffer, DoubleBuffer) = {
     val buffer: DoubleBuffer = DoubleBuffer.allocate(size * 3)
     0 until size foreach { i =>
-      buffer.put( Math.random * 100.0 )
+      buffer.put( random * 100.0 )
     }
 
     buffer.clear

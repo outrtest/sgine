@@ -18,6 +18,8 @@ import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
 
+import scala.math._
+
 object TestCube {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test Cube", 4, 8, 4, 4)
@@ -41,19 +43,19 @@ object TestCube {
 		r.renderable := RenderableScene(scene, showFPS = true)
 		
 		// Rotate the cube perpetually on the x-axis
-		val rx1 = new PropertyChangeEffect(cube.rotation.x, Math.Pi * 2.0)
+		val rx1 = new PropertyChangeEffect(cube.rotation.x, Pi * 2.0)
 		val rx2 = new PropertySetEffect(cube.rotation.x, 0.0)
 		val rotateX = new CompositeEffect(rx1, rx2)
 		rotateX.repeat = -1
 		
 		// Rotate the cube perpetually on the y-axis
-		val ry1 = new PropertyChangeEffect(cube.rotation.y, Math.Pi * 2.0)
+		val ry1 = new PropertyChangeEffect(cube.rotation.y, Pi * 2.0)
 		val ry2 = new PropertySetEffect(cube.rotation.y, 0.0)
 		val rotateY = new CompositeEffect(ry1, ry2)
 		rotateY.repeat = -1
 		
 		// Rotate the cube perpetually on the z-axis
-		val rz1 = new PropertyChangeEffect(cube.rotation.z, Math.Pi * 2.0)
+		val rz1 = new PropertyChangeEffect(cube.rotation.z, Pi * 2.0)
 		val rz2 = new PropertySetEffect(cube.rotation.z, 0.0)
 		val rotateZ = new CompositeEffect(rz1, rz2)
 		rotateZ.repeat = -1

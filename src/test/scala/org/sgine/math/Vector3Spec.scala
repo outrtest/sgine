@@ -4,6 +4,8 @@ import org.sgine.math
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
+import scala.math._
+
 /**
  * Tests Vector3
  */
@@ -53,7 +55,7 @@ class Vector3Spec extends FlatSpec with ShouldMatchers {
     Vector3( 0, 0, 0 ).length should equal (0)
     Vector3( 0, 1, 0 ).length should equal (1)
     Vector3( 0, 3, 4 ).length should equal ( 5 )
-    Vector3( 1, 2, 3 ).length should equal ( Math.sqrt(14) )
+    Vector3( 1, 2, 3 ).length should equal ( sqrt(14) )
   }
 
   it should "calculate squared length correctly" in {
@@ -114,8 +116,8 @@ class Vector3Spec extends FlatSpec with ShouldMatchers {
   }
 
   it should "normalize correctly" in {
-    val d2 = 1.0 / Math.sqrt( 2 )
-    val d3 = 1.0 / Math.sqrt( 3 )
+    val d2 = 1.0 / sqrt( 2 )
+    val d3 = 1.0 / sqrt( 3 )
     val epsilon: Double = 0.00001
 
     Vector3(0,  0,  0).normalized should equal( Vector3.Zero )
