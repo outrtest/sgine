@@ -40,7 +40,6 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 	width.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
 	height.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
 	
-//	val children = topLeft :: top :: topRight :: left :: center :: right :: bottomLeft :: bottom :: bottomRight :: Nil
 	this += topLeft
 	this += top
 	this += topRight
