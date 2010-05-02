@@ -88,7 +88,10 @@ trait PropertyContainer extends Listenable with Property[Int] {
 		aliases.contains(name)
 	}
 	
-	def properties = _properties
+	def properties = {
+		initialize()
+		_properties
+	}
 	
 	def addProperty(p: Property[_]): PropertyContainer = {
 		if (!_properties.contains(p)) {			// No duplicates allowed
