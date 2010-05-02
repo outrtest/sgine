@@ -543,7 +543,7 @@ class Matrix4 protected() extends Iterable[Double] {
 	def iterator = new Matrix4Iterator(this)
 	
 	override def toString() = {
-	    val buffer = new StringBuffer()
+	    val buffer = new StringBuilder()
 	
 	    val columnSeparator = "  "
 	    val rowSeparator = "\n"

@@ -12,7 +12,7 @@ object TestUpdatable {
 class TestUpdatable extends Updatable {
 	initUpdatable()
 	
-	def update(time: Double) = {
+	override def update(time: Double) = {
 		println("Update! " + time)
 		Thread.sleep(10)
 	}

@@ -27,7 +27,8 @@ trait Updatable {
 		}
 	}
 	
-	def update(time: Double): Unit
+	def update(time: Double): Unit = {
+	}
 }
 
 object Updatable extends Function0[Unit] {

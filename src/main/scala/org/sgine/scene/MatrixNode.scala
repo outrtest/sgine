@@ -31,7 +31,9 @@ trait MatrixNode extends Node with Updatable {
 	
 	localMatrix().changeDelegate = () => invalidateMatrix()
 	
-	def update(time: Double) = {
+	abstract override def update(time: Double) = {
+		super.update(time)
+		
 		if ((revalidateMatrix != null) && (revalidateMatrix())) {
 			refreshWorldMatrix()
 			
@@ -40,7 +42,6 @@ trait MatrixNode extends Node with Updatable {
 	}
 	
 	protected def refreshWorldMatrix() = {
-//		println("Refresh world matrix: " + getClass.getSimpleName + " - " + parent)
 		// Update to parent world matrix
 		getParentWorldMatrix(parent) match {
 			case m: Matrix4 => MatrixNode.matrixStore.set(m)
@@ -71,7 +72,7 @@ trait MatrixNode extends Node with Updatable {
 		}
 	}
 	
-	protected def invalidateChildren(n: Node): Unit = {
+	private def invalidateChildren(n: Node): Unit = {
 		n match {
 			case container: NodeContainer => {
 				for (c <- container) c match {
@@ -79,7 +80,7 @@ trait MatrixNode extends Node with Updatable {
 					case _ => invalidateChildren(c)
 				}
 			}
-			case _ =>
+			case _ => // Not a container, so no children
 		}
 	}
 	

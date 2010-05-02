@@ -8,32 +8,32 @@ package org.sgine.property
  * @author Matt Hicks
  */
 trait ChangeableProperty[T] extends Property[T] {
-	private var oldValue:T = _;
+	private var oldValue: T = _
 	
-	abstract override def apply(value:T):Property[T] = {
-		apply(value, true);
+	abstract override def apply(value: T): Property[T] = {
+		apply(value, true)
 	}
 	
-	def apply(value:T, invokeListeners:Boolean):Property[T] = {
-		val p = super.apply(value);
+	def apply(value:T, invokeListeners: Boolean): Property[T] = {
+		val p = super.apply(value)
 		
 		if (invokeListeners) {
-			changed();
+			changed()
 		}
 		
-		p;
+		p
 	}
 	
-	def changed():Unit = {
-		val newValue = apply();
+	def changed(equalityCheck: Boolean = true): Unit = {
+		val newValue = apply()
 		
-		if (newValue != oldValue) {
-			changed(oldValue, newValue);
+		if ((!equalityCheck) || (newValue != oldValue)) {
+			changed(oldValue, newValue)
 		}
 		
-		oldValue = newValue;
+		oldValue = newValue
 	}
 	
-	def changed(oldValue:T, newValue:T):Unit = {
+	def changed(oldValue: T, newValue: T): Unit = {
 	}
 }

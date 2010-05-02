@@ -25,6 +25,7 @@ import org.sgine.scene.view.NodeView
 
 class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) extends Renderable {
 	val view = NodeView(scene, RenderableQuery, false)
+	view.sortFunction = RenderSort
 	val fps = FPS()
 	
 	private val storeVector3 = Vector3()
@@ -50,6 +51,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		if (!initted) init()
 
 		itemCount = 0.0f
+//		view.sort()					// TODO: is this the most efficient way to handle this?
 		view.foreach(renderItem)
 		if (showFPS) fps()
 	}

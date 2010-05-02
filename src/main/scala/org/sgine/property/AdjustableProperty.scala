@@ -46,7 +46,9 @@ trait AdjustableProperty[T] extends Property[T] with Updatable {
 		this
 	}
 	
-	def update(time:Double) = {
+	abstract override def update(time:Double) = {
+		super.update(time)
+		
 		if (adjuster != null) {
 			val current: T = apply()
 			
