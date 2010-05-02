@@ -22,7 +22,7 @@ trait CompositeNodeContainer extends NodeContainer {
 
   protected def -=(node: Node): Boolean = {
  	  if (nodes.contains(node)) {
- 	 	  nodes -= node
+ 	 	  nodes = nodes.filterNot(_ == node)
  	 	  node.parent = null
  	 	  
  	 	  Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildRemoved))

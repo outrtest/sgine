@@ -2,6 +2,8 @@ package org.sgine.work
 
 import java.lang.ref.WeakReference
 
+import scala.math._
+
 /**
  * Updatable provides a simple trait that can be mixed-in to
  * provide asynchronous updates via a long-running job in
@@ -74,12 +76,12 @@ object Updatable extends Function0[Unit] {
 		val time = System.nanoTime
 		val frequency = (time - lastTime) / 1000000000.0
 		lastTime = time
-		val shouldElapse = Math.round(1000.0 / Rate)
+		val shouldElapse = round(1000.0 / Rate)
 		val l = list
 		for (wr <- l) {
 			val u = wr.get
 			if (u == null) {
-				list -= wr
+				list = list.filterNot(_ == wr)
 			} else {
 				u.update(frequency)
 			}
@@ -100,7 +102,7 @@ object Updatable extends Function0[Unit] {
 	private def remove(u: Updatable) = {
 		synchronized {
 			list.find(wr => wr.get == u) match {
-				case s: Some[WeakReference[Updatable]] => list -= s.get
+				case s: Some[WeakReference[_]] => list = list.filterNot(_ == s.get)
 				case None =>
 			}
 		}

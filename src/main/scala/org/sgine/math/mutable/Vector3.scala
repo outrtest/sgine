@@ -1,5 +1,7 @@
 package org.sgine.math.mutable
 
+import scala.math._
+
 object Vector3 {
 	def apply(x: Double, y: Double, z: Double) = {
 		val v = new Vector3()
@@ -108,7 +110,7 @@ class Vector3 protected() extends org.sgine.math.Vector3 {
 	}
 	
 	def normalize() = {
-		val li = 1.0 / Math.sqrt(x * x + y * y + z * z)
+		val li = 1.0 / sqrt(x * x + y * y + z * z)
 		x *= li
 		y *= li
 		z *= li

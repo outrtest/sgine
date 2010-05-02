@@ -1,6 +1,6 @@
 package org.sgine.math
 
-import scala.Math._
+import scala.math._
 
 /*
  * Partially based on code from jMonkeyEngine's Quaternion class

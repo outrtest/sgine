@@ -42,7 +42,7 @@ case class StateItem(key: String, value: Any, restore: Any = null) {
 		process(o, key, original)
 	}
 	
-	private def process(o: Any, key: String, value: Any): Any = {
+	private def process[T](o: Any, key: String, value: T): Any = {
 		// Process first part of key
 		var name = key
 		var tail: String = null
@@ -60,7 +60,7 @@ case class StateItem(key: String, value: Any, restore: Any = null) {
 				}
 				process(next.get, tail, value)
 			}
-			case p: Property[Any] => {
+			case p: Property[T] => {
 				if (tail != null) {
 					process(p(), tail, value)
 				} else {

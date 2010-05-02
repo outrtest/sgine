@@ -35,6 +35,8 @@
     	</fileset>
 	</path>
 	
+	<mkdir dir="${dist}"/>
+	
 	<taskdef resource="scala/tools/ant/antlib.xml" classpathref="cp"/>
 	<taskdef name="scalatest" classname="org.scalatest.tools.ScalaTestAntTask">
 		<classpath refid="cp-test"/>

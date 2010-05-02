@@ -54,7 +54,7 @@ class NodeView private (container: NodeContainer, query: Function1[Node, Boolean
 	private def remove(n: Node) = {
 		synchronized {
 			if (queue.contains(n)) {
-				queue -= n
+				queue = queue.filterNot(_ == n)
 				
 				Event.enqueue(NodeRemovedEvent(this, n))
 			}

@@ -2,6 +2,8 @@ package org.sgine.property.adjust
 
 import org.sgine.easing.Easing._
 
+import scala.math._
+
 class EasingNumericAdjuster(easing: EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAdjuster[Double] {
 	private var target: Double = _
 	private var start: Double = _
@@ -16,7 +18,7 @@ class EasingNumericAdjuster(easing: EasingFunction, multiplier: Double, dynamic:
 			if (dynamic) {
 				timeToTarget = multiplier
 			} else {
-				timeToTarget = (multiplier * Math.abs(start - target)) / 100.0
+				timeToTarget = (multiplier * abs(start - target)) / 100.0
 			}
 		} else {
 			timeElapsed += elapsed

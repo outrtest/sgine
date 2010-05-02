@@ -1,5 +1,7 @@
 package org.sgine.easing
 
+import scala.math._
+
 object Elastic {
 	def easeIn(time:Double, start:Double, change:Double, duration:Double):Double = {
 		val t = time / duration
@@ -12,7 +14,7 @@ object Elastic {
 			val amplitude = change
 			val s = period / 4.0
 			val t2 = t - 1.0
-			-(amplitude * Math.pow(2.0, 10.0 * t2) * Math.sin((t2 * duration - s) * (2.0 * Math.Pi) / period)) + start
+			-(amplitude * pow(2.0, 10.0 * t2) * sin((t2 * duration - s) * (2.0 * Pi) / period)) + start
 		}
 	}
 	
@@ -27,7 +29,7 @@ object Elastic {
 			val amplitude = change
 			val s = period / 4.0
 			
-			amplitude * Math.pow(2.0, -10.0 * t) * Math.sin((t * duration - s) * (2.0 * Math.Pi) / period) + change + start
+			amplitude * pow(2.0, -10.0 * t) * sin((t * duration - s) * (2.0 * Pi) / period) + change + start
 		}
 	}
 	
@@ -44,9 +46,9 @@ object Elastic {
 			val t2 = t - 1.0
 			
 			if (t < 1.0) {
-				-0.5 * (amplitude * Math.pow(2.0, 10.0 * t2) * Math.sin((t2 * duration - s) * (2.0 * Math.Pi) / period)) + start
+				-0.5 * (amplitude * pow(2.0, 10.0 * t2) * sin((t2 * duration - s) * (2.0 * Pi) / period)) + start
 			} else {
-				amplitude * Math.pow(2.0, -10.0 * t2) * Math.sin((t2 * duration - s) * (2.0 * Math.Pi) / period ) * 0.5 + change + start
+				amplitude * pow(2.0, -10.0 * t2) * sin((t2 * duration - s) * (2.0 * Pi) / period ) * 0.5 + change + start
 			}
 		}
 	}

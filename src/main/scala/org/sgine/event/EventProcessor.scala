@@ -20,7 +20,7 @@ final class EventProcessor(listenable: Listenable) extends Iterable[EventHandler
 	def -=(handler: EventHandler): EventHandler = {
 		synchronized {
 			if (handler != null) {
-				handlers -= handler
+				handlers = handlers.filterNot(_ == handler)
 			}
 		}
 		handler
