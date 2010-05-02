@@ -25,8 +25,7 @@ object TestScene {
 		container2.localMatrix().translate(0.0, 0.0, -500.0)
 		container1 += container2
 		
-		val container3 = new GeneralNodeContainer() //with MatrixNode
-//		container3.localMatrix().translate(0.0, 0.0, -100.0)
+		val container3 = new GeneralNodeContainer()
 		container2 += container3
 		
 		val component = new Image()
@@ -36,10 +35,5 @@ object TestScene {
 		container3 += component
 		
 		r.renderable := RenderableScene(scene)
-		
-		Thread.sleep(1000)
-		
-//		println(container3.worldMatrix())
-		println(component.worldMatrix())
 	}
 }
