@@ -19,7 +19,12 @@ trait Cube[T <: Component with RotationComponent] extends CompositeComponent wit
 	left().rotation.y := Math.Pi / -2.0
 	right().rotation.y := Math.Pi / 2.0
 	
-	val children = front() :: back() :: top() :: bottom() :: left() :: right() :: Nil
+	this += front()
+	this += back()
+	this += top()
+	this += bottom()
+	this += left()
+	this += right()
 	
 	protected def createComponent(): T
 }
