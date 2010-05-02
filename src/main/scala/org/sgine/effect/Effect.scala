@@ -29,7 +29,9 @@ trait Effect extends Listenable with Updatable {
 	
 	def finished: Boolean
 	
-	def update(time: Double) = {
+	abstract override def update(time: Double) = {
+		super.update(time)
+		
 		if ((_playing) && (finished)) {
 			_playing = false
 			

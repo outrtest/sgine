@@ -6,6 +6,7 @@ import org.sgine.core.Color
 
 import org.sgine.event.Listenable
 
+import org.sgine.scene.ColorNode
 import org.sgine.scene.MatrixNode
 
 import org.sgine.property.AdvancedProperty
@@ -21,11 +22,9 @@ import org.sgine.scene.NodeContainer
 
 import org.sgine.ui.ext._
 
-trait Component extends PropertyContainer with Renderable with MatrixNode with Stateful {
+trait Component extends PropertyContainer with Renderable with MatrixNode with ColorNode with Stateful {
 	val id = new AdvancedProperty[String](null, this)
 	val visible = new AdvancedProperty[Boolean](true, this)
-	val color = new AdvancedProperty[Color](null, this)
-	val alpha = new AdvancedProperty[Double](1.0, this)
 	val renderer = new DelegateProperty(() => _renderer)
 	
 	private var firstRender = true
@@ -59,15 +58,8 @@ trait Component extends PropertyContainer with Renderable with MatrixNode with S
 	}
 	
 	private def preColor() = {
-		val color = this.color()
-		if (color != null) {
-			val red = color.red * color.alpha * this.alpha()
-			val green = color.green * color.alpha * this.alpha()
-			val blue = color.blue * color.alpha * this.alpha()
-			val alpha = color.alpha * this.alpha()
-			
-			glColor4d(red, green, blue, alpha)
-		}
+		val wc = worldColor()
+		glColor4d(wc.red, wc.green, wc.blue, wc.alpha)
 	}
 	
 	protected def drawComponent()

@@ -37,7 +37,9 @@ object Keyboard extends Listenable with Updatable {
 		initUpdatable()
 	}
 	
-	def update(time: Double) = {
+	override def update(time: Double) = {
+		super.update(time)
+		
 		if (GLKeyboard.isCreated) {
 			while (GLKeyboard.next()) {
 				val state = GLKeyboard.getEventKeyState

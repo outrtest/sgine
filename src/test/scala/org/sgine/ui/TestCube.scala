@@ -1,6 +1,8 @@
 package org.sgine.ui
 
+import org.sgine.core.Color
 import org.sgine.core.Resource
+import org.sgine.core.mutable.{Color => MutableColor}
 
 import org.sgine.easing.Elastic
 import org.sgine.easing.Linear
@@ -19,11 +21,14 @@ import org.sgine.scene.GeneralNodeContainer
 object TestCube {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test Cube", 4, 8, 4, 4)
-		r.verticalSync := false
+		r.verticalSync := true
 		
 		val scene = new GeneralNodeContainer()
 		
 		val cube = new ImageCube()
+		val c = MutableColor(Color.White)
+		cube.color := c
+//		cube.alpha := 0.5
 		cube.location.z := -1000.0
 		cube.rotation.x.adjuster = new EasingNumericAdjuster(Linear.easeIn, 2.0)
 		cube.rotation.y.adjuster = new EasingNumericAdjuster(Linear.easeIn, 4.0)

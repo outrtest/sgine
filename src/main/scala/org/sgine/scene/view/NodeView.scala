@@ -15,6 +15,8 @@ import org.sgine.scene.view.event._
 class NodeView private (container: NodeContainer, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
 	private var queue: List[Node] = Nil
 	
+	var sortFunction: (Node, Node) => Boolean = _
+	
 	def iterator = queue.iterator
 	
 	/**
@@ -22,6 +24,13 @@ class NodeView private (container: NodeContainer, query: Function1[Node, Boolean
 	 */
 	private def refresh() = {
 		NodeQuery.query(query, container, add)
+		sort()
+	}
+	
+	def sort() = {
+		if (sortFunction != null) {
+			queue = queue.sortWith(sortFunction)
+		}
 	}
 	
 	private def containerEvent(evt: NodeContainerEvent) = {
