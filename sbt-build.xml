@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <project name="sgine sbt" basedir="." default="test">
-	<property name="launch" location="sbt/sbt-launch-0.7.1.jar"/>
+	<property name="launch" location="sbt/sbt-launch-0.7.3.jar"/>
 
 	<target name="clean">
 		<java taskname="sbt" jar="${launch}" fork="true">
