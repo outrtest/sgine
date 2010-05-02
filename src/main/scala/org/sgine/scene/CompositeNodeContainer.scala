@@ -7,12 +7,12 @@ import org.sgine.scene.event.SceneEvent
 import org.sgine.scene.event.SceneEventType
 
 trait CompositeNodeContainer extends NodeContainer {
-  private var nodes: List[Node] = Nil
+	private var nodes = new scala.collection.mutable.ArrayBuffer[Node]()
 
   def iterator = if (nodes != null) nodes.iterator else null
 
   protected def +=(node: Node) {
-    nodes = node :: nodes
+	  nodes += node
     
     node.parent = this
     
@@ -22,7 +22,7 @@ trait CompositeNodeContainer extends NodeContainer {
 
   protected def -=(node: Node): Boolean = {
  	  if (nodes.contains(node)) {
- 	 	  nodes = nodes.filterNot(_ == node)
+ 	 	  nodes -= node
  	 	  node.parent = null
  	 	  
  	 	  Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildRemoved))

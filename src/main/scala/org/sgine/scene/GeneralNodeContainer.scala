@@ -12,7 +12,7 @@ import org.sgine.scene.event._
  * NodeContainer backed up by a thread-safe collection.
  */
 class GeneralNodeContainer extends MutableNodeContainer {
-  private var nodes: List[Node] = Nil
+	private var nodes = new scala.collection.mutable.ArrayBuffer[Node]()
 
   def iterator = nodes.iterator
 
@@ -23,7 +23,7 @@ class GeneralNodeContainer extends MutableNodeContainer {
     require(node.parent == null,"Can not add node, the node is already in another container '"+node.parent+"'.")
 
     synchronized {
-	    nodes = node :: nodes
+    	nodes += node
     }
     
     node.parent = this
@@ -35,7 +35,7 @@ class GeneralNodeContainer extends MutableNodeContainer {
   def -=(node: Node): Boolean = {
 	  synchronized {
 	 	  if (nodes.contains(node)) {
-	 	 	  nodes = nodes.filterNot(_ == node)
+	 	 	  nodes -= node
 	 	 	  node.parent = null
 	 	 	  
 	 	 	  Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildRemoved))

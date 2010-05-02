@@ -16,18 +16,18 @@ object TestScale9 {
 		
 		val scene = new GeneralNodeContainer()
 		
+		val component2 = new Label()
+		component2.location.z := -500.0
+		component2.font := FontManager("Franklin")
+		component2.text := "Hello World!"
+		scene += component2
+		
 		val component = new Scale9()
 		component(Resource("scale9/windows/button/hover.png"), 3.0, 3.0, 4.0, 5.0)
 		component.width := 300.0
 		component.height := 100.0
 		component.location.z := -500.0
 		scene += component
-		
-		val component2 = new Label()
-		component2.location.z := -500.0
-		component2.font := FontManager("Franklin")
-		component2.text := "Hello World!"
-		scene += component2
 		
 		r.renderable := RenderableScene(scene)
 	}

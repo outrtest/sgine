@@ -9,7 +9,7 @@ import org.sgine.render.Renderer
 import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
-import org.sgine.scene.MatrixNode
+import org.sgine.scene.ext.MatrixNode
 
 object TestScene {
 	def main(args: Array[String]): Unit = {

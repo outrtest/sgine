@@ -18,9 +18,9 @@ import org.sgine.render.FPS
 import org.sgine.render.Renderable
 import org.sgine.render.Renderer
 
-import org.sgine.scene.MatrixNode
 import org.sgine.scene.Node
 import org.sgine.scene.NodeContainer
+import org.sgine.scene.ext.MatrixNode
 import org.sgine.scene.view.NodeView
 
 class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) extends Renderable {

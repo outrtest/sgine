@@ -6,8 +6,8 @@ import org.sgine.core.Color
 
 import org.sgine.event.Listenable
 
-import org.sgine.scene.ColorNode
-import org.sgine.scene.MatrixNode
+import org.sgine.scene.ext.ColorNode
+import org.sgine.scene.ext.MatrixNode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.DelegateProperty

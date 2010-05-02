@@ -1,4 +1,4 @@
-package org.sgine.scene
+package org.sgine.scene.ext
 
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
@@ -9,6 +9,8 @@ import org.sgine.math.mutable.Matrix4
 import org.sgine.property.ImmutableProperty
 import org.sgine.property.MutableProperty
 
+import org.sgine.scene.Node
+import org.sgine.scene.NodeContainer
 import org.sgine.scene.event.SceneEvent
 import org.sgine.scene.event.SceneEventType
 
