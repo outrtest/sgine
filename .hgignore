@@ -19,3 +19,9 @@ syntax: regexp
 ^out$
 syntax: regexp
 ^\.idea$
+
+syntax: glob
+*.iml
+syntax: glob
+*~
+
