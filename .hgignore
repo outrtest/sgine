@@ -15,3 +15,7 @@ syntax: regexp
 ^dist/sgine\.jar$
 syntax: regexp
 ^build$
+syntax: regexp
+^out$
+syntax: regexp
+^\.idea$
