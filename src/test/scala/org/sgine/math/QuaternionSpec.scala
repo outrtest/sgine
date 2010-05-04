@@ -67,4 +67,11 @@ class QuaternionSpec extends FlatSpec with ShouldMatchers {
     Quaternion(0,2,3,5) - Quaternion(1,3,7,2) should equal (Quaternion(-1,-1,-4,3))
   }
 
+  it should "convert from Euler angles and back" in {
+    val epsilon: Double = 0.00001
+    val (a,b,c) = Quaternion.fromEulerAngles(0.2, 0.3, 0.4).toEulerAngles
+    a should equal (0.2 plusOrMinus epsilon)
+    b should equal (0.3 plusOrMinus epsilon)
+    c should equal (0.4 plusOrMinus epsilon)
+  }
 }
