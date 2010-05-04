@@ -67,11 +67,27 @@ class QuaternionSpec extends FlatSpec with ShouldMatchers {
     Quaternion(0,2,3,5) - Quaternion(1,3,7,2) should equal (Quaternion(-1,-1,-4,3))
   }
 
-  it should "convert from Euler angles and back" in {
+  def epsilonEqual(q1 : Quaternion, q2 : Quaternion) {
     val epsilon: Double = 0.00001
-    val (a,b,c) = Quaternion.fromEulerAngles(0.2, 0.3, 0.4).toEulerAngles
-    a should equal (0.2 plusOrMinus epsilon)
-    b should equal (0.3 plusOrMinus epsilon)
-    c should equal (0.4 plusOrMinus epsilon)
+    q1.u should be (q2.u plusOrMinus epsilon)
+    q1.x should be (q2.x plusOrMinus epsilon)
+    q1.y should be (q2.y plusOrMinus epsilon)
+    q1.z should be (q2.z plusOrMinus epsilon)
   }
+
+  it should "convert to Euler angles and back" in {
+    val q = Quaternion(11, -5, 3, 17).normalized
+    epsilonEqual(q, (Quaternion.fromEulerAngles _) tupled q.toEulerAngles)
+  }
+  
+  it should "convert to an angle and an axis, and back" in {
+    val q = Quaternion(-3, 45, 30, -19).normalized
+    epsilonEqual(q, (Quaternion.fromAngleAxis _) tupled q.toAngleAxis)
+  }
+
+  it should "convert to a rotation matrix and back" in {
+    val q = Quaternion(16, 2, -4, 13).normalized
+    epsilonEqual(q, Quaternion fromMatrix q.toMatrix)
+  }
+
 }
