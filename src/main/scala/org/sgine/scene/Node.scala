@@ -17,6 +17,40 @@ trait Node extends Listenable {
 	 */
 	override def parent = parentContainer
 	
+	@scala.annotation.tailrec
+	final def next(f: Node => Boolean): Node = {
+		val n = nextNode()
+		if (n == null) {
+			null
+		} else if (f(n)) {
+			n
+		} else {
+			n.next(f)
+		}
+	}
+	
+	@scala.annotation.tailrec
+	final def previous(f: Node => Boolean): Node = {
+		val n = previousNode()
+		if (n != null) println(n.hierarchyString)
+		if (n == null) {
+			null
+		} else if (f(n)) {
+			n
+		} else {
+			n.previous(f)
+		}
+	}
+	
+	def nextIterator = new HierarchicalIterator(this, true)
+	
+	def previousIterator = new HierarchicalIterator(this, false)
+	
+	def previousNode() = Node.previous(this) match {
+		case Some(s) => s
+		case None => null
+	}
+	
 	def nextNode() = Node.next(this) match {
 		case Some(s) => s
 		case None => null
@@ -31,8 +65,66 @@ trait Node extends Listenable {
 	}
 }
 
+class HierarchicalIterator(var node: Node, forward: Boolean) extends Iterator[Node] {
+	private var nextNode: Node = null
+	
+	def hasNext = {
+		if ((nextNode == null) && (node != null)) {
+			if (forward) {
+				nextNode = node.nextNode()
+			} else {
+				nextNode = node.previousNode()
+			}
+		}
+		nextNode != null
+	}
+	
+	def next = {
+		hasNext
+		node = nextNode
+		nextNode = null
+		node
+	}
+}
+
 object Node {
-//	@scala.annotation.tailrec
+	final def previous(n: Node) = {
+		previousSibling(n.parent, n)
+	}
+	
+	private def previousSibling(parent: NodeContainer, child: Node): Option[Node] = {
+		if (parent == null) {
+			return None
+		}
+		var last: Node = null
+		for (c <- parent) {
+			if (child == c) {
+				last match {
+					case null => return previousSibling(parent.parent, parent)
+					case container: NodeContainer => return lastChild(container)
+					case _ => return Some(last)
+				}
+			}
+			last = c
+		}
+		return None
+	}
+	
+	private def lastChild(container: NodeContainer): Option[Node] = {
+		if (container.size > 0) {
+			var l: Node = null
+			for (child <- container) {
+				l = child
+			}
+			l match {
+				case cnt: NodeContainer => lastChild(cnt)
+				case _ => Some(l)
+			}
+		} else {
+			Some(container)
+		}
+	}
+	
 	final def next(n: Node) = {
 		nextChild(n) match {		// Check to see if "n" has children
 			case Some(child) => Some(child)
@@ -53,21 +145,14 @@ object Node {
 	
 	private def nextSibling(parent: NodeContainer, child: Node): Option[Node] = {
 		if (parent == null) {
-//			println("Parent is null! - " + child.hierarchyString)
 			return None
-		} else {
-//			println("NEXT SIBLING: " + child.hierarchyString + " - Children: " + parent.size)
 		}
 		var found = false
 		for (c <- parent) {
 			if (c == child) {
-//				println("\tFOUND!")
 				found = true
 			} else if (found) {
-//				println("\tRETURNING!")
 				return Some(c)
-			} else {
-//				println("\tNO MATCH: " + c.hierarchyString)
 			}
 		}
 		return nextSibling(parent.parent, parent)

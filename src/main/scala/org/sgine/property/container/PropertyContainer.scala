@@ -6,7 +6,7 @@ import org.sgine.event._
 import org.sgine.property._
 
 trait PropertyContainer extends Listenable with Property[Int] {
-	private var _properties: List[Property[_]] = Nil
+	private var _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
 	private var aliases = new HashMap[String, Property[_]]()
 	private val staticPropertyFields = getStaticPropertyFields
 	
@@ -95,7 +95,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	
 	def addProperty(p: Property[_]): PropertyContainer = {
 		if (!_properties.contains(p)) {			// No duplicates allowed
-			_properties = p :: _properties									// Add the property to the list
+			_properties += p												// Add the property to the list
 
 			p match {														// Assign an alias if one already exists
 				case np: NamedProperty => {
@@ -111,7 +111,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	}
 	
 	def removeProperty(p: Property[_]): PropertyContainer = {
-		_properties = _properties.filterNot(_ == p)
+		_properties -= p
 		p match {
 			case np: NamedProperty => aliases -= np.name
 			case _ =>

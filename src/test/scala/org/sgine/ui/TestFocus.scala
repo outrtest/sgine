@@ -6,13 +6,15 @@ import org.sgine.render.Renderer
 import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
+import org.sgine.scene.Node
+import org.sgine.scene.ext.FocusableNode
 import org.sgine.scene.ext.MatrixNode
 
 import org.sgine.ui.skin.windows.Button
 
 object TestFocus {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Focus")
+		val r = Renderer.createFrame(640, 480, "Test Focus")
 		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer() with MatrixNode
@@ -37,10 +39,12 @@ object TestFocus {
 		
 		Thread.sleep(1000)
 		
-		var n: org.sgine.scene.Node = component1
-		while (n != null) {
-			println(n.hierarchyString)
-			n = n.nextNode()
-		}
+		println(component2.previous(test).hierarchyString)
+		println(component3.previous(test).hierarchyString)
+	}
+	
+	private def test(n: Node) = n match {
+		case f: FocusableNode => true
+		case _ => false
 	}
 }
