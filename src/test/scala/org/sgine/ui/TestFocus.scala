@@ -36,11 +36,6 @@ object TestFocus {
 		scene += component3
 		
 		r.renderable := RenderableScene(scene)
-		
-		Thread.sleep(1000)
-		
-		println(component2.previous(test).hierarchyString)
-		println(component3.previous(test).hierarchyString)
 	}
 	
 	private def test(n: Node) = n match {
