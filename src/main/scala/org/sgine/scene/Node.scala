@@ -32,7 +32,6 @@ trait Node extends Listenable {
 	@scala.annotation.tailrec
 	final def previous(f: Node => Boolean): Node = {
 		val n = previousNode()
-		if (n != null) println(n.hierarchyString)
 		if (n == null) {
 			null
 		} else if (f(n)) {
@@ -63,6 +62,24 @@ trait Node extends Listenable {
 			getClass.getSimpleName
 		}
 	}
+	
+	def root: Node = parent match {
+		case null => this
+		case _ => parent.root
+	}
+	
+	def lastNode = lastNodeInternal(root)
+	
+	private def lastNodeInternal(n: Node): Node = n match {
+		case container: NodeContainer => {
+			if (container.size > 0) {
+				lastNodeInternal(container.last)
+			} else {
+				container
+			}
+		}
+		case _ => n
+	}
 }
 
 class HierarchicalIterator(var node: Node, forward: Boolean) extends Iterator[Node] {
@@ -88,7 +105,7 @@ class HierarchicalIterator(var node: Node, forward: Boolean) extends Iterator[No
 }
 
 object Node {
-	final def previous(n: Node) = {
+	protected def previous(n: Node) = {
 		previousSibling(n.parent, n)
 	}
 	
@@ -100,7 +117,7 @@ object Node {
 		for (c <- parent) {
 			if (child == c) {
 				last match {
-					case null => return previousSibling(parent.parent, parent)
+					case null => return Some(parent)
 					case container: NodeContainer => return lastChild(container)
 					case _ => return Some(last)
 				}
@@ -125,7 +142,7 @@ object Node {
 		}
 	}
 	
-	final def next(n: Node) = {
+	protected def next(n: Node) = {
 		nextChild(n) match {		// Check to see if "n" has children
 			case Some(child) => Some(child)
 			case None => nextSibling(n.parent, n)

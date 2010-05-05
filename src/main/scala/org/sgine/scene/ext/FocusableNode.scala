@@ -8,6 +8,7 @@ import org.sgine.input.Keyboard
 import org.sgine.input.event.KeyReleaseEvent
 
 import org.sgine.property.AdvancedProperty
+import org.sgine.property.DelegateProperty
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.scene.Node
@@ -27,8 +28,10 @@ trait FocusableNode extends Node {
 }
 
 object FocusableNode {
-	val focused = new AdvancedProperty[FocusableNode](null)
+	val focused = new DelegateProperty[FocusableNode](() => _focused)
 	val enabled = new AdvancedProperty[Boolean](true)
+	
+	private var _focused: FocusableNode = _
 	
 	Keyboard.listeners += EventHandler(keyReleased, ProcessingMode.Blocking)
 	
@@ -37,7 +40,7 @@ object FocusableNode {
 		if (current != null) {
 			blur(current)
 		}
-		if (focused() != n) focused := n
+		if (focused() != n) _focused = n
 		if (!n.focused()) n.focused := true
 	}
 	
@@ -46,17 +49,34 @@ object FocusableNode {
 		if (current == n) {
 			if (n.focused()) n.focused := false
 			
-			focused := null
+			_focused = null
 		}
 	}
 	
 	private def keyReleased(evt: KeyReleaseEvent) = {
-		if (evt.key == Key.Tab) {
-			if (evt.shiftDown) {
-				println("Reverse TAB!")
-			} else {
-				println("TAB!")
+		val f = focused()
+		if (f != null) {
+			if (evt.key == Key.Tab) {
+				if (evt.shiftDown) {
+					f.previous(focusableTest) match {
+						case null => f.lastNode.previous(focusableTest) match {
+							case null =>
+							case n: FocusableNode => n.focused := true
+						}
+						case n: FocusableNode => n.focused := true
+					}
+				} else {
+					f.next(focusableTest) match {
+						case null => f.root.next(focusableTest) match {
+							case null =>
+							case n: FocusableNode => n.focused := true
+						}
+						case n: FocusableNode => n.focused := true
+					}
+				}
 			}
 		}
 	}
+	
+	private val focusableTest = (n: Node) => n.isInstanceOf[FocusableNode]
 }
