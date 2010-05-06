@@ -12,7 +12,7 @@ import org.sgine.render.Texture
 import org.sgine.render.TextureMap
 import org.sgine.render.TextureManager
 
-class BitmapFont private(texture: Texture) extends TextureMap[Int](texture) with Font {
+class BitmapFont private[font](texture: Texture) extends TextureMap[Int](texture) with Font {
 	private var _face: String = null
 	private var _size: Int = 0
 	private var _bold: Int = 0
@@ -96,28 +96,6 @@ object BitmapFont {
 		
 		font
 	}
-	
-//	def apply(source: Source, url: URL) = {
-//		val font = new BitmapFont(TextureUtil(url))
-//		
-//		val lines = source.getLines().toList
-//		
-//		processInfo(font, lines(0))
-//		processCommon(font, lines(1))
-//		
-//		// Process Characters
-//		var offset = 2
-//		for (i <- 0 until font._pages) {
-//			offset = processPage(font, lines, offset)
-//		}
-//		
-////		val kerningsCount = processLine(lines(offset))("count").toInt
-////		offset += 1
-////		
-////		processKernings(font, lines, offset, kerningsCount)
-//		
-//		font
-//	}
 	
 	private def processInfo(font: BitmapFont, s: String) = {
 		val m = processLine(s)
