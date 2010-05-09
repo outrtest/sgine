@@ -27,8 +27,8 @@ object Quaternion {
     Quaternion(real, imag.x, imag.y, imag.z)
 
   def normalized(u : D, x : D, y : D, z : D) = {
-     val abs = sqrt(u * u + x * x + y * y + z * z)
-     Quaternion(u / abs, x / abs, y / abs, z / abs)
+    val abs = sqrt(u * u + x * x + y * y + z * z)
+    Quaternion(u / abs, x / abs, y / abs, z / abs)
   }
 
   val Zero = Quaternion(0, 0, 0, 0)
@@ -72,28 +72,28 @@ object Quaternion {
   // Use the Graphics Gems code, from
   // ftp://ftp.cis.upenn.edu/pub/graphics/shoemake/quatut.ps.Z
   def fromMatrix(m : Matrix4) : Quaternion = {
-        // the trace is the sum of the diagonal elements; see
-        // http://mathworld.wolfram.com/MatrixTrace.html
-        val t = m.m00 + m.m11 + m.m22
+    // the trace is the sum of the diagonal elements; see
+    // http://mathworld.wolfram.com/MatrixTrace.html
+    val t = m.m00 + m.m11 + m.m22
 
-        // we protect the division by s by ensuring that s>=1
-        if (t >= 0) { // |w| >= .5
-            val s = sqrt(t+1) // |s|>=1 ...
-	    val q = 0.5 / s
-	    Quaternion(s / 2, (m.m21 - m.m12) * q, (m.m02 - m.m20) * q, (m.m10 - m.m01) * q)
-        } else if ((m.m00 > m.m11) && (m.m00 > m.m22)) {
-            val s = sqrt(1.0 + m.m00 - m.m11 - m.m22) // |s|>=1
-	    val q = 0.5 / s
-            Quaternion((m.m21 - m.m12) * q, s / 2, (m.m10 + m.m01) * q, (m.m02 + m.m20) * q)
-        } else if (m.m11 > m.m22) {
-            val s = sqrt(1.0 + m.m11 - m.m00 - m.m22) // |s|>=1
-            val q = 0.5 / s
-	    Quaternion((m.m02 - m.m20) * q, (m.m10 + m.m01) * q, s / 2, (m.m21 + m.m12) * q)
-        } else {
-            val s = sqrt(1.0 + m.m22 - m.m00 - m.m11) // |s|>=1
-            val q = 0.5f / s;
-	    Quaternion((m.m10 - m.m01) * q, (m.m02 + m.m20) * q, (m.m21 + m.m12) * q, s / 2)
-        }
+    // we protect the division by s by ensuring that s>=1
+    if (t >= 0) { // |w| >= .5
+      val s = sqrt(t+1) // |s|>=1 ...
+      val q = 0.5 / s
+      Quaternion(s / 2, (m.m21 - m.m12) * q, (m.m02 - m.m20) * q, (m.m10 - m.m01) * q)
+    } else if ((m.m00 > m.m11) && (m.m00 > m.m22)) {
+      val s = sqrt(1.0 + m.m00 - m.m11 - m.m22) // |s|>=1
+      val q = 0.5 / s
+      Quaternion((m.m21 - m.m12) * q, s / 2, (m.m10 + m.m01) * q, (m.m02 + m.m20) * q)
+    } else if (m.m11 > m.m22) {
+      val s = sqrt(1.0 + m.m11 - m.m00 - m.m22) // |s|>=1
+      val q = 0.5 / s
+      Quaternion((m.m02 - m.m20) * q, (m.m10 + m.m01) * q, s / 2, (m.m21 + m.m12) * q)
+    } else {
+      val s = sqrt(1.0 + m.m22 - m.m00 - m.m11) // |s|>=1
+      val q = 0.5f / s;
+      Quaternion((m.m10 - m.m01) * q, (m.m02 + m.m20) * q, (m.m21 + m.m12) * q, s / 2)
+    }
   }
 
 
@@ -116,6 +116,7 @@ object Quaternion {
 
     }
 
+    private val epsilon = 0.0001
 }
 
 class Quaternion {
@@ -149,15 +150,21 @@ class Quaternion {
                this.u * that.y - this.x * that.z + this.y * that.u + this.z * that.x,
                this.u * that.z + this.x * that.y - this.y * that.x + this.z * that.u)
   def dot(that : Quaternion) : D =
-      this.u * that.u + this.x * that.x + this.y * that.y + this.z * that.z
+    this.u * that.u + this.x * that.x + this.y * that.y + this.z * that.z
 
 
   def norm : D =  u*u + x*x + y*y + z*z
 
-  def abs : D = sqrt(norm)
+  def length : D = sqrt(norm)
 
+  /**
+   * The scalar part of the quaternion.
+   */
   def real : D = u
 
+  /**
+   * The vector part of the quaternion.
+   */
   def imag : Vector3 = Vector3(x, y, z)
 
   def conjugated : Quaternion = Quaternion(u, -x, -y, -z)
@@ -169,7 +176,7 @@ class Quaternion {
    * A normalized quaternion is in the same rotation as the original quaternion,
    * but has a length of one. The normalized vector for (0,0,0) is (0,0,0).
    */
-  def normalized : Quaternion = this / abs
+  def normalized : Quaternion = this / length
 
   /**
    * True if this a quaternion with all values zero.
@@ -180,6 +187,11 @@ class Quaternion {
    * True if this a quaternion with u equals one and all other values zero.
    */
   def isIdentity : Boolean = this == Quaternion.One
+
+  /*
+   * True if this quaternion has a length of 1.
+   */
+  def isNormalized : Boolean = abs(norm - 1) < Quaternion.epsilon
 
   /**
    * Returns a four element list with the u, x, y, z values of the quaternion in that order.
@@ -211,31 +223,39 @@ class Quaternion {
     else (2 * acos(u), im.normalized)
   }
 
-  /* According to http://www.cprogramming.com/tutorial/3d/quaternions.html */
   def toMatrix : Matrix4 = {
-    val f = 2 / abs
-    val ux = f * u * x
-    val uy = f * u * y
-    val uz = f * u * z
-    val xx = f * x * x
-    val xy = f * x * y
-    val xz = f * x * z
-    val yy = f * y * y
-    val yz = f * y * z
-    val zz = f * z * z
+    val n = length
+    // we explicitly test norm against one here, saving a division
+    // at the cost of a test and branch.  Is it worth it?
+    val s = if (n == 1.0) 2.0 else
+      if (n > 0.0) 2.0 / n else 0
 
-    Matrix4(1 - yy - zz, xy - uz, xz + uy, 0,
-	    xy + uz, 1 - xx - zz, yz - ux, 0,
-	    xz - uy, yz - ux, 1 - xx - yy, 0,
-	    0, 0, 0, 1)
+    val xs = x * s
+    val ys = y * s
+    val zs = z * s
+    val xx = x * xs
+    val xy = x * ys
+    val xz = x * zs
+    val xu = u * xs
+    val yy = y * ys
+    val yz = y * zs
+    val yu = u * ys
+    val zz = z * zs
+    val zu = u * zs
+
+    // using s=2/norm (instead of 1/norm) saves 9 multiplications by 2 here
+    Matrix4(1 - (yy + zz), xy - zu,  xz + yu, 0,
+            xy + zu, 1 - (xx + zz), yz - xu, 0,
+            xz - yu, yz + xu, 1 - (xx + yy), 0,
+            0, 0, 0, 1)
   }
 
   override def toString = "Quaternion("+u+", "+x+", "+y+", "+z+")"
 
   override def equals(o : Any) : Boolean = o match {
-      case that: Quaternion =>
-	this.u == that.u && this.x == that.x && this.y == that.y && this.z == that.z
-      case _ => false
-    }
+    case that: Quaternion =>
+      this.u == that.u && this.x == that.x && this.y == that.y && this.z == that.z
+    case _ => false
+  }
 
 }
