@@ -9,7 +9,9 @@ object Time {
 	val Month = 30.0 * Day
 	val Year = 12.0 * Month
 	
-	def elapsed(time: Double) = {
+	def elapsed(time: Long): String = elapsed(time.toDouble / 1000.0)
+	
+	def elapsed(time: Double): String = {
 		val format = "%,.2f"
 		var value: Double = time
 		var ending = "ms"
