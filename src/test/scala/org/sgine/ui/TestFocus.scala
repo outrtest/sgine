@@ -8,17 +8,17 @@ import org.sgine.render.scene.RenderableScene
 import org.sgine.scene.GeneralNodeContainer
 import org.sgine.scene.Node
 import org.sgine.scene.ext.FocusableNode
-import org.sgine.scene.ext.MatrixNode
+import org.sgine.scene.ext.ResolutionNode
 
 import org.sgine.ui.skin.windows.Button
 
 object TestFocus {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(640, 480, "Test Focus")
+		val r = Renderer.createFrame(1024, 768, "Test Focus")
 		r.verticalSync := false
 		
-		val scene = new GeneralNodeContainer() with MatrixNode
-		scene.localMatrix().translate(0.0, 0.0, -600.0)
+		val scene = new GeneralNodeContainer() with ResolutionNode
+		scene.setResolution(1024, 768)
 		
 		val component1 = new Button()
 		component1.text := "Button 1"
