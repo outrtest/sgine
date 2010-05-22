@@ -22,7 +22,7 @@ import scala.math._
 
 object TestCube {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(640, 480, "Test Cube", 4, 8, 4, 4)
+		val r = Renderer.createFrame(1024, 768, "Test Cube", 4, 8, 4, 4)
 		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer()
@@ -30,7 +30,7 @@ object TestCube {
 		val cube = new ImageCube()
 		val c = MutableColor(Color.White)
 		cube.color := c
-//		cube.alpha := 0.5
+		cube.alpha := 0.5
 		cube.location.z := -1000.0
 		cube.rotation.x.adjuster = new EasingNumericAdjuster(Linear.easeIn, 2.0)
 		cube.rotation.y.adjuster = new EasingNumericAdjuster(Linear.easeIn, 4.0)

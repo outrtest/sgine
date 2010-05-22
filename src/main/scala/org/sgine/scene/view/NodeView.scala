@@ -9,11 +9,13 @@ import org.sgine.scene.event._
 import org.sgine.scene.query._
 import org.sgine.scene.view.event._
 
+import scala.collection.mutable.ArrayBuffer
+
 /**
  * A view to some Nodes that match a query in a NodeContainer.
  */
 class NodeView private (container: NodeContainer, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
-	private var queue: List[Node] = Nil
+	private var queue = new ArrayBuffer[Node]
 	
 	var sortFunction: (Node, Node) => Boolean = _
 	
@@ -29,7 +31,9 @@ class NodeView private (container: NodeContainer, query: Function1[Node, Boolean
 	
 	def sort() = {
 		if (sortFunction != null) {
-			queue = queue.sortWith(sortFunction)
+			// TODO: how do we avoid recreating?
+//			queue = queue.sortWith(sortFunction)
+			org.sgine.util.Sort.bubbleSort(queue, sortFunction)
 		}
 	}
 	
@@ -44,7 +48,8 @@ class NodeView private (container: NodeContainer, query: Function1[Node, Boolean
 	private def add(n: Node) = {
 		synchronized {
 			if (!queue.contains(n)) {
-				queue = n :: queue
+//				queue = n :: queue
+				queue += n
 				
 				Event.enqueue(NodeAddedEvent(this, n))
 			}
@@ -54,7 +59,8 @@ class NodeView private (container: NodeContainer, query: Function1[Node, Boolean
 	private def remove(n: Node) = {
 		synchronized {
 			if (queue.contains(n)) {
-				queue = queue.filterNot(_ == n)
+//				queue = queue.filterNot(_ == n)
+				queue -= n
 				
 				Event.enqueue(NodeRemovedEvent(this, n))
 			}
