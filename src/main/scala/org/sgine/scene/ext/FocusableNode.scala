@@ -15,6 +15,7 @@ import org.sgine.scene.Node
 
 trait FocusableNode extends Node {
 	val focused = new AdvancedProperty[Boolean](false, this)
+	val focusable = new AdvancedProperty[Boolean](true, this)
 	
 	focused.listeners += EventHandler(focusChanged, ProcessingMode.Blocking)
 	
@@ -78,5 +79,10 @@ object FocusableNode {
 		}
 	}
 	
-	private val focusableTest = (n: Node) => n.isInstanceOf[FocusableNode]
+//	private val focusableTest = (n: Node) => n.isInstanceOf[FocusableNode]
+	
+	private val focusableTest = (n: Node) => n match {
+		case fn: FocusableNode => fn.focusable()
+		case _ => false
+	}
 }

@@ -24,10 +24,18 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 	
 	private val revalidateMatrix = new MutableProperty[Boolean](true)
 	
+	private val updatingThread = new ThreadLocal[Boolean] {
+		override def initialValue() = false
+	}
+	
 	def invalidateMatrix(evt: Event = null) = {
-		revalidateMatrix := true
-		
-		initUpdatable()
+		if (!updatingThread.get()) {
+			revalidateMatrix := true
+			
+			updatingThread.set(true)
+			initUpdatable()
+			updatingThread.set(false)
+		}
 	}
 	
 	localMatrix().changeDelegate = () => invalidateMatrix()
@@ -36,9 +44,9 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 		super.update(time)
 		
 		if ((revalidateMatrix != null) && (revalidateMatrix())) {
-			refreshWorldMatrix()
-			
 			revalidateMatrix := false
+			
+			refreshWorldMatrix()
 		}
 	}
 	

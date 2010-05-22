@@ -12,7 +12,7 @@ trait WorldMatrixNode extends Node {
 	
 	worldMatrix().changeDelegate = () => invalidateChildren(this)
 	
-	def invalidateChildren(n: Node): Unit = {
+	private def invalidateChildren(n: Node): Unit = {
 		n match {
 			case container: NodeContainer => {
 				for (c <- container) c match {
