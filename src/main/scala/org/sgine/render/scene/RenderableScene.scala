@@ -51,7 +51,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		if (!initted) init()
 
 		itemCount = 0.0f
-//		view.sort()					// TODO: is this the most efficient way to handle this?
+		view.sort()					// TODO: is this the most efficient way to handle this?
 		view.foreach(renderItem)
 		if (showFPS) fps()
 	}
