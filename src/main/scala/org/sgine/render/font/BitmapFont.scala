@@ -152,8 +152,8 @@ object BitmapFont {
 				val id = m("id").toInt
 				val x = m("x").toDouble
 				val y = m("y").toDouble
-				val width = m("width").toDouble
-				val height = m("height").toDouble
+				val width = m("width").toDouble - 0.5					// TODO: temporary work-around - displaying too much
+				val height = m("height").toDouble - 0.5
 				val fontChar = font.create(id, x, y, width, height).asInstanceOf[BitmapFontChar]
 				fontChar._font = font
 				fontChar._code = id

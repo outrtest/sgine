@@ -2,6 +2,8 @@ package org.sgine.work
 
 import java.lang.ref.WeakReference
 
+import scala.collection.mutable.ArrayBuffer
+
 import scala.math._
 
 /**
@@ -37,7 +39,7 @@ object Updatable extends Function0[Unit] {
 	var useWorkManager = false
 	var workManager = DefaultWorkManager
 	
-	private var list: List[WeakReference[Updatable]] = Nil
+	private var array = new ArrayBuffer[WeakReference[Updatable]]()
 	
 	private var initialized = false
 	
@@ -77,11 +79,11 @@ object Updatable extends Function0[Unit] {
 		val frequency = (time - lastTime) / 1000000000.0
 		lastTime = time
 		val shouldElapse = round(1000.0 / Rate)
-		val l = list
-		for (wr <- l) {
+		for (wr <- array) {
 			val u = wr.get
 			if (u == null) {
-				list = list.filterNot(_ == wr)
+				array -= wr
+//				list = list.filterNot(_ == wr)
 			} else {
 				u.update(frequency)
 			}
@@ -95,14 +97,14 @@ object Updatable extends Function0[Unit] {
 		initialize()
 		
 		synchronized {
-			list = new WeakReference(u) :: list
+			array += new WeakReference(u)
 		}
 	}
 	
 	private def remove(u: Updatable) = {
 		synchronized {
-			list.find(wr => wr.get == u) match {
-				case s: Some[WeakReference[_]] => list = list.filterNot(_ == s.get)
+			array.find(wr => wr.get == u) match {
+				case Some(r) => array -= r
 				case None =>
 			}
 		}

@@ -1,6 +1,7 @@
 package org.sgine.render.font
 
 import java.awt.{Font => AWTFont}
+import java.awt.RenderingHints
 import java.awt.font.FontRenderContext
 
 import org.sgine.util.GeneralReusableGraphic
@@ -23,9 +24,10 @@ object BitmapFontCreator {
 		val rg = GeneralReusableGraphic
 		val g = rg(800, 600)
 		g.setFont(font)
-		g.setBackground(java.awt.Color.RED)
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+		g.setBackground(java.awt.Color.BLACK)
 		g.clearRect(0, 0, 800, 600)
-		g.setColor(java.awt.Color.BLACK)
+		g.setColor(java.awt.Color.WHITE)
 		g.drawString("a", r.getCenterX.toFloat, lm.getHeight)
 		
 		val frame = new javax.swing.JFrame()
