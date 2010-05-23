@@ -9,16 +9,18 @@ import org.sgine.render.font.FontManager
 import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
+import org.sgine.scene.ext.ResolutionNode
 
 object TestLabel {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test RenderScene")
 		
-		val scene = new GeneralNodeContainer()
+		val scene = new GeneralNodeContainer() with ResolutionNode
+		scene.setResolution(1024, 768)
+		
 		val component = new Label()
-		component.location.z := -500.0
-		component.font := FontManager("Franklin")
-		component.text := "Hello World!"
+		component.font := FontManager("Arial32")
+		component.text := "Hello World! Arial"
 		scene += component
 		
 		r.renderable := RenderableScene(scene)
