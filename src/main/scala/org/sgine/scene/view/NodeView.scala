@@ -14,7 +14,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
  * A view to some Nodes that match a query in a NodeContainer.
  */
-class NodeView private (container: NodeContainer, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
+class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
 	private var queue = new ArrayBuffer[Node]
 	
 	var sortFunction: (Node, Node) => Boolean = _
@@ -25,7 +25,8 @@ class NodeView private (container: NodeContainer, query: Function1[Node, Boolean
 	 * Invokes the initial query to populate information into the NodeView
 	 */
 	private def refresh() = {
-		NodeQuery.query(query, container, add)
+		queue.clear()
+		NodeQuery.query(query, node, add)
 		sort()
 	}
 	
@@ -69,10 +70,10 @@ class NodeView private (container: NodeContainer, query: Function1[Node, Boolean
 }
 
 object NodeView {
-	def apply(container: NodeContainer, query: Node => Boolean, asynchronous: Boolean): NodeView = {
-		val v = new NodeView(container, query)
+	def apply(node: Node, query: Node => Boolean, asynchronous: Boolean): NodeView = {
+		val v = new NodeView(node, query)
 		v.refresh()
-		val h = container.listeners += v.containerEvent _
+		val h = node.listeners += v.containerEvent _
 		h.recursion = Recursion.Children
 		if (!asynchronous) {
 			h.processingMode = ProcessingMode.Blocking
