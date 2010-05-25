@@ -61,7 +61,8 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		glPolygonOffset(1.0f, itemCount)
 		itemCount += 0.000001f
 		
-		n.asInstanceOf[Renderable].render(renderer)
+//		n.asInstanceOf[Renderable].render(renderer)
+		Renderable.render(renderer, n.asInstanceOf[Renderable])
 	}
 	
 	private var currentMouseEvent: MouseEvent = null
