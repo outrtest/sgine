@@ -143,10 +143,12 @@ class WorkManager (val name: String) {
 	def process[A](values: Seq[A], f: (A) => Unit, blocking: Boolean = true) = {
 		val count = new java.util.concurrent.atomic.AtomicInteger(values.length)
 		for (v <- values) {
-			val work = () => {
-				val r = f(v)
-				count.addAndGet(-1)
-				r
+			val work: () => Unit = () => {
+				try {
+					f(v)
+				} finally {
+					count.addAndGet(-1)
+				}
 			}
 			this += work
 		}
