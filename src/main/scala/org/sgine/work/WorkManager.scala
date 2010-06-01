@@ -132,6 +132,31 @@ class WorkManager (val name: String) {
 		w.init()
 	}
 	
+	/**
+	 * Processes the "values" through "f" using WorkManager threads
+	 * in a fully asynchronous way. If "blocking" is true the method
+	 * will block until all processing has successfully completed.
+	 * 
+	 * @param values
+	 * @param f
+	 */
+	def process[A](values: Seq[A], f: (A) => Unit, blocking: Boolean = true) = {
+		val count = new java.util.concurrent.atomic.AtomicInteger(values.length)
+		for (v <- values) {
+			val work = () => {
+				val r = f(v)
+				count.addAndGet(-1)
+				r
+			}
+			this += work
+		}
+		if (blocking) {
+			while (count.get > 0) {
+				Thread.sleep(10)
+			}
+		}
+	}
+	
 	def +=[T <: () => Unit](work: T): T = {
 		init()
 		
