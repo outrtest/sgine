@@ -282,6 +282,8 @@ class Matrix4 protected() extends Iterable[Double] {
 	
 	def scale(v: Vector3): Matrix4 = scale(v.x, v.y, v.z)
 	
+	def scaleAll(s: Double) = scale(s, s, s)
+	
 	def invert() = copy().invertLocal()
 	
 	def rotate(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = copy().rotateLocal(x, y, z)
