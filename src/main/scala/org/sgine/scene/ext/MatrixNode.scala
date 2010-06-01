@@ -16,19 +16,26 @@ import org.sgine.scene.event.SceneEventType
 
 import org.sgine.work.Updatable
 
-trait MatrixNode extends Node with Updatable {
+trait MatrixNode extends WorldMatrixNode with Updatable {
 	val localMatrix = new ImmutableProperty[Matrix4](Matrix4().identity())
-	val worldMatrix = new ImmutableProperty[Matrix4](Matrix4().identity())
 	
 	// Listen for parent change to invalidate matrix
 	listeners += EventHandler(parentChanged, ProcessingMode.Blocking)
 	
 	private val revalidateMatrix = new MutableProperty[Boolean](true)
 	
+	private val updatingThread = new ThreadLocal[Boolean] {
+		override def initialValue() = false
+	}
+	
 	def invalidateMatrix(evt: Event = null) = {
-		revalidateMatrix := true
-		
-		initUpdatable()
+		if (!updatingThread.get()) {
+			revalidateMatrix := true
+			
+			updatingThread.set(true)
+			initUpdatable()
+			updatingThread.set(false)
+		}
 	}
 	
 	localMatrix().changeDelegate = () => invalidateMatrix()
@@ -37,9 +44,9 @@ trait MatrixNode extends Node with Updatable {
 		super.update(time)
 		
 		if ((revalidateMatrix != null) && (revalidateMatrix())) {
-			refreshWorldMatrix()
-			
 			revalidateMatrix := false
+			
+			refreshWorldMatrix()
 		}
 	}
 	
@@ -56,11 +63,8 @@ trait MatrixNode extends Node with Updatable {
 		// Multiply against local matrix
 		MatrixNode.matrixStore.mult(localMatrix())
 		
-		// Apply to world matrix
+		// Apply to world matrix - causes WorldMatrixNode to invalidate children
 		worldMatrix().set(MatrixNode.matrixStore)
-		
-		// Invalidate children if NodeContainer
-		invalidateChildren(this)
 	}
 	
 	protected def updateLocalMatrix() = {
@@ -69,20 +73,8 @@ trait MatrixNode extends Node with Updatable {
 	protected def getParentWorldMatrix(parent: Node): Matrix4 = {
 		parent match {
 			case null => null
-			case mn: MatrixNode => mn.worldMatrix()
+			case mn: WorldMatrixNode => mn.worldMatrix()
 			case _ => getParentWorldMatrix(parent.parent)
-		}
-	}
-	
-	private def invalidateChildren(n: Node): Unit = {
-		n match {
-			case container: NodeContainer => {
-				for (c <- container) c match {
-					case mn: MatrixNode => mn.invalidateMatrix()
-					case _ => invalidateChildren(c)
-				}
-			}
-			case _ => // Not a container, so no children
 		}
 	}
 	

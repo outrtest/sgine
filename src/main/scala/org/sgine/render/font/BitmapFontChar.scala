@@ -22,7 +22,7 @@ class BitmapFontChar extends Image with FontChar {
 	def kerning(previous: FontChar): Double = {
 		if (previous != null) {
 			kernings.find(k => k.previous == previous.code) match {
-				case s: Some[FontKerning] => s.get.amount
+				case Some(k) => k.amount
 				case _ => 0.0
 			}
 		} else {

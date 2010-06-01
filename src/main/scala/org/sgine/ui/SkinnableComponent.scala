@@ -14,8 +14,10 @@ import org.sgine.input.event._
 
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.ui.ext.AdvancedComponent
 import org.sgine.scene.ext.FocusableNode
+
+import org.sgine.ui.ext.AdvancedComponent
+import org.sgine.ui.ext.LocationComponent
 import org.sgine.ui.ext.PaddingComponent
 
 trait SkinnableComponent extends CompositeComponent with BoundingObject with PaddingComponent with FocusableNode {
@@ -28,7 +30,7 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 	protected def pressedResource: Resource
 	protected def focusedResource: Resource
 	
-	protected def face: Component
+	protected def face: LocationComponent
 	
 	protected def skinX1: Double
 	protected def skinY1: Double
@@ -41,8 +43,8 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 	configureListeners()
 
 	override protected def initComponent() = {
-		this += face
 		this += skin
+		this += face
 		
 		skin(normalResource, skinX1, skinY1, skinX2, skinY2)
 		updateState()

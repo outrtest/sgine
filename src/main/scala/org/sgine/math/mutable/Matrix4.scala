@@ -24,6 +24,10 @@ class Matrix4 protected() extends ImmutableMatrix4 {
 	override protected def buf(index: Int, v: Double) = {
 		super.buf(index, v)
 		
+		changed()
+	}
+	
+	private def changed() = {
 		if (changeDelegate != null) {
 			changeDelegate()
 		}
@@ -49,7 +53,13 @@ class Matrix4 protected() extends ImmutableMatrix4 {
 		  		   				m30, m31, m32, m33
 		  		   			  ).asInstanceOf[Matrix4]
 	
-	override def set(m: ImmutableMatrix4) = setLocal(m).asInstanceOf[Matrix4]
+	override def set(m: ImmutableMatrix4) = {
+		val v = setLocal(m).asInstanceOf[Matrix4]
+		
+		changed()
+		
+		v
+	}
 	
 	override def mult(row: Int, column: Int, m: Double) = multLocal(row, column, m).asInstanceOf[Matrix4]
 	

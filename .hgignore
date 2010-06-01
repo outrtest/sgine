@@ -25,3 +25,6 @@ syntax: glob
 syntax: glob
 *~
 
+
+syntax: regexp
+^screenshots$

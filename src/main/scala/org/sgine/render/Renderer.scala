@@ -61,7 +61,9 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			while ((keepAlive) && (!Display.isCloseRequested)) {
 				Display.update()
 				
-				Updatable.update()
+				if (!Updatable.useWorkManager) {
+					Updatable.update()
+				}
 				render()
 			}
 		} catch {
@@ -141,7 +143,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			Mouse.update(this)
 			
 			val r = renderable()
-			if (r != null) r.render(this)
+			if (r != null) Renderable.render(this, r)
 		}
 		lastRender = currentRender
 		
