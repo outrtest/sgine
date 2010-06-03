@@ -47,6 +47,7 @@ class Button extends SkinnableComponent with AdvancedComponent with PaddingCompo
 	configureListeners()
 	
 	protected def configureBindings() = {
+		face.location.z := 0.00001
 		face.font bind font
 		face.text bind text
 		face.color bind textColor

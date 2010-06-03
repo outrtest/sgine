@@ -27,11 +27,7 @@ class Texture (val width: Int, val height: Int) {
 	 * @return
 	 * 		textureId
 	 */
-	private def generateId() = {
-		val tmp = ByteBuffer.allocateDirect(4).asIntBuffer;
-		glGenTextures(tmp);
-		tmp.get(0);
-	}
+	private def generateId() = glGenTextures()
 	
 	/**
 	 * Bind the texture to be used. Must be called within the OpenGL thread.

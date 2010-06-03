@@ -7,16 +7,17 @@ import org.sgine.render.Renderer
 import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
+import org.sgine.scene.ext.ResolutionNode
 
 object TestImage {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test RenderScene")
 		
-		val scene = new GeneralNodeContainer()
+		val scene = new GeneralNodeContainer() with ResolutionNode
+		scene.setResolution(1024, 768)
+		
 		val component = new Image()
-		component.location.z := -500.0
 		component.source := Resource("puppies.jpg")
-		component.color := Color(1.0, 1.0, 1.0, 0.5)
 		scene += component
 		
 		r.renderable := RenderableScene(scene)

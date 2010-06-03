@@ -9,4 +9,10 @@ class Scale(override val parent: Component) extends PropertyContainer {
 	val x = new AdvancedProperty(1.0, this)
 	val y = new AdvancedProperty(1.0, this)
 	val z = new AdvancedProperty(1.0, this)
+	
+	def set(s: Double) = {
+		x := s
+		y := s
+		z := s
+	}
 }

@@ -32,6 +32,7 @@ object TestCube {
 		val c = MutableColor(Color.White)
 		cube.color := c
 //		cube.alpha := 0.5
+		cube.scale.set(0.01)
 		cube.location.z := -1000.0
 		cube.rotation.x.adjuster = new LinearNumericAdjuster(2.0)
 		cube.rotation.y.adjuster = new LinearNumericAdjuster(2.0)
@@ -48,8 +49,8 @@ object TestCube {
 		cube.rotation.z := Double.MaxValue
 
 		// Move the cube back and forth perpetually on the x-axis
-		val me1 = new PropertyChangeEffect(cube.location.x, -600.0)
-		val me2 = new PropertyChangeEffect(cube.location.x, 600.0)
+		val me1 = new PropertyChangeEffect(cube.location.x, -10.0)
+		val me2 = new PropertyChangeEffect(cube.location.x, 10.0)
 		val move = new CompositeEffect(me1, me2)
 		move.repeat = -1
 		move.start()

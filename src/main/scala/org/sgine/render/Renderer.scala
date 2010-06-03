@@ -30,8 +30,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	private var keepAlive = true
 	private var lastRender = -1L
 
-	val nearDistance = 1.0
-	val farDistance = 20000.0
+	val nearDistance = 100.0
+	val farDistance = 2000.0
 	
 	private val storeRay = MutableRay()
 	private val storeMatrix = MutableMatrix4()

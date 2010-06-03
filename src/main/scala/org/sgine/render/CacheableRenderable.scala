@@ -14,7 +14,7 @@ import org.sgine.scene.view.NodeView
 
 trait CacheableRenderable extends Renderable {
 	private val revalidateCache = new MutableProperty[Boolean](true)
-	private val view = NodeView(this, RenderableQuery, false)
+	private val nodeView = NodeView(this, RenderableQuery, false)
 	
 	private var listId: Int = _
 	
@@ -49,7 +49,7 @@ trait CacheableRenderable extends Renderable {
 			
 			// Render
 			this.renderer = renderer
-			view.foreach(renderItem)
+			nodeView.foreach(renderItem)
 			
 			// End List
 			glEndList()

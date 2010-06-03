@@ -10,6 +10,7 @@ import org.sgine.render.Renderer
 import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
+import org.sgine.scene.ext.ResolutionNode
 
 import scala.math._
 
@@ -19,12 +20,12 @@ object TestMousePicking {
 		val r = Renderer.createFrame(1024, 768, "Test Mouse Picking")
 		
 		// Create a mutable scene
-		val scene = new GeneralNodeContainer()
+		val scene = new GeneralNodeContainer() with ResolutionNode
+		scene.setResolution(1024, 768)
 		
 		// Create an image to show the puppies
 		val component = new Image()
 		component.location.x := -200.0
-		component.location.z := -500.0
 		component.scale.x := 1.5
 		component.rotation.y := Pi / -4.0
 		component.source := Resource("puppies.jpg")			// 700x366

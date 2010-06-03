@@ -4,6 +4,8 @@ import java.awt.{Font => AWTFont}
 import java.awt.RenderingHints
 import java.awt.font.FontRenderContext
 
+import org.sgine.render.TextureUtil
+
 import org.sgine.util.GeneralReusableGraphic
 
 import scala.math._
@@ -28,15 +30,13 @@ object BitmapFontCreator {
 		g.setBackground(java.awt.Color.BLACK)
 		g.clearRect(0, 0, 800, 600)
 		g.setColor(java.awt.Color.WHITE)
-		g.drawString("a", r.getCenterX.toFloat, lm.getHeight)
+		g.drawString("Hello World!", r.getCenterX.toFloat, lm.getHeight)
 		
-		val frame = new javax.swing.JFrame()
-		frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE)
-		frame.setSize(800, 600)
-		val icon = new javax.swing.ImageIcon(rg())
-		val label = new javax.swing.JLabel(icon)
-		frame.setContentPane(label)
-		frame.setVisible(true)
+		val texture = TextureUtil(rg())
+		
+		rg.release()
+		
+		texture
 	}
 	
 	def main(args: Array[String]): Unit = {

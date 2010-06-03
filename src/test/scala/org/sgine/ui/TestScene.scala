@@ -19,6 +19,7 @@ object TestScene {
 		
 		val container1 = new GeneralNodeContainer() with MatrixNode
 		container1.localMatrix().translate(0.0, 0.0, -200.0)
+		container1.localMatrix().scaleAll(0.005)
 		scene += container1
 		
 		val container2 = new GeneralNodeContainer() with MatrixNode

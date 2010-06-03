@@ -11,6 +11,7 @@ import org.sgine.render.Renderer
 import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
+import org.sgine.scene.ext.ResolutionNode
 
 import scala.math._
 
@@ -19,9 +20,10 @@ object TestStates {
 		val r = Renderer.createFrame(1024, 768, "Test States")
 		r.verticalSync := true
 		
-		val scene = new GeneralNodeContainer()
+		val scene = new GeneralNodeContainer() with ResolutionNode
+		scene.setResolution(1024, 768)
+		
 		val component = new Image()
-		component.location.z := -500.0
 		component.source := Resource("puppies.jpg")
 		
 		// Adjusters cause the state transition instead of just jumping into place
