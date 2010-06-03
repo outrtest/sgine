@@ -17,7 +17,7 @@ class Timer private() {
 		add(name, System.currentTimeMillis - local.get()(name))
 	}
 	
-	def get(name: String) = map(name)
+	def get(name: String) = map.getOrElse(name, 0L)
 	
 	def add(name: String, value: Long) = {
 		synchronized {
