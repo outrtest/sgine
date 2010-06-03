@@ -6,27 +6,26 @@ import javax.imageio._
 
 import org.lwjgl.opengl.GL11._
 
-object TestRenderer {
+import org.sgine.core.Color
+
+import org.sgine.render.shape.Quad
+
+object TestQuad {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Renderer")
+		val r = Renderer.createFrame(1024, 768, "Test Quad")
+		r.verticalSync := false
 		
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 		
 		val m = Matrix4().translate(z = -1000.0).scaleAll(0.04)
 		val i = Image(t)
+		val quad = Quad(200.0, 200.0, Color.Blue, i)
 		val fps = FPS(1.0)
 		
 		val a = new Array[() => Unit](3)
 		a(0) = MatrixState(m)
-		a(1) = i
+		a(1) = quad
 		a(2) = fps
 		r.renderable := RenderList(a)
-		
-		println("Renderer started!")
-		while (r.isAlive) {
-			m.rotate(y = 0.001)
-			
-			Thread.sleep(1)
-		}
 	}
 }

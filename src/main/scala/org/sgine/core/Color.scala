@@ -42,7 +42,7 @@ object Color {
 	val Bisque = Color(0xffffe4c4)
 	val Black = Color(0xff000000)
 	val BlanchedAlmond = Color(0xffffebcd)
-	val Blue = Color(0xff0000f)
+	val Blue = Color(0xff0000ff)
 	val BlueViolet = Color(0xff8a2be2)
 	val Brown = Color(0xffa52a2a)
 	val Burlywood = Color(0xffdeb887)
