@@ -23,14 +23,15 @@ class Color private[core]() {
 		Color(r, g, b, a)
 	}
 	
-	private def this(value: Int) = {
+	private def this(value: Long) = {
 		this()
-		
 		_alpha = (value >> 24 & 0xff) / 255.0
 		_red = (value >> 16 & 0xff) / 255.0
 		_green = (value >> 8 & 0xff) / 255.0
 		_blue = (value >> 0 & 0xff) / 255.0
 	}
+	
+	override def toString() = "Color(r=" + red + ", g=" + green + ", b=" + blue + ", a=" + alpha + ")"
 }
 
 object Color {
@@ -177,7 +178,7 @@ object Color {
 	def random = values(new scala.util.Random().nextInt(values.length))
 	lazy val values = loadValues()
 	
-	def apply(value: Int) = new Color(value)
+	def apply(value: Long) = new Color(value)
 	
 	def apply(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 1.0) = {
 		val c = new Color()
