@@ -17,6 +17,7 @@ import org.sgine.math.mutable.Vector3
 import org.sgine.render.FPS
 import org.sgine.render.Renderable
 import org.sgine.render.Renderer
+import org.sgine.render.RenderUpdatable
 
 import org.sgine.scene.Node
 import org.sgine.scene.NodeContainer
@@ -24,8 +25,10 @@ import org.sgine.scene.ext.MatrixNode
 import org.sgine.scene.view.NodeView
 
 class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) extends Renderable {
-	val view = NodeView(scene, RenderableQuery, false)
-	view.sortFunction = RenderSort
+	val renderableView = NodeView(scene, RenderableQuery, false)
+	renderableView.sortFunction = RenderSort
+	val updatableView = NodeView(scene, RenderUpdatableQuery, false)
+	updatableView.sortFunction = RenderSort
 	val fps = FPS()
 	
 	private val storeVector3 = Vector3()
@@ -51,8 +54,10 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		if (!initted) init()
 
 		itemCount = 0.0f
-		view.sort()					// TODO: is this the most efficient way to handle this?
-		view.foreach(renderItem)
+		renderableView.sort()					// TODO: is this the most efficient way to handle this?
+		renderableView.foreach(renderItem)
+		updatableView.sort()
+		updatableView.foreach(updateItem)
 		if (showFPS) fps()
 	}
 	
@@ -65,11 +70,15 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		Renderable.render(renderer, n.asInstanceOf[Renderable])
 	}
 	
+	private val updateItem = (n: Node) => {
+		RenderUpdatable.update(renderer, n.asInstanceOf[RenderUpdatable])
+	}
+	
 	private var currentMouseEvent: MouseEvent = null
 	private def mouseEvent(evt: MouseEvent) = {
 		currentMouseEvent = evt
 		currentHits = Nil
-		view.foreach(pickTest)
+		renderableView.foreach(pickTest)
 		
 		// Handle mouseOver and mouseOut
 		if (evt.isInstanceOf[MouseMoveEvent]) {
