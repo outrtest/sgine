@@ -30,13 +30,13 @@ object TestFonts {
 		val m2 = Matrix4().translate(y = -50.0, z = -500.0)
 		val fps = FPS(1.0, lcdFont)
 		
-		val a = new Array[() => Unit](5)
-		a(0) = MatrixState(m1)
-		a(1) = () => franklinFont.drawString("Franklin Gothic Heavy with a blue gradient.", true)
-		a(2) = MatrixState(m2)
-		a(3) = () => arialFont.drawString("Standard Arial", false)
-		a(4) = fps
-		r.renderable := RenderList(a)
+		r.renderable := RenderList(
+									MatrixState(m1),
+									() => franklinFont.drawString("Franklin Gothic Heavy with a blue gradient.", true),
+									MatrixState(m2),
+									() => arialFont.drawString("Standard Arial", false),
+									fps
+								   )
 		
 		Keyboard.listeners += test _
 		

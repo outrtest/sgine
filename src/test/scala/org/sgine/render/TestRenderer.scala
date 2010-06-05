@@ -20,7 +20,7 @@ object TestRenderer {
 		a(0) = MatrixState(m)
 		a(1) = i
 		a(2) = fps
-		r.renderable := RenderList(a)
+		r.renderable := RenderList(MatrixState(m), i, fps)
 		
 		println("Renderer started!")
 		while (r.isAlive) {
