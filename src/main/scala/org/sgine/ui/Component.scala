@@ -17,12 +17,13 @@ import org.sgine.property.state.Stateful
 
 import org.sgine.render.Renderable
 import org.sgine.render.Renderer
+import org.sgine.render.RenderUpdatable
 
 import org.sgine.scene.NodeContainer
 
 import org.sgine.ui.ext._
 
-trait Component extends PropertyContainer with Renderable with MatrixNode with ColorNode with Stateful {
+trait Component extends PropertyContainer with Renderable with RenderUpdatable with MatrixNode with ColorNode with Stateful {
 	val id = new AdvancedProperty[String](null, this)
 	val visible = new AdvancedProperty[Boolean](true, this)
 	val renderer = new DelegateProperty(() => _renderer)
@@ -30,6 +31,9 @@ trait Component extends PropertyContainer with Renderable with MatrixNode with C
 	private var firstRender = true
 	
 	private var _renderer: Renderer = _
+	
+	def update(renderer: Renderer) = {
+	}
 	
 	def render(renderer: Renderer) = {
 		_renderer = renderer

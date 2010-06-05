@@ -24,7 +24,7 @@ object TestVBO {
 	private lazy val triangleBuffer = createTriangleBuffer()
 	
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test VBO", 4, 8, 4, 4)
+		val r = Renderer.createFrame(1024, 768, "Test VBO") //, 4, 8, 4, 4)
 		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer() with WorldMatrixNode
