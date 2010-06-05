@@ -29,10 +29,14 @@
 	
 	<target name="package">
 		<java taskname="sbt" jar="${launch}" fork="true">
-			<arg value="package"/>
-			<arg value="package-src"/>
-			<arg value="package-test"/>
-			<arg value="package-test-src"/>
+			<arg value="test"/>
+			<arg value="package-all"/>
+		</java>
+	</target>
+	
+	<target name="doc">
+		<java taskname="sbt" jar="${launch}" fork="true">
+			<arg value="doc"/>
 		</java>
 	</target>
 	
