@@ -24,10 +24,6 @@ object TestMesh {
 							 0.0, -100.0, 0.0)
 		val fps = FPS(1.0)
 		
-		val a = new Array[() => Unit](3)
-		a(0) = MatrixState(m)
-		a(1) = mesh
-		a(2) = fps
-		r.renderable := RenderList(a)
+		r.renderable := RenderList(MatrixState(m), mesh, fps)
 	}
 }
