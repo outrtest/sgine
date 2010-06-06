@@ -46,11 +46,13 @@ class Image extends AdvancedComponent with BoundingObject {
 	
 	private def renderImageChanged(evt: PropertyChangeEvent[RenderImage]) = {
 		val i = evt.newValue
-		_bounding.width = i.width
-		_bounding.height = i.height
-		
-		val e = new BoundingChangeEvent(this, _bounding)
-		Event.enqueue(e)
+		if ((_bounding.width != i.width) || (_bounding.height != i.height)) {
+			_bounding.width = i.width
+			_bounding.height = i.height
+			
+			val e = new BoundingChangeEvent(this, _bounding)
+			Event.enqueue(e)
+		}
 	}
 	
 	override def toString() = "Image(" + source + ")"

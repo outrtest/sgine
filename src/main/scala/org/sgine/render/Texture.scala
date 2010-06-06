@@ -15,7 +15,19 @@ import org.sgine.property.AdvancedProperty
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Texture (val width: Int, val height: Int) {
+class Texture() {
+	def width = _width
+	def height = _height
+	
+	private var _width = 0
+	private var _height = 0
+	
+	def this(width: Int, height: Int) = {
+		this()
+		_width = width
+		_height = height
+	}
+	
 	lazy val id = generateId()
 	var mipmap: Boolean = true
 	
@@ -82,16 +94,19 @@ class Texture (val width: Int, val height: Int) {
 			var y = u.y
 			var w = u.width
 			var h = u.height
-//			if ((u.width != width) || (u.height != height)) {
-//				if (GLContext.getCapabilities.GL_ARB_texture_non_power_of_two) {
-//					x = 0
-//					y = 0
-//				} else {		// NPOT not supported, need to adjust
-//					w = nextPOT(w)
-//					h = nextPOT(h)
-//					x = Math.round((w - u.width) / 2.0f)
-//					y = Math.round((h - u.height) / 2.0f)
-//				}
+			if ((u.width != width) || (u.height != height)) {
+				if (GLContext.getCapabilities.GL_ARB_texture_non_power_of_two) {
+					x = 0
+					y = 0
+				} else {		// NPOT not supported, need to adjust
+					w = nextPOT(w)
+					h = nextPOT(h)
+					x = Math.round((w - u.width) / 2.0f)
+					y = Math.round((h - u.height) / 2.0f)
+				}
+				_width = w
+				_height = h
+			}
 			if (!created) {
 				glTexImage2D(GL_TEXTURE_2D, 0, u.imageFormat, w, h, 0, u.textureFormat, u.imageType, null.asInstanceOf[ByteBuffer])
 				created = true
