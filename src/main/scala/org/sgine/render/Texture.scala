@@ -40,6 +40,10 @@ class Texture (val width: Int, val height: Int) {
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
 	}
 	
+	def unbind() = {
+		glBindTexture(GL_TEXTURE_2D, 0)
+	}
+	
 	/**
 	 * Update the texture with the passed ByteBuffer. This is a thread-safe operation.
 	 * 
