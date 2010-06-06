@@ -16,7 +16,6 @@ trait Primitive extends Function0[Unit] {
 			range = 0 until vertexCount
 		}
 		
-		
 		begin()
 		range.foreach(renderVertex)
 		end()

@@ -42,6 +42,10 @@ class Image protected() extends Function0[Unit] {
 		glVertex3d(-w + offsetX, h + offsetY, 0.0)
 		
 		glEnd()
+		
+		if (texture != null) {
+			texture.unbind()
+		}
 	}
 }
 
