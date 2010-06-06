@@ -1,10 +1,10 @@
-package org.sgine.render.shape
+package org.sgine.render.primitive
 
 import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
 
-class Mesh(val color: Color = Color.White) extends Shape {
+class Mesh(val color: Color = Color.White) extends Primitive {
 	var indexes: Seq[Int] = Nil
 	var vertices: Seq[Double] = Nil
 	val mode = GL_TRIANGLES

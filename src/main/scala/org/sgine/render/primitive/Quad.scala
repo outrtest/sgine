@@ -1,4 +1,4 @@
-package org.sgine.render.shape
+package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
@@ -6,7 +6,7 @@ import org.sgine.render.Image
 
 import org.lwjgl.opengl.GL11._
 
-class Quad protected(val width: Double, val height: Double, val color: Color, val image: Image) extends Shape {
+class Quad protected(val width: Double, val height: Double, val color: Color, val image: Image) extends Primitive {
 	val mode = GL_QUADS
 	
 	val vertexCount = 4

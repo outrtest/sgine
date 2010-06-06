@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.sgine.render.shape
+package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11._
 
 import scala.math._
 
-class Disk protected(val width: Double, val height: Double, val sides: Int, val color: Color, val image: Image) extends Shape {
+class Disk protected(val width: Double, val height: Double, val sides: Int, val color: Color, val image: Image) extends Primitive {
   val mode = GL_TRIANGLE_FAN
 
   val vertexCount = sides + 2

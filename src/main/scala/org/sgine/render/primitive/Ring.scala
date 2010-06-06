@@ -1,4 +1,4 @@
-package org.sgine.render.shape
+package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11._
 import scala.math._
 
 class Ring protected(val width: Double, val height: Double, val sides: Int, val holeRatio: Double,
-                     val color: Color, val image: Image) extends Shape {
+                     val color: Color, val image: Image) extends Primitive {
   val mode = GL_QUAD_STRIP
 
   val vertexCount = 2 * sides + 2

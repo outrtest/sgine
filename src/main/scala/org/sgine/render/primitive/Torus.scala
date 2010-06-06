@@ -1,4 +1,4 @@
-package org.sgine.render.shape
+package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
@@ -10,7 +10,7 @@ import scala.math._
 
 class Torus protected(val outerRadius: Double, val innerRadius: Double,
                       val outerSamples: Int, val innerSamples: Int,
-                      val color: Color, val image: Image) extends Shape {
+                      val color: Color, val image: Image) extends Primitive {
   val mode = GL_QUAD_STRIP
 
   val vertexCount = 2 * outerSamples * (innerSamples + 1)

@@ -1,8 +1,8 @@
-package org.sgine.render.shape
+package org.sgine.render.primitive
 
 import org.lwjgl.opengl.GL11._
 
-trait Shape extends Function0[Unit] {
+trait Primitive extends Function0[Unit] {
 	def mode: Int
 	def vertexCount: Int
 	def color(index: Int): Unit

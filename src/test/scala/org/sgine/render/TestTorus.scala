@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
 
-import org.sgine.render.shape.Torus
+import org.sgine.render.primitive.Torus
 
 object TestTorus {
 	def main(args: Array[String]): Unit = {

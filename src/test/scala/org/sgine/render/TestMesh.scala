@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
 
-import org.sgine.render.shape.Mesh
+import org.sgine.render.primitive.Mesh
 
 object TestMesh {
 	def main(args: Array[String]): Unit = {
