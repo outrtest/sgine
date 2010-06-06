@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
 
-import org.sgine.render.shape.Ring
+import org.sgine.render.primitive.Ring
 
 object TestRing {
 	def main(args: Array[String]): Unit = {

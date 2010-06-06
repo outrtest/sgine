@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
 
-import org.sgine.render.shape.Quad
+import org.sgine.render.primitive.Quad
 
 object TestQuad {
 	def main(args: Array[String]): Unit = {
