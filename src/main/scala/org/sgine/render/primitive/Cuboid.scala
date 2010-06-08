@@ -29,9 +29,9 @@ extends Primitive {
   def vertex(index: Int) = {
     val plane = index / 4
     val v = index % 4
-    var xb = if (plane == 0) -1 else 1
-    var yb = if (plane == 2) -1 else 1
-    var zb = if (plane == 4) -1 else 1
+    val xb = if (plane == 0) -1 else 1
+    val yb = if (plane == 2) -1 else 1
+    val zb = if (plane == 4) -1 else 1
     val xk = if (plane / 2 == 0) xb else if (v % 3 == 0) -xb else xb
     val yk = if (plane / 2 == 1) yb else if (v <= 1) -yb else yb
     val zk = plane / 2 match {
