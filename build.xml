@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="sgine" basedir="." default="jar">
+	<property environment="env"/>
+	
+    <property name="src" location="src/main/scala"/>
+	<property name="tests" location="src/test/scala"/>
+	<property name="test-html" location="src/test/html"/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/>
+    <property name="lib" location="lib"/>
+    <property name="jar" value="${ant.project.name}.jar"/>
+	<property name="jar.tests" value="${ant.project.name}.tests.jar"/>
+	<property name="scala.home" location="${env.SCALA_HOME}"/>
+	<property name="keystore" value="sgine.tests.keystore"/>
+	
+    <path id="cp">
+    	<fileset dir="${lib}">
+    		<include name="*.jar"/>
+    	</fileset>
+        <fileset dir="${scala.home}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+	
+	<path id="cp-test">
+		<fileset dir="${lib}">
+    		<include name="*.jar"/>
+    	</fileset>
+        <fileset dir="${scala.home}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    	<fileset dir="${dist}">
+    		<include name="*.jar"/>
+    	</fileset>
+	</path>
+	
+	<mkdir dir="${dist}"/>
+	
+	<taskdef resource="scala/tools/ant/antlib.xml" classpathref="cp"/>
+	<taskdef name="scalatest" classname="org.scalatest.tools.ScalaTestAntTask">
+		<classpath refid="cp-test"/>
+	</taskdef>
+
+    <target name="compile">
+        <delete dir="${build}"/>
+        <mkdir dir="${build}"/>
+    	<mkdir dir="${dist}"/>
+    	<scalac srcdir="${src}" destdir="${build}" classpathref="cp" deprecation="on" unchecked="on"/>
+    </target>
+	
+	<target name="compile-tests" depends="jar">
+		<delete dir="${build}"/>
+        <mkdir dir="${build}"/>
+    	<scalac srcdir="${tests}" destdir="${build}" classpathref="cp-test" deprecation="on" unchecked="on"/>
+	</target>
+	
+    <target name="jar" depends="compile">
+        <jar destfile="${dist}/${jar}" basedir="${build}" index="true"/>
+    </target>
+	
+	<target name="jar-tests" depends="compile-tests">
+		<copy todir="${build}/resource">
+			<fileset dir="${tests}/resource">
+	            <include name="*.*"/>
+	        </fileset>
+		</copy>
+		<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
+	</target>
+		
+	<target name="test-deploy">
+		<mkdir dir="${dist}/test"/>
+		<copy todir="${dist}/test">
+			<fileset dir="${test-html}"/>
+			<fileset dir="${scala.home}/lib">
+				<include name="scala-library.jar"/>
+			</fileset>
+			<fileset dir="${lib}">
+				<include name="jinput.jar"/>
+				<include name="lwjgl.jar"/>
+				<include name="lwjgl_util.jar"/>
+				<include name="lwjgl_util_applet.jar"/>
+				<include name="lzma.jar"/>
+			</fileset>
+			<fileset dir="${dist}">
+				<include name="sgine.jar"/>
+				<include name="sgine.tests.jar"/>
+			</fileset>
+		</copy>
+		<jar destfile="${dist}/test/linux_natives.jar" basedir="${lib}/native/linux"/>
+		<jar destfile="${dist}/test/macosx_natives.jar" basedir="${lib}/native/macosx"/>
+		<jar destfile="${dist}/test/solaris_natives.jar" basedir="${lib}/native/solaris"/>
+		<jar destfile="${dist}/test/windows_natives.jar" basedir="${lib}/native/windows"/>
+		
+		<delete file="${dist}/test/${keystore}"/>
+				
+		<genkey alias="sgine" keystore="${dist}/test/${keystore}" storepass="sgine.tests">
+			<dname>
+				<param name="CN" value="sgine"/>
+				<param name="OU" value="sgine"/>
+				<param name="O" value="sgine.org"/>
+				<param name="C" value="US"/>
+			</dname>
+		</genkey>
+		
+		<signjar keystore="${dist}/test/${keystore}" alias="sgine" keypass="sgine.tests" storepass="sgine.tests" verbose="false">
+			<fileset dir="${dist}/test/">
+				<include name="*.jar"/>
+			</fileset>
+		</signjar>
+	</target>
+	
+	<target name="run-opengl-test" depends="jar-tests">
+		<java classpathref="cp-test" classname="org.sgine.opengl.TestWindow" fork="true">
+			<jvmarg value="-Djava.library.path=${lib}/native/windows"/>
+		</java>
+	</target>
+	
+	<target name="run-opengl-scene-test" depends="jar-tests">
+		<java classpathref="cp-test" classname="org.sgine.opengl.scene.TestGLScene" fork="true">
+			<jvmarg value="-Djava.library.path=${lib}/native/windows"/>
+		</java>
+	</target>
+	
+	<target name="run-visual-test" depends="jar-tests">
+		<java classpathref="cp-test" classname="org.sgine.visual.BasicVisualTest" fork="true">
+			<jvmarg value="-Djava.library.path=${lib}/native/windows"/>
+		</java>
+	</target>
+	
+	<target name="run-work-test" depends="jar">
+		<java classpathref="cp" classname="org.sgine.work.TestPerformance"/>
+	</target>
+	
+	<target name="run-properties-test" depends="jar">
+		<java classpathref="cp" classname="org.sgine.property.TestProperties"/>
+	</target>
+	
+	<target name="run-easing-test" depends="jar">
+		<java classpathref="cp" classname="org.sgine.easing.BackTest"/>
+	</target>
+
+	<target name="run-tests">
+		<java taskname="scalatest" classpathref="cp-test" classname="org.scalatest.tools.Runner" fork="true">
+			<arg value="-p"/>
+			<arg value="."/>
+			<arg value="-oWD"/>
+			<arg value="-s"/>
+			<arg value="org.sgine.property.PropertyTests"/>
+			<arg value="-s"/>
+			<arg value="org.sgine.event.TestEvents"/>
+		</java>
+	</target>
+	
+	<target name="run-applet-test" depends="jar-tests,test-deploy">
+		<java classpathref="cp-test" classname="org.sgine.util.Desktop" fork="true">
+			<arg value="browse"/>
+			<arg value="file:/${dist}/test/TestApplet.html"/>
+		</java>
+	</target>
+
+	<target name="run-tests-build-first" depends="jar-tests, run-tests"/>
+</project>
