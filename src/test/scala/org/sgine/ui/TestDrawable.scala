@@ -12,6 +12,7 @@ import org.sgine.scene.ext.ResolutionNode
 object TestDrawable {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test Drawable")
+		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer() with ResolutionNode
 		scene.setResolution(1024, 768)
@@ -22,10 +23,13 @@ object TestDrawable {
 		component.painter := testPaint
 		scene += component
 		
+		component.invalidateDrawing()
+		
 		r.renderable := RenderableScene(scene)
 	}
 	
 	def testPaint(g: java.awt.Graphics2D) = {
+		println("DRAWING!")
 		g.setBackground(java.awt.Color.RED)
 		g.setColor(java.awt.Color.ORANGE)
 		g.clearRect(0, 0, 250, 250)

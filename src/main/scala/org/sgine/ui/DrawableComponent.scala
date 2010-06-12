@@ -1,5 +1,8 @@
 package org.sgine.ui
 
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.sgine.bounding.BoundingObject
@@ -16,69 +19,37 @@ import org.sgine.property.MutableProperty
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.{Image => RenderImage}
-import org.sgine.render.Texture
+import org.sgine.render.StreamingTexture
 import org.sgine.render.TextureUtil
 
 import org.sgine.ui.ext.AdvancedComponent
 
 import org.sgine.util.GeneralReusableGraphic
 
-trait DrawableComponent extends Component with BoundingObject {
+import org.sgine.work.DefaultWorkManager
+
+trait DrawableComponent extends CachedComponent {
 	val painter = new AdvancedProperty[(java.awt.Graphics2D) => Unit](null, this)
 	
-	val width = new AdvancedProperty[Int](0, this)
-	val height = new AdvancedProperty[Int](0, this)
-	
-	protected val _bounding = BoundingQuad()
-	
-	private val dirty = new AtomicBoolean(true)
-	
-	private val texture = new Texture(width(), height())
-	private var image = new RenderImage()
-	
-	configureListeners()
-	
-	protected def drawComponent() = {
-		if (dirty.get) {
-			val painter = this.painter()
-			if (painter != null) {
-				dirty.set(false)
+	protected def draw(buffer: ByteBuffer): Unit = {
+		val painter = this.painter()
+		if (painter != null) {
+			val g = GeneralReusableGraphic(width(), height())
+			try {
+				painter(g)
 				
-				val g = GeneralReusableGraphic(width(), height())
-				try {
-					painter(g)
-					
-					TextureUtil(texture, GeneralReusableGraphic(), 0, 0, width(), height())
-					image.texture = texture
-					image.x = 0.0
-					image.y = 0.0
-					image.width = width()
-					image.height = height()
-				} finally {
-					GeneralReusableGraphic.release()
-				}
-				
-				if ((_bounding.width != width()) || (_bounding.height != height())) {
-					_bounding.width = width()
-					_bounding.height = height()
-					
-					val e = new BoundingChangeEvent(this, _bounding)
-					Event.enqueue(e)
-				}
+				TextureUtil.image2Buffer(GeneralReusableGraphic(), buffer)
+			} finally {
+				GeneralReusableGraphic.release()
 			}
 		}
-		
-		image()
 	}
 	
-	private def configureListeners() = {
-		width.listeners += EventHandler(invalidateDrawing, processingMode = ProcessingMode.Blocking)
-		height.listeners += EventHandler(invalidateDrawing, processingMode = ProcessingMode.Blocking)
+	override protected def configureListeners() = {
+		super.configureListeners()
 		painter.listeners += EventHandler(invalidateDrawing, processingMode = ProcessingMode.Blocking)
-	}
-	
-	def invalidateDrawing(evt: PropertyChangeEvent[_] = null) = {
-		dirty.set(true)
+		
+		true
 	}
 }
 

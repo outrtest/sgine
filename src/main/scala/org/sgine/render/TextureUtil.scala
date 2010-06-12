@@ -16,7 +16,7 @@ object TextureUtil {
 	def apply(image: BufferedImage): Texture = apply(image, image.getWidth, image.getHeight)
 	
 	def apply(image: BufferedImage, width: Int, height: Int): Texture = {
-		val texture = new Texture(width, height)
+		val texture = new BasicTexture(width, height)
 		
 		apply(texture, image, 0, 0, texture.width, texture.height)
 		
@@ -35,7 +35,7 @@ object TextureUtil {
 	 * @param offsetX
 	 * @param offsetY
 	 */
-	def apply(texture: Texture, image: BufferedImage, x: Int, y: Int, width: Int, height: Int, offsetX: Int = 0, offsetY: Int = 0): Unit = {
+	def apply(texture: BasicTexture, image: BufferedImage, x: Int, y: Int, width: Int, height: Int, offsetX: Int = 0, offsetY: Int = 0, buffer: ByteBuffer = null): Unit = {
 		if (isValidImage(image)) {
 			if (image.getProperty("reusableGraphic") != "yes") {
 				image.coerceData(true)		// Make sure the data is compatible
@@ -43,7 +43,10 @@ object TextureUtil {
 			
 			val data = new Array[Byte](width * 4)
 			val raster = image.getRaster
-			val buffer = ByteBuffer.allocateDirect((width * height) * 4).order(ByteOrder.nativeOrder)
+			val b = buffer match {
+				case null => ByteBuffer.allocateDirect((width * height) * 4).order(ByteOrder.nativeOrder)
+				case _ => buffer
+			}
 			
 			for (i <- 0 until height) {
 				raster.getDataElements(x, y + i, width, 1, data)
@@ -61,6 +64,34 @@ object TextureUtil {
 				g.dispose()
 				
 				apply(texture, rg(), x, y, width, height, offsetX, offsetY)
+			} finally {
+				rg.release()
+			}
+		}
+	}
+	
+	def image2Buffer(image: BufferedImage, buffer: ByteBuffer): Unit = {
+		if (isValidImage(image)) {
+			if (image.getProperty("reusableGraphic") != "yes") {
+				image.coerceData(true)		// Make data compatible
+			}
+			
+			val data = new Array[Byte](image.getWidth * 4)
+			val raster = image.getRaster
+			for (i <- 0 until image.getHeight) {
+				raster.getDataElements(0, i, image.getWidth, 1, data)
+				buffer.put(data)
+			}
+			buffer.flip()
+		} else {
+			val rg = GeneralReusableGraphic
+			val g = rg(image.getWidth, image.getHeight, -1)
+			try {
+				g.setComposite(AlphaComposite.Src)
+				g.drawImage(image, 0, 0, image.getWidth, image.getHeight, null)
+				g.dispose()
+				
+				image2Buffer(rg(), buffer)
 			} finally {
 				rg.release()
 			}

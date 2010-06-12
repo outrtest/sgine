@@ -14,36 +14,36 @@ class Image protected() extends Function0[Unit] {
 	def draw(offsetX: Double = 0.0, offsetY: Double = 0.0, insetX1: Double = 0.0, insetY1: Double = 0.0, insetX2: Double = 0.0, insetY2: Double = 0.0) = {
 		if (texture != null) {
 			texture.bind()
-		}
-		
-		val x1 = (x + insetX1) / texture.width
-		val y1 = (y + insetY1) / texture.height
-		val x2 = (x + width - insetX2) / texture.width
-		val y2 = (y + height - insetY2) / texture.height
-		val w = (width - insetX1 - insetX2) / 2.0
-		val h = (height - insetY1 - insetY2) / 2.0
-		
-		glBegin(GL_QUADS)
-		
-		// Bottom-Left
-		glTexCoord2d(x1, y2)
-		glVertex3d(-w + offsetX, -h + offsetY, 0.0)
-		
-		// Bottom-Right
-		glTexCoord2d(x2, y2)
-		glVertex3d(w + offsetX, -h + offsetY, 0.0)
-		
-		// Top-Right
-		glTexCoord2d(x2, y1)
-		glVertex3d(w + offsetX, h + offsetY, 0.0)
-		
-		// Top-Left
-		glTexCoord2d(x1, y1)
-		glVertex3d(-w + offsetX, h + offsetY, 0.0)
-		
-		glEnd()
-		
-		if (texture != null) {
+
+			val x1 = (x + insetX1) / texture.width
+			val y1 = (y + insetY1) / texture.height
+			val x2 = (x + width - insetX2) / texture.width
+			val y2 = (y + height - insetY2) / texture.height
+			val w = (width - insetX1 - insetX2) / 2.0
+			val h = (height - insetY1 - insetY2) / 2.0
+			
+//			println("DRAW:" + x1 + "x" + y1 + " - " + x2 + "x" + y2 + " - " + w + "x" + h)
+			
+			glBegin(GL_QUADS)
+			
+			// Bottom-Left
+			glTexCoord2d(x1, y2)
+			glVertex3d(-w + offsetX, -h + offsetY, 0.0)
+			
+			// Bottom-Right
+			glTexCoord2d(x2, y2)
+			glVertex3d(w + offsetX, -h + offsetY, 0.0)
+			
+			// Top-Right
+			glTexCoord2d(x2, y1)
+			glVertex3d(w + offsetX, h + offsetY, 0.0)
+			
+			// Top-Left
+			glTexCoord2d(x1, y1)
+			glVertex3d(-w + offsetX, h + offsetY, 0.0)
+			
+			glEnd()
+			
 			texture.unbind()
 		}
 	}

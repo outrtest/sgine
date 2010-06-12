@@ -81,7 +81,7 @@ object Color {
 	val Gold = Color(0xffffd700)
 	val Goldenrod = Color(0xffdaa520)
 	val Gray = Color(0xffbebebe)
-	val Green = Color(0xff00f00)
+	val Green = Color(0xff00ff00)
 	val GreenYellow = Color(0xffadff2f)
 	val HaloBlue = Color(0xff93a9b4)
 	val HighlightBlue = Color(0xffb2e1ff)

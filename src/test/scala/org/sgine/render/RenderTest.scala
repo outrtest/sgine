@@ -25,7 +25,7 @@ object RenderTest {
 	var elapsed = 0.0
 	var frames = 0L
 	
-	var texture: Texture = _
+	var texture: BasicTexture = _
 	var image: Image = _
 	
 	def main(args: Array[String]): Unit = {
@@ -66,7 +66,7 @@ object RenderTest {
 		glLoadIdentity()
 		
 		// Setup
-		texture = new Texture(700, 366)
+		texture = new BasicTexture(700, 366)
 		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")), 0, 0, 700, 366)
 //		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/Arial.png")), 0, 0, 256, 256, 256)
 		image = Image()
