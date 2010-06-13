@@ -10,7 +10,7 @@ import org.sgine.scene.ext.ResolutionNode
 
 object TestMediaPlayer {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(640, 480, "Test MediaPlayer")
+		val r = Renderer.createFrame(1024, 768, "Test MediaPlayer")
 		
 		val scene = new GeneralNodeContainer() with ResolutionNode
 		scene.setResolution(640, 480)

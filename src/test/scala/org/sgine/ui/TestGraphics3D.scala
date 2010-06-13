@@ -23,7 +23,7 @@ object TestGraphics3D {
 		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer() with ResolutionNode
-		scene.setResolution(200, 150)
+		scene.setResolution(1024, 768)
 		
 		scene += new TestGraphics3D()
 		
