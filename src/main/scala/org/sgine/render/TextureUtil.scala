@@ -50,11 +50,11 @@ object TextureUtil {
 			
 			for (i <- 0 until height) {
 				raster.getDataElements(x, y + i, width, 1, data)
-				buffer.put(data)
+				b.put(data)
 			}
-			buffer.flip()
+			b.flip()
 			
-			texture(offsetX, offsetY, width, height, buffer)
+			texture(offsetX, offsetY, width, height, b)
 		} else {
 			val rg = GeneralReusableGraphic
 			val g = rg(image.getWidth, image.getHeight, -1)
