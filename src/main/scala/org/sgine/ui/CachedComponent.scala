@@ -22,6 +22,7 @@ import org.lwjgl.opengl.GL12._
 trait CachedComponent extends Component with BoundingObject {
 	val width = new AdvancedProperty[Int](0, this)
 	val height = new AdvancedProperty[Int](0, this)
+	val pixelFormat = new AdvancedProperty[Int](GL_RGBA, this)
 	
 	protected val _bounding = BoundingQuad()
 	
@@ -55,21 +56,20 @@ trait CachedComponent extends Component with BoundingObject {
 	protected def draw(buffer: ByteBuffer): Unit
 	
 	protected def configureListeners() = {
-		width.listeners += EventHandler(invalidateDrawing, processingMode = ProcessingMode.Blocking)
-		height.listeners += EventHandler(invalidateDrawing, processingMode = ProcessingMode.Blocking)
+		width.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
+		height.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
 		
 		true
 	}
 	
-	def invalidateDrawing(evt: PropertyChangeEvent[_] = null) = {
+	def invalidateCache(evt: PropertyChangeEvent[_] = null) = {
 		if ((width() > 0) && (height() > 0)) {
 			if (texture == null) {
 				texture = new StreamingTexture(width(), height())
 				println("Streaming: " + width() + "x" + height())
-				texture.internalTextureFormat = GL_RGB
-				texture.pixelTextureFormat = GL_BGR
+				texture.internalTextureFormat = GL_RGBA
+				texture.pixelTextureFormat = pixelFormat()
 				texture.updateFunction = redraw
-				texture.textureDepth = 3
 				image.texture = texture
 			}
 			texture.invalidateTexture()

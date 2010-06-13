@@ -23,7 +23,7 @@ object TestDrawable {
 		component.painter := testPaint
 		scene += component
 		
-		component.invalidateDrawing()
+		component.invalidateCache()
 		
 		r.renderable := RenderableScene(scene)
 	}

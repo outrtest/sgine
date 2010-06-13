@@ -47,7 +47,7 @@ trait DrawableComponent extends CachedComponent {
 	
 	override protected def configureListeners() = {
 		super.configureListeners()
-		painter.listeners += EventHandler(invalidateDrawing, processingMode = ProcessingMode.Blocking)
+		painter.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
 		
 		true
 	}
