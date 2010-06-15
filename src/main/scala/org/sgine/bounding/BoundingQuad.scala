@@ -10,6 +10,7 @@ class BoundingQuad protected() extends Bounding {
 	protected def width_=(_width: Double) = this._width = _width
 	def height = _height
 	protected def height_=(_height: Double) = this._height = _height
+	def depth = 0.0
 	
 	def within(v: Vector3) = v.x >= width / -2.0 && v.x <= width / 2.0 && v.y >= height / -2.0 && v.y <= height / 2.0
 	
