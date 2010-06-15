@@ -28,6 +28,12 @@ class Image extends AdvancedComponent with BoundingObject {
 	
 	configureListeners()
 	
+	def this(source: Resource) = {
+		this()
+		
+		this.source := source
+	}
+	
 	def drawComponent() = {
 		if (renderImage() != null) {
 			renderImage().draw()

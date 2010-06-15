@@ -2,14 +2,12 @@ package org.sgine.ui
 
 import org.sgine.core.Resource
 
-import org.sgine.render.UIDisplay
+import org.sgine.render.StandardDisplay
 
-object TestImage extends UIDisplay {
+object TestImage extends StandardDisplay {
 	def main(args: Array[String]): Unit = {
-		val component = new Image()
-		component.source := Resource("puppies.jpg")
+		val component = new Image(Resource("puppies.jpg"))
 		scene += component
-		
-		start("Test Image")
+		start()
 	}
 }

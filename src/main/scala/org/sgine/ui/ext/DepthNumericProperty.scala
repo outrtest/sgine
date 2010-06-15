@@ -8,5 +8,5 @@ import org.sgine.event.Listenable
 import org.sgine.property.AdvancedProperty
 
 class DepthNumericProperty(value: Double, parent: Listenable) extends NumericProperty(value, parent) {
-	val align = new AdvancedProperty[DepthAlignment](DepthAlignment.Center, this)
+	val align = new AdvancedProperty[DepthAlignment](DepthAlignment.Middle, this)
 }

@@ -8,5 +8,5 @@ import org.sgine.event.Listenable
 import org.sgine.property.AdvancedProperty
 
 class VerticalNumericProperty(value: Double, parent: Listenable) extends NumericProperty(value, parent) {
-	val align = new AdvancedProperty[VerticalAlignment](VerticalAlignment.Top, this)
+	val align = new AdvancedProperty[VerticalAlignment](VerticalAlignment.Middle, this)
 }
