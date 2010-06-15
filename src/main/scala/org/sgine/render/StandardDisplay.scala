@@ -13,9 +13,6 @@ import org.sgine.scene.GeneralNodeContainer
 import org.sgine.scene.ext.ResolutionNode
 
 trait StandardDisplay extends Listenable {
-	val Applet = 1
-	val Frame = 2
-	
 	private var _renderer: Renderer = _
 	
 	def renderer = _renderer
@@ -33,8 +30,10 @@ trait StandardDisplay extends Listenable {
 		scene.setResolution(1024, 768)
 	}
 	
-	def start(mode: Int = Frame, width: Int = 1024, height: Int = 768) = {
-		if (mode == Frame) {
+	def setup(): Unit
+	
+	def start(mode: WindowMode = WindowMode.Frame, width: Int = 1024, height: Int = 768) = {
+		if (mode == WindowMode.Frame) {
 			_renderer = Renderer.createFrame(width, height, title())
 			renderer.renderable := RenderableScene(scene)
 			
@@ -42,6 +41,8 @@ trait StandardDisplay extends Listenable {
 				case f: java.awt.Frame => title.listeners += EventHandler(PropertyChangeDelegate(f.setTitle), ProcessingMode.Blocking)
 				case _ =>
 			}
+		} else {
+			error("Unsupported WindowMode: " + mode)
 		}
 	}
 }
