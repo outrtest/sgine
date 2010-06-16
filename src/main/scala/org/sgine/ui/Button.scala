@@ -1,4 +1,4 @@
-package org.sgine.ui.skin.windows
+package org.sgine.ui
 
 import org.sgine.core.Color
 import org.sgine.core.Resource
@@ -13,35 +13,34 @@ import org.sgine.property.AdvancedProperty
 import org.sgine.render.font.Font
 import org.sgine.render.font.FontManager
 
-import org.sgine.ui.Label
-import org.sgine.ui.SkinnableComponent
 import org.sgine.ui.ext.AdvancedComponent
 import org.sgine.ui.ext.PaddingComponent
+import org.sgine.ui.style.Theme
 
 class Button extends SkinnableComponent with AdvancedComponent with PaddingComponent {
-	protected val normalResource = Resource("scale9/windows/button/normal.png")
-	protected val hoverResource = Resource("scale9/windows/button/hover.png")
-	protected val pressedResource = Resource("scale9/windows/button/pressed.png")
-	protected val focusedResource = Resource("scale9/windows/button/focused.png")
+	protected val normalResource = Theme.current.buttonNormalSkin
+	protected val hoverResource = Theme.current.buttonHoverSkin
+	protected val pressedResource = Theme.current.buttonPressedSkin
+	protected val focusedResource = Theme.current.buttonFocusSkin
 
 	private var pressed: Boolean = false
 	private var over: Boolean = false
 	
 	protected val face: Label = new Label()
 	
-	protected val skinX1 = 3.0
-	protected val skinY1 = 3.0
-	protected val skinX2 = 4.0
-	protected val skinY2 = 5.0
+	protected val skinX1 = Theme.current.buttonSkinX1
+	protected val skinY1 = Theme.current.buttonSkinY1
+	protected val skinX2 = Theme.current.buttonSkinX2
+	protected val skinY2 = Theme.current.buttonSkinY2
 	
-	padding.top := 10.0
-	padding.bottom := 10.0
-	padding.left := 25.0
-	padding.right := 25.0
+	padding.top := Theme.current.buttonPaddingTop
+	padding.bottom := Theme.current.buttonPaddingBottom
+	padding.left := Theme.current.buttonPaddingLeft
+	padding.right := Theme.current.buttonPaddingRight
 	
-	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
+	val font = new AdvancedProperty[Font](Theme.current.font, this)
 	val text = new AdvancedProperty[String]("", this)
-	val textColor = new AdvancedProperty[Color](Color.Black, this)
+	val textColor = new AdvancedProperty[Color](Theme.current.textColor, this)
 	
 	configureBindings()
 	configureListeners()
