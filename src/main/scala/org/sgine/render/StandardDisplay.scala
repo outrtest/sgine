@@ -56,8 +56,6 @@ trait StandardDisplay extends Listenable {
 		name.substring(0, name.length - 1)
 	}
 	
-	initialize()
-	
 	protected def initialize() = {
 		scene.setResolution(1024, 768)
 		
@@ -82,6 +80,8 @@ trait StandardDisplay extends Listenable {
 	 * 			Initial window height. Defaults to 768.
 	 */
 	def start(mode: WindowMode = WindowMode.Frame, width: Int = 1024, height: Int = 768) = {
+		initialize()
+		
 		if (mode == WindowMode.Frame) {
 			_renderer = Renderer.createFrame(width, height, title())
 			renderer.renderable := RenderableScene(scene)
