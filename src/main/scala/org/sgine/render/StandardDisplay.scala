@@ -12,11 +12,43 @@ import org.sgine.render.scene.RenderableScene
 import org.sgine.scene.GeneralNodeContainer
 import org.sgine.scene.ext.ResolutionNode
 
+/**
+ * StandardDisplay provides a convenience trait that
+ * can be inherited to seamlessly provide support for
+ * Applet, Canvas, and Frame display of applications.
+ * 
+ * The only requirement for a working application is
+ * to extend this trait with an object and implement
+ * the "setup" method.
+ * 
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
 trait StandardDisplay extends Listenable {
 	private var _renderer: Renderer = _
 	
+	/**
+	 * Reference to the Renderer
+	 * 
+	 * @return
+	 * 		Renderer
+	 */
 	def renderer = _renderer
+	
+	/**
+	 * Reference to the root NodeContainer with
+	 * ResolutionNode mixed-in.
+	 * 
+	 * @return
+	 * 		GeneralNodeContainer with ResolutionNode
+	 */
 	val scene = new GeneralNodeContainer() with ResolutionNode
+	
+	/**
+	 * The title if in a framed context.
+	 * 
+	 * @return
+	 * 		title property
+	 */
 	val title = new AdvancedProperty[String](generateTitle(), this)
 	
 	private def generateTitle() = {
@@ -28,10 +60,27 @@ trait StandardDisplay extends Listenable {
 	
 	protected def initialize() = {
 		scene.setResolution(1024, 768)
+		
+		setup()
 	}
 	
+	/**
+	 * Invoked upon initialization of the display. This method
+	 * should be implemented to set up the scene.
+	 */
 	def setup(): Unit
 	
+	/**
+	 * Invoked to start the display. This is invoked with default arguments
+	 * in the default "main" method.
+	 * 
+	 * @param mode
+	 * 			The display WindowMode. Defaults to WindowMode.Frame.
+	 * @param width
+	 * 			Initial window width. Defaults to 1024.
+	 * @param height
+	 * 			Initial window height. Defaults to 768.
+	 */
 	def start(mode: WindowMode = WindowMode.Frame, width: Int = 1024, height: Int = 768) = {
 		if (mode == WindowMode.Frame) {
 			_renderer = Renderer.createFrame(width, height, title())
@@ -44,5 +93,15 @@ trait StandardDisplay extends Listenable {
 		} else {
 			error("Unsupported WindowMode: " + mode)
 		}
+	}
+	
+	/**
+	 * Default implementation of main method invoking start() with
+	 * default arguments.
+	 * 
+	 * @param args
+	 */
+	def main(args: Array[String]): Unit = {
+		start()
 	}
 }
