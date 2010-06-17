@@ -83,7 +83,6 @@ object Updatable extends Function0[Unit] {
 			val u = wr.get
 			if (u == null) {
 				array -= wr
-//				list = list.filterNot(_ == wr)
 			} else {
 				u.update(frequency)
 			}

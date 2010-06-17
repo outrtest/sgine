@@ -12,4 +12,13 @@ trait Property[T] extends (() => T) with (T => Property[T]) {
 	}
 	
 	def get() = apply()
+	
+	def option() = {
+		val v = apply()
+		if (v != null) {
+			Some(v)
+		} else {
+			None
+		}
+	}
 }

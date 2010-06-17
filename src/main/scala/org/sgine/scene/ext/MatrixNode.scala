@@ -32,6 +32,7 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 		if (!updatingThread.get()) {
 			revalidateMatrix := true
 			
+			// TODO: not sure if this makes sense? Why did I write this?
 			updatingThread.set(true)
 			initUpdatable()
 			updatingThread.set(false)
