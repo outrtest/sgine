@@ -13,24 +13,7 @@ object Theme extends PropertyContainer with ListenableProperty[Int] {
 	val font = new AdvancedProperty[Font](null, this)
 	val textColor = new AdvancedProperty[Color](null, this)
 	
-	val button = new PropertyContainer with ListenableProperty[Int] {
-		parent = Theme
-		
-		val normalSkin = new AdvancedProperty[Resource](null, this)
-		val hoverSkin = new AdvancedProperty[Resource](null, this)
-		val pressedSkin = new AdvancedProperty[Resource](null, this)
-		val focusedSkin = new AdvancedProperty[Resource](null, this)
-		
-		val skinX1 = new AdvancedProperty[Double](0.0, this)
-		val skinY1 = new AdvancedProperty[Double](0.0, this)
-		val skinX2 = new AdvancedProperty[Double](0.0, this)
-		val skinY2 = new AdvancedProperty[Double](0.0, this)
-		
-		val paddingTop = new AdvancedProperty[Double](0.0, this)
-		val paddingBottom = new AdvancedProperty[Double](0.0, this)
-		val paddingLeft = new AdvancedProperty[Double](0.0, this)
-		val paddingRight = new AdvancedProperty[Double](0.0, this)
-	}
+	val button = org.sgine.ui.Button
 	
 	// Apply the default theme
 	WindowsTheme()
