@@ -7,6 +7,7 @@ import org.sgine.render.font.FontManager
 
 object WindowsTheme {
 	def apply() = {
+		println("APPLY!")
 		Theme.button.normalSkin := Resource("scale9/windows/button/normal.png")
 		Theme.button.hoverSkin := Resource("scale9/windows/button/hover.png")
 		Theme.button.pressedSkin := Resource("scale9/windows/button/pressed.png")

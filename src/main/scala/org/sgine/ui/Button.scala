@@ -38,9 +38,9 @@ class Button extends SkinnableComponent with AdvancedComponent with PaddingCompo
 	padding.left := Theme.button.paddingLeft()
 	padding.right := Theme.button.paddingRight()
 	
-	val font = new AdvancedProperty[Font](Theme.font(), this)
+	val font = new AdvancedProperty[Font](null, this, null, Theme.font)
 	val text = new AdvancedProperty[String]("", this)
-	val textColor = new AdvancedProperty[Color](Theme.textColor(), this)
+	val textColor = new AdvancedProperty[Color](null, this, null, Theme.textColor)
 	
 	configureBindings()
 	configureListeners()
