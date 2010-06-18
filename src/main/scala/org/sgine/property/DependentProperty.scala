@@ -17,9 +17,9 @@ trait DependentProperty[T] extends Property[T] {
 	abstract override def apply() = {
 		val value = super.apply()
 		
-		if ((initialized == null) || (initialized.compareAndSet(false, true))) {
+		if ((initialized != null) && (dependency != null) && (initialized.compareAndSet(false, true))) {
 			dependency match {
-				case lp: ListenableProperty[T] => lp.listeners += EventHandler(dependencyChanged, ProcessingMode.Blocking)
+				case lp: ListenableProperty[_] => lp.listeners += EventHandler(dependencyChanged, ProcessingMode.Blocking)
 				case _ =>
 			}
 		}
@@ -43,12 +43,16 @@ trait DependentProperty[T] extends Property[T] {
 		this
 	}
 	
+	def useDependency() = {
+		modified = false
+	}
+	
 	private def dependencyChanged(evt: PropertyChangeEvent[T]) = {
-//		if (!modified) {
-//			this match {
-//				case cp: ChangeableProperty[T] => cp.changed(false)
-//				case _ =>
-//			}
-//		}
+		if (!modified) {
+			this match {
+				case cp: ChangeableProperty[_] => cp.changed(false)
+				case _ =>
+			}
+		}
 	}
 }
