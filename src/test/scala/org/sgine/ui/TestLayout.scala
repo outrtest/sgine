@@ -8,7 +8,7 @@ import org.sgine.ui.layout.BoxLayout
 
 object TestLayout extends StandardDisplay {
 	def setup() = {
-		val container = new LayoutContainer()
+		val container = new Container()
 		container.layout := BoxLayout(Direction.Vertical, 10)
 		container += new Button("Test Button 1")
 		container += new Button("Test Button 2")
