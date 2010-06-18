@@ -2,6 +2,7 @@ package org.sgine.ui
 
 import org.sgine.core.Resource
 
+import org.sgine.render.Debug
 import org.sgine.render.StandardDisplay
 
 /**
@@ -9,7 +10,7 @@ import org.sgine.render.StandardDisplay
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object TestImage extends StandardDisplay {
+object TestImage extends StandardDisplay with Debug {
 	def setup() = {
 		val component = new Image(Resource("puppies.jpg"))
 		scene += component

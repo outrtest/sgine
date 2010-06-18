@@ -1,13 +1,13 @@
 package org.sgine.ui.style
 
 import org.sgine.core.Color
+import org.sgine.core.Placement
 import org.sgine.core.Resource
 
 import org.sgine.render.font.FontManager
 
 object WindowsTheme {
 	def apply() = {
-		println("APPLY!")
 		Theme.button.normalSkin := Resource("scale9/windows/button/normal.png")
 		Theme.button.hoverSkin := Resource("scale9/windows/button/hover.png")
 		Theme.button.pressedSkin := Resource("scale9/windows/button/pressed.png")
@@ -20,6 +20,7 @@ object WindowsTheme {
 		Theme.button.paddingBottom := 10.0
 		Theme.button.paddingLeft := 25.0
 		Theme.button.paddingRight := 25.0
+		Theme.button.iconPlacement := Placement.Top
 		
 		Theme.font := FontManager("Arial32")
 		Theme.textColor := Color.Black

@@ -1,6 +1,6 @@
 package org.sgine.render
 
-import org.lwjgl.opengl.Display
+import org.lwjgl.opengl.{Display => GLDisplay}
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.PixelFormat
 
@@ -58,8 +58,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		try {
 			initGL()
 	
-			while ((keepAlive) && (!Display.isCloseRequested)) {
-				Display.update()
+			while ((keepAlive) && (!GLDisplay.isCloseRequested)) {
+				GLDisplay.update()
 				
 				if (!Updatable.useWorkManager) {
 					Updatable.update()
@@ -78,12 +78,12 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	
 	
 	private def initGL() = {
-		Display.setFullscreen(fullscreen())
-		Display.setVSyncEnabled(verticalSync())
-		Display.setParent(canvas)
+		GLDisplay.setFullscreen(fullscreen())
+		GLDisplay.setVSyncEnabled(verticalSync())
+		GLDisplay.setParent(canvas)
 		
 		val format = new PixelFormat(bpp, alpha, depth, stencil, samples, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
-		Display.create(format)
+		GLDisplay.create(format)
 		
 		glClearDepth(1.0)
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
@@ -116,11 +116,11 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	private def render() = {
 		if (fullscreen.uncommitted) {
 			fullscreen.commit()
-			Display.setFullscreen(fullscreen())
+			GLDisplay.setFullscreen(fullscreen())
 		}
 		if (verticalSync.uncommitted) {
 			verticalSync.commit()
-			Display.setVSyncEnabled(verticalSync())
+			GLDisplay.setVSyncEnabled(verticalSync())
 		}
 		if (background.uncommitted) {
 			background.commit()
@@ -174,7 +174,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	}
 	
 	private def destroy() = {
-		Display.destroy()
+		GLDisplay.destroy()
 	}
 }
 

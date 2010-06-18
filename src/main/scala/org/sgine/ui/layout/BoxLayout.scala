@@ -16,7 +16,7 @@ import org.sgine.ui.ext.LocationComponent
 
 import scala.math._
 
-class BoxLayout private(val direction: Direction, val spacing: Double) extends Layout {
+class BoxLayout private(val direction: Direction, val spacing: Double, val reverse: Boolean = false) extends Layout {
 	def apply(container: NodeContainer) = {
 		// Determine size for offset
 		var items = 0
@@ -51,20 +51,33 @@ class BoxLayout private(val direction: Direction, val spacing: Double) extends L
 		} else {
 			width / -2.0
 		}
+		if (reverse) {
+			position = -position
+		}
 		for (n <- container) n match {
 			case c: LocationComponent with BoundingObject => {
 				if (direction == Direction.Vertical) {
-					c.location.y.align := VerticalAlignment.Top
+					c.location.y.align := (if (reverse) VerticalAlignment.Bottom else VerticalAlignment.Top)
 					c.location.y := position
 					
-					position -= c.bounding().height
-					position -= spacing
+					if (reverse) {
+						position += c.bounding().height
+						position += spacing
+					} else {
+						position -= c.bounding().height
+						position -= spacing
+					}
 				} else {
-					c.location.x.align := HorizontalAlignment.Left
+					c.location.x.align := (if (reverse) HorizontalAlignment.Right else HorizontalAlignment.Left)
 					c.location.x := position
 					
-					position += c.bounding().width
-					position += spacing
+					if (reverse) {
+						position -= c.bounding().width
+						position -= spacing
+					} else {
+						position += c.bounding().width
+						position += spacing
+					}
 				}
 			}
 			case _ =>
@@ -89,5 +102,5 @@ class BoxLayout private(val direction: Direction, val spacing: Double) extends L
 }
 
 object BoxLayout {
-	def apply(direction: Direction = Direction.Vertical, spacing: Double = 0.0) = new BoxLayout(direction, spacing)
+	def apply(direction: Direction = Direction.Vertical, spacing: Double = 0.0, reverse: Boolean = false) = new BoxLayout(direction, spacing, reverse)
 }

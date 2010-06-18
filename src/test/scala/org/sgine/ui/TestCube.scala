@@ -14,6 +14,7 @@ import org.sgine.effect.PropertySetEffect
 import org.sgine.property.adjust.EasingNumericAdjuster
 import org.sgine.property.adjust.LinearNumericAdjuster
 
+import org.sgine.render.Debug
 import org.sgine.render.Renderer
 import org.sgine.render.StandardDisplay
 import org.sgine.render.scene.RenderableScene
@@ -22,7 +23,7 @@ import org.sgine.scene.GeneralNodeContainer
 
 import scala.math._
 
-object TestCube extends StandardDisplay {
+object TestCube extends StandardDisplay with Debug {
 	def setup() = {
 		val cube = new ImageCube()
 		val c = MutableColor(Color.White)

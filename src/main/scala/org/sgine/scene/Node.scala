@@ -80,6 +80,8 @@ trait Node extends Listenable {
 		}
 		case _ => n
 	}
+	
+	override def toString() = getClass.getSimpleName
 }
 
 class HierarchicalIterator(var node: Node, forward: Boolean) extends Iterator[Node] {

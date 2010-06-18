@@ -23,24 +23,10 @@ import org.sgine.scene.ext.ResolutionNode
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait StandardDisplay extends Listenable {
+trait StandardDisplay extends Listenable with Display {
 	private var _renderer: Renderer = _
 	
-	/**
-	 * Reference to the Renderer
-	 * 
-	 * @return
-	 * 		Renderer
-	 */
 	def renderer = _renderer
-	
-	/**
-	 * Reference to the root NodeContainer with
-	 * ResolutionNode mixed-in.
-	 * 
-	 * @return
-	 * 		GeneralNodeContainer with ResolutionNode
-	 */
 	val scene = new GeneralNodeContainer() with ResolutionNode
 	
 	/**
@@ -58,15 +44,7 @@ trait StandardDisplay extends Listenable {
 	
 	protected def initialize() = {
 		scene.setResolution(1024, 768)
-		
-		setup()
 	}
-	
-	/**
-	 * Invoked upon initialization of the display. This method
-	 * should be implemented to set up the scene.
-	 */
-	def setup(): Unit
 	
 	/**
 	 * Invoked to start the display. This is invoked with default arguments
@@ -90,6 +68,9 @@ trait StandardDisplay extends Listenable {
 				case f: java.awt.Frame => title.listeners += EventHandler(PropertyChangeDelegate(f.setTitle), ProcessingMode.Blocking)
 				case _ =>
 			}
+			
+			init()
+			setup()
 		} else {
 			error("Unsupported WindowMode: " + mode)
 		}

@@ -78,14 +78,7 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 	
 	protected def updateBounding(evt: BoundingChangeEvent = null) = {
 		face match {
-			case bo: BoundingObject => {
-				bo.bounding() match {
-					case bq: BoundingQuad => {
-						setSize(bq.width, bq.height)
-					}
-					case _ => // No other supported bounding types
-				}
-			}
+			case bo: BoundingObject => setSize(bo.bounding().width, bo.bounding().height)
 			case _ => // No bounding object
 		}
 	}

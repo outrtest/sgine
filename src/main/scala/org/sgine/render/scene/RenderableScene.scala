@@ -135,5 +135,5 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 }
 
 object RenderableScene {
-	def apply(scene: NodeContainer, showFPS: Boolean = true) = new RenderableScene(scene, showFPS)
+	def apply(scene: NodeContainer, showFPS: Boolean = false) = new RenderableScene(scene, showFPS)
 }
