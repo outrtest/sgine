@@ -18,29 +18,29 @@ import org.sgine.ui.ext.PaddingComponent
 import org.sgine.ui.style.Theme
 
 class Button extends SkinnableComponent with AdvancedComponent with PaddingComponent {
-	protected val normalResource = Theme.current.buttonNormalSkin
-	protected val hoverResource = Theme.current.buttonHoverSkin
-	protected val pressedResource = Theme.current.buttonPressedSkin
-	protected val focusedResource = Theme.current.buttonFocusSkin
+	protected val normalResource = Theme.button.normalSkin()
+	protected val hoverResource = Theme.button.hoverSkin()
+	protected val pressedResource = Theme.button.pressedSkin()
+	protected val focusedResource = Theme.button.focusedSkin()
 
 	private var pressed: Boolean = false
 	private var over: Boolean = false
 	
 	protected val face: Label = new Label()
 	
-	protected val skinX1 = Theme.current.buttonSkinX1
-	protected val skinY1 = Theme.current.buttonSkinY1
-	protected val skinX2 = Theme.current.buttonSkinX2
-	protected val skinY2 = Theme.current.buttonSkinY2
+	protected val skinX1 = Theme.button.skinX1()
+	protected val skinY1 = Theme.button.skinY1()
+	protected val skinX2 = Theme.button.skinX2()
+	protected val skinY2 = Theme.button.skinY2()
 	
-	padding.top := Theme.current.buttonPaddingTop
-	padding.bottom := Theme.current.buttonPaddingBottom
-	padding.left := Theme.current.buttonPaddingLeft
-	padding.right := Theme.current.buttonPaddingRight
+	padding.top := Theme.button.paddingTop()
+	padding.bottom := Theme.button.paddingBottom()
+	padding.left := Theme.button.paddingLeft()
+	padding.right := Theme.button.paddingRight()
 	
-	val font = new AdvancedProperty[Font](Theme.current.font, this)
+	val font = new AdvancedProperty[Font](Theme.font(), this)
 	val text = new AdvancedProperty[String]("", this)
-	val textColor = new AdvancedProperty[Color](Theme.current.textColor, this)
+	val textColor = new AdvancedProperty[Color](Theme.textColor(), this)
 	
 	configureBindings()
 	configureListeners()

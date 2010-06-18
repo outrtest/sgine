@@ -5,20 +5,22 @@ import org.sgine.core.Resource
 
 import org.sgine.render.font.FontManager
 
-object WindowsTheme extends Theme {
-	val buttonNormalSkin = Resource("scale9/windows/button/normal.png")
-	val buttonHoverSkin = Resource("scale9/windows/button/hover.png")
-	val buttonPressedSkin = Resource("scale9/windows/button/pressed.png")
-	val buttonFocusSkin = Resource("scale9/windows/button/focused.png")
-	val buttonSkinX1 = 3.0
-	val buttonSkinY1 = 3.0
-	val buttonSkinX2 = 4.0
-	val buttonSkinY2 = 5.0
-	val buttonPaddingTop = 10.0
-	val buttonPaddingBottom = 10.0
-	val buttonPaddingLeft = 25.0
-	val buttonPaddingRight = 25.0
-	
-	val font = FontManager("Arial32")
-	val textColor = Color.Black
+object WindowsTheme {
+	def apply() = {
+		Theme.button.normalSkin := Resource("scale9/windows/button/normal.png")
+		Theme.button.hoverSkin := Resource("scale9/windows/button/hover.png")
+		Theme.button.pressedSkin := Resource("scale9/windows/button/pressed.png")
+		Theme.button.focusedSkin := Resource("scale9/windows/button/focused.png")
+		Theme.button.skinX1 := 3.0
+		Theme.button.skinY1 := 3.0
+		Theme.button.skinX2 := 4.0
+		Theme.button.skinY2 := 5.0
+		Theme.button.paddingTop := 10.0
+		Theme.button.paddingBottom := 10.0
+		Theme.button.paddingLeft := 25.0
+		Theme.button.paddingRight := 25.0
+		
+		Theme.font := FontManager("Arial32")
+		Theme.textColor := Color.Black
+	}
 }
