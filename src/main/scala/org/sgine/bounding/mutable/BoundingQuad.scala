@@ -14,5 +14,7 @@ object BoundingQuad {
 		val b = new BoundingQuad()
 		b.width = width
 		b.height = height
+		
+		b
 	}
 }
