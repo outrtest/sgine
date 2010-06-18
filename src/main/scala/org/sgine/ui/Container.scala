@@ -8,7 +8,7 @@ import org.sgine.ui.layout.LayoutNode
 
 import org.sgine.ui.ext.AdvancedComponent
 
-class LayoutContainer extends GeneralNodeContainer with AdvancedComponent with LayoutNode with BoundingObject {
+class Container extends GeneralNodeContainer with AdvancedComponent with LayoutNode with BoundingObject {
 	protected val _bounding = new BoundingBox
 
 	protected def drawComponent() = {
