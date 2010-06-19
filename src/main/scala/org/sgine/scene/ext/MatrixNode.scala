@@ -1,5 +1,7 @@
 package org.sgine.scene.ext
 
+import org.sgine.bounding.event.BoundingChangeEvent
+
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
@@ -21,6 +23,7 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 	
 	// Listen for parent change to invalidate matrix
 	listeners += EventHandler(parentChanged, ProcessingMode.Blocking)
+	listeners += EventHandler(boundingChanged, ProcessingMode.Blocking)
 	
 	private val revalidateMatrix = new MutableProperty[Boolean](true)
 	
@@ -32,10 +35,7 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 		if (!updatingThread.get()) {
 			revalidateMatrix := true
 			
-			// TODO: not sure if this makes sense? Why did I write this?
-			updatingThread.set(true)
 			initUpdatable()
-			updatingThread.set(false)
 		}
 	}
 	
@@ -47,7 +47,9 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 		if ((revalidateMatrix != null) && (revalidateMatrix())) {
 			revalidateMatrix := false
 			
+			updatingThread.set(true)
 			refreshWorldMatrix()
+			updatingThread.set(false)
 		}
 	}
 	
@@ -83,6 +85,10 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 		if (evt.eventType == SceneEventType.ParentChanged) {
 			invalidateMatrix()
 		}
+	}
+	
+	private def boundingChanged(evt: BoundingChangeEvent) = {
+		invalidateMatrix()
 	}
 }
 

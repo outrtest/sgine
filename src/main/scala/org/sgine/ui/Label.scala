@@ -36,16 +36,20 @@ class Label extends AdvancedComponent with BoundingObject {
 	}
 	
 	private def updateBounding(evt: PropertyChangeEvent[AnyRef]) = {
+		var width = 0.0
+		var height = 0.0
 		if ((font() != null) && (text() != null)) {
-			_bounding.width = font().measureWidth(text())
-			_bounding.height = font().lineHeight
-		} else {
-			_bounding.width = 0
-			_bounding.height = 0
+			width = font().measureWidth(text())
+			height = font().lineHeight
 		}
 		
-		val evt = new BoundingChangeEvent(this, _bounding)
-		Event.enqueue(evt)
+		if ((width != _bounding.width) || (height != _bounding.height)) {
+			_bounding.width = width
+			_bounding.height = height
+			
+			val evt = new BoundingChangeEvent(this, _bounding)
+			Event.enqueue(evt)
+		}
 	}
 	
 	override def toString() = "Label(" + text + ")"
