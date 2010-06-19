@@ -13,7 +13,7 @@ import java.nio._
 
 import org.sgine.core.Color
 
-import org.lwjgl.opengl.Display
+import org.lwjgl.opengl.{Display => GLDisplay}
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL12._
 import org.lwjgl.opengl.GL15._
@@ -47,10 +47,10 @@ object RenderTest {
 		
 		f.setVisible(true)
 		
-		Display.setFullscreen(false)
-		Display.setVSyncEnabled(false)
-		Display.setParent(c)
-		Display.create()
+		GLDisplay.setFullscreen(false)
+		GLDisplay.setVSyncEnabled(false)
+		GLDisplay.setParent(c)
+		GLDisplay.create()
 		
 		// Setup GL
 		glClearDepth(1.0)
@@ -114,9 +114,9 @@ object RenderTest {
 		
 		// Rendering
 		while (keepAlive) {
-			Display.update()
+			GLDisplay.update()
 			
-			if (Display.isCloseRequested()) {
+			if (GLDisplay.isCloseRequested()) {
 				keepAlive = false
 			}
 			
@@ -140,7 +140,7 @@ object RenderTest {
 			
 			lastRender = currentRender
 		}
-		Display.destroy()
+		GLDisplay.destroy()
 		f.dispose()
 		System.exit(0)
 	}
