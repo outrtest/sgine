@@ -15,6 +15,7 @@ import org.sgine.core.Color
 
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11._
+import org.lwjgl.opengl.GL12._
 import org.lwjgl.opengl.GL15._
 import org.lwjgl.util.glu.GLU._
 
@@ -53,7 +54,10 @@ object RenderTest {
 		
 		// Setup GL
 		glClearDepth(1.0)
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 		glEnable(GL_BLEND)
+		glEnable(GL_DEPTH_TEST)
+		glDepthFunc(GL_LEQUAL)
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
 		glEnable(GL_TEXTURE_2D)
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
@@ -61,9 +65,43 @@ object RenderTest {
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
 		val h = 1024.0f / 768.0f
-		gluPerspective(45.0f, h, 1.0f, 20000.0f)
+//		gluPerspective(45.0f, h, 100.0f, 20000.0f)
+		glFrustum(-1.0f / h, 1.0f * h, -1.0f, 1.0f, 10.0f, 2000.0f)
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
+		
+		def toFloatBuffer(args: Float*) = {
+			val buffer = org.lwjgl.BufferUtils.createFloatBuffer(args.length)
+			
+			for (f <- args) {
+				buffer.put(f)
+			}
+			buffer.flip()
+			
+			buffer
+		}
+		
+		val lightAmbient = toFloatBuffer(0.2f, 0.3f, 0.6f, 1.0f)
+		val lightDiffuse = toFloatBuffer(0.2f, 0.3f, 0.6f, 1.0f)
+		val matAmbient = toFloatBuffer(0.6f, 0.6f, 0.6f, 1.0f)
+		val matDiffuse = toFloatBuffer(0.6f, 0.6f, 0.6f, 1.0f)
+		
+		glEnable(GL_LIGHTING)
+		glEnable(GL_LIGHT0)
+		
+		glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, matAmbient)
+		glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, matDiffuse)
+		
+		glLight(GL_LIGHT0, GL_AMBIENT, lightAmbient)
+		glLight(GL_LIGHT0, GL_DIFFUSE, lightDiffuse)
+		
+		glEnable(GL_DEPTH_TEST)
+		glDepthFunc(GL_LEQUAL)
+		
+		glEnable(GL_CULL_FACE)
+		glShadeModel(GL_SMOOTH)
+		
+		glEnable(GL_RESCALE_NORMAL)
 		
 		// Setup
 		texture = new BasicTexture(700, 366)
@@ -109,6 +147,7 @@ object RenderTest {
 	
 	def render() = {
 		glTranslatef(0.0f, 0.0f, -1000.0f)
+		glScalef(0.2f, 0.2f, 0.2f)
 		
 		image.draw(0.0f, 0.0f)
 	}
