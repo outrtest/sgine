@@ -36,9 +36,7 @@ trait LocationComponent extends Component {
 							x -= bo.bounding().width / 2.0
 						}
 					}
-					case _ => {
-						error("HorizontalAlignments other than Center are only allowed on BoundingObjects")
-					}
+					case _ => error("HorizontalAlignments other than Center are only allowed on BoundingObjects")
 				}
 			}
 			if (location.y.align() != VerticalAlignment.Middle) {
@@ -50,9 +48,7 @@ trait LocationComponent extends Component {
 							y += bo.bounding().height / 2.0
 						}
 					}
-					case _ => {
-						error("VerticalAlignments other than Middle are only allowed on BoundingObjects")
-					}
+					case _ => error("VerticalAlignments other than Middle are only allowed on BoundingObjects")
 				}
 			}
 			if (location.z.align() != DepthAlignment.Middle) {
@@ -64,9 +60,7 @@ trait LocationComponent extends Component {
 							z -= bo.bounding().depth / 2.0
 						}
 					}
-					case _ => {
-						error("DepthAlignments other than Middle are only allowed on BoundingObjects")
-					}
+					case _ => error("DepthAlignments other than Middle are only allowed on BoundingObjects")
 				}
 			}
 			

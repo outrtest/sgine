@@ -189,6 +189,47 @@ object Color {
 		c
 	}
 	
+	def apply(value: String): Color = {
+		var hex = value
+		if (hex startsWith "#") {	// Remove '#' off the front
+			hex = hex substring 1
+		}
+		if ((hex.length == 3) || (hex.length == 4)) {		// Convert 3-digit / 4-digit to 6-digit / 8-digit
+			val b = new StringBuilder()
+			for (i <- 0 until hex.length) {
+				b.append(hex.charAt(i))
+				b.append(hex.charAt(i))
+			}
+			hex = b.toString
+		}
+		if (hex.length >= 6) {
+			val red = (fromHex(hex.charAt(0)) * 16) + fromHex(hex.charAt(1))
+			val green = (fromHex(hex.charAt(2)) * 16) + fromHex(hex.charAt(3))
+			val blue = (fromHex(hex.charAt(4)) * 16) + fromHex(hex.charAt(5))
+			var alpha = 255
+			if (hex.length == 8) {
+				alpha = (fromHex(hex.charAt(6)) * 16) + fromHex(hex.charAt(7))
+			}
+			Color(red / 255.0, green / 255.0, blue / 255.0, alpha / 255.0)
+		} else {
+			throw new RuntimeException("Unable to parse " + value + " to Color")
+		}
+	}
+	
+	def fromHex(c: Char) = if (c.isDigit) {
+		c.toString.toInt
+	} else {
+		c.toLower match {
+			case 'a' => 10
+			case 'b' => 11
+			case 'c' => 12
+			case 'd' => 13
+			case 'e' => 14
+			case 'f' => 15
+			case _ => throw new RuntimeException("Unable to parse character to hex: " + c)
+		}
+	}
+	
 	private def loadValues() = {
 		var values: List[Color] = Nil
 		
@@ -200,5 +241,9 @@ object Color {
 		}
 		
 		values
+	}
+	
+	def main(args: Array[String]): Unit = {
+		println('5'.toString.toInt)
 	}
 }
