@@ -35,12 +35,12 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	
 	def apply[T](key: String, value: T, autoCommit: Boolean): Unit = {
 		apply(key) match {
-			case s: Some[Property[T]] => {
-				val p = s.get
-				p := value
+			case Some(p) => {
+				val pt = p.asInstanceOf[Property[T]]
+				pt := value
 				if (autoCommit) {
 					p match {
-						case tp: TransactionalProperty[T] => tp.commit
+						case tp: TransactionalProperty[_] => tp.commit
 					}
 				}
 			}
