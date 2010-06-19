@@ -2,6 +2,7 @@ package org.sgine.render
 
 import org.lwjgl.opengl.{Display => GLDisplay}
 import org.lwjgl.opengl.GL11._
+import org.lwjgl.opengl.GL12._
 import org.lwjgl.opengl.PixelFormat
 
 import org.lwjgl.util.glu.GLU._
@@ -94,7 +95,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
 		glEnable(GL_TEXTURE_2D)
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
-
+		
 		Keyboard.validate()
 		Mouse.validate()
 		
@@ -135,7 +136,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 			
 			glLoadIdentity()
-			glColor3f(1.0f, 1.0f, 1.0f)
+			glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
 			
 			Renderer.time.set(time)
 			Renderer.fps.set((1.0 / time).round.toInt)

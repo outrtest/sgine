@@ -35,7 +35,6 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	
 	private var initted = false
 	private var renderer: Renderer = _
-	private var itemCount: Float = _
 	
 	private var _hits: List[Node] = Nil
 	private var currentHits: List[Node] = Nil
@@ -53,7 +52,6 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		
 		if (!initted) init()
 
-		itemCount = 0.0f
 		renderableView.sort()					// TODO: is this the most efficient way to handle this?
 		renderableView.foreach(renderItem)
 		updatableView.sort()
@@ -62,10 +60,6 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	}
 	
 	private val renderItem = (n: Node) => {
-		// TODO: this helps z-fighting, but doesn't stop it - test with z-rotated at the same location
-		glPolygonOffset(1.0f, itemCount)
-		itemCount += 0.000001f
-		
 //		n.asInstanceOf[Renderable].render(renderer)
 		Renderable.render(renderer, n.asInstanceOf[Renderable])
 	}
