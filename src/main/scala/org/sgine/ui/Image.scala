@@ -15,7 +15,7 @@ import org.sgine.property.ListenableProperty
 import org.sgine.property.MutableProperty
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.render.{Image => RenderImage, TextureManager}
+import org.sgine.render.{RenderImage, TextureManager}
 
 import org.sgine.ui.ext.AdvancedComponent
 

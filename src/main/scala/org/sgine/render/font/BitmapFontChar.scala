@@ -1,10 +1,10 @@
 package org.sgine.render.font
 
-import org.sgine.render.Image
+import org.sgine.render.RenderImage
 
 import org.lwjgl.opengl.GL11._
 
-class BitmapFontChar extends Image with FontChar {
+class BitmapFontChar extends RenderImage with FontChar {
 	protected[render] var _font: BitmapFont = _
 	protected[render] var _code: Int = _
 	protected[render] var _xOffset: Double = _

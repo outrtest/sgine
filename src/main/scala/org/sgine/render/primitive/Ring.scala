@@ -2,14 +2,14 @@ package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
-import org.sgine.render.Image
+import org.sgine.render.RenderImage
 
 import org.lwjgl.opengl.GL11._
 
 import scala.math._
 
 class Ring protected(val width: Double, val height: Double, val sides: Int, val holeRatio: Double,
-                     val color: Color, val image: Image) extends Primitive {
+                     val color: Color, val image: RenderImage) extends Primitive {
   val mode = GL_QUAD_STRIP
 
   val vertexCount = 2 * sides + 2
@@ -50,7 +50,7 @@ class Ring protected(val width: Double, val height: Double, val sides: Int, val 
 }
 
 object Ring {
-  def apply(width: Double, height: Double, sides: Int = 12, holeRatio: Double = 0.5, color: Color = Color.White, image: Image = null)
+  def apply(width: Double, height: Double, sides: Int = 12, holeRatio: Double = 0.5, color: Color = Color.White, image: RenderImage = null)
   = if (sides < 3 || holeRatio <= 0 || holeRatio >= 1) throw new IllegalArgumentException()
     else new Ring(width, height, sides, holeRatio, color, image)
 }

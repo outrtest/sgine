@@ -2,7 +2,7 @@ package org.sgine.render
 
 import org.lwjgl.opengl.GL11._
 
-class Image protected() extends Function0[Unit] {
+class RenderImage protected() extends Function0[Unit] {
 	var texture: Texture = _
 	var x: Double = _
 	var y: Double = _
@@ -49,11 +49,11 @@ class Image protected() extends Function0[Unit] {
 	}
 }
 
-object Image {
-	def apply() = new Image()
+object RenderImage {
+	def apply() = new RenderImage()
 	
 	def apply(texture: Texture) = {
-		val i = new Image()
+		val i = new RenderImage()
 		i.texture = texture
 		i.width = texture.width
 		i.height = texture.height
@@ -62,7 +62,7 @@ object Image {
 	}
 	
 	def apply(texture: Texture, x: Double, y: Double, width: Double, height: Double) = {
-		val i = new Image()
+		val i = new RenderImage()
 		i.texture = texture
 		i.x = x
 		i.y = y

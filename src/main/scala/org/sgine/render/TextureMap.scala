@@ -1,7 +1,7 @@
 package org.sgine.render
 
 class TextureMap[T] protected(val texture: Texture) {
-	private var map = Map.empty[Any, Image]
+	private var map = Map.empty[Any, RenderImage]
 	
 	def create(name: T, x: Double, y: Double, width: Double, height: Double) = {
 		val image = createImage()
@@ -18,7 +18,7 @@ class TextureMap[T] protected(val texture: Texture) {
 		image
 	}
 	
-	protected def createImage() = Image()
+	protected def createImage() = RenderImage()
 	
 	def apply(name: T) = map(name)
 	

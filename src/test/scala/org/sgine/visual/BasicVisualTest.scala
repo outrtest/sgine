@@ -1,7 +1,7 @@
 package org.sgine.visual
 
 import org.sgine.core.Color
-import visual._
+import org.sgine.visual._
 import org.sgine.visual.material.pigment._
 import org.sgine.visual.shape._
 

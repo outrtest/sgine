@@ -13,7 +13,7 @@ object TestRenderer {
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 		
 		val m = Matrix4().translate(z = -1000.0).scaleAll(0.04)
-		val i = Image(t)
+		val i = RenderImage(t)
 		val fps = FPS(1.0)
 		
 		val a = new Array[() => Unit](3)

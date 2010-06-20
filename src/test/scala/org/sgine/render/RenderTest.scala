@@ -27,7 +27,7 @@ object RenderTest {
 	var frames = 0L
 	
 	var texture: BasicTexture = _
-	var image: Image = _
+	var image: RenderImage = _
 	
 	def main(args: Array[String]): Unit = {
 		f.setSize(1024, 768)
@@ -107,7 +107,7 @@ object RenderTest {
 		texture = new BasicTexture(700, 366)
 		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")), 0, 0, 700, 366)
 //		TextureUtil(texture, ImageIO.read(getClass.getClassLoader.getResource("resource/Arial.png")), 0, 0, 256, 256, 256)
-		image = Image()
+		image = RenderImage()
 		image.texture = texture
 		image.width = 700
 		image.height = 366

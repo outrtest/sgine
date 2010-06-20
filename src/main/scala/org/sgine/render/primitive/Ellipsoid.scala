@@ -7,7 +7,7 @@ package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
-import org.sgine.render.Image
+import org.sgine.render.RenderImage
 
 import org.lwjgl.opengl.GL11._
 
@@ -19,7 +19,7 @@ import scala.math._
  */
 class Ellipsoid protected(val width: Double, val height: Double, val depth: Double,
                       val pitchSamples: Int, val yawSamples: Int,
-                      val color: Color, val image: Image) extends Primitive {
+                      val color: Color, val image: RenderImage) extends Primitive {
   val mode = GL_QUAD_STRIP
 
   val vertexCount = 2 * (yawSamples + 1) * pitchSamples
@@ -64,6 +64,6 @@ class Ellipsoid protected(val width: Double, val height: Double, val depth: Doub
 
 object Ellipsoid {
   def apply(width: Double, height: Double, depth: Double, pitchSamples: Int = 12, yawSamples: Int = 12,
-            color: Color = Color.White, image: Image = null)
+            color: Color = Color.White, image: RenderImage = null)
   =  new Ellipsoid(width, height, depth, pitchSamples, yawSamples, color, image)
 }

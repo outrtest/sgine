@@ -13,7 +13,7 @@ import org.sgine.event.ProcessingMode
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.render.{Image => RenderImage}
+import org.sgine.render.RenderImage
 import org.sgine.render.StreamingTexture
 
 import org.lwjgl.opengl.GL11._

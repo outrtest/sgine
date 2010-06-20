@@ -13,7 +13,7 @@ import org.sgine.event.ProcessingMode
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.render.{Image => RenderImage, Texture, TextureManager}
+import org.sgine.render.{RenderImage, Texture, TextureManager}
 
 import org.sgine.ui.ext.AdvancedComponent
 

@@ -2,11 +2,11 @@ package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
-import org.sgine.render.Image
+import org.sgine.render.RenderImage
 
 import org.lwjgl.opengl.GL11._
 
-class Quad protected(val width: Double, val height: Double, val color: Color, val image: Image) extends Primitive {
+class Quad protected(val width: Double, val height: Double, val color: Color, val image: RenderImage) extends Primitive {
 	val mode = GL_QUADS
 	
 	val vertexCount = 4
@@ -44,5 +44,5 @@ class Quad protected(val width: Double, val height: Double, val color: Color, va
 }
 
 object Quad {
-	def apply(width: Double, height: Double, color: Color = Color.White, image: Image = null) = new Quad(width, height, color, image)
+	def apply(width: Double, height: Double, color: Color = Color.White, image: RenderImage = null) = new Quad(width, height, color, image)
 }

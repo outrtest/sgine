@@ -18,7 +18,7 @@ object TestCuboid {
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 
 		val m = Matrix4().translate(z = -1000.0).scaleAll(0.04)
-		val i = Image(t)
+		val i = RenderImage(t)
 		val cuboid = Cuboid(300.0, 100.0, 200.0, Color.White, i)
 		val fps = FPS(1.0)
 

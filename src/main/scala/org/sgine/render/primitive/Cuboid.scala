@@ -2,13 +2,13 @@ package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
-import org.sgine.render.Image
+import org.sgine.render.RenderImage
 
 import org.lwjgl.opengl.GL11._
 
 import scala.math._
 
-class Cuboid(width: Double, height: Double, depth: Double, color: Color, val image: Image)
+class Cuboid(width: Double, height: Double, depth: Double, color: Color, val image: RenderImage)
 extends Primitive {
 
   val mode = GL_QUADS
@@ -52,6 +52,6 @@ extends Primitive {
 
 object Cuboid {
   def apply(width: Double, height: Double, depth: Double,
-            color: Color = Color.White, image: Image = null)
+            color: Color = Color.White, image: RenderImage = null)
   =  new Cuboid(width, height, depth, color, image)
 }

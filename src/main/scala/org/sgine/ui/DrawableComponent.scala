@@ -18,7 +18,7 @@ import org.sgine.property.ListenableProperty
 import org.sgine.property.MutableProperty
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.render.{Image => RenderImage}
+import org.sgine.render.RenderImage
 import org.sgine.render.StreamingTexture
 import org.sgine.render.TextureUtil
 

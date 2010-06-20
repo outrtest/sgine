@@ -18,7 +18,7 @@ object TestTorus {
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 
 		val m = Matrix4().translate(z = -1000.0).scaleAll(0.04)
-		val i = Image(t)
+		val i = RenderImage(t)
 		val torus = Torus(200.0, 50.0, 150, 6, Color.White, i)
 		val fps = FPS(1.0)
 

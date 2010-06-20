@@ -2,7 +2,7 @@ package org.sgine.ui
 
 import org.sgine.core.Resource
 
-import org.sgine.render.{Image => RenderImage}
+import org.sgine.render.RenderImage
 import org.sgine.render.TextureManager
 
 class ImageCube extends Cube[Image] {

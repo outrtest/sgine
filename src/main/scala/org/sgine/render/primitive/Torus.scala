@@ -2,7 +2,7 @@ package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
-import org.sgine.render.Image
+import org.sgine.render.RenderImage
 
 import org.lwjgl.opengl.GL11._
 
@@ -10,7 +10,7 @@ import scala.math._
 
 class Torus protected(val outerRadius: Double, val innerRadius: Double,
                       val outerSamples: Int, val innerSamples: Int,
-                      val color: Color, val image: Image) extends Primitive {
+                      val color: Color, val image: RenderImage) extends Primitive {
   val mode = GL_QUAD_STRIP
 
   val vertexCount = 2 * outerSamples * (innerSamples + 1)
@@ -56,6 +56,6 @@ class Torus protected(val outerRadius: Double, val innerRadius: Double,
 
 object Torus {
   def apply(outerRadius: Double, innerRadius: Double, outerSamples: Int = 20, innerSamples: Int = 10,
-            color: Color = Color.White, image: Image = null)
+            color: Color = Color.White, image: RenderImage = null)
   =  new Torus(outerRadius, innerRadius, outerSamples, innerSamples, color, image)
 }

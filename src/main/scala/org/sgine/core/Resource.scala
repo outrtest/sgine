@@ -6,6 +6,7 @@ class Resource private(val url: URL)
 
 object Resource {
 	private var paths: List[ResourcePath] = Nil
+	addPath("")
 	addPath("resource/")
 	addPath("resource/font/")
 	
@@ -28,8 +29,6 @@ object Resource {
 		}
 		throw new RuntimeException("Resource lookup failed: " + name)
 	}
-	
-//	def apply(path: String) = new Resource(getClass.getClassLoader.getResource(path))
 	
 	def apply(file: java.io.File) = new Resource(file.toURI.toURL)
 }

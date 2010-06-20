@@ -7,13 +7,13 @@ package org.sgine.render.primitive
 
 import org.sgine.core.Color
 
-import org.sgine.render.Image
+import org.sgine.render.RenderImage
 
 import org.lwjgl.opengl.GL11._
 
 import scala.math._
 
-class Disk protected(val width: Double, val height: Double, val sides: Int, val color: Color, val image: Image) extends Primitive {
+class Disk protected(val width: Double, val height: Double, val sides: Int, val color: Color, val image: RenderImage) extends Primitive {
   val mode = GL_TRIANGLE_FAN
 
   val vertexCount = sides + 2
@@ -50,6 +50,6 @@ class Disk protected(val width: Double, val height: Double, val sides: Int, val 
 }
 
 object Disk {
-  def apply(width: Double, height: Double, sides: Int = 12, color: Color = Color.White, image: Image = null)
+  def apply(width: Double, height: Double, sides: Int = 12, color: Color = Color.White, image: RenderImage = null)
   = if (sides < 3) throw new IllegalArgumentException() else new Disk(width, height, sides, color, image)
 }
