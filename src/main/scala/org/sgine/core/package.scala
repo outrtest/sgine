@@ -1,3 +1,5 @@
+package org.sgine
+
 import org.sgine.core.Color
 import org.sgine.core.DepthAlignment
 import org.sgine.core.Direction
@@ -7,7 +9,7 @@ import org.sgine.core.Resource
 import org.sgine.core.VerticalAlignment
 
 package object core {
-	implicit def stringToColor(value: String) = Color(value)
+	implicit def stringToColor(value: String): Color = Color(value)
 	
 	implicit def stringToDepthAlignment(value: String) = value.toLowerCase match {
 		case "front" => DepthAlignment.Front

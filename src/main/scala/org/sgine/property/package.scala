@@ -1,3 +1,5 @@
+package org.sgine
+
 import org.sgine.property.Property;
 
 package object property {
