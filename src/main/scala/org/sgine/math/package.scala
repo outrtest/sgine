@@ -1,3 +1,5 @@
+package org.sgine
+
 import org.sgine.math.{Vector2, Vector3}
 
 package object math {
