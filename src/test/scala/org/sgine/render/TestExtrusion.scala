@@ -35,7 +35,7 @@ object TestExtrusion {
                 trans.translate(-200, 0)
                 trans.scale(1, -1)
 
-                val font = new Font("Arial Unicode MS", Font.BOLD, 150).deriveFont(trans)
+                val font = new Font("Dialog", Font.BOLD, 150).deriveFont(trans)
                 val fontRenderContext = new FontRenderContext(null, true, true)
                 val glyphVector = font.createGlyphVector(fontRenderContext, "Sgine!")
 
