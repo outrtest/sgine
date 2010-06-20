@@ -1,9 +1,14 @@
 package org.sgine.scene.event
 
-object SceneEventType extends Enumeration {
-	type SceneEventType = Value
+import org.sgine.core.Enumerated
+
+sealed trait SceneEventType
+
+object SceneEventType extends Enumerated[SceneEventType] {
 	
-	val ChildAdded = Value
-	val ChildRemoved = Value
-	val ParentChanged = Value
+        case object ChildAdded extends SceneEventType
+	case object ChildRemoved extends SceneEventType
+	case object ParentChanged extends SceneEventType
+
+        SceneEventType(ChildAdded, ChildRemoved, ParentChanged)
 }
