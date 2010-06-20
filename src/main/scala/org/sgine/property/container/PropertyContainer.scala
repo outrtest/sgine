@@ -14,7 +14,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	
 	def apply() = -1
 	
-	def apply(value: Int): Property[Int] = throw new UnsupportedOperationException("Not supported!")
+	def apply(value: Int): Property[Int] = this
 	
 	def apply(name: String): Option[Property[_]] = {
 		initialize()

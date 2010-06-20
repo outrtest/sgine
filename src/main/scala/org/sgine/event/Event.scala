@@ -160,7 +160,10 @@ case class AsynchronousWorkUnit(h: EventHandler, evt: Event) extends Function0[U
 		
 		if (evt.counter.decrementAndGet == 0) {
 			evt match {
-				case c: Cacheable[Event] => c.cache.release(c)
+				case c: Cacheable[_] => {
+					val ce = c.asInstanceOf[Event with Cacheable[Event]]
+					ce.cache.release(ce)
+				}
 				case _ =>
 			}
 		}
@@ -179,7 +182,10 @@ case class NormalEventWorkUnit(evt: Event, listenable: Listenable) extends Block
 		
 		if (evt.counter.decrementAndGet == 0) {
 			evt match {
-				case c: Cacheable[Event] => c.cache.release(c)
+				case c: Cacheable[_] => {
+					val ce = c.asInstanceOf[Event with Cacheable[Event]]
+					ce.cache.release(ce)
+				}
 				case _ =>
 			}
 		}

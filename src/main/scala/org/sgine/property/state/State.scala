@@ -60,12 +60,12 @@ case class StateItem(key: String, value: Any, restore: Any = null) {
 				}
 				process(next.get, tail, value)
 			}
-			case p: Property[T] => {
+			case p: Property[_] => {
 				if (tail != null) {
 					process(p(), tail, value)
 				} else {
 					val original = p()
-					p := value
+					p.asInstanceOf[Property[T]] := value
 					
 					original
 				}

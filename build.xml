@@ -70,7 +70,7 @@
         <jar destfile="${dist}/${jar}" basedir="${build}" index="true"/>
     </target>
 	
-	<target name="jar-complete" depends="jar">
+	<target name="jar-complete" depends="jar-tests">
 		<copy todir="${dist}">
 			<fileset dir="${lib}">
 	    		<include name="*.jar"/>
@@ -93,11 +93,11 @@
 		</copy>
 		<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
 	</target>
-		
-	<target name="test-deploy">
-		<delete file="${dist}/test/${keystore}"/>
+	
+	<target name="sign-jars">
+		<delete file="${dist}/${keystore}"/>
 				
-		<genkey alias="sgine" keystore="${dist}/test/${keystore}" storepass="sgine.tests">
+		<genkey alias="sgine" keystore="${dist}/${keystore}" storepass="sgine.tests">
 			<dname>
 				<param name="CN" value="sgine"/>
 				<param name="OU" value="sgine"/>
@@ -106,8 +106,8 @@
 			</dname>
 		</genkey>
 		
-		<signjar keystore="${dist}/test/${keystore}" alias="sgine" keypass="sgine.tests" storepass="sgine.tests" verbose="false">
-			<fileset dir="${dist}/test/">
+		<signjar keystore="${dist}/${keystore}" alias="sgine" keypass="sgine.tests" storepass="sgine.tests" verbose="false">
+			<fileset dir="${dist}">
 				<include name="*.jar"/>
 			</fileset>
 		</signjar>
