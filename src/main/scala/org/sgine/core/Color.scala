@@ -11,6 +11,11 @@ class Color private[core]() {
 	def blue = _blue
 	def alpha = _alpha
 	
+	def name = Color.values.indexOf(this) match {
+		case -1 => null
+		case index: Int => Color.names(index)
+	}
+	
 	def add(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 0.0) = Color(_red + red, _green + green, _blue + blue, _alpha + alpha)
 	def subtract(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 0.0) = Color(_red - red, _green - green, _blue - blue, _alpha - alpha)
 	def multiply(red: Double = 1.0, green: Double = 1.0, blue: Double = 1.0, alpha: Double = 1.0) = Color(_red * red, _green * green, _blue * blue, _alpha * alpha)
@@ -29,6 +34,11 @@ class Color private[core]() {
 		_red = (value >> 16 & 0xff) / 255.0
 		_green = (value >> 8 & 0xff) / 255.0
 		_blue = (value >> 0 & 0xff) / 255.0
+	}
+	
+	override def equals(that: Any) = that match {
+		case c: Color => c.red == red && c.green == green && c.blue == blue && c.alpha == alpha
+		case _ => false
 	}
 	
 	override def toString() = "Color(r=" + red + ", g=" + green + ", b=" + blue + ", a=" + alpha + ")"
@@ -59,18 +69,18 @@ object Color {
 	val DarkGray = Color(0xff3f3f3f)
 	val DarkGreen = Color(0xff006400)
 	val DarkKhaki = Color(0xffbdb76b)
-	val DarkOlive_green = Color(0xff556b2f)
+	val DarkOliveGreen = Color(0xff556b2f)
 	val DarkOrange = Color(0xffff8c00)
 	val DarkOrchid = Color(0xff9932cc)
 	val DarkRed = Color(0xff8b0000)
 	val DarkSalmon = Color(0xffe9967a)
-	val DarkSea_green = Color(0xff8fbc8f)
-	val DarkSlate_blue = Color(0xff483d8b)
-	val DarkSlate_gray = Color(0xff2f4f4f)
+	val DarkSeaGreen = Color(0xff8fbc8f)
+	val DarkSlateBlue = Color(0xff483d8b)
+	val DarkSlateGray = Color(0xff2f4f4f)
 	val DarkTurquoise = Color(0xff00ced1)
 	val DarkViolet = Color(0xff9400d3)
 	val DeepPink = Color(0xffff1493)
-	val DeepSky_blue = Color(0xff00bfff)
+	val DeepSkyBlue = Color(0xff00bfff)
 	val DimGray = Color(0xff696969)
 	val DodgerBlue = Color(0xff1e90f)
 	val Firebrick = Color(0xffb22222)
@@ -98,15 +108,15 @@ object Color {
 	val LightCoral = Color(0xfff08080)
 	val LightCyan = Color(0xffe0fff)
 	val LightGoldenrod = Color(0xffeedd82)
-	val LightGoldenrod_yellow = Color(0xfffafad2)
+	val LightGoldenrodYellow = Color(0xfffafad2)
 	val LightGray = Color(0xffd3d3d3)
 	val LightPink = Color(0xffffb6c1)
 	val LightSalmon = Color(0xffffa07a)
-	val LightSea_green = Color(0xff20b2aa)
-	val LightSky_blue = Color(0xff87cefa)
-	val LightSlate_blue = Color(0xff8470f)
-	val LightSlate_gray = Color(0xff778899)
-	val LightSteel_blue = Color(0xffb0c4de)
+	val LightSeaGreen = Color(0xff20b2aa)
+	val LightSkyBlue = Color(0xff87cefa)
+	val LightSlateBlue = Color(0xff8470f)
+	val LightSlateGray = Color(0xff778899)
+	val LightSteelBlue = Color(0xffb0c4de)
 	val LightYellow = Color(0xffffffe0)
 	val LimeGreen = Color(0xff32cd32)
 	val Linen = Color(0xfffaf0e6)
@@ -116,11 +126,11 @@ object Color {
 	val MediumBlue = Color(0xff0000cd)
 	val MediumOrchid = Color(0xffba55d3)
 	val MediumPurple = Color(0xff9370db)
-	val MediumSea_green = Color(0xff3cb371)
-	val MediumSlate_blue = Color(0xff7b68ee)
-	val MediumSpring_green = Color(0xff00a9a)
+	val MediumSeaGreen = Color(0xff3cb371)
+	val MediumSlateBlue = Color(0xff7b68ee)
+	val MediumSpringGreen = Color(0xff00a9a)
 	val MediumTurquoise = Color(0xff48d1cc)
-	val MediumViolet_red = Color(0xffc71585)
+	val MediumVioletRed = Color(0xffc71585)
 	val MidnightBlue = Color(0xff191970)
 	val MintCream = Color(0xfff5fffa)
 	val MistyRose = Color(0xffffe4e1)
@@ -135,7 +145,7 @@ object Color {
 	val PaleGoldenrod = Color(0xffeee8aa)
 	val PaleGreen = Color(0xff98fb98)
 	val PaleTurquoise = Color(0xffafeeee)
-	val PaleViolet_red = Color(0xffdb7093)
+	val PaleVioletRed = Color(0xffdb7093)
 	val PapayaWhip = Color(0xffffefd5)
 	val PeachPuff = Color(0xffffdab9)
 	val Peru = Color(0xffcd853f)
@@ -177,6 +187,7 @@ object Color {
 	
 	def random = values(new scala.util.Random().nextInt(values.length))
 	lazy val values = loadValues()
+	lazy val names = loadNames()
 	
 	def apply(value: Long) = new Color(value)
 	
@@ -190,29 +201,34 @@ object Color {
 	}
 	
 	def apply(value: String): Color = {
-		var hex = value
-		if (hex startsWith "#") {	// Remove '#' off the front
-			hex = hex substring 1
-		}
-		if ((hex.length == 3) || (hex.length == 4)) {		// Convert 3-digit / 4-digit to 6-digit / 8-digit
-			val b = new StringBuilder()
-			for (i <- 0 until hex.length) {
-				b.append(hex.charAt(i))
-				b.append(hex.charAt(i))
+		byName(value) match {
+			case Some(c) => c
+			case None => {
+				var hex = value
+				if (hex startsWith "#") {	// Remove '#' off the front
+					hex = hex substring 1
+				}
+				if ((hex.length == 3) || (hex.length == 4)) {		// Convert 3-digit / 4-digit to 6-digit / 8-digit
+					val b = new StringBuilder()
+					for (i <- 0 until hex.length) {
+						b.append(hex.charAt(i))
+						b.append(hex.charAt(i))
+					}
+					hex = b.toString
+				}
+				if (hex.length >= 6) {
+					val red = (fromHex(hex.charAt(0)) * 16) + fromHex(hex.charAt(1))
+					val green = (fromHex(hex.charAt(2)) * 16) + fromHex(hex.charAt(3))
+					val blue = (fromHex(hex.charAt(4)) * 16) + fromHex(hex.charAt(5))
+					var alpha = 255
+					if (hex.length == 8) {
+						alpha = (fromHex(hex.charAt(6)) * 16) + fromHex(hex.charAt(7))
+					}
+					Color(red / 255.0, green / 255.0, blue / 255.0, alpha / 255.0)
+				} else {
+					throw new RuntimeException("Unable to parse " + value + " to Color")
+				}
 			}
-			hex = b.toString
-		}
-		if (hex.length >= 6) {
-			val red = (fromHex(hex.charAt(0)) * 16) + fromHex(hex.charAt(1))
-			val green = (fromHex(hex.charAt(2)) * 16) + fromHex(hex.charAt(3))
-			val blue = (fromHex(hex.charAt(4)) * 16) + fromHex(hex.charAt(5))
-			var alpha = 255
-			if (hex.length == 8) {
-				alpha = (fromHex(hex.charAt(6)) * 16) + fromHex(hex.charAt(7))
-			}
-			Color(red / 255.0, green / 255.0, blue / 255.0, alpha / 255.0)
-		} else {
-			throw new RuntimeException("Unable to parse " + value + " to Color")
 		}
 	}
 	
@@ -230,6 +246,11 @@ object Color {
 		}
 	}
 	
+	def byName(name: String): Option[Color] = names.zip(values).find(t => t._1.equalsIgnoreCase(name)) match {
+		case Some(t) => Some(t._2)
+		case None => None
+	}
+	
 	private def loadValues() = {
 		var values: List[Color] = Nil
 		
@@ -243,7 +264,19 @@ object Color {
 		values
 	}
 	
+	private def loadNames() = {
+		var names: List[String] = Nil
+		
+		for (f <- getClass.getDeclaredFields) {
+			if (f.getType == classOf[Color]) {
+				names = f.getName :: names
+			}
+		}
+		
+		names
+	}
+	
 	def main(args: Array[String]): Unit = {
-		println('5'.toString.toInt)
+		println(Color.random.name)
 	}
 }
