@@ -86,6 +86,7 @@ class Button extends SkinnableComponent with AdvancedComponent with PaddingCompo
 				case Placement.Bottom => Direction.Vertical
 				case Placement.Left => Direction.Horizontal
 				case Placement.Right => Direction.Horizontal
+				case _ => throw new RuntimeException("Invalid")
 			}
 			val spacing = iconSpacing()
 			val reverse = iconPlacement() match {
