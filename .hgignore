@@ -28,3 +28,5 @@ syntax: glob
 
 syntax: regexp
 ^screenshots$
+syntax: regexp
+\.jar$
