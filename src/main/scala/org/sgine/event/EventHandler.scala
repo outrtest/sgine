@@ -1,8 +1,8 @@
 package org.sgine.event
 
 class EventHandler private (val listener: Event => Unit) {
-	var processingMode = ProcessingMode.Normal
-	var recursion = Recursion.None
+	var processingMode : ProcessingMode = ProcessingMode.Normal
+	var recursion : Recursion = Recursion.None
 	var filter: Event => Boolean = _
 	
 	def process(evt: Event) = {
@@ -21,7 +21,7 @@ class EventHandler private (val listener: Event => Unit) {
 }
 
 object EventHandler {
-	def apply[E <: Event](listener: E => Unit, processingMode: ProcessingMode.Value = ProcessingMode.Normal, recursion: Recursion.Value = Recursion.None, filter: Event => Boolean = null): EventHandler = {
+	def apply[E <: Event](listener: E => Unit, processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: Event => Boolean = null): EventHandler = {
 		val eh = new EventHandler(EventListener(listener))
 		eh.processingMode  = processingMode
 		eh.recursion = recursion

@@ -1,9 +1,10 @@
 package org.sgine.core
 
-object VerticalAlignment extends Enumeration {
-	type VerticalAlignment = Value
-	
-	val Top = Value
-	val Middle = Value
-	val Bottom = Value
+sealed trait VerticalAlignment
+
+object VerticalAlignment extends Enumerated[VerticalAlignment] {
+   case object Top extends VerticalAlignment
+   case object Middle extends VerticalAlignment
+   case object Bottom extends VerticalAlignment
+   VerticalAlignment(Top, Middle, Bottom)
 }
