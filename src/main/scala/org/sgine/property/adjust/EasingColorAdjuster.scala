@@ -4,7 +4,7 @@ import org.sgine.easing.Easing
 import org.sgine.core.Color
 import scala.math.abs
 
-/**
+/*
  * Adjuster for color values, using the specified easing function.
  */
 class EasingColorAdjuster (easing: Easing.EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAdjuster[Color] {
