@@ -70,9 +70,9 @@ object Extrusion {
     while (! path.isDone) {
       path.currentSegment(coords) match {
         case SEG_MOVETO => coordList.clear
-                           coordList + Vector2(coords(0), coords(1))
-        case SEG_LINETO => coordList + Vector2(coords(0), coords(1))
-        case SEG_CLOSE =>  primitives + new Extrusion(coordList.toSeq, extrusion, color, image)
+                           coordList += Vector2(coords(0), coords(1))
+        case SEG_LINETO => coordList += Vector2(coords(0), coords(1))
+        case SEG_CLOSE =>  primitives += new Extrusion(coordList.toSeq, extrusion, color, image)
       }
       path.next
     }
