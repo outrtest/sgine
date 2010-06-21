@@ -9,7 +9,7 @@ import org.sgine.work.Updatable
 import scala.math.random
 import scala.math.Pi
 
-/**
+/*
  * Demonstrates the Box and using its properties with adjusters.
  */
 object TestAdjustingBox extends StandardDisplay with Updatable {
