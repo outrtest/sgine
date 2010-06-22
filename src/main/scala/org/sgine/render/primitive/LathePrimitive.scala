@@ -5,6 +5,7 @@ import org.sgine.render.RenderImage
 import org.sgine.math.{Vector2, Vector3}
 import scala.math._
 import org.sgine.core.Color
+import collection.immutable.SortedMap
 
 trait Projection {
   /*
@@ -29,7 +30,43 @@ case class TextureArea(topLeft: Vector2, topRight: Vector2, bottomLeft: Vector2,
 
 
 object TextureMapping {
-  val Default = TextureMapping()
+  val Default = SimpleTextureMapping()
+}
+
+trait TextureMapping {
+
+  /* Returns a map from the row sample (starting with 0) to the TextureMapping that starts at that row */
+  def rows(numberOfRowSamples: Int): Map[Int, TextureMapping]
+
+  /* Returns a map from the column sample (starting with 0) to the TextureMapping that starts at that column */
+  def columns(numberOfColumnSamples: Int): Map[Int, TextureMapping]
+
+  /* Size of this mapping in relation to the others on the same row / column */
+  def relativeSize: Double
+
+  protected def build(mappings: List[TextureMapping]): Map[Int, TextureMapping] = {
+    val totalRelativeSize: Double = mappings.foldLeft(0.0)(_ + _.relativeSize)
+
+    // Divide the texture maps between the available samples
+    var location = 0.0
+    var result = Map[Int, TextureMapping]()
+    mappings foreach { mapping:TextureMapping =>
+      val start = (location * totalRelativeSize).toInt
+      location += mapping.relativeSize
+      result += (start -> mapping)
+    }
+    result
+  }
+}
+
+case class RowTextureMapping(columns: List[TextureMapping], relativeSize: Double = 1.0) extends TextureMapping {
+  def rows(numberOfRowSamples: Int): Map[Int, TextureMapping] = SortedMap( 0 -> this )
+  def columns(numberOfColumnSamples: Int): Map[Int, TextureMapping] = build(columns)
+}
+
+case class ColumnTextureMapping(rows: List[TextureMapping], relativeSize: Double = 1.0) extends TextureMapping  {
+  def rows(numberOfRowSamples: Int): Map[Int, TextureMapping] = build(rows)
+  def columns(numberOfColumnSamples: Int): Map[Int, TextureMapping] = SortedMap( 0 -> this )
 }
 
 /*
@@ -44,15 +81,21 @@ object TextureMapping {
  * @param sharp*Edge if true, the specified edge of this texture segment will not have its normals smoothed.
  */
 // TODO: Allow composition of texture segments?
-case class TextureMapping(textureArea: TextureArea = TextureArea.Full,
+case class SimpleTextureMapping(textureArea: TextureArea = TextureArea.Full,
                           projection: Projection = LinearProjection,
+                          relativeSize: Double = 1.0,
                           sharpLeftEdge: Boolean = false,
                           sharpRightEdge: Boolean = false,
                           sharpTopEdge: Boolean = false,
-                          sharpBottomEdge: Boolean = false)
+                          sharpBottomEdge: Boolean = false) extends TextureMapping{
+
+  def rows(numberOfRowSamples: Int): SortedMap[Int, TextureMapping] = SortedMap( 0 -> this )
+  def columns(numberOfColumnSamples: Int): Map[Int, TextureMapping] = SortedMap( 0 -> this )
+
+}
 
 /*
- * Parametric cyliner shaped primitive with a specified number of sides, segments, and a surface function.
+ * Parametric cylinder shaped primitive with a specified number of sides, segments, and a surface function.
  */
 class LathePrimitive(segments: Int,
                      sides: Int,
@@ -82,3 +125,4 @@ class LathePrimitive(segments: Int,
 	}
 
 }
+
