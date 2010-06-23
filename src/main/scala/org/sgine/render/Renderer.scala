@@ -1,5 +1,8 @@
 package org.sgine.render
 
+import java.awt.event.HierarchyEvent
+import java.awt.event.HierarchyListener
+
 import org.lwjgl.opengl.{Display => GLDisplay}
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL12._
@@ -58,10 +61,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	private def run(): Unit = {
 		try {
 			initGL()
-	
 			while ((keepAlive) && (!GLDisplay.isCloseRequested)) {
 				GLDisplay.update()
-				
 				if (!Updatable.useWorkManager) {
 					Updatable.update()
 				}
@@ -209,6 +210,23 @@ object Renderer {
 		f.setVisible(true)
 		
 		r.start()
+		
+		r
+	}
+	
+	def createCanvas(width: Int, height: Int, title: String, alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) = {
+		val r = new Renderer(alpha, depth, stencil, samples, bpp, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
+		
+		r.canvas.addHierarchyListener(new HierarchyListener() {
+			private var changed = false
+			
+			def hierarchyChanged(evt: HierarchyEvent) = {
+				if (!changed) {
+					r.start()
+					changed = true
+				}
+			}
+		})
 		
 		r
 	}

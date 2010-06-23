@@ -62,18 +62,27 @@ trait StandardDisplay extends Listenable with Display {
 		
 		if (mode == WindowMode.Frame) {
 			_renderer = Renderer.createFrame(width, height, title())
-			renderer.renderable := RenderableScene(scene)
 			
 			_renderer.canvas.getParent match {
 				case f: java.awt.Frame => title.listeners += EventHandler(PropertyChangeDelegate(f.setTitle), ProcessingMode.Blocking)
 				case _ =>
 			}
-			
-			init()
-			setup()
+		} else if (mode == WindowMode.Canvas) {
+			_renderer = Renderer.createCanvas(width, height, title())
 		} else {
 			error("Unsupported WindowMode: " + mode)
 		}
+		
+		renderer.renderable := RenderableScene(scene)
+		
+		init()
+		setup()
+	}
+	
+	def createCanvas(): java.awt.Canvas = {
+		start(WindowMode.Canvas)
+		
+		renderer.canvas
 	}
 	
 	/**
