@@ -2,7 +2,7 @@ package org.sgine.property
 
 import org.sgine.easing.Linear
 
-import org.sgine.property.adjust.EasingNumericAdjuster
+import org.sgine.property.animate.EasingNumericAnimator
 
 import org.sgine.work.Updatable
 
@@ -11,7 +11,7 @@ object TestAdjustableProperties {
 		Updatable.useWorkManager = true
 		
 		val p = new AdvancedProperty[Double](0.0)
-		p.adjuster = new EasingNumericAdjuster(Linear.easeIn, 5.0)
+		p.adjuster = new EasingNumericAnimator(Linear.easeIn, 5.0)
 		var time = System.currentTimeMillis
 		p := 100.0
 		p.waitForTarget()

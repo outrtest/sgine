@@ -1,10 +1,10 @@
-package org.sgine.property.adjust
+package org.sgine.property.animate
 
 import org.sgine.easing.Easing._
 
 import scala.math._
 
-class EasingNumericAdjuster(easing: EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAdjuster[Double] {
+class EasingNumericAnimator(var easing: EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAnimator[Double] {
 	private var target: Double = _
 	private var start: Double = _
 	private var timeToTarget: Double = _

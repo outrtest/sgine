@@ -1,6 +1,6 @@
-package org.sgine.property.adjust
+package org.sgine.property.animate
 
-class LinearNumericAdjuster(multiplier: Double) extends PropertyAdjuster[Double] {
+class LinearNumericAnimator(multiplier: Double) extends PropertyAnimator[Double] {
 	def apply(current: Double, target: Double, elapsed: Double): Double = {
 		val adjustment = elapsed * multiplier
 		var adjusted = current;
