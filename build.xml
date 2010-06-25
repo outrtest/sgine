@@ -12,7 +12,7 @@
     <property name="jar" value="${ant.project.name}.jar"/>
 	<property name="jar.tests" value="${ant.project.name}.tests.jar"/>
 	<property name="scala.home" location="${env.SCALA_HOME}"/>
-	<property name="keystore" value="sgine.tests.keystore"/>
+	<property name="keystore" value="${user.home}/sgine.keystore"/>
 	
     <path id="cp">
     	<fileset dir="${lib}">
@@ -93,11 +93,9 @@
 		</copy>
 		<jar destfile="${dist}/${jar.tests}" basedir="${build}" index="true"/>
 	</target>
-	
-	<target name="sign-jars" depends="jar-complete">
-		<delete file="${dist}/${keystore}"/>
-				
-		<genkey alias="sgine" keystore="${dist}/${keystore}" storepass="sgine.tests">
+
+	<target name="generate-keystore">
+		<genkey alias="sgine" keystore="${keystore}" storepass="sgine123">
 			<dname>
 				<param name="CN" value="sgine"/>
 				<param name="OU" value="sgine"/>
@@ -105,14 +103,16 @@
 				<param name="C" value="US"/>
 			</dname>
 		</genkey>
-		
-		<signjar keystore="${dist}/${keystore}" alias="sgine" keypass="sgine.tests" storepass="sgine.tests" verbose="false">
+	</target>
+	
+	<target name="sign-jars" depends="jar-complete">
+		<signjar keystore="${keystore}" alias="sgine" keypass="sgine123" storepass="sgine123" verbose="false">
 			<fileset dir="${dist}">
 				<include name="*.jar"/>
 				<exclude name="sgine.jar"/>
 			</fileset>
 		</signjar>
-		<signjar keystore="${dist}/${keystore}" alias="sgine" keypass="sgine.tests" storepass="sgine.tests" verbose="false" jar="${dist}/sgine.jar" signedjar="${dist}/sgine_signed.jar"/>
+		<signjar keystore="${keystore}" alias="sgine" keypass="sgine123" storepass="sgine123" verbose="false" jar="${dist}/sgine.jar" signedjar="${dist}/sgine_signed.jar"/>
 	</target>
 	
 	<target name="deploy" depends="sign-jars">
