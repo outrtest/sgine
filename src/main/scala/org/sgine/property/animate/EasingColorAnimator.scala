@@ -1,13 +1,13 @@
-package org.sgine.property.adjust
+package org.sgine.property.animate
 
 import org.sgine.easing.Easing
 import org.sgine.core.Color
 import scala.math.abs
 
 /*
- * Adjuster for color values, using the specified easing function.
+ * Animator for color values, using the specified easing function.
  */
-class EasingColorAdjuster (easing: Easing.EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAdjuster[Color] {
+class EasingColorAnimator (easing: Easing.EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAnimator[Color] {
 	private var target: Color = _
 	private var start: Color = _
 	private var timeToTarget: Double = _

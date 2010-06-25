@@ -1,9 +1,9 @@
 package org.sgine.ui
 
-import org.sgine.property.adjust.{EasingColorAdjuster, EasingNumericAdjuster}
+import org.sgine.property.animate.{EasingColorAnimator, EasingNumericAnimator}
 import org.sgine.core.{Color, Resource}
 import org.sgine.easing.Back
-import org.sgine.render.{TextureManager, RenderImage, StandardDisplay}
+import org.sgine.render.{Debug, TextureManager, RenderImage, StandardDisplay}
 import org.sgine.work.Updatable
 
 import scala.math.random
@@ -12,7 +12,7 @@ import scala.math.Pi
 /*
  * Demonstrates the Box and using its properties with adjusters.
  */
-object TestAdjustingBox extends StandardDisplay with Updatable {
+object TestAnimatingBox extends StandardDisplay with Debug with Updatable {
 
   private var box: Box = new Box()
 
@@ -31,15 +31,15 @@ object TestAdjustingBox extends StandardDisplay with Updatable {
     val easingMethod = Back.easeInOut _  // Back.easeInOut will change a value by backing off in the other direction to gather speed, leap to the target value and a bit over, and back to the target.
     val adjustTime = animationTimeSeconds // How long it should take for the easing method to change the value
 
-    box.width.adjuster = new EasingNumericAdjuster(easingMethod, adjustTime)
-    box.height.adjuster = new EasingNumericAdjuster(easingMethod, adjustTime)
-    box.depth.adjuster = new EasingNumericAdjuster(easingMethod, adjustTime)
+    box.width.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.height.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.depth.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
 
-    box.rotation.x.adjuster = new EasingNumericAdjuster(easingMethod, adjustTime)
-    box.rotation.y.adjuster = new EasingNumericAdjuster(easingMethod, adjustTime)
-    box.rotation.z.adjuster = new EasingNumericAdjuster(easingMethod, adjustTime)
+    box.rotation.x.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.rotation.y.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.rotation.z.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
 
-    box.color.adjuster = new EasingColorAdjuster(easingMethod, adjustTime)
+    box.color.adjuster = new EasingColorAnimator(easingMethod, adjustTime)
 
     // Tell Updatable to start calling update
     initUpdatable()

@@ -1,7 +1,7 @@
 package org.sgine.property
 
 import org.sgine._
-import org.sgine.property.adjust._
+import org.sgine.property.animate._
 import org.sgine.property.container._
 import org.sgine.property.event._
 import org.sgine.work._
@@ -31,7 +31,7 @@ object TestProperties {
 		p2(4)
 		
 		p3 := 0.0
-		p3.adjuster = new LinearNumericAdjuster(5.0)
+		p3.adjuster = new LinearNumericAnimator(5.0)
 		p3 := 50.0
 		val time = System.currentTimeMillis
 		println("Current: " + p3())
