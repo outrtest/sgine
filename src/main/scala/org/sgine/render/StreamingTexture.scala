@@ -52,6 +52,13 @@ class StreamingTexture(val width: Int, val height: Int) extends Texture {
 		glTexImage2D(GL_TEXTURE_2D, 0, internalTextureFormat, width, height, 0, pixelTextureFormat, textureType, null.asInstanceOf[ByteBuffer])
 	}
 	
+	def update() = {
+		if ((dataDirty.get) || (bufferDirty.get)) {
+			bind()
+			unbind()
+		}
+	}
+	
 	def bind() = {
 		if (!initialized) {
 			init()

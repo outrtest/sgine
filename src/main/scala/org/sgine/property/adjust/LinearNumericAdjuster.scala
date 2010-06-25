@@ -1,7 +1,7 @@
 package org.sgine.property.adjust
 
-class LinearNumericAdjuster(multiplier:Double) extends PropertyAdjuster[Double] {
-	def apply(current:Double, target:Double, elapsed:Double):Double = {
+class LinearNumericAdjuster(multiplier: Double) extends PropertyAdjuster[Double] {
+	def apply(current: Double, target: Double, elapsed: Double): Double = {
 		val adjustment = elapsed * multiplier
 		var adjusted = current;
 		if (current < target) {

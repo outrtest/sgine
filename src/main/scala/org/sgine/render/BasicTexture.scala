@@ -43,9 +43,13 @@ class BasicTexture() extends Texture {
 	 */
 	private def generateId() = glGenTextures()
 	
-	/**
-	 * Bind the texture to be used. Must be called within the OpenGL thread.
-	 */
+	def update() = {
+		if (updates.size > 0) {
+			bind()
+			unbind()
+		}
+	}
+	
 	def bind() = {
 		glBindTexture(GL_TEXTURE_2D, id)
 		

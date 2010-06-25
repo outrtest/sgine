@@ -9,6 +9,8 @@ object Resource {
 	addPath("")
 	addPath("resource/")
 	addPath("resource/font/")
+	addPath("", FileResourceFinder)
+	addPath("resource/", FileResourceFinder)
 	
 	def addPath(path: String, finder: ResourceFinder = ClassLoaderResourceFinder) = {
 		var p = path
@@ -22,9 +24,9 @@ object Resource {
 	
 	def apply(name: String): Resource = {
 		for (p <- paths) {
-			val url = p.find(name)
-			if (url != null) {
-				return new Resource(url)
+			p.find(name) match {
+				case Some(u) => return new Resource(u)
+				case None =>
 			}
 		}
 		throw new RuntimeException("Resource lookup failed: " + name)
@@ -38,9 +40,23 @@ case class ResourcePath(path: String, finder: ResourceFinder) {
 }
 
 trait ResourceFinder {
-	def find(path: String, name: String): URL
+	def find(path: String, name: String): Option[URL]
 }
 
 object ClassLoaderResourceFinder extends ResourceFinder {
-	def find(path: String, name: String) = getClass.getClassLoader.getResource(path + name)
+	def find(path: String, name: String) = getClass.getClassLoader.getResource(path + name) match {
+		case null => None
+		case u: URL => Some(u)
+	}
+}
+
+object FileResourceFinder extends ResourceFinder {
+	def find(path: String, name: String) = {
+		val f = new java.io.File(path, name)
+		if (f.exists) {
+			Some(f.toURI.toURL)
+		} else {
+			None
+		}
+	}
 }

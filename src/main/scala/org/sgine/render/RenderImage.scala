@@ -11,6 +11,13 @@ class RenderImage protected() extends Function0[Unit] {
 	
 	def apply() = draw()
 	
+	/**
+	 * Updates the render image if there are unapplied changes without drawing to the screen.
+	 */
+	def update() = {
+		texture.update()
+	}
+	
 	def draw(offsetX: Double = 0.0, offsetY: Double = 0.0, insetX1: Double = 0.0, insetY1: Double = 0.0, insetX2: Double = 0.0, insetY2: Double = 0.0) = {
 		if (texture != null) {
 			texture.bind()
