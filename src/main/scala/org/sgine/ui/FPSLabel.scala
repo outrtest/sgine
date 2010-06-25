@@ -13,7 +13,7 @@ class FPSLabel extends Label {
 		time += Renderer.time.get
 		count += 1
 		framerate += Renderer.fps.get
-		if (time >= 0.3) {
+		if (time >= 1.0) {
 			val fps = framerate / count
 			text := fps + " fps"
 			

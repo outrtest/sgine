@@ -1,5 +1,7 @@
 package org.sgine.ui
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 import org.sgine.bounding.BoundingObject
 import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
@@ -15,8 +17,9 @@ import org.sgine.property.ListenableProperty
 import org.sgine.property.MutableProperty
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.render.{RenderImage, TextureManager}
+import org.sgine.render.{Renderer, RenderImage, TextureManager}
 
+import org.sgine.ui.event.ImageUpdateEvent
 import org.sgine.ui.ext.AdvancedComponent
 
 class Image extends AdvancedComponent with BoundingObject {
@@ -26,12 +29,29 @@ class Image extends AdvancedComponent with BoundingObject {
 	
 	protected val _bounding = BoundingQuad()
 	
+	private val imageDirty = new AtomicBoolean(false)
+	
 	configureListeners()
 	
 	def this(source: Resource) = {
 		this()
 		
 		this.source := source
+	}
+	
+	override def update(renderer: Renderer) = {
+		super.update(renderer)
+		
+		renderImage() match {
+			case null =>
+			case r: RenderImage => {
+				r.update()
+				
+				if (imageDirty.compareAndSet(true, false)) {
+					Event.enqueue(ImageUpdateEvent(this))
+				}
+			}
+		}
 	}
 	
 	def drawComponent() = {
@@ -48,6 +68,8 @@ class Image extends AdvancedComponent with BoundingObject {
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
 		val t = TextureManager(source())
 		renderImage := RenderImage(t)
+		
+		imageDirty.set(true)
 	}
 	
 	private def renderImageChanged(evt: PropertyChangeEvent[RenderImage]) = {
