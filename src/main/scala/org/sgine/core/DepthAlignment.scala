@@ -1,6 +1,6 @@
 package org.sgine.core
 
-sealed trait DepthAlignment
+sealed trait DepthAlignment extends Enumeration
 
 object DepthAlignment extends Enumerated[DepthAlignment] {
   case object Front extends DepthAlignment

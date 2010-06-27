@@ -5,7 +5,7 @@
 
 package org.sgine.core
 
-sealed trait Direction
+sealed trait Direction extends Enumeration
 
 object Direction extends Enumerated[Direction] {
   case object Vertical extends Direction

@@ -1,8 +1,9 @@
 package org.sgine.event
 
 import org.sgine.core.Enumerated
+import org.sgine.core.Enumeration
 
-sealed trait Recursion
+sealed trait Recursion extends Enumeration
 
 object Recursion extends Enumerated[Recursion] {
 	/**

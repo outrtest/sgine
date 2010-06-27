@@ -1,26 +1,24 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.sgine.core
 
-abstract trait Enumerated[E] extends Traversable[E] {
+trait Enumerated[E <: Enumeration] extends Traversable[E] {
+  private var list: List[E] = _
+  
+  lazy val values: Seq[E] = list
 
-  private var list : List[E] = _
+  def apply(values: E*) { list = values.toList }
 
-  lazy val values : Seq[E] = list
+  def apply(index: Int): E = values(index)
 
-  def apply(values : E*) { list = values.toList }
+  override lazy val size: Int = values.size
 
-  def apply(index : Int) : E = values(index)
+  def foreach[U](f: E => U) = values foreach f
 
-  override lazy val size : Int = values.size
+  def valueOf(s: String): Option[E] = values.find(s == _.name)
 
-  def foreach[U](f : E => U) = values foreach f
-
-  def valueOf(s : String) : Option[E] = values.find(s == _.toString)
-
-  def indexOf(e : E) : Int = values.indexOf(e)
-
+  def indexOf(e: E): Int = values.indexOf(e)
+  
+  def indexOf(s: String): Int = values.find(s == _.name) match {
+	  case Some(e) => indexOf(e)
+	  case None => -1
+  }
 }

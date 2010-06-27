@@ -5,7 +5,7 @@
 
 package org.sgine.core
 
-sealed trait Placement
+sealed trait Placement extends Enumeration
 
 object Placement extends Enumerated[Placement]{
   case object Top extends Placement
