@@ -27,9 +27,9 @@ object TestStates {
 		component.source := Resource("puppies.jpg")
 		
 		// Animators cause the state transition instead of just jumping into place
-		component.rotation.z.adjuster = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
-		component.location.x.adjuster = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
-		component.location.y.adjuster = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
+		component.rotation.z.animator = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
+		component.location.x.animator = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
+		component.location.y.animator = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
 		
 		val state = new State("Test1")
 		state.add("rotation.z", Pi / 4.0)

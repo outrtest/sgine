@@ -11,7 +11,7 @@ object TestAdjustableProperties {
 		Updatable.useWorkManager = true
 		
 		val p = new AdvancedProperty[Double](0.0)
-		p.adjuster = new EasingNumericAnimator(Linear.easeIn, 5.0)
+		p.animator = new EasingNumericAnimator(Linear.easeIn, 5.0)
 		var time = System.currentTimeMillis
 		p := 100.0
 		p.waitForTarget()

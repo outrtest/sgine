@@ -31,15 +31,15 @@ object TestAnimatingBox extends StandardDisplay with Debug with Updatable {
     val easingMethod = Back.easeInOut _  // Back.easeInOut will change a value by backing off in the other direction to gather speed, leap to the target value and a bit over, and back to the target.
     val adjustTime = animationTimeSeconds // How long it should take for the easing method to change the value
 
-    box.width.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
-    box.height.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
-    box.depth.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.width.animator = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.height.animator = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.depth.animator = new EasingNumericAnimator(easingMethod, adjustTime)
 
-    box.rotation.x.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
-    box.rotation.y.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
-    box.rotation.z.adjuster = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.rotation.x.animator = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.rotation.y.animator = new EasingNumericAnimator(easingMethod, adjustTime)
+    box.rotation.z.animator = new EasingNumericAnimator(easingMethod, adjustTime)
 
-    box.color.adjuster = new EasingColorAnimator(easingMethod, adjustTime)
+    box.color.animator = new EasingColorAnimator(easingMethod, adjustTime)
 
     // Tell Updatable to start calling update
     initUpdatable()

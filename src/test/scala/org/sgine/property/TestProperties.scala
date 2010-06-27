@@ -12,7 +12,7 @@ object TestProperties {
 		override def changed(oldValue:Int, newValue:Int):Unit = println("Changed: " + oldValue + " to " + newValue)
 	}
 	val p2 = new MutableProperty[Int] with ListenableProperty[Int]
-	val p3 = new MutableProperty[Double] with AdjustableProperty[Double]
+	val p3 = new MutableProperty[Double] with AnimatingProperty[Double]
 	val p4 = new MutableProperty[String] with BindingProperty[String]
 	val p5 = new MutableProperty[String] with BindingProperty[String]
 	val pg1 = new PropertyContainer {
@@ -31,7 +31,7 @@ object TestProperties {
 		p2(4)
 		
 		p3 := 0.0
-		p3.adjuster = new LinearNumericAnimator(5.0)
+		p3.animator = new LinearNumericAnimator(5.0)
 		p3 := 50.0
 		val time = System.currentTimeMillis
 		println("Current: " + p3())

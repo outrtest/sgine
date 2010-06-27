@@ -4,7 +4,7 @@ import org.sgine.event._
 
 import org.sgine.property.container._
 
-class AdvancedProperty[T] extends MutableProperty[T] with DependentProperty[T] with ListenableProperty[T] with NamedProperty with BindingProperty[T] with AdjustableProperty[T] with EventDelegationProperty[T] {
+class AdvancedProperty[T] extends MutableProperty[T] with DependentProperty[T] with ListenableProperty[T] with NamedProperty with BindingProperty[T] with AnimatingProperty[T] with EventDelegationProperty[T] {
 	private var _name: String = _
 	private var _dependency: Property[T] = _
 	
