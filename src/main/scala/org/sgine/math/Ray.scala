@@ -1,5 +1,7 @@
 package org.sgine.math
 
+import simplex3d.math.doublem.{Vec3d => Vector3, Mat3x4d => Matrix4}
+
 class Ray protected(_origin: Vector3, _direction: Vector3) {
 	def origin = _origin
 	def direction = _direction

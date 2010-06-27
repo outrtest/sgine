@@ -15,10 +15,7 @@ import org.sgine.core.Color
 import org.sgine.input.Keyboard
 import org.sgine.input.Mouse
 
-import org.sgine.math.Matrix4
-import org.sgine.math.mutable.{Matrix4 => MutableMatrix4}
-import org.sgine.math.mutable.{Ray => MutableRay}
-import org.sgine.math.mutable.{Vector3 => MutableVector3}
+import org.sgine.math.mutable._
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.TransactionalProperty
@@ -29,6 +26,9 @@ import org.sgine.work.Updatable
 
 import org.sgine.util.FunctionRunnable
 
+import simplex3d.math._
+import simplex3d.math.doublem.{Mat3x4d => Matrix4}
+
 class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) extends PropertyContainer {
 	private var rendered = false
 	private var keepAlive = true
@@ -37,8 +37,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	val nearDistance = 100.0
 	val farDistance = 2000.0
 	
-	private val storeRay = MutableRay()
-	private val storeMatrix = MutableMatrix4()
+	private val storeRay = Ray()
+	private val storeMatrix = Matrix4.Identity
 	
 	val canvas = new java.awt.Canvas()
 	lazy val thread = new Thread(FunctionRunnable(run))
@@ -155,7 +155,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		}
 	}
 	
-	def translateLocal(x: Double, y: Double, m: Matrix4, store: MutableVector3) = {
+	def translateLocal(x: Double, y: Double, m: Matrix4, store: Matrix4) = {
 		synchronized {
 			storeRay.origin.set(0.0, 0.0, 0.0)
 			storeRay.direction.set(x, y, -nearDistance)
