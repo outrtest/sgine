@@ -26,8 +26,8 @@ trait ListenableProperty[T] extends ChangeableProperty[T] with Listenable {
 		super.changed(oldValue, newValue)
 		
 		var adjusting = false
-		if (this.isInstanceOf[AdjustableProperty[_]]) {
-			val ap = this.asInstanceOf[AdjustableProperty[T]]
+		if (this.isInstanceOf[AnimatingProperty[_]]) {
+			val ap = this.asInstanceOf[AnimatingProperty[T]]
 			if (ap.target != newValue) {
 				adjusting = true
 			}

@@ -30,10 +30,10 @@ object TestCube extends StandardDisplay with Debug {
 		cube.color := c
 //		cube.alpha := 0.5
 		cube.scale.set(0.5)
-		cube.rotation.x.adjuster = new LinearNumericAnimator(2.0)
-		cube.rotation.y.adjuster = new LinearNumericAnimator(2.0)
-		cube.rotation.z.adjuster = new LinearNumericAnimator(2.0)
-		cube.location.x.adjuster = new EasingNumericAnimator(Elastic.easeInOut, 3.0)
+		cube.rotation.x.animator = new LinearNumericAnimator(2.0)
+		cube.rotation.y.animator = new LinearNumericAnimator(2.0)
+		cube.rotation.z.animator = new LinearNumericAnimator(2.0)
+		cube.location.x.animator = new EasingNumericAnimator(Elastic.easeInOut, 3.0)
 		cube(Resource("sgine_256.png"), 256.0, 256.0)
 		cube.front().listeners += test _
 		scene += cube
