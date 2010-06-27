@@ -1,7 +1,7 @@
 package org.sgine.property
 
 import org.sgine._;
-import org.sgine.property.adjust._;
+import org.sgine.property.animate._;
 
 import org.sgine.work.Updatable
 
