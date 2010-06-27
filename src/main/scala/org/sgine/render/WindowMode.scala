@@ -6,8 +6,9 @@
 package org.sgine.render
 
 import org.sgine.core.Enumerated
+import org.sgine.core.Enumeration
 
-sealed trait WindowMode
+sealed trait WindowMode extends Enumeration
 
 object WindowMode extends Enumerated[WindowMode] {
    case object Frame extends WindowMode

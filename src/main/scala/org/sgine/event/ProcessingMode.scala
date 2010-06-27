@@ -1,8 +1,9 @@
 package org.sgine.event
 
 import org.sgine.core.Enumerated
+import org.sgine.core.Enumeration
 
-sealed trait ProcessingMode
+sealed trait ProcessingMode extends Enumeration
 
 object ProcessingMode extends Enumerated[ProcessingMode] {
 	/**
