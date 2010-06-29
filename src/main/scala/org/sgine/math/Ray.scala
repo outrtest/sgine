@@ -1,27 +1,26 @@
 package org.sgine.math
 
-import simplex3d.math.doublem.{Vec3d => Vector3, Mat3x4d => Matrix4}
+import simplex3d.math.doublem._
+import simplex3d.math.doublem.DoubleMath._
 
-class Ray protected(_origin: Vector3, _direction: Vector3) {
-	def origin = _origin
-	def direction = _direction
+class Ray protected(val origin: Vec3d, val direction: Vec3d) {
+	def pointAtDistance(d: Double) = Vec3d(
+			origin.x + (direction.x + d),
+			origin.y + (direction.y + d),
+			origin.z + (direction.z + d)
+		)
+		
+	def transform(m: inMat3x4d) = new Ray(
+			m.transformPoint(origin),
+			normalize(m.transformVector(direction))
+		)
 	
-	def pointAtDistance(d: Double) = Vector3(origin.x + (direction.x * d), origin.y + (direction.y * d), origin.z + (direction.z * d))
-	
-	def transform(m: Matrix4) = Ray(m.transform(origin), m.transform(direction, 0.0).normalized)
-	
-	def translate(): Vector3 = {
+	def translate(): Vec3d = {
 		val t = -origin.z / direction.z
-		Vector3(
+		Vec3d(
 				origin.x + direction.x * t,
 				origin.y + direction.y * t,
 				origin.z + direction.z * t
-				)
+			)
 	}
-	
-	override def toString() = "Ray(origin = " + origin + ", direction = " + direction + ")"
-}
-
-object Ray {
-	def apply(origin: Vector3, direction: Vector3) = new Ray(origin, direction)
 }
