@@ -1,9 +1,12 @@
 package org.sgine.math.mutable
 
-import org.sgine.math.{Ray => ImmutableRay, Matrix4 => ImmutableMatrix4}
+import org.sgine.math.{Ray => ImmutableRay}
 
-class Ray protected(override val origin: Vector3, override val direction: Vector3) extends ImmutableRay(origin, direction) {
-	def pointAtDistance(d: Double, store: Vector3) = {
+import simplex3d.math.doublem._
+import simplex3d.math.doublem.DoubleMath._
+
+class Ray protected(override val origin: Vec3d, override val direction: Vec3d) extends ImmutableRay(origin, direction) {
+	def pointAtDistance(d: Double, store: Vec3d) = {
 		store.x = origin.x + (direction.x + d)
 		store.y = origin.y + (direction.y + d)
 		store.z = origin.z + (direction.z + d)
@@ -11,14 +14,14 @@ class Ray protected(override val origin: Vector3, override val direction: Vector
 		store
 	}
 	
-	override def transform(matrix: ImmutableMatrix4) = {
+	override def transform(matrix: Mat3x4d) = {
 		matrix.transformLocal(origin)
 		matrix.transformLocal(direction, 0.0).normalize()
 		
 		this
 	}
 	
-	def translateLocal(v: Vector3) = {
+	def translateLocal(v: Vec3d) = {
 		val t = -origin.z / direction.z
 		v.x = origin.x + direction.x * t
 		v.y = origin.y + direction.y * t
@@ -29,7 +32,7 @@ class Ray protected(override val origin: Vector3, override val direction: Vector
 }
 
 object Ray {
-	def apply(origin: Vector3, direction: Vector3) = new Ray(origin, direction)
+	def apply(origin: Vec3d, direction: Vec3d) = new Ray(origin, direction)
 	
-	def apply() = new Ray(Vector3(), Vector3())
+	def apply() = new Ray(Vec3d(0.0), Vec3d(0.0))
 }
