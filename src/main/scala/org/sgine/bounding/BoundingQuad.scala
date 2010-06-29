@@ -1,6 +1,7 @@
 package org.sgine.bounding
 
-import org.sgine.math.Vector3
+import simplex3d.math._
+import simplex3d.math.doublem._
 
 class BoundingQuad protected() extends Bounding {
 	protected var _width: Double = 0.0
@@ -12,7 +13,7 @@ class BoundingQuad protected() extends Bounding {
 	protected def height_=(_height: Double) = this._height = _height
 	def depth = 0.0
 	
-	def within(v: Vector3) = v.x >= width / -2.0 && v.x <= width / 2.0 && v.y >= height / -2.0 && v.y <= height / 2.0
+	def within(v: Vec3d) = v.x >= width / -2.0 && v.x <= width / 2.0 && v.y >= height / -2.0 && v.y <= height / 2.0
 	
 	override def toString() = "BoundingQuad(" + width + "x" + height + ")"
 }
