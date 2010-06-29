@@ -32,7 +32,5 @@ class Ray protected(override val origin: Vec3d, override val direction: Vec3d) e
 }
 
 object Ray {
-	def apply(origin: Vec3d, direction: Vec3d) = new Ray(origin, direction)
-	
-	def apply() = new Ray(Vec3d(0.0), Vec3d(0.0))
+	def apply(origin: Vec3d = Vec3d(0.0), direction: Vec3d = Vec3d(0.0)) = new Ray(origin, direction)
 }

@@ -24,3 +24,7 @@ class Ray protected(val origin: Vec3d, val direction: Vec3d) {
 			)
 	}
 }
+
+object Ray {
+	def apply(origin: Vec3d = Vec3d(0.0), direction: Vec3d = Vec3d(0.0)) = new Ray(origin, direction)
+}
