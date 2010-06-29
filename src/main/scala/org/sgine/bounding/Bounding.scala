@@ -1,11 +1,12 @@
 package org.sgine.bounding
 
-import org.sgine.math.Vector3
+import simplex3d.math._
+import simplex3d.math.doublem._
 
 trait Bounding {
 	def width: Double
 	def height: Double
 	def depth: Double
 	
-	def within(v: Vector3): Boolean
+	def within(v: Vec3d): Boolean
 }
