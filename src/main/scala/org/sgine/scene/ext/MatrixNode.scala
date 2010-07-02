@@ -6,10 +6,9 @@ import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
-import org.sgine.math.mutable.Matrix4
-
-import org.sgine.property.ImmutableProperty
+import org.sgine.property.AdvancedProperty
 import org.sgine.property.MutableProperty
+import org.sgine.property.event.PropertyChangeDelegate
 
 import org.sgine.scene.Node
 import org.sgine.scene.NodeContainer
@@ -18,8 +17,11 @@ import org.sgine.scene.event.SceneEventType
 
 import org.sgine.work.Updatable
 
+import simplex3d.math._
+import simplex3d.math.doublem._
+
 trait MatrixNode extends WorldMatrixNode with Updatable {
-	val localMatrix = new ImmutableProperty[Matrix4](Matrix4().identity())
+	val localMatrix = new AdvancedProperty[Mat3x4d](Mat3x4d.Identity)
 	
 	// Listen for parent change to invalidate matrix
 	listeners += EventHandler(parentChanged, ProcessingMode.Blocking)
@@ -39,7 +41,8 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 		}
 	}
 	
-	localMatrix().changeDelegate = () => invalidateMatrix()
+//	localMatrix().changeDelegate = () => invalidateMatrix()
+	localMatrix.listeners += EventHandler(PropertyChangeDelegate((m: Mat3x4d) => invalidateMatrix()), ProcessingMode.Blocking)
 	
 	abstract override def update(time: Double) = {
 		super.update(time)
@@ -55,25 +58,27 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 	
 	protected def refreshWorldMatrix() = {
 		// Update to parent world matrix
-		getParentWorldMatrix(parent) match {
-			case m: Matrix4 => MatrixNode.matrixStore.set(m)
-			case _ => MatrixNode.matrixStore.identity()
+		var store = getParentWorldMatrix(parent) match {
+			case m: Mat3x4d => m
+			case _ => Mat3x4d.Identity
 		}
 		
 		// Update local matrix
 		updateLocalMatrix()
 		
 		// Multiply against local matrix
-		MatrixNode.matrixStore.mult(localMatrix())
+		store = store concatenate localMatrix()
+//		MatrixNode.matrixStore.mult(localMatrix())
 		
 		// Apply to world matrix - causes WorldMatrixNode to invalidate children
-		worldMatrix().set(MatrixNode.matrixStore)
+//		worldMatrix().set(MatrixNode.matrixStore)
+		worldMatrix := store
 	}
 	
 	protected def updateLocalMatrix() = {
 	}
 	
-	protected def getParentWorldMatrix(parent: Node): Matrix4 = {
+	protected def getParentWorldMatrix(parent: Node): Mat3x4d = {
 		parent match {
 			case null => null
 			case mn: WorldMatrixNode => mn.worldMatrix()
@@ -90,8 +95,4 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 	private def boundingChanged(evt: BoundingChangeEvent) = {
 		invalidateMatrix()
 	}
-}
-
-object MatrixNode {
-	private[scene] val matrixStore = Matrix4()
 }

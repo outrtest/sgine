@@ -1,7 +1,8 @@
 package org.sgine.visual
 
-import org.sgine.math._
+import simplex3d.math._
+import simplex3d.math.doublem._
 
 trait Mesh {
-	def vertices: List[Vector3]
+	def vertices: List[Vec3d]
 }
