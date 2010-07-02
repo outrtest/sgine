@@ -11,6 +11,9 @@ import org.sgine.render.scene.RenderableScene
 import org.sgine.scene.GeneralNodeContainer
 import org.sgine.scene.ext.MatrixNode
 
+import simplex3d.math.doublem.renamed._
+import simplex3d.math.doublem.DoubleMath._
+
 object TestScene {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test RenderScene")
@@ -18,12 +21,13 @@ object TestScene {
 		val scene = new GeneralNodeContainer()
 		
 		val container1 = new GeneralNodeContainer() with MatrixNode
-		container1.localMatrix().translate(0.0, 0.0, -200.0)
-		container1.localMatrix().scaleAll(0.005)
+		val m1 = container1.localMatrix() 
+		m1 := m1 scale(0.005) translate(Vec3(0.0, 0.0, -200.0))
 		scene += container1
 		
 		val container2 = new GeneralNodeContainer() with MatrixNode
-		container2.localMatrix().translate(0.0, 0.0, -500.0)
+		val m2 = container2.localMatrix()
+		m2 := m2 translate(Vec3(0.0, 0.0, -500.0))
 		container1 += container2
 		
 		val container3 = new GeneralNodeContainer()

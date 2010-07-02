@@ -20,6 +20,9 @@ import org.lwjgl.opengl.GL15._
 
 import scala.math._
 
+import simplex3d.math.doublem.renamed._
+import simplex3d.math.doublem.DoubleMath._
+
 object TestVBO {
 	private lazy val triangleBuffer = createTriangleBuffer()
 	
@@ -28,7 +31,8 @@ object TestVBO {
 		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer() with WorldMatrixNode
-		scene.worldMatrix().translate(0.0, 0.0, -200.0)
+		val m = scene.worldMatrix()
+		m := m translate(Vec3(0.0, 0.0, -200.0))
 		
 		scene += new AdvancedComponent() {
 			def drawComponent() = {
