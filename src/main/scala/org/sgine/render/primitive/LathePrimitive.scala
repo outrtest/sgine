@@ -2,31 +2,33 @@ package org.sgine.render.primitive
 
 import org.lwjgl.opengl.GL11._
 import org.sgine.render.RenderImage
-import org.sgine.math.{Vector2, Vector3}
 import scala.math._
 import org.sgine.core.Color
 import collection.immutable.SortedMap
+
+import simplex3d.math._
+import simplex3d.math.doublem._
 
 trait Projection {
   /*
    * Calculates the texture coordinates (in range 0..1) for the specified target coordinates (in range 0..1)
    */
-  def textureCoordinates(x: Double, y: Double): Vector2
+  def textureCoordinates(x: Double, y: Double): Vec2d
 }
 
 case object LinearProjection extends Projection {
-  def textureCoordinates(x: Double, y: Double) = Vector2(x, y)
+  def textureCoordinates(x: Double, y: Double) = Vec2d(x, y)
 }
 
 case object PolarProjection extends Projection {
-  def textureCoordinates(x: Double, y: Double) = Vector2(cos(x * 2*Pi) * y, sin(x * 2*Pi) * y)
+  def textureCoordinates(x: Double, y: Double) = Vec2d(cos(x * 2*Pi) * y, sin(x * 2*Pi) * y)
 }
 
 object TextureArea {
-  val Full = TextureArea(Vector2(0,0), Vector2(1,0), Vector2(0,1), Vector2(1,1))
+  val Full = TextureArea(Vec2d(0,0), Vec2d(1,0), Vec2d(0,1), Vec2d(1,1))
 }
 
-case class TextureArea(topLeft: Vector2, topRight: Vector2, bottomLeft: Vector2, bottomRight: Vector2)
+case class TextureArea(topLeft: Vec2d, topRight: Vec2d, bottomLeft: Vec2d, bottomRight: Vec2d)
 
 
 object TextureMapping {
@@ -99,7 +101,7 @@ case class SimpleTextureMapping(textureArea: TextureArea = TextureArea.Full,
  */
 class LathePrimitive(segments: Int,
                      sides: Int,
-                     surface: (Double, Double) => Vector3,
+                     surface: (Double, Double) => Vec3d,
                      color: Color = Color.White,
                      texture: RenderImage,
                      textureMapping: TextureMapping = TextureMapping.Default,
