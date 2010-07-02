@@ -5,7 +5,8 @@
 
 package org.sgine.render
 
-import org.sgine.math.mutable.Matrix4
+import simplex3d.math.doublem.renamed._
+import simplex3d.math.doublem.DoubleMath._
 
 import java.awt.Font
 import java.awt.font.FontRenderContext
@@ -26,7 +27,7 @@ object TestExtrusion {
 
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 
-		val m = Matrix4().translate(z = -1000.0).scaleAll(0.04)
+		val m = Mat3x4 scale(0.04) translate(Vec3(0, 0, -1000.0))
 		val i = RenderImage(t)
 
         val trans = new AffineTransform()
@@ -48,7 +49,7 @@ object TestExtrusion {
 
 		while(true) {
 			Thread.sleep(5)
-			m.rotate(0.005, 0.005, 0.0)
+			m := m rotateX(0.005) rotateY(0.005)
 		}
 	}
 }

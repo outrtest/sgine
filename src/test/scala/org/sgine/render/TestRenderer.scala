@@ -1,6 +1,7 @@
 package org.sgine.render
 
-import org.sgine.math.mutable.Matrix4
+import simplex3d.math.doublem.renamed._
+import simplex3d.math.doublem.DoubleMath._
 
 import javax.imageio._
 
@@ -12,7 +13,7 @@ object TestRenderer {
 		
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 		
-		val m = Matrix4().translate(z = -1000.0).scaleAll(0.04)
+		val m = Mat3x4 scale(0.04) translate(Vec3(0, 0, -1000.0))
 		val i = RenderImage(t)
 		val fps = FPS(1.0)
 		
@@ -24,7 +25,7 @@ object TestRenderer {
 		
 		println("Renderer started!")
 		while (r.isAlive) {
-			m.rotate(y = 0.001)
+			m := m rotateY(0.001)
 			
 			Thread.sleep(1)
 		}
