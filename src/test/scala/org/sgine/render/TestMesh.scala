@@ -1,6 +1,7 @@
 package org.sgine.render
 
-import org.sgine.math.mutable.Matrix4
+import simplex3d.math.doublem.renamed._
+import simplex3d.math.doublem.DoubleMath._
 
 import javax.imageio._
 
@@ -15,7 +16,7 @@ object TestMesh {
 		val r = Renderer.createFrame(1024, 768, "Test Mesh")
 		r.verticalSync := false
 		
-		val m = Matrix4().translate(z = -1000.0).scaleAll(0.04)
+		val m = Mat3x4 scale(0.04) translate(Vec3(0, 0, -1000.0))
 		val mesh = new Mesh()
 		mesh.indexes = List(0, 1, 2)
 		mesh.vertices = List(
