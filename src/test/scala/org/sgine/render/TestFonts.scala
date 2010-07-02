@@ -27,8 +27,8 @@ object TestFonts {
 		val arialFont = BitmapFont("Arial")
 		val lcdFont = BitmapFont("lcd")
 		
-		val m1 = Mat3x4 translate(Vec3(0, 0, -500.0))
-		val m2 = Mat3x4 translate(Vec3(0, -50.0, -500.0))
+		val m1 = Mat3x4 scale(0.01) translate(Vec3(0, 0, -500.0))
+		val m2 = Mat3x4 scale(0.01) translate(Vec3(0, 1.0, -500.0))
 		val fps = FPS(1.0, lcdFont)
 		
 		r.renderable := RenderList(
