@@ -5,7 +5,8 @@ import org.sgine.event._
 import org.sgine.input.Keyboard
 import org.sgine.input.event.KeyEvent
 
-import org.sgine.math.Matrix4
+import simplex3d.math.doublem.renamed._
+import simplex3d.math.doublem.DoubleMath._
 
 import org.sgine.render.font.BitmapFont
 
@@ -26,8 +27,8 @@ object TestFonts {
 		val arialFont = BitmapFont("Arial")
 		val lcdFont = BitmapFont("lcd")
 		
-		val m1 = Matrix4().translate(z = -500.0)
-		val m2 = Matrix4().translate(y = -50.0, z = -500.0)
+		val m1 = Mat3x4 translate(Vec3(0, 0, -500.0))
+		val m2 = Mat3x4 translate(Vec3(0, -50.0, -500.0))
 		val fps = FPS(1.0, lcdFont)
 		
 		r.renderable := RenderList(
