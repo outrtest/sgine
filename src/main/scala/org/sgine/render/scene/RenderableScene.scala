@@ -24,14 +24,15 @@ import org.sgine.scene.NodeContainer
 import org.sgine.scene.ext.MatrixNode
 import org.sgine.scene.view.NodeView
 
+import simplex3d.math._
+import simplex3d.math.doublem._
+
 class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) extends Renderable {
 	val renderableView = NodeView(scene, RenderableQuery, false)
 	renderableView.sortFunction = RenderSort
 	val updatableView = NodeView(scene, RenderUpdatableQuery, false)
 	updatableView.sortFunction = RenderSort
 	val fps = FPS()
-	
-	private val storeVector3 = Vector3()
 	
 	private var initted = false
 	private var renderer: Renderer = _
@@ -79,15 +80,15 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 			val move = evt.asInstanceOf[MouseMoveEvent]
 			for (n <- currentHits) {
 				if (!hits.contains(n)) {		// MouseOver
-					translateLocal(move, n)
-					val e = MouseEvent(-2, false, 0, storeVector3.x, storeVector3.y, move.deltaX, move.deltaY, n)
+					val worldCoords = screenToWorldCoords(move, n)
+					val e = MouseEvent(-2, false, 0, worldCoords.x, worldCoords.y, move.deltaX, move.deltaY, n)
 					Event.enqueue(e)
 				}
 			}
 			for (n <- hits) {
 				if (!currentHits.contains(n)) {	// MouseOut
-					translateLocal(move, n)
-					val e = MouseEvent(-3, false, 0, storeVector3.x, storeVector3.y, move.deltaX, move.deltaY, n)
+					val worldCoords = screenToWorldCoords(move, n)
+					val e = MouseEvent(-3, false, 0, worldCoords.x, worldCoords.y, move.deltaX, move.deltaY, n)
 					Event.enqueue(e)
 				}
 			}
@@ -95,20 +96,20 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 			_hits = currentHits
 		}
 	}
-	
-	private def translateLocal(evt: MouseEvent, n: Node) = {
+
+	// TODO: add Camera, port to use Camera
+	private def screenToWorldCoords(evt: MouseEvent, n: Node) = {
 		val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
-		renderer.translateLocal(evt.x, evt.y, c.worldMatrix(), storeVector3)
-		
-		c
+		renderer.screenToWorldCoords(evt.x, evt.y, c.worldMatrix())
 	}
 	
 	private val pickTest = (n: Node) => {
 		if ((n.isInstanceOf[MatrixNode]) && (n.isInstanceOf[BoundingObject])) {
-			val c = translateLocal(currentMouseEvent, n)
+			val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
+			val worldCoords = screenToWorldCoords(currentMouseEvent, n)
 //			renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
 			if (c.bounding().within(storeVector3)) {
-				val evt = currentMouseEvent.retarget(c, storeVector3.x, storeVector3.y)
+				val evt = currentMouseEvent.retarget(c, worldCoords.x, worldCoords.y)
 				Event.enqueue(evt)
 				
 				currentHits = c :: currentHits
