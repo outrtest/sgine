@@ -49,7 +49,7 @@ object TestExtrusion {
 
 		while(true) {
 			Thread.sleep(5)
-			m := m rotateX(0.005) rotateY(0.005)
+			m := Mat3x4 rotateX(0.005) rotateY(0.005) concatenate(m)
 		}
 	}
 }
