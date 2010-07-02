@@ -20,6 +20,9 @@ import org.lwjgl.opengl.GL15._
 
 import scala.math._
 
+import simplex3d.math.doublem.renamed._
+import simplex3d.math.doublem.DoubleMath._
+
 object TestTTF {
 	private val font = new java.awt.Font("Arial", java.awt.Font.PLAIN, 32)
 	private val gv = font.createGlyphVector(new java.awt.font.FontRenderContext(font.getTransform(), true, false), "Hello World!")
@@ -33,7 +36,8 @@ object TestTTF {
 		r.verticalSync := false
 		
 		val scene = new GeneralNodeContainer() with WorldMatrixNode
-		scene.worldMatrix().translate(0.0, 0.0, -200.0)
+		val m = scene.worldMatrix()
+		m := m translate(Vec3(0.0, 0.0, -200.0))
 		
 		scene += new AdvancedComponent() {
 			def drawComponent() = {
