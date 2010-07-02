@@ -14,7 +14,7 @@ class Ray protected(override val origin: Vec3d, override val direction: Vec3d) e
 		store
 	}
 	
-	override def transform(matrix: Mat3x4d) = {
+	override def transform(matrix: inMat3x4d) = {
 		origin := matrix.transformVector(origin)
 		direction := normalize(matrix.transformVector(direction))
 		

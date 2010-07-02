@@ -237,6 +237,7 @@ object Renderer {
 			case s: DoubleBuffer => s
 		}
 		matrixToBuffer(m, store)
+		store.flip()
 		glLoadMatrix(store)
 	}
 }
