@@ -25,7 +25,7 @@ object TestRenderer {
 		
 		println("Renderer started!")
 		while (r.isAlive) {
-			m := m rotateY(0.001)
+			m := Mat3x4 rotateY(0.001) concatenate(m)
 			
 			Thread.sleep(1)
 		}
