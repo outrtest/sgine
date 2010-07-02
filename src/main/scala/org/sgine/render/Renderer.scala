@@ -3,6 +3,10 @@ package org.sgine.render
 import java.awt.event.HierarchyEvent
 import java.awt.event.HierarchyListener
 
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.DoubleBuffer
+
 import org.lwjgl.opengl.{Display => GLDisplay}
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL12._
@@ -174,6 +178,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 object Renderer {
 	val time = new ThreadLocal[Double]
 	val fps = new ThreadLocal[Int]
+	val matrixStore = new ThreadLocal[DoubleBuffer]
 	
 	def createFrame(width: Int, height: Int, title: String, alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) = {
 		val r = new Renderer(alpha, depth, stencil, samples, bpp, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
@@ -220,5 +225,18 @@ object Renderer {
 		})
 		
 		r
+	}
+	
+	def loadMatrix(m: Mat3x4d) = {
+		val store = matrixStore.get match {
+			case null => {
+				val b = ByteBuffer.allocateDirect(128).order(ByteOrder.nativeOrder).asDoubleBuffer
+				matrixStore.set(b)
+				b
+			}
+			case s: DoubleBuffer => s
+		}
+		matrixToBuffer(m, store)
+		glLoadMatrix(store)
 	}
 }
