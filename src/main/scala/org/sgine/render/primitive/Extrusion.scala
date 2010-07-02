@@ -6,7 +6,6 @@
 package org.sgine.render.primitive
 
 import org.sgine.core.Color
-import org.sgine.math.Vector2
 import org.sgine.render.RenderImage
 
 import java.awt.Shape
@@ -18,8 +17,10 @@ import org.lwjgl.opengl.GL11._
 import scala.collection.mutable.ListBuffer
 import scala.math._
 
+import simplex3d.math._
+import simplex3d.math.doublem._
 
-class Extrusion private[primitive](val data : Seq[Vector2],
+class Extrusion private[primitive](val data : Seq[Vec2d],
                         val extrusion : Double,
                         val color : Color,
                         val image : RenderImage) extends Primitive {
@@ -62,7 +63,7 @@ object Extrusion {
              image : RenderImage = null, flatness : Double = 0.001, limit : Int = 10) : Seq[Extrusion] = {
 
     val coords = Array(0f, 0f)
-    val coordList = ListBuffer[Vector2]()
+    val coordList = ListBuffer[Vec2d]()
     val primitives = ListBuffer[Extrusion]()
 
     val path = new FlatteningPathIterator(shape.getPathIterator(null), flatness, limit)
@@ -70,8 +71,8 @@ object Extrusion {
     while (! path.isDone) {
       path.currentSegment(coords) match {
         case SEG_MOVETO => coordList.clear
-                           coordList += Vector2(coords(0), coords(1))
-        case SEG_LINETO => coordList += Vector2(coords(0), coords(1))
+                           coordList += Vec2d(coords(0), coords(1))
+        case SEG_LINETO => coordList += Vec2d(coords(0), coords(1))
         case SEG_CLOSE =>  primitives += new Extrusion(coordList.toSeq, extrusion, color, image)
       }
       path.next
