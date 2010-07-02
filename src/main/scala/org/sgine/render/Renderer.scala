@@ -27,7 +27,8 @@ import org.sgine.work.Updatable
 import org.sgine.util.FunctionRunnable
 
 import simplex3d.math._
-import simplex3d.math.doublem.{Mat3x4d => Matrix4}
+import simplex3d.math.doublem._
+import simplex3d.math.doublem.DoubleMath._
 
 class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) extends PropertyContainer {
 	private var rendered = false
@@ -36,9 +37,6 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 
 	val nearDistance = 100.0
 	val farDistance = 2000.0
-	
-	private val storeRay = Ray()
-	private val storeMatrix = Matrix4.Identity
 	
 	val canvas = new java.awt.Canvas()
 	lazy val thread = new Thread(FunctionRunnable(run))
@@ -154,19 +152,12 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			thread.notifyAll()
 		}
 	}
-	
-	def translateLocal(x: Double, y: Double, m: Matrix4, store: Matrix4) = {
-		synchronized {
-			storeRay.origin.set(0.0, 0.0, 0.0)
-			storeRay.direction.set(x, y, -nearDistance)
-			
-			storeMatrix.set(m)
-			storeMatrix.invert()
-			storeRay.transform(storeMatrix)
-			storeRay.translateLocal(store)
-			
-			store
-		}
+
+	// TODO: add Camera, port to use Camera
+	def screenToWorldCoords(x: Double, y: Double, m: Mat3x4d) = {
+		val ray = Ray(Vec3d(0), Vec3d(x, y, -nearDistance))
+		ray.transform(inverse(m))
+		ray.translate()
 	}
 	
 	def waitForRender() = {
