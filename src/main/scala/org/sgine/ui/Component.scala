@@ -23,6 +23,9 @@ import org.sgine.scene.NodeContainer
 
 import org.sgine.ui.ext._
 
+import simplex3d.math._
+import simplex3d.math.doublem._
+
 trait Component extends PropertyContainer with Renderable with RenderUpdatable with MatrixNode with ColorNode with Stateful {
 	val id = new AdvancedProperty[String](null, this)
 	val visible = new AdvancedProperty[Boolean](true, this)
@@ -44,7 +47,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 			}
 			
 			preRender()
-			glLoadMatrix(worldMatrix().buffer)
+			Renderer.loadMatrix(worldMatrix())
 			
 			preColor()
 			drawComponent()
@@ -52,7 +55,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	}
 	
 	override protected def updateLocalMatrix(): Unit = {
-		localMatrix().identity()
+		localMatrix := Mat3x4d.Identity
 	}
 	
 	protected def initComponent() = {

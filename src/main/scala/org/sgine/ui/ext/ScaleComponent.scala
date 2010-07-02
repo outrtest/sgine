@@ -6,6 +6,9 @@ import org.sgine.event.Recursion
 
 import org.sgine.ui.Component
 
+import simplex3d.math._
+import simplex3d.math.doublem._
+
 trait ScaleComponent extends Component {
 	val scale = new Scale(this)
 	
@@ -15,7 +18,7 @@ trait ScaleComponent extends Component {
 		super.updateLocalMatrix()
 		
 		if (scale != null) {
-			localMatrix().scale(scale.x(), scale.y(), scale.z())
+			localMatrix().scale(Vec3d(scale.x(), scale.y(), scale.z()))
 		}
 	}
 }

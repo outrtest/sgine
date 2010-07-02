@@ -12,6 +12,9 @@ import org.sgine.ui.Component
 
 import org.lwjgl.opengl.GL11._
 
+import simplex3d.math._
+import simplex3d.math.doublem._
+
 trait RotationComponent extends Component {
 	val rotation = new Rotation(this)
 	
@@ -63,13 +66,15 @@ trait RotationComponent extends Component {
 			}
 			
 			if ((x != 0.0) || (y != 0.0) || (z != 0.0)) {
-				localMatrix().translate(x, y, z)
+				localMatrix := localMatrix().translate(Vec3d(x, y, z))
 			}
 			
-			localMatrix().rotate(rotation.x(), rotation.y(), rotation.z())
+			if (rotation.x() != 0.0) localMatrix := localMatrix().rotateX(rotation.x())
+			if (rotation.y() != 0.0) localMatrix := localMatrix().rotateY(rotation.y())
+			if (rotation.z() != 0.0) localMatrix := localMatrix().rotateZ(rotation.z())
 			
 			if ((x != 0.0) || (y != 0.0) || (z != 0.0)) {
-				localMatrix().translate(-x, -y, -z)
+				localMatrix().translate(Vec3d(-x, -y, -z))
 			}
 		}
 	}
