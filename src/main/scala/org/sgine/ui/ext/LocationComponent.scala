@@ -14,6 +14,9 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.ui.Component
 
+import simplex3d.math._
+import simplex3d.math.doublem._
+
 trait LocationComponent extends Component {
 	val location = new Location(this)
 	
@@ -64,7 +67,7 @@ trait LocationComponent extends Component {
 				}
 			}
 			
-			localMatrix().translate(x, y, z)
+			localMatrix := localMatrix().translate(Vec3d(x, y, z))
 		}
 	}
 }

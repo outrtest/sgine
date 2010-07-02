@@ -65,7 +65,9 @@ class MediaPlayer extends CachedComponent with AdvancedComponent {
 	override protected def updateLocalMatrix() = {
 		super.updateLocalMatrix()
 		
-		localMatrix().rotate(0.0, Pi, Pi)		// Correction for video display
+		// Correction for video display
+		localMatrix := localMatrix().rotateY(Pi)
+		localMatrix := localMatrix().rotateZ(Pi)
 	}
 	
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
