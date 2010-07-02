@@ -12,8 +12,6 @@ import org.sgine.input.Mouse
 import org.sgine.input.event.MouseEvent
 import org.sgine.input.event.MouseMoveEvent
 
-import org.sgine.math.mutable.Vector3
-
 import org.sgine.render.FPS
 import org.sgine.render.Renderable
 import org.sgine.render.Renderer
@@ -108,7 +106,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 			val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
 			val worldCoords = screenToWorldCoords(currentMouseEvent, n)
 //			renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
-			if (c.bounding().within(storeVector3)) {
+			if (c.bounding().within(worldCoords)) {
 				val evt = currentMouseEvent.retarget(c, worldCoords.x, worldCoords.y)
 				Event.enqueue(evt)
 				
