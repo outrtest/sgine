@@ -67,12 +67,18 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 		updateLocalMatrix()
 		
 		// Multiply against local matrix
-		store = store concatenate localMatrix()
+		store = localMatrix() concatenate store
 //		MatrixNode.matrixStore.mult(localMatrix())
 		
 		// Apply to world matrix - causes WorldMatrixNode to invalidate children
 //		worldMatrix().set(MatrixNode.matrixStore)
 		worldMatrix := store
+		
+//		if (this.isInstanceOf[org.sgine.ui.FPSLabel]) {
+//			println("Local: " + localMatrix())
+//			println("World: " + worldMatrix())
+//			println("Parent World: " + getParentWorldMatrix(parent))
+//		}
 	}
 	
 	protected def updateLocalMatrix() = {
