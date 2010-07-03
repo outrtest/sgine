@@ -3,7 +3,9 @@ package org.sgine.render.primitive
 import org.lwjgl.opengl.GL11._
 import org.sgine.render.RenderImage
 import org.sgine.math.{Vector2, Vector3}
-import scala.math._
+import scala.math.Pi
+import scala.math.cos
+import scala.math.sin
 import org.sgine.core.Color
 import java.util.ArrayList
 import collection.immutable.{Map, SortedMap}
@@ -23,11 +25,52 @@ case object PolarProjection extends Projection {
   def textureCoordinates(x: Double, y: Double) = Vector2(cos(x * 2*Pi) * y, sin(x * 2*Pi) * y)
 }
 
+case class LinearFunction(scale: Double = 1, offset: Double = 0) extends Func.Signal {
+  override def apply(v : Double) : Double = v * scale + offset
+}
+
+case class LinearInterpolator(a: Double, b: Double) extends Func.Signal {
+  override def apply(t : Double) : Double = (1.0 - t) * a + t * b
+}
+
+case class ConstantFunction(value: Double = 0) extends Function1[Double, Double] {
+  override def apply(v : Double) : Double = value
+}
+
+case class PathFunction(xFunc: Func.Signal, yFunc: Func.Signal, zFunc: Func.Signal) extends Func.Path {
+  def apply(t: Double) : Vector3 = Vector3(xFunc(t), yFunc(t), zFunc(t))
+}
+
+object Func {
+  type Signal = Function1[Double, Double]
+  type Path = Function1[Double, Vector3]
+  type Envelope = Function2[Double, Double, Vector3]
+}
+
+object IdentityFunction extends LinearFunction(1, 0)
+object OneFunction extends ConstantFunction(1)
+object StraightPath extends PathFunction(ConstantFunction(), LinearFunction(), ConstantFunction())
+
+case class CylinderFunction(radiusOverLength: Func.Signal = OneFunction,
+                            radiusShape: Func.Signal = OneFunction,
+                            path: Func.Path=StraightPath) extends Func.Envelope {
+  override def apply(u : Double, v : Double) : Vector3 = {
+    val uAsRadians: Double = u * 2 * Pi
+    val radiusScale = radiusShape(u) * radiusOverLength(v)
+    val x = path(v).x + cos(uAsRadians) * radiusScale
+    val y = path(v).y
+    val z = path(v).z + sin(uAsRadians) * radiusScale
+
+    Vector3(x, y, z)
+  }
+}
+
+// TODO: Add a few more useful surface envelope functions, and move them to a separate package.
 
 /*
  * Parametric cylinder shaped primitive with a specified number of sides, segments, and a surface function.
  */
-class LathePrimitive(surface: (Double, Double) => Vector3, // TODO: Add a few useful parametrized two parameter surface functions.
+class LathePrimitive(surface: Func.Envelope = CylinderFunction(),
                      segments: Int = 10,
                      sides: Int = 10,
                      colorFunction: (Double, Double) => Color = (u,v) => Color.White,
@@ -60,7 +103,6 @@ class LathePrimitive(surface: (Double, Double) => Vector3, // TODO: Add a few us
 
         if (segment > 0 && side > 0) meshData.addQuad(index, index-1, index -1 -sides, index-sides)
         if (segment > 0 && side == 0) meshData.addQuad(index, index + sides -1, index -1, index-sides) // Stitch together into a cylinder shape
-        // TODO: Simple stitching like this will be problematic for the texture - instead a seam should be used with duplicate vertices along the seam with different texture coordinates.
 
         side += 1
       }

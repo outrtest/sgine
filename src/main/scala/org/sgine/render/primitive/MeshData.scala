@@ -3,6 +3,7 @@ package org.sgine.render.primitive
 import _root_.org.sgine.core.Color
 import java.util.ArrayList
 import org.sgine.math.{Vector2, Vector3}
+import util.Random
 
 /**
  * Contains mutable data for a model, including vertexes, normals, texture coordinates, and indexes.
@@ -73,10 +74,16 @@ class MeshData {
     // TODO: Implement
   }
 
-  def randomizeColors() {
-    // TODO
-  }
 
+  def randomizeColors() {
+    val rand = new Random()
+    val max = colors.size
+    var i = 0
+    while (i < max) {
+      colors.set(i, Color(rand.nextDouble, rand.nextDouble, rand.nextDouble))
+      i += 1
+    }
+  }
 
   private def nextIndex(): Int = {
     val current = nextFreeIndex
