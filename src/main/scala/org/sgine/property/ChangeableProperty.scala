@@ -36,4 +36,6 @@ trait ChangeableProperty[T] extends Property[T] {
 	
 	def changed(oldValue: T, newValue: T): Unit = {
 	}
+	
+	def changedLocal() = changed(this(), this())
 }

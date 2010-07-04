@@ -15,22 +15,11 @@ class MutableProperty[T] extends Property[T] {
 
 	@volatile protected var value: T = _
 
-	def apply(): T = {
-		value;
-	}
+	def apply() = value
 	
 	def apply(value: T): Property[T] = {
-		// this is a hack
-		import simplex3d.math.doublem._
-		if (this.value.isInstanceOf[Mat3x4d]) {
-			this.value.asInstanceOf[Mat3x4d] := value.asInstanceOf[Mat3x4d]
-			if (this.isInstanceOf[ChangeableProperty[_]]) {
-				this.asInstanceOf[ChangeableProperty[T]].changed(this.value, this.value)
-			}
-		}
-		else
-			this.value = value;
+		this.value = value
 		
-		this;
+		this
 	}
 }
