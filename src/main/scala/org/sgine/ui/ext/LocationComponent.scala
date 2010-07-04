@@ -67,7 +67,7 @@ trait LocationComponent extends Component {
 				}
 			}
 			
-			localMatrix := localMatrix().translate(Vec3d(x, y, z))
+			localMatrix() := localMatrix().translate(Vec3d(x, y, z))
 		}
 	}
 }
