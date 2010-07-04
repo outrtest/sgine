@@ -20,7 +20,13 @@ class MutableProperty[T] extends Property[T] {
 	}
 	
 	def apply(value: T): Property[T] = {
-		this.value = value;
+		// this is a hack
+		import simplex3d.math.doublem._
+		if (this.value.isInstanceOf[Mat3x4d]) {
+			this.value.asInstanceOf[Mat3x4d] := value.asInstanceOf[Mat3x4d]
+		}
+		else
+			this.value = value;
 		
 		this;
 	}
