@@ -43,12 +43,19 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	val farDistance = 2000.0
 	
 	val canvas = new java.awt.Canvas()
+	canvas.addComponentListener(new java.awt.event.ComponentAdapter() {
+		override def componentResized(e: java.awt.event.ComponentEvent) = {
+			resized.set(true)
+		}
+	})
 	lazy val thread = new Thread(FunctionRunnable(run))
 	
 	val fullscreen = new AdvancedProperty[Boolean](false, this) with TransactionalProperty[Boolean]
 	val verticalSync = new AdvancedProperty[Boolean](true, this) with TransactionalProperty[Boolean]
 	val renderable = new AdvancedProperty[Renderable](null, this)
 	val background = new AdvancedProperty[Color](Color.Black, this) with TransactionalProperty[Color]
+	
+	private val resized = new java.util.concurrent.atomic.AtomicBoolean(false)
 	
 	def start() = {
 		thread.start()
@@ -118,6 +125,9 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	}
 	
 	private def render() = {
+		if (resized.compareAndSet(true, false)) {
+			reshapeGL()
+		}
 		if (fullscreen.uncommitted) {
 			fullscreen.commit()
 			GLDisplay.setFullscreen(fullscreen())
@@ -188,7 +198,7 @@ object Renderer {
 		val f = new java.awt.Frame
 		f.setSize(width, height)
 		f.setTitle(title)
-		f.setResizable(false)
+		f.setResizable(true)
 		f.setLayout(new java.awt.BorderLayout())
 		f.addFocusListener(new java.awt.event.FocusAdapter() {
 			override def focusGained(e: java.awt.event.FocusEvent) = {
@@ -199,6 +209,11 @@ object Renderer {
 			override def windowClosing(e: java.awt.event.WindowEvent) = {
 				r.shutdown()
 				f.dispose()
+			}
+		})
+		f.addComponentListener(new java.awt.event.ComponentAdapter() {
+			override def componentResized(e: java.awt.event.ComponentEvent) = {
+				r.canvas.setSize(f.getSize)
 			}
 		})
 		
