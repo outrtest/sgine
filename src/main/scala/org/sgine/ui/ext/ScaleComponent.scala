@@ -18,7 +18,7 @@ trait ScaleComponent extends Component {
 		super.updateLocalMatrix()
 		
 		if (scale != null) {
-			localMatrix().scale(Vec3d(scale.x(), scale.y(), scale.z()))
+			localMatrix() := localMatrix().scale(Vec3d(scale.x(), scale.y(), scale.z()))
 		}
 	}
 }

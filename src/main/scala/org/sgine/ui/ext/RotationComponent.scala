@@ -66,15 +66,15 @@ trait RotationComponent extends Component {
 			}
 			
 			if ((x != 0.0) || (y != 0.0) || (z != 0.0)) {
-				localMatrix := localMatrix().translate(Vec3d(x, y, z))
+				localMatrix() := localMatrix().translate(Vec3d(x, y, z))
 			}
 			
-			if (rotation.x() != 0.0) localMatrix := localMatrix().rotateX(rotation.x())
-			if (rotation.y() != 0.0) localMatrix := localMatrix().rotateY(rotation.y())
-			if (rotation.z() != 0.0) localMatrix := localMatrix().rotateZ(rotation.z())
+			if (rotation.x() != 0.0) localMatrix() := localMatrix().rotateX(rotation.x())
+			if (rotation.y() != 0.0) localMatrix() := localMatrix().rotateY(rotation.y())
+			if (rotation.z() != 0.0) localMatrix() := localMatrix().rotateZ(rotation.z())
 			
 			if ((x != 0.0) || (y != 0.0) || (z != 0.0)) {
-				localMatrix().translate(Vec3d(-x, -y, -z))
+				localMatrix() := localMatrix().translate(Vec3d(-x, -y, -z))
 			}
 		}
 	}
