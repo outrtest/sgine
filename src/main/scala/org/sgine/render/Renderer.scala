@@ -211,13 +211,7 @@ object Renderer {
 				f.dispose()
 			}
 		})
-		f.addComponentListener(new java.awt.event.ComponentAdapter() {
-			override def componentResized(e: java.awt.event.ComponentEvent) = {
-				r.canvas.setSize(f.getSize)
-			}
-		})
-		
-		r.canvas.setSize(width, height)		// TODO: fix
+
 		f.add(java.awt.BorderLayout.CENTER, r.canvas)
 		
 		f.setVisible(true)
