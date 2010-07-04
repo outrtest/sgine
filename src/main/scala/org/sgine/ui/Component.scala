@@ -55,7 +55,8 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	}
 	
 	override protected def updateLocalMatrix(): Unit = {
-		localMatrix := Mat3x4d.Identity
+		localMatrix() := Mat3x4d.Identity
+		localMatrix.changedLocal()
 	}
 	
 	protected def initComponent() = {
