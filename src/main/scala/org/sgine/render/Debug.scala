@@ -19,7 +19,7 @@ trait Debug extends Display {
 		scene += debugContainer
 		
 		val fps = new FPSLabel()
-		fps.font := FontManager("Arial32")
+		fps.font := FontManager("lcd")//"Arial32")
 		fps.location.x := -600//-795.0
 		fps.location.x.align := org.sgine.core.HorizontalAlignment.Left
 		fps.location.y := 550//595.0
