@@ -25,6 +25,7 @@ import org.sgine.ui.ext._
 
 import simplex3d.math._
 import simplex3d.math.doublem._
+import simplex3d.math.doublem.DoubleMath._
 
 trait Component extends PropertyContainer with Renderable with RenderUpdatable with MatrixNode with ColorNode with Stateful {
 	val id = new AdvancedProperty[String](null, this)
@@ -54,8 +55,36 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		}
 	}
 	
+	private val pscale = Vec3d(1)
+	private val protation = Vec3d(0)
+	private val ptranslation = Vec3d(0)
+	
 	override protected def updateLocalMatrix(): Unit = {
-		localMatrix() := Mat3x4d.Identity
+//		localMatrix() := Mat3x4d.Identity
+//		localMatrix.changedLocal()
+		
+		// another hack
+		if (this.isInstanceOf[ScaleComponent]) {
+			val t = this.asInstanceOf[ScaleComponent]
+			pscale.x = t.scale.x()
+			pscale.y = t.scale.y()
+			pscale.z = t.scale.z()
+		}
+		if (this.isInstanceOf[RotationComponent]) {
+			val t = this.asInstanceOf[RotationComponent]
+			protation.x = t.rotation.x()
+			protation.y = t.rotation.y()
+			protation.z = t.rotation.z()
+		}
+		if (this.isInstanceOf[LocationComponent]) {
+			val t = this.asInstanceOf[LocationComponent]
+			ptranslation.x = t.location.x()
+			ptranslation.y = t.location.y()
+			ptranslation.z = t.location.z()
+		}
+		
+		import org.sgine.math.MathUtil._
+		localMatrix() := transformation(pscale, eulerMat(protation.x, protation.y, protation.z), ptranslation)
 		localMatrix.changedLocal()
 	}
 	

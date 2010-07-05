@@ -152,7 +152,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
 			
 			Renderer.time.set(time)
-			Renderer.maxTime.set(max(time, Renderer.maxTime.get))
+			//Renderer.maxTime.set(max(time, Renderer.maxTime.get))
 			Renderer.fps.set((1.0 / time).round.toInt)
 			
 			Mouse.update(this)
@@ -188,7 +188,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 
 object Renderer {
 	val time = new ThreadLocal[Double]
-	val maxTime = new ThreadLocal[Double]
+	//val maxTime = new ThreadLocal[Double]
 	val fps = new ThreadLocal[Int]
 	val matrixStore = new ThreadLocal[DoubleBuffer]
 	

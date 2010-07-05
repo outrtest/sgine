@@ -14,11 +14,11 @@ trait ScaleComponent extends Component {
 	
 	scale.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	
-	abstract override protected def updateLocalMatrix() = {
-		super.updateLocalMatrix()
-		
-		if (scale != null) {
-			localMatrix() := localMatrix().scale(Vec3d(scale.x(), scale.y(), scale.z()))
-		}
-	}
+//	abstract override protected def updateLocalMatrix() = {
+//		super.updateLocalMatrix()
+//		
+//		if (scale != null) {
+//			localMatrix() := localMatrix().scale(Vec3d(scale.x(), scale.y(), scale.z()))
+//		}
+//	}
 }
