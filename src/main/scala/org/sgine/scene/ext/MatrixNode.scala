@@ -6,7 +6,7 @@ import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
-import org.sgine.math.mutable.Matrix4
+import org.sgine.math._
 
 import org.sgine.property.ImmutableProperty
 import org.sgine.property.MutableProperty
@@ -19,7 +19,7 @@ import org.sgine.scene.event.SceneEventType
 import org.sgine.work.Updatable
 
 trait MatrixNode extends WorldMatrixNode with Updatable {
-	val localMatrix = new ImmutableProperty[Matrix4](Matrix4().identity())
+	val localMatrix = new ImmutableProperty[Matrix4](Matrix4(mutability = Mutability.Mutable, storeType = StoreType.DirectBuffer))
 	
 	// Listen for parent change to invalidate matrix
 	listeners += EventHandler(parentChanged, ProcessingMode.Blocking)
@@ -39,7 +39,7 @@ trait MatrixNode extends WorldMatrixNode with Updatable {
 		}
 	}
 	
-	localMatrix().changeDelegate = () => invalidateMatrix()
+	localMatrix().changeDelegate(() => invalidateMatrix())
 	
 	abstract override def update(time: Double) = {
 		super.update(time)

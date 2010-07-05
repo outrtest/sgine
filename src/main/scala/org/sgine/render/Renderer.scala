@@ -15,8 +15,7 @@ import org.sgine.core.Color
 import org.sgine.input.Keyboard
 import org.sgine.input.Mouse
 
-import org.sgine.math.Matrix4
-import org.sgine.math.mutable.{Matrix4 => MutableMatrix4}
+import org.sgine.math._
 import org.sgine.math.mutable.{Ray => MutableRay}
 import org.sgine.math.mutable.{Vector3 => MutableVector3}
 
@@ -38,7 +37,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	val farDistance = 2000.0
 	
 	private val storeRay = MutableRay()
-	private val storeMatrix = MutableMatrix4()
+	private val storeMatrix = Matrix4(mutability = Mutability.Mutable)
 	
 	val canvas = new java.awt.Canvas()
 	lazy val thread = new Thread(FunctionRunnable(run))

@@ -1,6 +1,6 @@
 package org.sgine.render
 
-import org.sgine.math.mutable.Matrix4
+import org.sgine.math._
 
 import javax.imageio._
 
@@ -17,7 +17,8 @@ object TestTorus {
 
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 
-		val m = Matrix4().translate(z = -1000.0).scaleAll(0.04)
+		val m = Matrix4(mutability = Mutability.Mutable, storeType = StoreType.DirectBuffer).translate(z = -1000.0).scaleAll(0.04)
+		println(m)
 		val i = RenderImage(t)
 		val torus = Torus(200.0, 50.0, 150, 6, Color.White, i)
 		val fps = FPS(1.0)
@@ -26,7 +27,7 @@ object TestTorus {
 		
 		while(true) {
 			Thread.sleep(5)
-			m.rotate(0.005, 0.005, 0.0)
+			m.rotate(0.005, 0.005, 0.005)
 		}
 	}
 }

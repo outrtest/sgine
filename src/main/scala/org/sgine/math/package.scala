@@ -8,5 +8,8 @@ package object math {
 
 	implicit def tuple2dToVector2(value:(Double, Double)) : Vector2 = Vector2(value._1, value._2);
 	implicit def tuple2iToVector2(value:(Int,    Int   )) : Vector2 = Vector2(value._1, value._2);
-
+	
+	implicit def stringToMutability(value: String) = if (value equalsIgnoreCase "mutable") Mutability.Mutable else Mutability.Immutable
+	
+	implicit def stringToStoreType(value: String) = if (value equalsIgnoreCase "direct") StoreType.DirectBuffer else if (value equalsIgnoreCase "buffer") StoreType.Buffer else StoreType.BasicArray
 }

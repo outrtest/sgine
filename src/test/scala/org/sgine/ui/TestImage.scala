@@ -14,5 +14,9 @@ object TestImage extends StandardDisplay with Debug {
 	def setup() = {
 		val component = new Image(Resource("puppies.jpg"))
 		scene += component
+		
+		Thread.sleep(5000)
+		
+		println(component.worldMatrix())
 	}
 }
