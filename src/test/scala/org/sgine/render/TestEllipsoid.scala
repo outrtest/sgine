@@ -1,6 +1,6 @@
 package org.sgine.render
 
-import org.sgine.math.mutable.Matrix4
+import org.sgine.math.Matrix4
 
 import javax.imageio._
 
