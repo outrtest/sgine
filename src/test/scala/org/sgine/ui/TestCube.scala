@@ -5,11 +5,8 @@ import org.sgine.core.Resource
 import org.sgine.core.mutable.{Color => MutableColor}
 
 import org.sgine.easing.Elastic
-import org.sgine.easing.Linear
 
-import org.sgine.effect.CompositeEffect
-import org.sgine.effect.PropertyChangeEffect
-import org.sgine.effect.PropertySetEffect
+import org.sgine.effect._
 
 import org.sgine.property.animate.EasingNumericAnimator
 import org.sgine.property.animate.LinearNumericAnimator
@@ -28,7 +25,6 @@ object TestCube extends StandardDisplay with Debug {
 		for (row <- 0 until 10) {
 			for (column <- 0 until 10) {
 				CubeCreator.createCube(scene, column, row)
-				Thread.sleep(200)
 			}
 		}
 	}
@@ -59,9 +55,10 @@ object CubeCreator {
 		cube.rotation.z := Double.MaxValue
 
 		// Move the cube back and forth perpetually on the x-axis
+		val me0 = new PauseEffect(random * 2.0 + 0.5)
 		val me1 = new PropertyChangeEffect(cube.location.x, -400.0)
 		val me2 = new PropertyChangeEffect(cube.location.x, 400.0)
-		val move = new CompositeEffect(me1, me2)
+		val move = new CompositeEffect(me0, me1, me2)
 		move.repeat = -1
 		move.start()
 	}
