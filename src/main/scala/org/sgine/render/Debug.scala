@@ -20,9 +20,9 @@ trait Debug extends Display {
 		
 		val fps = new FPSLabel()
 		fps.font := FontManager("Arial32")
-		fps.location.x := -795.0
+		fps.location.x := -600//-795.0
 		fps.location.x.align := org.sgine.core.HorizontalAlignment.Left
-		fps.location.y := 595.0
+		fps.location.y := 550//595.0
 		fps.location.y.align := org.sgine.core.VerticalAlignment.Top
 		fps.location.z := 1.0
 		debugContainer += fps
