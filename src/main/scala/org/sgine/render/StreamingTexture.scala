@@ -60,24 +60,30 @@ class StreamingTexture(val width: Int, val height: Int) extends Texture {
 	}
 	
 	def bind() = {
-		if (!initialized) {
-			init()
-			initialized = true
-		}
-
-		glBindTexture(GL_TEXTURE_2D, id)
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
-
-		if (dataDirty.compareAndSet(true, false)) {
-			updateBuffer()
-		}
-		if (bufferDirty.compareAndSet(true, false)) {
-			applyBuffer()
+		if (Texture.current != id) {
+			if (!initialized) {
+				init()
+				initialized = true
+			}
+	
+			glBindTexture(GL_TEXTURE_2D, id)
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+	
+			if (dataDirty.compareAndSet(true, false)) {
+				updateBuffer()
+			}
+			if (bufferDirty.compareAndSet(true, false)) {
+				applyBuffer()
+			}
+			
+			Texture.current = id
 		}
 	}
 	
 	def unbind() = {
 		glBindTexture(GL_TEXTURE_2D, 0)
+		
+		Texture.current = -1
 	}
 	
 	def invalidateTexture() = dataDirty.set(true)

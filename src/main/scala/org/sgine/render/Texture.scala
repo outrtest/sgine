@@ -38,3 +38,7 @@ trait Texture {
 	 */
 	def unbind(): Unit
 }
+
+object Texture {
+	@volatile var current: Int = -1
+}

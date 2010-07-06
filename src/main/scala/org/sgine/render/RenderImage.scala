@@ -51,7 +51,7 @@ class RenderImage protected() extends Function0[Unit] {
 			
 			glEnd()
 			
-			texture.unbind()
+//			texture.unbind()
 		}
 	}
 }

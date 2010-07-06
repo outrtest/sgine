@@ -51,15 +51,21 @@ class BasicTexture() extends Texture {
 	}
 	
 	def bind() = {
-		glBindTexture(GL_TEXTURE_2D, id)
-		
-		validateTexture()
-		
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+		if (Texture.current != id) {
+			glBindTexture(GL_TEXTURE_2D, id)
+			
+			validateTexture()
+			
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+			
+			Texture.current = id
+		}
 	}
 	
 	def unbind() = {
 		glBindTexture(GL_TEXTURE_2D, 0)
+		
+		Texture.current = -1
 	}
 	
 	/**
