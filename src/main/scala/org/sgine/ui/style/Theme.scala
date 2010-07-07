@@ -14,6 +14,7 @@ object Theme extends PropertyContainer with ListenableProperty[Int] {
 	val textColor = new AdvancedProperty[Color](null, this)
 	
 	val button = org.sgine.ui.Button
+	val textInput = org.sgine.ui.TextInput
 	
 	// Apply the default theme
 	WindowsTheme()

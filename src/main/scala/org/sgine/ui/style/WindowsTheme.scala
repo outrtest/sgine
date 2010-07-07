@@ -22,6 +22,18 @@ object WindowsTheme {
 		Theme.button.paddingRight := 25.0
 		Theme.button.iconPlacement := Placement.Top
 		
+		Theme.textInput.normalSkin := Resource("scale9/windows/textinput/normal.png")
+		Theme.textInput.hoverSkin := Resource("scale9/windows/textinput/hover.png")
+		Theme.textInput.focusedSkin := Resource("scale9/windows/textinput/focused.png")
+		Theme.textInput.skinX1 := 2.0
+		Theme.textInput.skinY1 := 2.0
+		Theme.textInput.skinX2 := 3.0
+		Theme.textInput.skinY2 := 3.0
+		Theme.textInput.paddingTop := 5.0
+		Theme.textInput.paddingBottom := 5.0
+		Theme.textInput.paddingLeft := 5.0
+		Theme.textInput.paddingRight := 5.0
+		
 		Theme.font := FontManager("Arial32")
 		Theme.textColor := Color.Black
 	}

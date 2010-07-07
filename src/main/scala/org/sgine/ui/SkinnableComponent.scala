@@ -27,7 +27,6 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 	
 	protected def normalResource: Resource
 	protected def hoverResource: Resource
-	protected def pressedResource: Resource
 	protected def focusedResource: Resource
 	
 	protected def face: LocationComponent
@@ -37,7 +36,6 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 	protected def skinX2: Double
 	protected def skinY2: Double
 	
-	private var pressed: Boolean = false
 	private var over: Boolean = false
 	
 	configureListeners()
@@ -90,18 +88,15 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 	
 	private def mouseOut(evt: MouseOutEvent) = {
 		over = false
-		pressed = false
 		updateState()
 	}
 	
 	private def mouseDown(evt: MousePressEvent) = {
-		pressed = true
 		focused := true
 		updateState()
 	}
 	
 	private def mouseUp(evt: MouseReleaseEvent) = {
-		pressed = false
 		updateState()
 	}
 	
@@ -109,10 +104,8 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 		updateState()
 	}
 	
-	private def updateState() = {
-		if (pressed) {
-			skin.source := pressedResource
-		} else if (over) {
+	protected def updateState() = {
+		if (over) {
 			skin.source := hoverResource
 		} else if (focused()) {
 			skin.source := focusedResource
