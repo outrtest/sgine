@@ -23,7 +23,7 @@ import org.sgine.ui.ext.PaddingComponent
 import org.sgine.ui.layout.BoxLayout
 import org.sgine.ui.style.Theme
 
-class Button extends SkinnableComponent with AdvancedComponent with PaddingComponent {
+class Button extends PressableComponent with AdvancedComponent with PaddingComponent {
 	protected val normalResource = Button.normalSkin()
 	protected val hoverResource = Button.hoverSkin()
 	protected val pressedResource = Button.pressedSkin()
