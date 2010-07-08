@@ -200,6 +200,8 @@ object Color {
 		c
 	}
 	
+	def apply(red: Int, green: Int, blue: Int, alpha: Int): Color = apply(red / 255.0, green / 255.0, blue / 255.0, alpha / 255.0)
+	
 	def apply(value: String): Color = {
 		byName(value) match {
 			case Some(c) => c
