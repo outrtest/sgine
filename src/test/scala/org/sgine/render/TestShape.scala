@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
 
-import org.sgine.render.spatial._
+import org.sgine.render.shape._
 
 import simplex3d.math._
 import simplex3d.math.doublem.renamed._
@@ -22,9 +22,9 @@ object TestSpatial {
 		r.light0.diffuse := Color(0.2, 0.3, 0.6, 1.0)
 
 		val m = Mat3x4 translate(Vec3(0, 0, -200.0))
-		val s = new Spatial() {
+		val s = new Shape() {
 		}
-		val data = new MeshData() {
+		val data = new ShapeData() {
 			val mode = GL_TRIANGLES
 			val cull = Face.Front
 			val material = Material.AmbientAndDiffuse

@@ -1,14 +1,14 @@
-package org.sgine.render.spatial.renderer
+package org.sgine.render.shape.renderer
 
 import org.lwjgl.opengl.GL11._
 
 import org.sgine.render.Face
 import org.sgine.render.Material
-import org.sgine.render.spatial.MeshData
+import org.sgine.render.shape.ShapeData
 
-trait LWJGLSpatialRenderer extends SpatialRenderer {
-	protected[spatial] def render(mesh: MeshData) = {
-		var face = mesh.cull match {
+trait LWJGLShapeRenderer extends ShapeRenderer {
+	protected[shape] def render(data: ShapeData) = {
+		var face = data.cull match {
 			case Face.None => {
 				glDisable(GL_CULL_FACE)
 				GL_FRONT
@@ -30,10 +30,10 @@ trait LWJGLSpatialRenderer extends SpatialRenderer {
 			}
 		}
 		
-		if (mesh.material != null) {
+		if (data.material != null) {
 			glEnable(GL_COLOR_MATERIAL)
 			
-			val m = mesh.material match {
+			val m = data.material match {
 				case Material.Emission => GL_EMISSION
 				case Material.Ambient => GL_AMBIENT
 				case Material.Diffuse => GL_DIFFUSE

@@ -1,4 +1,4 @@
-package org.sgine.render.spatial
+package org.sgine.render.shape
 
 import org.sgine.core.Color
 
@@ -8,7 +8,7 @@ import org.sgine.render.Material
 import simplex3d.math.doublem.Vec2d
 import simplex3d.math.doublem.Vec3d
 
-trait MeshData {
+trait ShapeData {
 	def mode: Int
 	def cull: Face
 	def material: Material
