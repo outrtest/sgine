@@ -1,4 +1,4 @@
-package org.sgine.render.shape.renderer
+package org.sgine.render.shape.renderer.lwjgl
 
 import org.lwjgl.opengl.GL11._
 

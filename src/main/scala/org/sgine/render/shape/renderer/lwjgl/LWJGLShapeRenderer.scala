@@ -1,10 +1,11 @@
-package org.sgine.render.shape.renderer
+package org.sgine.render.shape.renderer.lwjgl
 
 import org.lwjgl.opengl.GL11._
 
 import org.sgine.render.Face
 import org.sgine.render.Material
 import org.sgine.render.shape.ShapeData
+import org.sgine.render.shape.renderer.ShapeRenderer
 
 trait LWJGLShapeRenderer extends ShapeRenderer {
 	protected[shape] def render(data: ShapeData) = {
