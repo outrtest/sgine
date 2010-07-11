@@ -59,7 +59,18 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	
 	val camera = new Camera()
 	
+	val light0 = new Light(0, this)
+	val light1 = new Light(1, this)
+	val light2 = new Light(2, this)
+	val light3 = new Light(3, this)
+	val light4 = new Light(4, this)
+	val light5 = new Light(5, this)
+	val light6 = new Light(6, this)
+	val light7 = new Light(7, this)
+	
 	private val resized = new java.util.concurrent.atomic.AtomicBoolean(false)
+	
+	private val invokeQueue = new java.util.concurrent.ConcurrentLinkedQueue[Function0[Unit]]
 	
 	def start() = {
 		thread.start()
@@ -92,6 +103,13 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		}
 	}
 	
+	private[render] def updateLighting() = {
+		if ((light0.enabled()) || (light1.enabled()) || (light2.enabled()) || (light3.enabled()) || (light4.enabled()) || (light5.enabled()) || (light6.enabled()) || (light7.enabled())) {
+			glEnable(GL_LIGHTING)
+		} else {
+			glDisable(GL_LIGHTING)
+		}
+	}
 	
 	private def initGL() = {
 		GLDisplay.setFullscreen(fullscreen())
@@ -162,6 +180,20 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			
 			Mouse.update(this)
 			
+			light0.update()
+			light1.update()
+			light2.update()
+			light3.update()
+			light4.update()
+			light5.update()
+			light6.update()
+			light7.update()
+			
+			invokeQueue.poll() match {
+				case null =>
+				case f => f()
+			}
+			
 			val r = renderable()
 			if (r != null) Renderable.render(this, r)
 		}
@@ -194,6 +226,10 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	
 	private def destroy() = {
 		GLDisplay.destroy()
+	}
+	
+	def invokeLater(f: () => Unit) = {
+		invokeQueue.add(f)
 	}
 }
 
