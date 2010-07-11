@@ -31,6 +31,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	val id = new AdvancedProperty[String](null, this)
 	val visible = new AdvancedProperty[Boolean](true, this)
 	val renderer = new DelegateProperty(() => _renderer)
+	val lighting = new AdvancedProperty[Boolean](true, this)
 	
 	private var firstRender = true
 	
@@ -47,11 +48,21 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 				initComponent()
 			}
 			
+			// Disable lighting if enabled
+			if ((!lighting()) && (Renderer.instance.get.lights)) {
+				glDisable(GL_LIGHTING)
+			}
+			
 			preRender()
 			_renderer.loadMatrix(worldMatrix())
 			
 			preColor()
 			drawComponent()
+			
+			// Enable lighting if enabled
+			if ((!lighting()) && (Renderer.instance.get.lights)) {
+				glEnable(GL_LIGHTING)
+			}
 		}
 	}
 	
