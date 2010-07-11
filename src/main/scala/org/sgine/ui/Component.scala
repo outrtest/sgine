@@ -48,7 +48,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 			}
 			
 			preRender()
-			Renderer.loadMatrix(worldMatrix())
+			_renderer.loadMatrix(worldMatrix())
 			
 			preColor()
 			drawComponent()

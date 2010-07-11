@@ -7,9 +7,10 @@ import java.nio.FloatBuffer
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL15._
 
+import org.sgine.render.Face
 import org.sgine.render.spatial.MeshData
 
-class VBOSpatialRenderer extends SpatialRenderer {
+class VBOSpatialRenderer extends LWJGLSpatialRenderer {
 	private var vbo: VBO = _
 	
 	protected[spatial] def update(old: MeshData, mesh: MeshData) = {
@@ -26,7 +27,9 @@ class VBOSpatialRenderer extends SpatialRenderer {
 		vbo.update(mesh)
 	}
 	
-	protected[spatial] def render(mesh: MeshData) = {
+	override protected[spatial] def render(mesh: MeshData) = {
+		super.render(mesh)
+		
 		vbo.draw()
 	}
 }
@@ -70,6 +73,15 @@ class VBO() {
 			fb.put(v.z.toFloat)
 		}
 		
+		if (mesh.hasNormal) {
+			for (i <- range) {	// Populate normals
+				val n = mesh.normal(i)
+				fb.put(n.x.toFloat)
+				fb.put(n.y.toFloat)
+				fb.put(n.z.toFloat)
+			}
+		}
+		
 		if (mesh.hasColor) {
 			for (i <- range) {	// Populate colors
 				val c = mesh.color(i)
@@ -103,6 +115,11 @@ class VBO() {
 		var offset = 0
 		glVertexPointer(3, GL_FLOAT, 0, offset)
 		offset += length * (3 * 4)
+		if (mesh.hasNormal) {
+			glEnableClientState(GL_NORMAL_ARRAY)
+			glNormalPointer(GL_FLOAT, 0, offset)
+			offset += length * (3 * 4)
+		}
 		if (mesh.hasColor) {
 			glEnableClientState(GL_COLOR_ARRAY)
 			glColorPointer(4, GL_FLOAT, 0, offset)

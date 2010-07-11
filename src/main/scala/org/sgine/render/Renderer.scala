@@ -42,6 +42,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	val nearDistance = 100.0
 	val farDistance = 2000.0
 	
+	val matrixStore = ByteBuffer.allocateDirect(128).order(ByteOrder.nativeOrder).asDoubleBuffer
+	
 	val canvas = new java.awt.Canvas()
 	canvas.addComponentListener(new java.awt.event.ComponentAdapter() {
 		override def componentResized(e: java.awt.event.ComponentEvent) = {
@@ -54,6 +56,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	val verticalSync = new AdvancedProperty[Boolean](true, this) with TransactionalProperty[Boolean]
 	val renderable = new AdvancedProperty[Renderable](null, this)
 	val background = new AdvancedProperty[Color](Color.Black, this) with TransactionalProperty[Color]
+	
+	val camera = new Camera()
 	
 	private val resized = new java.util.concurrent.atomic.AtomicBoolean(false)
 	
@@ -70,6 +74,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	private def run(): Unit = {
 		try {
 			initGL()
+			Renderer.instance.set(this)
 			while ((keepAlive) && (!GLDisplay.isCloseRequested)) {
 				GLDisplay.update()
 				if (!Updatable.useWorkManager) {
@@ -181,6 +186,12 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		}
 	}
 	
+	def loadMatrix(m: Mat3x4d) = {
+		matrixToBuffer(m, matrixStore)
+		matrixStore.flip()
+		glLoadMatrix(matrixStore)
+	}
+	
 	private def destroy() = {
 		GLDisplay.destroy()
 	}
@@ -190,7 +201,7 @@ object Renderer {
 	val time = new ThreadLocal[Double]
 	//val maxTime = new ThreadLocal[Double]
 	val fps = new ThreadLocal[Int]
-	val matrixStore = new ThreadLocal[DoubleBuffer]
+	val instance = new ThreadLocal[Renderer]
 	
 	def createFrame(width: Int, height: Int, title: String, alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) = {
 		val r = new Renderer(alpha, depth, stencil, samples, bpp, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
@@ -236,19 +247,5 @@ object Renderer {
 		})
 		
 		r
-	}
-	
-	def loadMatrix(m: Mat3x4d) = {
-		val store = matrixStore.get match {
-			case null => {
-				val b = ByteBuffer.allocateDirect(128).order(ByteOrder.nativeOrder).asDoubleBuffer
-				matrixStore.set(b)
-				b
-			}
-			case s: DoubleBuffer => s
-		}
-		matrixToBuffer(m, store)
-		store.flip()
-		glLoadMatrix(store)
 	}
 }

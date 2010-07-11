@@ -19,12 +19,16 @@ object TestSpatial {
 		}
 		val data = new MeshData() {
 			val mode = GL_TRIANGLES
+			val cull = Face.Front
+			val material = Material.AmbientAndDiffuse
 			val length = 3
 			def color(index: Int) = colors(index)
 			def vertex(index: Int) = vertices(index)
 			def texture(index: Int) = null
+			def normal(index: Int) = null
 			val hasColor = true
 			val hasTexture = false
+			val hasNormal = false
 			
 			val vertices = List(Vec3(1.0, -1.0, 0.0), Vec3(-1.0, -1.0, 0.0), Vec3(0.0, 1.0, 0.0))
 			val colors = List(Color(255, 50, 160, 255), Color(180, 255, 70, 255), Color(90, 10, 255, 255))

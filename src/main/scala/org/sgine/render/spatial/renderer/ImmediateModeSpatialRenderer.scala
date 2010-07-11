@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11._
 
 import org.sgine.render.spatial.MeshData
 
-class ImmediateModeSpatialRenderer extends SpatialRenderer {
+class ImmediateModeSpatialRenderer extends LWJGLSpatialRenderer {
 	private var range: Range = _
 	private var mesh: MeshData = _
 	
@@ -12,7 +12,9 @@ class ImmediateModeSpatialRenderer extends SpatialRenderer {
 		// Immediate mode, nothing to do
 	}
 	
-	protected[spatial] def render(mesh: MeshData) = {
+	override protected[spatial] def render(mesh: MeshData) = {
+		super.render(mesh)
+		
 		if ((range == null) || (range.length != mesh.length)) {
 			range = 0 until mesh.length
 		}
@@ -24,13 +26,23 @@ class ImmediateModeSpatialRenderer extends SpatialRenderer {
 	}
 	
 	private val renderVertex = (index: Int) => {
-		val c = mesh.color(index)
-		if (c != null) {
-			glColor4d(c.red, c.green, c.blue, c.alpha)
+		if (mesh.hasNormal) {
+			val n = mesh.normal(index)
+			if (n != null) {
+				glNormal3d(n.x, n.y, n.z)
+			}
 		}
-		val t = mesh.texture(index)
-		if (t != null) {
-			glTexCoord2d(t.x, t.y)
+		if (mesh.hasColor) {
+			val c = mesh.color(index)
+			if (c != null) {
+				glColor4d(c.red, c.green, c.blue, c.alpha)
+			}
+		}
+		if (mesh.hasTexture) {
+			val t = mesh.texture(index)
+			if (t != null) {
+				glTexCoord2d(t.x, t.y)
+			}
 		}
 		val v = mesh.vertex(index)
 		if (v != null) {
