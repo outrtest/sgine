@@ -4,10 +4,14 @@ import org.sgine.render.Renderer
 
 import org.sgine.work.Updatable
 
+import org.lwjgl.opengl.GL11._
+
 class FPSLabel extends Label {
 	private var time = 0.0
 	private var count = 0
 	private var framerate = 0
+	
+	lighting := false
 	
 	override def drawComponent() = {
 		time += Renderer.time.get

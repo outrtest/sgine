@@ -59,6 +59,8 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	
 	val camera = new Camera()
 	
+	private var _lights = false
+	def lights = _lights
 	val light0 = new Light(0, this)
 	val light1 = new Light(1, this)
 	val light2 = new Light(2, this)
@@ -106,8 +108,10 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	private[render] def updateLighting() = {
 		if ((light0.enabled()) || (light1.enabled()) || (light2.enabled()) || (light3.enabled()) || (light4.enabled()) || (light5.enabled()) || (light6.enabled()) || (light7.enabled())) {
 			glEnable(GL_LIGHTING)
+			_lights = true
 		} else {
 			glDisable(GL_LIGHTING)
+			_lights = false
 		}
 	}
 	
