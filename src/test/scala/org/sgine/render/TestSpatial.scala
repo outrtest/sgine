@@ -1,5 +1,7 @@
 package org.sgine.render
 
+import org.lwjgl._
+import org.lwjgl.opengl._
 import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
@@ -14,6 +16,11 @@ object TestSpatial {
 		val r = Renderer.createFrame(1024, 768, "Test Spatial")
 		r.verticalSync := false
 		
+		// Setup lighting
+		r.light0.enabled := true
+		r.light0.ambience := Color(0.2, 0.3, 0.6, 1.0)
+		r.light0.diffuse := Color(0.2, 0.3, 0.6, 1.0)
+
 		val m = Mat3x4 translate(Vec3(0, 0, -200.0))
 		val s = new Spatial() {
 		}
