@@ -3,6 +3,7 @@ package org.sgine.render.shape
 import java.util.concurrent.atomic.AtomicReference
 
 import org.sgine.render.shape.renderer._
+import org.sgine.render.shape.renderer.lwjgl._
 
 trait Shape extends Function0[Unit] {
 	private val _data = new AtomicReference[ShapeData]

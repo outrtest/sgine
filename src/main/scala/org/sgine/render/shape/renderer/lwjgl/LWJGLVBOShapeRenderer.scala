@@ -1,4 +1,4 @@
-package org.sgine.render.shape.renderer
+package org.sgine.render.shape.renderer.lwjgl
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
