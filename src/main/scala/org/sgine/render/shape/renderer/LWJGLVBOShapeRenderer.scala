@@ -1,4 +1,4 @@
-package org.sgine.render.spatial.renderer
+package org.sgine.render.shape.renderer
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -8,14 +8,14 @@ import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL15._
 
 import org.sgine.render.Face
-import org.sgine.render.spatial.MeshData
+import org.sgine.render.shape.ShapeData
 
-class VBOSpatialRenderer extends LWJGLSpatialRenderer {
+class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
 	private var vbo: VBO = _
 	
-	protected[spatial] def update(old: MeshData, mesh: MeshData) = {
+	protected[shape] def update(old: ShapeData, data: ShapeData) = {
 		if (old != null) {
-			if (old.length != mesh.length) {
+			if (old.length != data.length) {
 				// Delete buffer if already existing since the size changed
 				vbo.delete()
 				vbo = null
@@ -24,33 +24,33 @@ class VBOSpatialRenderer extends LWJGLSpatialRenderer {
 		if (vbo == null) {
 			vbo = new VBO()
 		}
-		vbo.update(mesh)
+		vbo.update(data)
 	}
 	
-	override protected[spatial] def render(mesh: MeshData) = {
-		super.render(mesh)
+	override protected[shape] def render(data: ShapeData) = {
+		super.render(data)
 		
 		vbo.draw()
 	}
 }
 
-object VBOSpatialRenderer {
+object LWJGLVBOShapeRenderer {
 	def capable() = org.lwjgl.opengl.GLContext.getCapabilities.OpenGL15 && org.lwjgl.opengl.GLContext.getCapabilities.GL_ARB_vertex_buffer_object
 }
 
 class VBO() {
 	private var id: Int = glGenBuffers()
-	private var mesh: MeshData = _
+	private var data: ShapeData = _
 	private var bb: ByteBuffer = _
 	private var fb: FloatBuffer = _
 	
-	def update(mesh: MeshData) = {
+	def update(data: ShapeData) = {
 		// Bind the buffer
 		glBindBuffer(GL_ARRAY_BUFFER, id)
 		
 		// Generate the buffer allocation the first time around
 		if (bb == null) {
-			val bytes = mesh.bytes
+			val bytes = data.bytes
 			glBufferData(GL_ARRAY_BUFFER, bytes, GL_STREAM_DRAW)
 		}
 		
@@ -62,29 +62,29 @@ class VBO() {
 		}
 		
 		// Update the FloatBuffer
-		val range = 0 until mesh.length
+		val range = 0 until data.length
 		
 		fb.clear()
 		
 		for (i <- range) {	// Populate vertices
-			val v = mesh.vertex(i)
+			val v = data.vertex(i)
 			fb.put(v.x.toFloat)
 			fb.put(v.y.toFloat)
 			fb.put(v.z.toFloat)
 		}
 		
-		if (mesh.hasNormal) {
+		if (data.hasNormal) {
 			for (i <- range) {	// Populate normals
-				val n = mesh.normal(i)
+				val n = data.normal(i)
 				fb.put(n.x.toFloat)
 				fb.put(n.y.toFloat)
 				fb.put(n.z.toFloat)
 			}
 		}
 		
-		if (mesh.hasColor) {
+		if (data.hasColor) {
 			for (i <- range) {	// Populate colors
-				val c = mesh.color(i)
+				val c = data.color(i)
 				fb.put(c.red.toFloat)
 				fb.put(c.green.toFloat)
 				fb.put(c.blue.toFloat)
@@ -92,9 +92,9 @@ class VBO() {
 			}
 		}
 		
-		if (mesh.hasTexture) {
+		if (data.hasTexture) {
 			for (i <- range) {	// Populate texture
-				val t = mesh.texture(i)
+				val t = data.texture(i)
 				fb.put(t.x.toFloat)
 				fb.put(t.y.toFloat)
 			}
@@ -103,39 +103,39 @@ class VBO() {
 		// Unmap the buffer
 		glUnmapBuffer(GL_ARRAY_BUFFER)
 		
-		// Assign mesh data
-		this.mesh = mesh
+		// Assign data data
+		this.data = data
 	}
 	
 	def draw() = {
 		glEnableClientState(GL_VERTEX_ARRAY)
 		glBindBuffer(GL_ARRAY_BUFFER, id)
 		
-		val length = mesh.length
+		val length = data.length
 		var offset = 0
 		glVertexPointer(3, GL_FLOAT, 0, offset)
 		offset += length * (3 * 4)
-		if (mesh.hasNormal) {
+		if (data.hasNormal) {
 			glEnableClientState(GL_NORMAL_ARRAY)
 			glNormalPointer(GL_FLOAT, 0, offset)
 			offset += length * (3 * 4)
 		}
-		if (mesh.hasColor) {
+		if (data.hasColor) {
 			glEnableClientState(GL_COLOR_ARRAY)
 			glColorPointer(4, GL_FLOAT, 0, offset)
 			offset += length * (4 * 4)
 		}
-		if (mesh.hasTexture) {
+		if (data.hasTexture) {
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 			glTexCoordPointer(2, GL_FLOAT, 0, offset)
 		}
-		glDrawArrays(mesh.mode, 0, length)
+		glDrawArrays(data.mode, 0, length)
 		
 		glDisableClientState(GL_VERTEX_ARRAY)
-		if (mesh.hasColor) {
+		if (data.hasColor) {
 			glDisableClientState(GL_COLOR_ARRAY)
 		}
-		if (mesh.hasTexture) {
+		if (data.hasTexture) {
 			glDisableClientState(GL_TEXTURE_COORD_ARRAY)
 		}
 		
