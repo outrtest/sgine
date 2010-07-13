@@ -41,6 +41,9 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 
 	val nearDistance = 100.0
 	val farDistance = 2000.0
+	val fieldOfView = radians(1.15)
+	
+	val camera = new Camera()
 	
 	val matrixStore = ByteBuffer.allocateDirect(128).order(ByteOrder.nativeOrder).asDoubleBuffer
 	
@@ -56,8 +59,6 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	val verticalSync = new AdvancedProperty[Boolean](true, this) with TransactionalProperty[Boolean]
 	val renderable = new AdvancedProperty[Renderable](null, this)
 	val background = new AdvancedProperty[Color](Color.Black, this) with TransactionalProperty[Color]
-	
-	val camera = new Camera()
 	
 	private var _lights = false
 	def lights = _lights
@@ -144,11 +145,15 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		val height = canvas.getHeight
 		val h = width.toFloat / height.toFloat
 		glViewport(0, 0, width, height)
+		
+		camera.projection := perspectiveProj(fieldOfView, h, nearDistance, farDistance)
+		
 		glMatrixMode(GL_PROJECTION)
-		glLoadIdentity()
-		glFrustum(-1.0f * h, 1.0f * h, -1.0f, 1.0f, nearDistance, farDistance)
+		matrixToBuffer(camera.projection, matrixStore)
+		matrixStore.flip()
+		glLoadMatrix(matrixStore)
+		
 		glMatrixMode(GL_MODELVIEW)
-		glLoadIdentity()
 	}
 	
 	private def render() = {
@@ -183,6 +188,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			Renderer.fps.set((1.0 / time).round.toInt)
 			
 			Mouse.update(this)
+			camera.update()
 			
 			light0.update()
 			light1.update()
@@ -209,11 +215,9 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		}
 	}
 
-	// TODO: add Camera, port to use Camera
+	// TODO: change arguments to (screenCoords: inVec3)
 	def screenToWorldCoords(x: Double, y: Double, m: Mat3x4d) = {
-		val ray = Ray(Vec3d(0), Vec3d(x, y, -nearDistance))
-		ray.transform(inverse(m))
-		ray.translate()
+		camera.screenToWorldCoords(Vec3d(x, canvas.getHeight - y, 0), Vec2d(canvas.getWidth, canvas.getHeight))
 	}
 	
 	def waitForRender() = {
@@ -222,8 +226,10 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		}
 	}
 	
-	def loadMatrix(m: Mat3x4d) = {
-		matrixToBuffer(m, matrixStore)
+	// TODO: rename to loadModelMatrix
+	def loadMatrix(model: Mat3x4d) = {
+		val modelView = model concatenate camera.view
+		matrixToBuffer(modelView, matrixStore)
 		matrixStore.flip()
 		glLoadMatrix(matrixStore)
 	}
