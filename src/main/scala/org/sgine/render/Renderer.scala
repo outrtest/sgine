@@ -215,9 +215,17 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		}
 	}
 
-	// TODO: change arguments to (screenCoords: inVec3)
-	def screenToWorldCoords(x: Double, y: Double, m: Mat3x4d) = {
-		camera.screenToWorldCoords(Vec3d(x, canvas.getHeight - y, 0), Vec2d(canvas.getWidth, canvas.getHeight))
+	def screenToWorldCoords(screenCoords: inVec3d) = {
+		// TODO: store screenDimensions as a Const vector.
+		camera.screenToWorldCoords(screenCoords, Vec2d(canvas.getWidth, canvas.getHeight))
+	}
+	
+	def translateLocal(x: Double, y: Double, m: Mat3x4d, store: outVec3d) = {
+		val ray = new Ray(Vec3d(0), Vec3d(x, y, -nearDistance))
+		ray.transform(inverse(m))
+		ray.translateLocal(store)
+		
+		store
 	}
 	
 	def waitForRender() = {
