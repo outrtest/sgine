@@ -68,6 +68,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	}
 	
 	private var currentMouseEvent: MouseEvent = null
+	private val storeVector3 = Vec3d(0)
 	private def mouseEvent(evt: MouseEvent) = {
 		currentMouseEvent = evt
 		currentHits = Nil
@@ -78,15 +79,15 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 			val move = evt.asInstanceOf[MouseMoveEvent]
 			for (n <- currentHits) {
 				if (!hits.contains(n)) {		// MouseOver
-					val worldCoords = screenToWorldCoords(move, n)
-					val e = MouseEvent(-2, false, 0, worldCoords.x, worldCoords.y, move.deltaX, move.deltaY, n)
+					translateLocal(move, n)
+					val e = MouseEvent(-2, false, 0, storeVector3.x, storeVector3.y, move.deltaX, move.deltaY, n)
 					Event.enqueue(e)
 				}
 			}
 			for (n <- hits) {
 				if (!currentHits.contains(n)) {	// MouseOut
-					val worldCoords = screenToWorldCoords(move, n)
-					val e = MouseEvent(-3, false, 0, worldCoords.x, worldCoords.y, move.deltaX, move.deltaY, n)
+					translateLocal(move, n)
+					val e = MouseEvent(-3, false, 0, storeVector3.x, storeVector3.y, move.deltaX, move.deltaY, n)
 					Event.enqueue(e)
 				}
 			}
@@ -94,20 +95,20 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 			_hits = currentHits
 		}
 	}
-
-	// TODO: add Camera, port to use Camera
-	private def screenToWorldCoords(evt: MouseEvent, n: Node) = {
+	
+	private def translateLocal(evt: MouseEvent, n: Node) = {
 		val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
-		renderer.screenToWorldCoords(evt.x, evt.y, c.worldMatrix())
+		renderer.translateLocal(evt.x, evt.y, c.worldMatrix(), storeVector3)
+		
+		c
 	}
 	
 	private val pickTest = (n: Node) => {
 		if ((n.isInstanceOf[MatrixNode]) && (n.isInstanceOf[BoundingObject])) {
-			val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
-			val worldCoords = screenToWorldCoords(currentMouseEvent, n)
+			val c = translateLocal(currentMouseEvent, n)
 //			renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
-			if (c.bounding().within(worldCoords)) {
-				val evt = currentMouseEvent.retarget(c, worldCoords.x, worldCoords.y)
+			if (c.bounding().within(storeVector3)) {
+				val evt = currentMouseEvent.retarget(c, storeVector3.x, storeVector3.y)
 				Event.enqueue(evt)
 				
 				currentHits = c :: currentHits
