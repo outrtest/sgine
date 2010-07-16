@@ -13,15 +13,15 @@ import simplex3d.math.doublem.renamed._
 
 object TestShape2 {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Shape 2")
+		val r = Renderer.createFrame(1024, 768, "Test Shape 2", RenderSettings.High)
 		r.verticalSync := false
 		
 		// Setup lighting
-		r.light0.enabled := true
-		r.light0.ambience := Color(0.2, 0.3, 0.6, 1.0)
-		r.light0.diffuse := Color(0.2, 0.3, 0.6, 1.0)
+//		r.light0.enabled := true
+//		r.light0.ambience := Color(0.2, 0.3, 0.6, 1.0)
+//		r.light0.diffuse := Color(0.2, 0.3, 0.6, 1.0)
 
-		val m = Mat3x4 translate(Vec3(0, 0, -200.0))
+		val m = Mat3x4 scale 0.01 translate(Vec3(0, 0, -2000.0))
 		val s = Shape()
 		
 		val trans = new java.awt.geom.AffineTransform()
@@ -30,6 +30,7 @@ object TestShape2 {
 	    val fontRenderContext = new java.awt.font.FontRenderContext(null, true, true)
 	    val glyphVector = font.createGlyphVector(fontRenderContext, "Sgine!")
 		val shape = glyphVector.getOutline
+		val rect = new java.awt.geom.Rectangle2D.Double(0.0, 0.0, 5.0, 5.0)
 		val data = ShapeUtilities.convert(shape)
 		println("Data: " + data.length)
 		s(data)

@@ -71,6 +71,7 @@ class VBO() {
 			fb.put(v.x.toFloat)
 			fb.put(v.y.toFloat)
 			fb.put(v.z.toFloat)
+//			println(v)
 		}
 		
 		if (data.hasNormal) {

@@ -14,6 +14,8 @@ trait PressableComponent extends SkinnableComponent {
 	
 	private var pressed = false
 	
+	configureListeners()
+	
 	override protected def updateState() = {
 		if (pressed) {
 			skin.source := pressedResource
