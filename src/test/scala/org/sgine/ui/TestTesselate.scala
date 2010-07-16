@@ -10,6 +10,8 @@ import org.sgine.ui.ext._
 object TestTesselate extends StandardDisplay {
 	override val settings = RenderSettings.High
 	
+	private var count = 0
+	
 	def setup() = {
 		val c = new AdvancedComponent() {
 			private lazy val tess = generateTess()
@@ -19,7 +21,7 @@ object TestTesselate extends StandardDisplay {
 				
 				val tessCb = new org.lwjgl.util.glu.GLUtessellatorCallbackAdapter() {
 					override def begin(t: Int) = {
-						println("begin " + t)
+//						println("begin " + t)
 						glBegin(t)
 					}
 					
@@ -27,6 +29,7 @@ object TestTesselate extends StandardDisplay {
 //						println("vertex")
 						val vert = vertexData.asInstanceOf[Array[Double]]
 						glVertex2d(vert(0), vert(1))
+						count += 1
 					}
 					
 					override def combine(coords: Array[Double], data: Array[AnyRef], weight: Array[Float], outData: Array[AnyRef]) = {
@@ -54,6 +57,7 @@ object TestTesselate extends StandardDisplay {
 			}
 			
 			def drawComponent() = {
+				count = 0
 				tess.gluBeginPolygon()
 				
 				val trans = new java.awt.geom.AffineTransform()
@@ -101,6 +105,8 @@ object TestTesselate extends StandardDisplay {
 //				tess.gluTessVertex(Array(50.0f, 200.0f, 0.0f), 0, Array(50.0f, 200.0f, 0.0f))
 //				tess.gluTessEndContour()
 				tess.gluEndPolygon()
+				
+				println("Count: " + count)
 			}
 		}
 		

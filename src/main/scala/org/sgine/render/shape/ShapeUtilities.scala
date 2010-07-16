@@ -3,6 +3,7 @@ package org.sgine.render.shape
 import java.awt.geom.AffineTransform
 import java.awt.geom.FlatteningPathIterator
 
+import org.lwjgl.opengl.GL11._
 import org.lwjgl.util.glu._
 import org.lwjgl.util.glu.tessellation._
 
@@ -47,15 +48,50 @@ object ShapeUtilities {
 		
 		tess.gluEndPolygon()
 		
-		// TODO: multiple shapes....doh
-//		val data = ArrayShapeData(cb.glType, )
-//		data
+		val data = ArrayShapeData(GL_TRIANGLES, cb.buffer.length)
+		data.vertices = cb.buffer
+		
+		data
+	}
+	
+	def convertTriangleFan(coords: Seq[Vec3d]) = {
+		val data = new ArrayBuffer[Vec3d]
+		val one = coords(0)
+		var two = coords(1)
+		
+		for (i <- 2 until coords.length) {
+			val three = coords(i)
+			data += one
+			data += two
+			data += three
+			
+			two = three
+		}
+		
+		data
+	}
+	
+	def convertTriangleStrip(coords: Seq[Vec3d]) = {
+		var data: List[Vec3d] = Nil
+		var one: Vec3d = null
+		var two: Vec3d = null
+		
+		for (v <- coords) {
+			if ((one != null) && (two != null)) {
+				data = v :: two :: one :: data
+			}
+			one = two
+			two = v
+		}
+		
+		data.reverse
 	}
 }
 
 class TessCallback extends GLUtessellatorCallbackAdapter {
-	var glType: Int = _
 	val buffer = new ArrayBuffer[Vec3d]
+	private var glType: Int = _
+	private val shapeData = new ArrayBuffer[Vec3d]
 	
 	override def begin(t: Int) = {
 		glType = t
@@ -63,7 +99,22 @@ class TessCallback extends GLUtessellatorCallbackAdapter {
 	
 	override def vertex(vertexData: AnyRef) = {
 		val data = vertexData.asInstanceOf[Array[Double]]
-		buffer += Vec3d(data(0), data(1), 0.0)
+		shapeData += Vec3d(data(0), data(1), 0.0)
+	}
+	
+	override def end() = {
+		if (glType == GL_TRIANGLE_STRIP) {
+			val d = ShapeUtilities.convertTriangleStrip(shapeData)
+			buffer ++= d
+		} else if (glType == GL_TRIANGLE_FAN) {
+			val d = ShapeUtilities.convertTriangleFan(shapeData)
+			buffer ++= d
+		} else if (glType == GL_TRIANGLES) {
+			buffer ++= shapeData
+		} else {
+			throw new RuntimeException("Unknown type: " + glType)
+		}
+		shapeData.clear()
 	}
 	
 	override def combine(coords: Array[Double], data: Array[AnyRef], weight: Array[Float], outData: Array[AnyRef]) = {
