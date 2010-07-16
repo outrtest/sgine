@@ -1,7 +1,7 @@
 package org.sgine.core
 
 trait Enumeration {
-	lazy val name = generateName()
+	lazy val name: String = generateName()
 	lazy val ordinal = generateOrdinal()
 	lazy val enumeratedClass = generateEnumeratedClass()
 	lazy val parentName = generateParentName()
