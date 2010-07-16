@@ -2,7 +2,6 @@ package org.sgine.render.primitive
 
 import org.lwjgl.opengl.GL11._
 import org.sgine.render.RenderImage
-import org.sgine.math.{Vector2, Vector3}
 import scala.math.Pi
 import scala.math.cos
 import scala.math.sin
@@ -10,19 +9,21 @@ import org.sgine.core.Color
 import java.util.ArrayList
 import collection.immutable.{Map, SortedMap}
 
+import simplex3d.math.doublem._
+
 trait Projection {
   /*
    * Calculates the texture coordinates (in range 0..1) for the specified target coordinates (in range 0..1)
    */
-  def textureCoordinates(x: Double, y: Double): Vector2
+  def textureCoordinates(x: Double, y: Double): Vec2d
 }
 
 case object LinearProjection extends Projection {
-  def textureCoordinates(x: Double, y: Double) = Vector2(x, y)
+  def textureCoordinates(x: Double, y: Double) = Vec2d(x, y)
 }
 
 case object PolarProjection extends Projection {
-  def textureCoordinates(x: Double, y: Double) = Vector2(cos(x * 2*Pi) * y, sin(x * 2*Pi) * y)
+  def textureCoordinates(x: Double, y: Double) = Vec2d(cos(x * 2*Pi) * y, sin(x * 2*Pi) * y)
 }
 
 case class LinearFunction(scale: Double = 1, offset: Double = 0) extends Func.Signal {
@@ -38,13 +39,13 @@ case class ConstantFunction(value: Double = 0) extends Function1[Double, Double]
 }
 
 case class PathFunction(xFunc: Func.Signal, yFunc: Func.Signal, zFunc: Func.Signal) extends Func.Path {
-  def apply(t: Double) : Vector3 = Vector3(xFunc(t), yFunc(t), zFunc(t))
+  def apply(t: Double) : Vec3d = Vec3d(xFunc(t), yFunc(t), zFunc(t))
 }
 
 object Func {
   type Signal = Function1[Double, Double]
-  type Path = Function1[Double, Vector3]
-  type Envelope = Function2[Double, Double, Vector3]
+  type Path = Function1[Double, Vec3d]
+  type Envelope = Function2[Double, Double, Vec3d]
 }
 
 object IdentityFunction extends LinearFunction(1, 0)
@@ -54,14 +55,14 @@ object StraightPath extends PathFunction(ConstantFunction(), LinearFunction(), C
 case class CylinderFunction(radiusOverLength: Func.Signal = OneFunction,
                             radiusShape: Func.Signal = OneFunction,
                             path: Func.Path=StraightPath) extends Func.Envelope {
-  override def apply(u : Double, v : Double) : Vector3 = {
+  override def apply(u : Double, v : Double) : Vec3d = {
     val uAsRadians: Double = u * 2 * Pi
     val radiusScale = radiusShape(u) * radiusOverLength(v)
     val x = path(v).x + cos(uAsRadians) * radiusScale
     val y = path(v).y
     val z = path(v).z + sin(uAsRadians) * radiusScale
 
-    Vector3(x, y, z)
+    Vec3d(x, y, z)
   }
 }
 
@@ -97,7 +98,7 @@ class LathePrimitive(surface: Func.Envelope = CylinderFunction(),
         val pos = surface(u, v)
         val tex = textureProjection.textureCoordinates(u, v)
         val col = colorFunction(u, v)
-        val nor = Vector3.UnitY // Calculated afterwards
+        val nor = Vec3d.UnitY // Calculated afterwards
 
         val index = meshData.addVertex(pos, nor, tex, col)
 
