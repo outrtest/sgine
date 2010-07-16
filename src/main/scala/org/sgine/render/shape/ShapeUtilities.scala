@@ -23,9 +23,6 @@ object ShapeUtilities {
 		
 		tess.gluBeginPolygon()
 		
-		val transform = new AffineTransform()
-		transform.scale(1.0, -1.0)
-		
 		val path = new FlatteningPathIterator(awtShape.getPathIterator(null), 0.001, 10)
 		val coords = Array(0.0f, 0.0f)
 		while(!path.isDone) {
