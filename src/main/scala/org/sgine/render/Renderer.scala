@@ -34,7 +34,7 @@ import simplex3d.math._
 import simplex3d.math.doublem._
 import simplex3d.math.doublem.DoubleMath._
 
-class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) extends PropertyContainer {
+class Renderer extends PropertyContainer {
 	private var rendered = false
 	private var keepAlive = true
 	private var lastRender = -1L
@@ -59,6 +59,7 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 	val verticalSync = new AdvancedProperty[Boolean](true, this) with TransactionalProperty[Boolean]
 	val renderable = new AdvancedProperty[Renderable](null, this)
 	val background = new AdvancedProperty[Color](Color.Black, this) with TransactionalProperty[Color]
+	val settings = new AdvancedProperty[RenderSettings](RenderSettings.Default, this) with TransactionalProperty[RenderSettings]
 	
 	private var _lights = false
 	def lights = _lights
@@ -121,7 +122,19 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 		GLDisplay.setVSyncEnabled(verticalSync())
 		GLDisplay.setParent(canvas)
 		
-		val format = new PixelFormat(bpp, alpha, depth, stencil, samples, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
+		settings.commit()
+		val format = new PixelFormat(
+										settings().bpp,
+										settings().alpha,
+										settings().depth,
+										settings().stencil,
+										settings().samples,
+										settings().auxBuffers,
+										settings().accumBPP,
+										settings().accumAlpha,
+										settings().stereo,
+										settings().floatingPoint
+									)
 		GLDisplay.create(format)
 		
 		glClearDepth(1.0)
@@ -172,6 +185,9 @@ class Renderer(alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 
 			background.commit()
 			val c = background()
 			glClearColor(c.red.toFloat, c.green.toFloat, c.blue.toFloat, c.alpha.toFloat)
+		}
+		if (settings.uncommitted) {
+			throw new RuntimeException("Changing of settings after renderer has started is not currently supported.")
 		}
 		
 		val currentRender = System.nanoTime
@@ -257,8 +273,9 @@ object Renderer {
 	val fps = new ThreadLocal[Int]
 	val instance = new ThreadLocal[Renderer]
 	
-	def createFrame(width: Int, height: Int, title: String, alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) = {
-		val r = new Renderer(alpha, depth, stencil, samples, bpp, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
+	def createFrame(width: Int, height: Int, title: String, settings: RenderSettings = RenderSettings.Default) = {
+		val r = new Renderer()
+		r.settings := settings
 		
 		val f = new java.awt.Frame
 		f.setSize(width, height)
@@ -269,7 +286,7 @@ object Renderer {
 			override def focusGained(e: java.awt.event.FocusEvent) = {
 				r.canvas.requestFocus()
 			}
-		});
+		})
 		f.addWindowListener(new java.awt.event.WindowAdapter() {
 			override def windowClosing(e: java.awt.event.WindowEvent) = {
 				r.shutdown()
@@ -286,8 +303,9 @@ object Renderer {
 		r
 	}
 	
-	def createCanvas(width: Int, height: Int, title: String, alpha: Int = 0, depth: Int = 8, stencil: Int = 0, samples: Int = 0, bpp: Int = 0, auxBuffers: Int = 0, accumBPP: Int = 0, accumAlpha: Int = 0, stereo: Boolean = false, floatingPoint: Boolean = false) = {
-		val r = new Renderer(alpha, depth, stencil, samples, bpp, auxBuffers, accumBPP, accumAlpha, stereo, floatingPoint)
+	def createCanvas(width: Int, height: Int, settings: RenderSettings = RenderSettings.Default) = {
+		val r = new Renderer()
+		r.settings := settings
 		
 		r.canvas.addHierarchyListener(new HierarchyListener() {
 			private var changed = false

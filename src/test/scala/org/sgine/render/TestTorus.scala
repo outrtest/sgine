@@ -13,7 +13,7 @@ import org.sgine.render.primitive.Torus
 
 object TestTorus {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Torus", 4, 8, 4, 4)
+		val r = Renderer.createFrame(1024, 768, "Test Torus", RenderSettings.High)
 		r.verticalSync := false
 
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))

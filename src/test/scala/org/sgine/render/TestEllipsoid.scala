@@ -13,7 +13,7 @@ import org.sgine.render.primitive.Ellipsoid
 
 object TestEllipsoid {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Ellipsoid", 4, 8, 4, 4)
+		val r = Renderer.createFrame(1024, 768, "Test Ellipsoid", RenderSettings.High)
 		r.verticalSync := false
 
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))

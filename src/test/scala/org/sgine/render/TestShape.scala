@@ -22,8 +22,7 @@ object TestSpatial {
 		r.light0.diffuse := Color(0.2, 0.3, 0.6, 1.0)
 
 		val m = Mat3x4 translate(Vec3(0, 0, -200.0))
-		val s = new Shape() {
-		}
+		val s = Shape()
 		val data = new ShapeData() {
 			val mode = GL_TRIANGLES
 			val cull = Face.Front

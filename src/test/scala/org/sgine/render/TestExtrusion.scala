@@ -22,7 +22,7 @@ import scala.collection.mutable.ListBuffer
 
 object TestExtrusion {
 	def main(args : Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Extrusion", 4, 8, 4, 4)
+		val r = Renderer.createFrame(1024, 768, "Test Extrusion", RenderSettings.High)
 		r.verticalSync := false
 
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))

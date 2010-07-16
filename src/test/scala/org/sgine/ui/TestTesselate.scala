@@ -8,6 +8,8 @@ import org.sgine.render._
 import org.sgine.ui.ext._
 
 object TestTesselate extends StandardDisplay {
+	override val settings = RenderSettings.High
+	
 	def setup() = {
 		val c = new AdvancedComponent() {
 			private lazy val tess = generateTess()
@@ -17,7 +19,7 @@ object TestTesselate extends StandardDisplay {
 				
 				val tessCb = new org.lwjgl.util.glu.GLUtessellatorCallbackAdapter() {
 					override def begin(t: Int) = {
-//						println("begin")
+						println("begin " + t)
 						glBegin(t)
 					}
 					
@@ -55,7 +57,7 @@ object TestTesselate extends StandardDisplay {
 				tess.gluBeginPolygon()
 				
 				val trans = new java.awt.geom.AffineTransform()
-			    trans.translate(-200, 0)
+//			    trans.translate(-200, 0)
 			    trans.scale(1, -1)
 				val font = new java.awt.Font("Dialog", java.awt.Font.BOLD, 150).deriveFont(trans)
 			    val fontRenderContext = new java.awt.font.FontRenderContext(null, true, true)

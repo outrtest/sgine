@@ -46,6 +46,8 @@ trait StandardDisplay extends Listenable with Display {
 		scene.setResolution(1024, 768)
 	}
 	
+	val settings = RenderSettings.Default
+	
 	/**
 	 * Invoked to start the display. This is invoked with default arguments
 	 * in the default "main" method.
@@ -61,14 +63,14 @@ trait StandardDisplay extends Listenable with Display {
 		initialize()
 		
 		if (mode == WindowMode.Frame) {
-			_renderer = Renderer.createFrame(width, height, title())
+			_renderer = Renderer.createFrame(width, height, title(), settings)
 			
 			_renderer.canvas.getParent match {
 				case f: java.awt.Frame => title.listeners += EventHandler(PropertyChangeDelegate(f.setTitle), ProcessingMode.Blocking)
 				case _ =>
 			}
 		} else if (mode == WindowMode.Canvas) {
-			_renderer = Renderer.createCanvas(width, height, title())
+			_renderer = Renderer.createCanvas(width, height)
 		} else {
 			error("Unsupported WindowMode: " + mode)
 		}

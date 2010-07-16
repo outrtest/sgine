@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicReference
 import org.sgine.render.shape.renderer._
 import org.sgine.render.shape.renderer.lwjgl._
 
-trait Shape extends Function0[Unit] {
+class Shape private() extends Function0[Unit] {
 	private val _data = new AtomicReference[ShapeData]
 	private val _update = new AtomicReference[ShapeData]
 
@@ -37,4 +37,8 @@ trait Shape extends Function0[Unit] {
 			new LWJGLImmediateModeShapeRenderer()
 		}
 	}
+}
+
+object Shape {
+	def apply() = new Shape()
 }
