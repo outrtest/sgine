@@ -15,7 +15,7 @@ import org.sgine.work.Updatable
 trait AnimatingProperty[T] extends Property[T] with Updatable {
 	var animator: Function3[T, T, Double, T] = null
 	
-	private[property] var _target: T = apply();
+	private[property] var _target: T = apply()
 	
 	def target = _target
 	
@@ -63,7 +63,7 @@ trait AnimatingProperty[T] extends Property[T] with Updatable {
 	
 	def waitForTarget() = {
 		while (isAnimating) {
-			Thread.sleep(10);
+			Thread.sleep(10)
 		}
 	}
 }

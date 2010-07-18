@@ -10,6 +10,7 @@ import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 import org.sgine.event.Recursion
 
+import org.sgine.property.NumericProperty
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.ui.Component
