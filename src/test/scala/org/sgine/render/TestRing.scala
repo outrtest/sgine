@@ -18,7 +18,7 @@ object TestRing {
 
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 
-		val m = Mat3x4 scale(0.04) translate(Vec3(0, 0, -1000.0))
+		val m = Mat3x4 translate(Vec3(0, 0, -800.0))
 		val i = RenderImage(t)
 		val ring = Ring(300.0, 200.0, 15, 0.3, Color.Blue, i)
 		val fps = FPS(1.0)

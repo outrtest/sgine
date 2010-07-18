@@ -21,7 +21,7 @@ object TestShape2 {
 //		r.light0.ambience := Color(0.2, 0.3, 0.6, 1.0)
 //		r.light0.diffuse := Color(0.2, 0.3, 0.6, 1.0)
 
-		val m = Mat3x4 scale 0.01 translate(Vec3(0, 0, -2000.0))
+		val m = Mat3x4 translate(Vec3(0, 0, -2000.0))
 		val s = Shape()
 		
 		val trans = new java.awt.geom.AffineTransform()

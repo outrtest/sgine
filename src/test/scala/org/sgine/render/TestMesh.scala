@@ -16,7 +16,7 @@ object TestMesh {
 		val r = Renderer.createFrame(1024, 768, "Test Mesh")
 		r.verticalSync := false
 		
-		val m = Mat3x4 scale(0.04) translate(Vec3(0, 0, -1000.0))
+		val m = Mat3x4 translate(Vec3(0, 0, -800.0))
 		val mesh = new Mesh()
 		mesh.indexes = List(0, 1, 2)
 		mesh.vertices = List(

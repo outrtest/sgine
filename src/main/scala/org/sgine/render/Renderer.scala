@@ -41,7 +41,7 @@ class Renderer extends PropertyContainer {
 
 	val nearDistance = 100.0
 	val farDistance = 2000.0
-	val fieldOfView = radians(1.15)
+	val fieldOfView = radians(45.0)
 	
 	val camera = new Camera()
 	
@@ -71,6 +71,8 @@ class Renderer extends PropertyContainer {
 	val light5 = new Light(5, this)
 	val light6 = new Light(6, this)
 	val light7 = new Light(7, this)
+	
+	val fog = new Fog(this)
 	
 	private val resized = new java.util.concurrent.atomic.AtomicBoolean(false)
 	
@@ -214,6 +216,8 @@ class Renderer extends PropertyContainer {
 			light5.update()
 			light6.update()
 			light7.update()
+			
+			fog.update()
 			
 			invokeQueue.poll() match {
 				case null =>

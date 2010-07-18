@@ -9,11 +9,11 @@ import org.lwjgl.opengl.GL11._
 
 object TestRenderer {
 	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test Renderer")
+		val r = Renderer.createFrame(1024, 768, "Test Renderer", RenderSettings.High)
 		
 		val t = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
 		
-		val m = Mat3x4 scale(0.04) translate(Vec3(0, 0, -1000.0))
+		val m = Mat3x4 translate(Vec3(0, 0, -800.0))
 		val i = RenderImage(t)
 		val fps = FPS(1.0)
 		
