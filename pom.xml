@@ -114,6 +114,22 @@
       <systemPath>${basedir}/lib/jmc.jar</systemPath>
     </dependency>
 
+    <dependency>
+      <groupId>simplex3d_core</groupId>
+      <artifactId>simplex3d_core</artifactId>
+      <version>unknown</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/simplex3d-math-core.jar </systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>simplex3d_float</groupId>
+      <artifactId>simplex3d_float</artifactId>
+      <version>unknown</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/simplex3d-math-float.jar</systemPath>
+    </dependency>
+
   </dependencies>
 
   <!-- Build configuration -->
