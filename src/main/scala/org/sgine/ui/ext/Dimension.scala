@@ -4,6 +4,8 @@ import org.sgine.property.container.PropertyContainer
 
 import org.sgine.ui.Component
 
+import org.sgine.property.NumericProperty
+
 class Dimension(override val parent: Component) extends PropertyContainer {
 	val width = new NumericProperty(0.0, this)
 	val height = new NumericProperty(0.0, this)

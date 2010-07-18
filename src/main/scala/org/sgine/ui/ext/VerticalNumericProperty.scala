@@ -6,6 +6,7 @@ import org.sgine.core.VerticalAlignment._
 import org.sgine.event.Listenable
 
 import org.sgine.property.AdvancedProperty
+import org.sgine.property.NumericProperty
 
 class VerticalNumericProperty(value: Double, parent: Listenable) extends NumericProperty(value, parent) {
 	val align = new AdvancedProperty[VerticalAlignment](VerticalAlignment.Middle, this)

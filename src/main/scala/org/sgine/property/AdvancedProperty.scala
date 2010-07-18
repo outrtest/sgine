@@ -38,7 +38,7 @@ class AdvancedProperty[T] extends MutableProperty[T] with DependentProperty[T] w
 	def this(value: T, parent: Listenable, name: String, dependency: Property[T], listener: EventHandler) = {
 		this(value, parent, name, dependency)
 
-    listeners += listener
+		listeners += listener
 	}
 
 	private def determineName: String = {
