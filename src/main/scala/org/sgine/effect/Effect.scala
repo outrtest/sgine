@@ -7,6 +7,8 @@ import org.sgine.event.Listenable
 
 import org.sgine.work.Updatable
 
+import scala.collection.mutable.ArrayBuffer
+
 trait Effect extends Listenable with Updatable {
 	var repeat: Int = 0
 	
@@ -56,17 +58,17 @@ trait Effect extends Listenable with Updatable {
 
 object Effect {
 	// Keep a list of all active effects to keep them from being gc'd
-	private var active: List[Effect] = Nil
+	private var active = new ArrayBuffer[Effect]()
 	
 	protected def started(effect: Effect) = {
 		synchronized {
-			active = effect :: active
+			active += effect
 		}
 	}
 	
 	protected def finished(effect: Effect) = {
 		synchronized {
-			active = active.filterNot(_ == effect)
+			active -= effect
 		}
 	}
 }

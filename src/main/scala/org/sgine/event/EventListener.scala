@@ -7,7 +7,8 @@ class EventListener[E <: Event] private (val eventClass:Class[E], val f: Functio
 		}
 	}
 	
-	def isValidEvent(evt: Event) = eventClass.isAssignableFrom(evt.getClass)
+//	def isValidEvent(evt: Event) = eventClass.isAssignableFrom(evt.getClass)
+	def isValidEvent(evt: Event) = eventClass.isInstance(evt)
 }
 
 object EventListener {
