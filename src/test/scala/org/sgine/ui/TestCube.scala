@@ -42,7 +42,7 @@ object CubeCreator {
 //		cube.alpha := 0.5
 		cube.scale.set(0.1)
 		cube.location.y := (y * 30.0) - 350.0
-		cube.location.z := (z * 100.0) - 800.0
+		cube.location.z := (z * 90.0) - 1800.0
 		cube.rotation.x.animator = new LinearNumericAnimator(2.0)
 		cube.rotation.y.animator = new LinearNumericAnimator(2.0)
 		cube.rotation.z.animator = new LinearNumericAnimator(2.0)
