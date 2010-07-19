@@ -1,5 +1,7 @@
 package org.sgine.scene.ext
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 import org.sgine.core.Color
 import org.sgine.core.mutable.{Color => MutableColor}
 
@@ -27,10 +29,10 @@ trait ColorNode extends Node with Updatable {
 	color.listeners += EventHandler(invalidateColor, ProcessingMode.Blocking)
 	alpha.listeners += EventHandler(invalidateColor, ProcessingMode.Blocking)
 	
-	private val revalidateColor = new MutableProperty[Boolean](true)
+	private val revalidateColor = new AtomicBoolean(true)
 	
 	def invalidateColor(evt: PropertyChangeEvent[Color] = null) = {
-		revalidateColor := true
+		revalidateColor.set(true)
 		
 		initUpdatable()
 	}
@@ -38,10 +40,8 @@ trait ColorNode extends Node with Updatable {
 	abstract override def update(time: Double) = {
 		super.update(time)
 		
-		if ((revalidateColor != null) && (revalidateColor())) {
+		if ((revalidateColor != null) && (revalidateColor.compareAndSet(true, false))) {
 			refreshWorldColor()
-			
-			revalidateColor := false
 		}
 	}
 	

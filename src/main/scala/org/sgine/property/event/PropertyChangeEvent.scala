@@ -6,7 +6,7 @@ import org.sgine.property._
 import org.sgine.util.Cacheable
 import org.sgine.util.ObjectCache
 
-class PropertyChangeEvent[T] protected() extends Event(null) with Cacheable[PropertyChangeEvent[_]] {
+class PropertyChangeEvent[T] protected() extends Event(null) { //with Cacheable[PropertyChangeEvent[_]] {
 	protected var _property: ListenableProperty[T] = _
 	protected var _oldValue: T = _
 	protected var _newValue: T = _
@@ -18,15 +18,15 @@ class PropertyChangeEvent[T] protected() extends Event(null) with Cacheable[Prop
 	def newValue = _newValue
 	def adjusting = _adjusting
 	
-	def cache = PropertyChangeEventCache
+//	def cache = PropertyChangeEventCache
 	
 	def retarget(target: org.sgine.event.Listenable): Event = PropertyChangeEvent(target.asInstanceOf[ListenableProperty[T]], oldValue, newValue, adjusting)
 }
 
 object PropertyChangeEvent {
 	def apply[T](property: ListenableProperty[T], oldValue: T, newValue: T, adjusting: Boolean) = {
-		val pce = PropertyChangeEventCache.request().asInstanceOf[PropertyChangeEvent[T]]
-		
+//		val pce = PropertyChangeEventCache.request().asInstanceOf[PropertyChangeEvent[T]]
+		val pce = new PropertyChangeEvent[T]()
 		pce._property = property
 		pce._oldValue = oldValue
 		pce._newValue = newValue
