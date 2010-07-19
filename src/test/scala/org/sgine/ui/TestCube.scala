@@ -22,8 +22,8 @@ import scala.math._
 
 object TestCube extends StandardDisplay with Debug {
 	def setup() = {
-		for (row <- 0 until 10) {
-			for (column <- 0 until 10) {
+		for (row <- 0 until 20) {
+			for (column <- 0 until 20) {
 				CubeCreator.createCube(scene, column, row)
 			}
 		}
@@ -41,7 +41,7 @@ object CubeCreator {
 		cube.color := c
 //		cube.alpha := 0.5
 		cube.scale.set(0.1)
-		cube.location.y := (y * 60.0) - 350.0
+		cube.location.y := (y * 30.0) - 350.0
 		cube.location.z := (z * 100.0) - 800.0
 		cube.rotation.x.animator = new LinearNumericAnimator(2.0)
 		cube.rotation.y.animator = new LinearNumericAnimator(2.0)
