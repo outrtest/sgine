@@ -44,7 +44,7 @@ class Image extends AdvancedComponent with BoundingObject {
 		
 		renderImage() match {
 			case null =>
-			case r: RenderImage => {
+			case r => {
 				r.update()
 				
 				if (imageDirty.compareAndSet(true, false)) {
