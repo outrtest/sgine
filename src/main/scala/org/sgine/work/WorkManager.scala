@@ -186,7 +186,7 @@ class WorkManager (val name: String) {
 				case f:Function0[_] => return f
 				case _ =>
 			}
-			if (w != null) queue.add(w)
+			if (w != null) queue.put(w)
 			if (first == null) first = w
 			w = queue.poll()
 		} while(w != null)
