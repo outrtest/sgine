@@ -123,8 +123,11 @@ class WorkManager (val name: String) {
 		}
 	}
 	
+	private var threadIndex = 0
 	private def addWorker() = {
-		val w = new WorkThread(this)
+		threadIndex += 1
+		val name = this.name + "WorkThread" + threadIndex
+		val w = new WorkThread(name, this)
 //		workers.add(w)
 		synchronized {
 			workers = w :: workers
@@ -245,6 +248,13 @@ class WorkManager (val name: String) {
 	}
 	
 	def workQueue = queue.size
+	
+	def shutdown() = {
+		workers.foreach(shutdownWorkThread)
+		keepAlive = false
+	}
+	
+	private val shutdownWorkThread = (w: WorkThread) => w.shutdown()
 }
 
 object WorkManager {
