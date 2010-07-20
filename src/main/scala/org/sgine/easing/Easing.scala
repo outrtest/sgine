@@ -19,6 +19,7 @@ object Easing {
 		   			Quadratic.easeIn _, Quadratic.easeOut _, Quadratic.easeInOut _,
 		   			Quartic.easeIn _, Quartic.easeOut _, Quartic.easeInOut _,
 		   			Quintic.easeIn _, Quintic.easeOut _, Quintic.easeInOut _,
-		   			Sine.easeIn _, Sine.easeOut _, Sine.easeInOut _)
+		   			Sine.easeIn _, Sine.easeOut _, Sine.easeInOut _,
+		   			Power.easeIn _, Power.easeOut _)
   def random = values(new scala.util.Random().nextInt(values.length))
 }
