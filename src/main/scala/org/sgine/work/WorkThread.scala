@@ -5,15 +5,15 @@ import org.sgine.work.unit._
 
 import scala.math._
 
-private[work] class WorkThread (workManager:WorkManager) {
+private[work] class WorkThread(name: String, workManager: WorkManager) {
 	private val thread = new Thread(FunctionRunnable(run))
 	private var keepAlive = true
 	
-	private var work:() => Unit = _
-	@volatile
-	private var working = false
+	private var work: () => Unit = _
+	@volatile private var working = false
 	
 	def init() = {
+		thread.setName(name)
 		thread.setDaemon(true)
 		thread.start()
 	}
@@ -91,4 +91,9 @@ private[work] class WorkThread (workManager:WorkManager) {
 	def hasWork() = work != null
 	
 	def interrupt() = thread.interrupt()
+	
+	def shutdown() = {
+		keepAlive = false
+		interrupt()
+	}
 }
