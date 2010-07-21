@@ -24,6 +24,7 @@ import org.sgine.scene.view.NodeView
 
 import simplex3d.math._
 import simplex3d.math.doublem._
+import simplex3d.math.doublem.DoubleMath._
 
 class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) extends Renderable {
 	val renderableView = NodeView(scene, RenderableQuery, false)
@@ -69,7 +70,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	}
 	
 	private var currentMouseEvent: MouseEvent = null
-	private val storeVector3 = Vec3d(0)
+	//private val storeVector3 = Vec3d(0)
 	private def mouseEvent(evt: MouseEvent) = {
 		currentMouseEvent = evt
 		currentHits = Nil
@@ -80,15 +81,15 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 			val move = evt.asInstanceOf[MouseMoveEvent]
 			for (n <- currentHits) {
 				if (!hits.contains(n)) {		// MouseOver
-					translateLocal(move, n)
-					val e = MouseEvent(-2, false, 0, storeVector3.x, storeVector3.y, move.deltaX, move.deltaY, n)
+					val v = screenToModelCoords(move, n)
+					val e = MouseEvent(-2, false, 0, v.x, v.y, move.deltaX, move.deltaY, n)
 					Event.enqueue(e)
 				}
 			}
 			for (n <- hits) {
 				if (!currentHits.contains(n)) {	// MouseOut
-					translateLocal(move, n)
-					val e = MouseEvent(-3, false, 0, storeVector3.x, storeVector3.y, move.deltaX, move.deltaY, n)
+					val v = screenToModelCoords(move, n)
+					val e = MouseEvent(-3, false, 0, v.x, v.y, move.deltaX, move.deltaY, n)
 					Event.enqueue(e)
 				}
 			}
@@ -97,19 +98,28 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		}
 	}
 	
-	private def translateLocal(evt: MouseEvent, n: Node) = {
+//	private def translateLocal(evt: MouseEvent, n: Node) = {
+//		val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
+//		renderer.translateLocal(evt.x, evt.y, c.worldMatrix(), storeVector3)
+//		
+//		c
+//	}
+
+	// Coordinates are not sufficient to compute an intersection.
+	// Need new ray/model intersection that uses Ray(Vec3(evt.x, evt.y, 0), Vec3(evt.x, evt.y, 1))
+	private def screenToModelCoords(evt: MouseEvent, n: Node) :Vec3d = {
 		val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
-		renderer.translateLocal(evt.x, evt.y, c.worldMatrix(), storeVector3)
-		
-		c
+		val im = inverse(c.worldMatrix())
+		im.transformPoint(renderer.screenToWorldCoords(Vec3d(evt.x, evt.y, 0)))
 	}
 	
 	private val pickTest = (n: Node) => {
 		if ((n.isInstanceOf[MatrixNode]) && (n.isInstanceOf[BoundingObject])) {
-			val c = translateLocal(currentMouseEvent, n)
+			val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
+			val v = screenToModelCoords(currentMouseEvent, n)
 //			renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
-			if (c.bounding().within(storeVector3)) {
-				val evt = currentMouseEvent.retarget(c, storeVector3.x, storeVector3.y)
+			if (c.bounding().within(v)) {
+				val evt = currentMouseEvent.retarget(c, v.x, v.y)
 				Event.enqueue(evt)
 				
 				currentHits = c :: currentHits
