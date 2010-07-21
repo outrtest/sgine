@@ -16,7 +16,6 @@ class Camera(
 	private val viewProjection = Mat4(0)
 	private val inverseViewProjection = Mat4(0)
 
-	// TODO: Change to use properties and auto-update
 	def update() {
 		viewProjection := projection*Mat4(view)
 		inverseViewProjection := inverse(viewProjection)
@@ -25,21 +24,21 @@ class Camera(
 	def screenToWorldCoords(screenCoords: inVec3, screenDimensions: inVec2) = {
 		val normalizedScreenCoords = Vec4(
 			2*screenCoords.x/screenDimensions.x - 1,
-			2*screenCoords.y/screenDimensions.y - 1,
-			screenCoords.z,
-			1
+      		-2*screenCoords.y/screenDimensions.y + 1,
+      		screenCoords.z,
+      		1
 		)
-		val worldCoords = inverseViewProjection*normalizedScreenCoords
-		worldCoords.xyz/worldCoords.w
+    	val worldCoords = inverseViewProjection*normalizedScreenCoords
+    	worldCoords.xyz/worldCoords.w
 	}
 
 	def worldToScreenCoords(worldCoords: inVec3, screenDimensions: inVec2) = {
-		val halfScreen = screenDimensions/2
+		val halfScreen = screenDimensions*0.5
 		val transformed = viewProjection*Vec4(worldCoords, 1)
 		val normalizedScreenCoords = transformed.xyz/transformed.w
 		Vec3(
 			normalizedScreenCoords.x*halfScreen.x + halfScreen.x,
-			normalizedScreenCoords.y*halfScreen.y + halfScreen.y,
+			-normalizedScreenCoords.y*halfScreen.y + halfScreen.y,
 			normalizedScreenCoords.z
 		)
 	}
