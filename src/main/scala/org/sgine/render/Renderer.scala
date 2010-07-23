@@ -43,6 +43,9 @@ class Renderer extends PropertyContainer {
 	val farDistance = 2000.0
 	val fieldOfView = radians(45.0)
 	
+	var time = 0.0
+	var fps = 0
+	
 	val camera = new Camera()
 	
 	val matrixStore = ByteBuffer.allocateDirect(128).order(ByteOrder.nativeOrder).asDoubleBuffer
@@ -201,9 +204,9 @@ class Renderer extends PropertyContainer {
 			glLoadIdentity()
 			glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
 			
-			Renderer.time.set(time)
+			this.time = time
 			//Renderer.maxTime.set(max(time, Renderer.maxTime.get))
-			Renderer.fps.set((1.0 / time).round.toInt)
+			fps = (1.0 / time).round.toInt
 			
 			Mouse.update(this)
 			camera.update()
@@ -272,10 +275,9 @@ class Renderer extends PropertyContainer {
 }
 
 object Renderer {
-	val time = new ThreadLocal[Double]
-	//val maxTime = new ThreadLocal[Double]
-	val fps = new ThreadLocal[Int]
-	val instance = new ThreadLocal[Renderer]
+	private val instance = new ThreadLocal[Renderer]
+	
+	def apply() = instance.get
 	
 	def createFrame(width: Int, height: Int, title: String, settings: RenderSettings = RenderSettings.Default) = {
 		val r = new Renderer()

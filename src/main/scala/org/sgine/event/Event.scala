@@ -6,7 +6,7 @@ import org.sgine.util.ObjectCache
 import org.sgine.work._
 import org.sgine.work.unit._
 
-abstract class Event (_listenable: Listenable) {
+abstract class Event(_listenable: Listenable) {
 	def listenable = _listenable
 	
 	protected[event] var counter = new java.util.concurrent.atomic.AtomicInteger(0)			// Keep track of current listener count currently being invoked

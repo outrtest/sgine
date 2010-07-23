@@ -14,13 +14,12 @@ class FPSLabel extends Label {
 	lighting := false
 	
 	override def drawComponent() = {
-		time += Renderer.time.get
+		time += Renderer().time
 		count += 1
-		framerate += Renderer.fps.get
+		framerate += Renderer().fps
 		if (time >= 1.0) {
 			val fps = framerate / count
-			text := fps + " fps"// - Max: " + Renderer.maxTime.get
-			//Renderer.maxTime.set(0.0)
+			text := fps + " fps"
 			
 			time = 0.0
 			count = 0

@@ -5,6 +5,7 @@ import org.lwjgl.opengl._
 import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
+import org.sgine.core.Face
 
 import org.sgine.render.shape._
 
