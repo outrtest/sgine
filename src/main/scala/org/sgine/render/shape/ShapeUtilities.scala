@@ -45,7 +45,7 @@ object ShapeUtilities {
 		
 		tess.gluEndPolygon()
 		
-		val data = ArrayShapeData(GL_TRIANGLES, cb.buffer.length)
+		val data = MutableShapeData(GL_TRIANGLES, cb.buffer.length)
 		data.vertices = cb.buffer
 		
 		data

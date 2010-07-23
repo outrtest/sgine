@@ -32,7 +32,7 @@ object TestVBO {
 		
 		val scene = new GeneralNodeContainer() with WorldMatrixNode
 		val m = scene.worldMatrix()
-		m := m translate(Vec3(0.0, 0.0, -200.0))
+		m := m scale(100.0) translate(Vec3(0.0, 0.0, -400.0))
 		
 		scene += new AdvancedComponent() {
 			def drawComponent() = {

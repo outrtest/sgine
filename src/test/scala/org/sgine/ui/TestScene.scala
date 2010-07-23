@@ -22,7 +22,7 @@ object TestScene {
 		
 		val container1 = new GeneralNodeContainer() with MatrixNode
 		val m1 = container1.localMatrix() 
-		m1 := m1 scale(0.005) translate(Vec3(0.0, 0.0, -200.0))
+		m1 := m1 scale(0.5) translate(Vec3(0.0, 0.0, -200.0))
 		scene += container1
 		
 		val container2 = new GeneralNodeContainer() with MatrixNode

@@ -15,8 +15,4 @@ object TestImage extends StandardDisplay with Debug {
 		val component = new Image(Resource("puppies.jpg"))
 		scene += component
 	}
-	
-	private def test(): Unit = {
-		org.lwjgl.opengl.GL11.glEnable(org.lwjgl.opengl.GL12.GL_RESCALE_NORMAL)
-	}
 }

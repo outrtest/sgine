@@ -82,7 +82,9 @@ object Updatable extends Function0[Unit] {
 		for (wr <- array) {
 			val u = wr.get
 			if (u == null) {
-				array -= wr
+				synchronized {
+					array -= wr
+				}
 			} else {
 				u.update(frequency)
 			}
