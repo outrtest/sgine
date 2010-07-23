@@ -26,8 +26,8 @@ object TestGeneratedFont {
 		
 		val component2 = new Image()
 		val texture = BitmapFontCreator(new java.awt.Font("Arial", java.awt.Font.PLAIN, 32))
-		val renderImage = org.sgine.render.RenderImage(texture)
-		component2.renderImage := renderImage
+		val quad = new org.sgine.render.TexturedQuad(texture)
+		component2.quad := quad
 		component2.location.z := -1.0
 		component2.location.x := 258.0
 		component2.location.y := -245.0

@@ -7,23 +7,15 @@ import org.sgine.easing.Elastic
 import org.sgine.property.animate.EasingNumericAnimator
 import org.sgine.property.state.State
 
-import org.sgine.render.Renderer
-import org.sgine.render.scene.RenderableScene
-
-import org.sgine.scene.GeneralNodeContainer
-import org.sgine.scene.ext.ResolutionNode
+import org.sgine.render.Debug
+import org.sgine.render.StandardDisplay
 
 import scala.math._
 
-object TestStates {
-	def main(args: Array[String]): Unit = {
-		val r = Renderer.createFrame(1024, 768, "Test States")
-		r.verticalSync := true
-		
-		val scene = new GeneralNodeContainer() with ResolutionNode
-		scene.setResolution(1024, 768)
-		
+object TestStates extends StandardDisplay with Debug {
+	def setup() = {
 		val component = new Image()
+		
 		component.source := Resource("puppies.jpg")
 		
 		// Animators cause the state transition instead of just jumping into place
@@ -42,8 +34,6 @@ object TestStates {
 		component.states += state2
 		
 		scene += component
-		
-		r.renderable := RenderableScene(scene)
 		
 		while (true) {
 			Thread.sleep(1000)

@@ -106,7 +106,6 @@ object TestTesselate extends StandardDisplay {
 //				tess.gluTessEndContour()
 				tess.gluEndPolygon()
 				
-				println("Count: " + count)
 			}
 		}
 		
