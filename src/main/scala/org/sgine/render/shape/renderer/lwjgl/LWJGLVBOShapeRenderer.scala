@@ -7,7 +7,8 @@ import java.nio.FloatBuffer
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL15._
 
-import org.sgine.render.Face
+import org.sgine.core.Face
+
 import org.sgine.render.shape.ShapeData
 
 class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
@@ -71,7 +72,6 @@ class VBO() {
 			fb.put(v.x.toFloat)
 			fb.put(v.y.toFloat)
 			fb.put(v.z.toFloat)
-//			println(v)
 		}
 		
 		if (data.hasNormal) {

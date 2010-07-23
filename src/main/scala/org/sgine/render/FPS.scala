@@ -13,7 +13,7 @@ class FPS private(frequency: Double, font: Font, matrix: Mat3x4d) extends Functi
 	private var accurate: Int = 0
 	
 	def apply() = {
-		val time = Renderer.time.get
+		val time = Renderer().time
 		
 		elapsed += time;
 		frames += 1;
@@ -26,7 +26,7 @@ class FPS private(frequency: Double, font: Font, matrix: Mat3x4d) extends Functi
 		}
 		
 		if (font != null) {
-			Renderer.instance.get.loadMatrix(matrix)
+			Renderer().loadMatrix(matrix)
 			
 			font.drawString(accurate.toString, true)
 		}

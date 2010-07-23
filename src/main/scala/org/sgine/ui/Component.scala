@@ -49,7 +49,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 			}
 			
 			// Disable lighting if enabled
-			if ((!lighting()) && (Renderer.instance.get.lights)) {
+			if ((!lighting()) && (Renderer().lights)) {
 				glDisable(GL_LIGHTING)
 			}
 			
@@ -60,7 +60,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 			drawComponent()
 			
 			// Enable lighting if enabled
-			if ((!lighting()) && (Renderer.instance.get.lights)) {
+			if ((!lighting()) && (Renderer().lights)) {
 				glEnable(GL_LIGHTING)
 			}
 		}

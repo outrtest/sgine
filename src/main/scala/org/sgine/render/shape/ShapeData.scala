@@ -1,8 +1,8 @@
 package org.sgine.render.shape
 
 import org.sgine.core.Color
+import org.sgine.core.Face
 
-import org.sgine.render.Face
 import org.sgine.render.Material
 
 import simplex3d.math.doublem.Vec2d

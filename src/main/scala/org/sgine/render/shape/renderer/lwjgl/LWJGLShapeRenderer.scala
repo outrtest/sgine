@@ -2,7 +2,8 @@ package org.sgine.render.shape.renderer.lwjgl
 
 import org.lwjgl.opengl.GL11._
 
-import org.sgine.render.Face
+import org.sgine.core.Face
+
 import org.sgine.render.Material
 import org.sgine.render.shape.ShapeData
 import org.sgine.render.shape.renderer.ShapeRenderer

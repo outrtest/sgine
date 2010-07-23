@@ -1,7 +1,4 @@
-package org.sgine.render
-
-import org.sgine.core.Enumeration
-import org.sgine.core.Enumerated
+package org.sgine.core
 
 sealed trait Face extends Enumeration
 
@@ -10,4 +7,5 @@ object Face extends Enumerated[Face] {
 	case object Front extends Face
 	case object Back extends Face
 	case object Both extends Face
+	Face(None, Front, Back, Both)
 }
