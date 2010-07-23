@@ -36,7 +36,7 @@ class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
 }
 
 object LWJGLVBOShapeRenderer {
-	def capable() = org.lwjgl.opengl.GLContext.getCapabilities.OpenGL15 && org.lwjgl.opengl.GLContext.getCapabilities.GL_ARB_vertex_buffer_object
+	lazy val capable = org.lwjgl.opengl.GLContext.getCapabilities.OpenGL15 && org.lwjgl.opengl.GLContext.getCapabilities.GL_ARB_vertex_buffer_object
 }
 
 class VBO() {
