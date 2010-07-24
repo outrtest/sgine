@@ -4,14 +4,28 @@ import org.sgine.bounding.BoundingObject
 
 import org.sgine.property.AdvancedProperty
 
+import org.sgine.render.Renderer
+import org.sgine.render.Texture
 import org.sgine.render.shape.Shape
 
 import org.sgine.ui.ext.AdvancedComponent
 
 trait ShapeComponent extends Component {
+	protected var texture: Texture = _
 	protected val shape = Shape()
 	
-	protected[ui] def drawComponent() = shape()
+	override def update(renderer: Renderer) = {
+		super.update(renderer)
+		
+		shape.update()
+	}
+	
+	protected[ui] def drawComponent() = {
+		if (texture != null) {
+			texture.bind()
+		}
+		shape.render()
+	}
 }
 
 object ShapeComponent {

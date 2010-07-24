@@ -14,15 +14,23 @@ class Shape private() extends Function0[Unit] {
 	def dirty = _update.get != null
 	
 	def apply() = {
+		update()
+		
+		render()
+	}
+	
+	def update() = {
 		// Updates
 		var data = _update.getAndSet(null)
 		if (data != null) {
 			renderer.update(_data.get, data)
 			_data.set(data)
 		}
-		
+	}
+	
+	def render() = {
 		// Render
-		data = _data.get
+		val data = _data.get
 		if (data != null) {
 			renderer.render(data)
 		}

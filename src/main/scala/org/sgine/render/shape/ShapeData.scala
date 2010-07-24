@@ -9,7 +9,7 @@ import simplex3d.math.doublem.Vec2d
 import simplex3d.math.doublem.Vec3d
 
 trait ShapeData {
-	def mode: Int
+	def mode: ShapeMode
 	def cull: Face
 	def material: Material
 	def length: Int

@@ -96,7 +96,7 @@ object TestShape {
 		
 		val triangles = ShapeUtilities.convertTriangleStrip(triangleStrip)
 		val data = new ShapeData() {
-			val mode = GL_TRIANGLES
+			val mode = ShapeMode.Triangles
 			val cull = Face.None
 			val material = Material.AmbientAndDiffuse
 			val length = 9

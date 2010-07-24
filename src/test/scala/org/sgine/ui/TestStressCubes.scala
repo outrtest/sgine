@@ -27,7 +27,7 @@ object TestStressCubes extends StandardDisplay with Debug {
 	def setup() = {
 		for (row <- 0 until 20) {
 			for (column <- 0 until 20) {
-				CubeCreator.createCube(scene, column, row, 0.1)
+				ImageCubeCreator.createCube(scene, column, row, 0.1)
 			}
 		}
 	}

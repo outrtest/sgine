@@ -2,31 +2,36 @@ package org.sgine.ui
 
 import org.sgine.core.Resource
 
+import org.sgine.property.ImmutableProperty
+
 import org.sgine.render.RenderImage
 import org.sgine.render.TexturedQuad
 import org.sgine.render.TextureManager
 
-class ImageCube extends Cube[Image] {
-//	def apply(resource: Resource, width: Double, height: Double) = {
-//		val t = TextureManager(resource)
-//		val renderImage = RenderImage(t)
-//		
-//		front().renderImage := renderImage
-//		back().renderImage := renderImage
-//		top().renderImage := renderImage
-//		bottom().renderImage := renderImage
-//		left().renderImage := renderImage
-//		right().renderImage := renderImage
-//		
-//		front().location.z := width / 2.0
-//		back().location.z := width / -2.0
-//		top().location.y := height / 2.0
-//		bottom().location.y := height / -2.0
-//		left().location.x := width / -2.0
-//		right().location.x := width / 2.0
-//	}
-//	
-//	protected def createComponent() = new Image()
+import org.sgine.ui.ext.AdvancedComponent
+
+import scala.math._
+
+class ImageCube extends CompositeComponent with AdvancedComponent {
+	val front = new ImmutableProperty[Image](createComponent())
+	val back = new ImmutableProperty[Image](createComponent())
+	val top = new ImmutableProperty[Image](createComponent())
+	val bottom = new ImmutableProperty[Image](createComponent())
+	val left = new ImmutableProperty[Image](createComponent())
+	val right = new ImmutableProperty[Image](createComponent())
+	
+	back().rotation.y := Pi
+	top().rotation.x := Pi / -2.0
+	bottom().rotation.x := Pi / 2.0
+	left().rotation.y := Pi / -2.0
+	right().rotation.y := Pi / 2.0
+	
+	this += front()
+	this += back()
+	this += top()
+	this += bottom()
+	this += left()
+	this += right()
 	
 	def apply(resource: Resource, width: Double, height: Double): Unit = {
 		val t = TextureManager(resource)
