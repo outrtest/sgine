@@ -55,26 +55,26 @@ object CubeCreator {
 		cube.scale.set(scale)
 		cube.location.y := (y * 30.0) - 350.0
 		cube.location.z := (z * 90.0) - 1800.0
-//		cube.rotation.x.animator = new LinearNumericAnimator(2.0)
-//		cube.rotation.y.animator = new LinearNumericAnimator(2.0)
-//		cube.rotation.z.animator = new LinearNumericAnimator(2.0)
-//		cube.location.x.animator = new EasingNumericAnimator(Elastic.easeInOut, 3.0)
+		cube.rotation.x.animator = new LinearNumericAnimator(2.0)
+		cube.rotation.y.animator = new LinearNumericAnimator(2.0)
+		cube.rotation.z.animator = new LinearNumericAnimator(2.0)
+		cube.location.x.animator = new EasingNumericAnimator(Elastic.easeInOut, 3.0)
 //		cube(Resource("sgine_256.png"), 256.0, 256.0)
 		cube(quad)
 		cube.update(0.0)
 		scene += cube
 		
-//		cube.rotation.x := Double.MaxValue
-//		cube.rotation.y := Double.MaxValue
-//		cube.rotation.z := Double.MaxValue
-//
-//		// Move the cube back and forth perpetually on the x-axis
-//		val me0 = new PauseEffect(random * 2.0 + 0.5)
-//		val me1 = new PropertyChangeEffect(cube.location.x, -400.0)
-//		val me2 = new PropertyChangeEffect(cube.location.x, 400.0)
-//		val move = new CompositeEffect(me0, me1, me2)
-//		move.repeat = -1
-//		move.start()
+		cube.rotation.x := Double.MaxValue
+		cube.rotation.y := Double.MaxValue
+		cube.rotation.z := Double.MaxValue
+
+		// Move the cube back and forth perpetually on the x-axis
+		val me0 = new PauseEffect(random * 2.0 + 0.5)
+		val me1 = new PropertyChangeEffect(cube.location.x, -400.0)
+		val me2 = new PropertyChangeEffect(cube.location.x, 400.0)
+		val move = new CompositeEffect(me0, me1, me2)
+		move.repeat = -1
+		move.start()
 		
 		cube
 	}

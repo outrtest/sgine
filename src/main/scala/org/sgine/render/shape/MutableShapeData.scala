@@ -8,7 +8,7 @@ import org.sgine.render.Material
 import simplex3d.math.doublem._
 
 class MutableShapeData private(val mode: Int, val length: Int) extends ShapeData {
-	val cull = Face.None
+	var cull: Face = Face.None
 	val material = Material.AmbientAndDiffuse
 	def color(index: Int) = colors(index)
 	def vertex(index: Int) = vertices(index)

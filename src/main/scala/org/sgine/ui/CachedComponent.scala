@@ -31,7 +31,7 @@ trait CachedComponent extends Component with BoundingObject {
 	
 	private var initialized = false
 	
-	protected def drawComponent() = {
+	protected[ui] def drawComponent() = {
 		if (!initialized) {
 			configureListeners()
 			initialized = true

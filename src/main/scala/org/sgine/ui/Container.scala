@@ -11,6 +11,6 @@ import org.sgine.ui.ext.AdvancedComponent
 class Container extends GeneralNodeContainer with AdvancedComponent with LayoutNode with BoundingObject {
 	protected val _bounding = new BoundingBox
 
-	protected def drawComponent() = {
+	protected[ui] def drawComponent() = {
 	}
 }

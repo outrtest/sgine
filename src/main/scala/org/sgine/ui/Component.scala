@@ -82,5 +82,5 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		glColor4d(wc.red, wc.green, wc.blue, wc.alpha)
 	}
 	
-	protected def drawComponent()
+	protected[ui] def drawComponent()
 }

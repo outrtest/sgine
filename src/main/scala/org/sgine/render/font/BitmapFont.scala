@@ -52,6 +52,9 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int](texture
 	override protected def createImage() = new BitmapFontChar()
 	
 	def drawString(s: String, kern: Boolean = true) = {
+		glCullFace(GL_BACK)
+		glEnable(GL_CULL_FACE)
+		
 		glTranslated(measureWidth(s, kern) / -2.0, 0.0, 0.0)
 		
 		var previous: BitmapFontChar = null

@@ -4,12 +4,15 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import org.lwjgl.opengl.GL11._
 
+import org.sgine.core.Face
+
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty
 import org.sgine.property.NumericPropertyChangeEvent
+import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.shape.MutableShapeData
 import org.sgine.render.shape.Shape
@@ -22,6 +25,7 @@ class TexturedQuad extends Function0[Unit] {
 	val y = new NumericProperty(0.0)
 	val width = new NumericProperty(0.0)
 	val height = new NumericProperty(0.0)
+	val cull = new AdvancedProperty[Face](Face.Back)
 	
 	private val shape = Shape()
 	private val dirty = new AtomicBoolean(false)
@@ -29,6 +33,7 @@ class TexturedQuad extends Function0[Unit] {
 	private val changeHandler = EventHandler(propChanged, ProcessingMode.Blocking)
 	width.listeners += changeHandler
 	height.listeners += changeHandler
+	cull.listeners += EventHandler(cullChanged, ProcessingMode.Blocking)
 	
 	def this(texture: Texture) = {
 		this()
@@ -49,6 +54,7 @@ class TexturedQuad extends Function0[Unit] {
 		if (dirty.compareAndSet(true, false)) {
 			if (isValid) {
 				val data = MutableShapeData(GL_QUADS, 4)
+				data.cull = cull()
 				
 				texture() match {
 					case null =>
@@ -84,6 +90,10 @@ class TexturedQuad extends Function0[Unit] {
 	}
 	
 	private def propChanged(evt: NumericPropertyChangeEvent) = {
+		dirty.set(true)
+	}
+	
+	private def cullChanged(evt: PropertyChangeEvent[Face]) = {
 		dirty.set(true)
 	}
 }
