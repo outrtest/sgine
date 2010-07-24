@@ -6,6 +6,7 @@ import org.sgine.bounding.BoundingObject
 import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
+import org.sgine.core.Face
 import org.sgine.core.Resource
 
 import org.sgine.event.Event
@@ -26,6 +27,8 @@ class Image extends AdvancedComponent with BoundingObject {
 	val quad = new AdvancedProperty[TexturedQuad](new TexturedQuad(), this)
 	
 	val source = new AdvancedProperty[Resource](null, this)
+	val cull = new AdvancedProperty[Face](Face.Back, this)
+	quad().cull bind cull
 	
 	protected val _bounding = BoundingQuad()
 	
@@ -68,6 +71,13 @@ class Image extends AdvancedComponent with BoundingObject {
 	}
 	
 	private def quadChanged(evt: PropertyChangeEvent[TexturedQuad]) = {
+		if (evt.oldValue != null) {
+			evt.oldValue.cull unbind cull
+		}
+		if (evt.newValue != null) {
+			evt.newValue.cull bind cull
+		}
+		
 		val i = evt.newValue
 		if ((_bounding.width != i.width()) || (_bounding.height != i.height())) {
 			_bounding.width = i.width()

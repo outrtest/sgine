@@ -5,6 +5,6 @@ import org.sgine.event.Event
 import org.sgine.scene.CompositeNodeContainer
 
 trait CompositeComponent extends Component with CompositeNodeContainer {
-	protected def drawComponent() = {
+	protected[ui] def drawComponent() = {
 	}
 }

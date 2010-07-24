@@ -8,29 +8,33 @@ import org.sgine.scene.event.SceneEventType
 
 trait CompositeNodeContainer extends NodeContainer {
 	private var nodes = new scala.collection.mutable.ArrayBuffer[Node]()
+	
+	def iterator = if (nodes != null) nodes.iterator else null
 
-  def iterator = if (nodes != null) nodes.iterator else null
-
-  protected def +=(node: Node) {
-	  nodes += node
+	protected def +=(node: Node) {
+		synchronized {
+			nodes += node
+		}
     
-    node.parent = this
+		node.parent = this
     
-    Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildAdded))
-    Event.enqueue(SceneEvent(node, SceneEventType.ParentChanged))
-  }
+		Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildAdded))
+		Event.enqueue(SceneEvent(node, SceneEventType.ParentChanged))
+	}
 
-  protected def -=(node: Node): Boolean = {
- 	  if (nodes.contains(node)) {
- 	 	  nodes -= node
- 	 	  node.parent = null
+	protected def -=(node: Node): Boolean = {
+		if (nodes.contains(node)) {
+			synchronized {
+				nodes -= node
+			}
+ 	 	  	node.parent = null
  	 	  
- 	 	  Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildRemoved))
- 	 	  Event.enqueue(SceneEvent(node, SceneEventType.ParentChanged))
+ 	 	  	Event.enqueue(NodeContainerEvent(this, node, SceneEventType.ChildRemoved))
+ 	 	  	Event.enqueue(SceneEvent(node, SceneEventType.ParentChanged))
  	 	  
- 	 	  true
- 	  } else {
- 	 	  false
- 	  }
-  }
+ 	 	  	true
+ 	 	} else {
+ 	 		false
+ 	 	}
+	}
 }

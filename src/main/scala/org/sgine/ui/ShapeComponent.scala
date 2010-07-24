@@ -9,14 +9,9 @@ import org.sgine.render.shape.Shape
 import org.sgine.ui.ext.AdvancedComponent
 
 trait ShapeComponent extends Component {
-	val shape = new AdvancedProperty[Shape](null, this)
+	protected val shape = Shape()
 	
-	protected def drawComponent() = {
-		shape() match {
-			case null =>
-			case s => s()
-		}
-	}
+	protected[ui] def drawComponent() = shape()
 }
 
 object ShapeComponent {
