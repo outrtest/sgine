@@ -46,7 +46,6 @@ class BasicTexture() extends Texture {
 	def update() = {
 		if (updates.size > 0) {
 			bind()
-			unbind()
 		}
 	}
 	
@@ -60,12 +59,6 @@ class BasicTexture() extends Texture {
 			
 			Texture.current = id
 		}
-	}
-	
-	def unbind() = {
-		glBindTexture(GL_TEXTURE_2D, 0)
-		
-		Texture.current = -1
 	}
 	
 	/**
