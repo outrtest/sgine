@@ -36,6 +36,8 @@ class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
 }
 
 object LWJGLVBOShapeRenderer {
+	private[lwjgl] var current: Int = 0
+	
 	lazy val capable = org.lwjgl.opengl.GLContext.getCapabilities.OpenGL15 && org.lwjgl.opengl.GLContext.getCapabilities.GL_ARB_vertex_buffer_object
 }
 
@@ -109,38 +111,43 @@ class VBO() {
 	}
 	
 	def draw() = {
-		glEnableClientState(GL_VERTEX_ARRAY)
-		glBindBuffer(GL_ARRAY_BUFFER, id)
-		
 		val length = data.length
-		var offset = 0
-		glVertexPointer(3, GL_FLOAT, 0, offset)
-		offset += length * (3 * 4)
-		if (data.hasNormal) {
-			glEnableClientState(GL_NORMAL_ARRAY)
-			glNormalPointer(GL_FLOAT, 0, offset)
+		if (LWJGLVBOShapeRenderer.current != id) {
+//			println("New! " + id + ", Current: " + LWJGLVBOShapeRenderer.current)
+			LWJGLVBOShapeRenderer.current = id
+			
+			glEnableClientState(GL_VERTEX_ARRAY)
+			glBindBuffer(GL_ARRAY_BUFFER, id)
+			
+			var offset = 0
+			glVertexPointer(3, GL_FLOAT, 0, offset)
 			offset += length * (3 * 4)
-		}
-		if (data.hasColor) {
-			glEnableClientState(GL_COLOR_ARRAY)
-			glColorPointer(4, GL_FLOAT, 0, offset)
-			offset += length * (4 * 4)
-		}
-		if (data.hasTexture) {
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-			glTexCoordPointer(2, GL_FLOAT, 0, offset)
+			if (data.hasNormal) {
+				glEnableClientState(GL_NORMAL_ARRAY)
+				glNormalPointer(GL_FLOAT, 0, offset)
+				offset += length * (3 * 4)
+			}
+			if (data.hasColor) {
+				glEnableClientState(GL_COLOR_ARRAY)
+				glColorPointer(4, GL_FLOAT, 0, offset)
+				offset += length * (4 * 4)
+			}
+			if (data.hasTexture) {
+				glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+				glTexCoordPointer(2, GL_FLOAT, 0, offset)
+			}
 		}
 		glDrawArrays(data.mode, 0, length)
 		
-		glDisableClientState(GL_VERTEX_ARRAY)
-		if (data.hasColor) {
-			glDisableClientState(GL_COLOR_ARRAY)
-		}
-		if (data.hasTexture) {
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY)
-		}
+//		glDisableClientState(GL_VERTEX_ARRAY)
+//		if (data.hasColor) {
+//			glDisableClientState(GL_COLOR_ARRAY)
+//		}
+//		if (data.hasTexture) {
+//			glDisableClientState(GL_TEXTURE_COORD_ARRAY)
+//		}
 		
-		glBindBuffer(GL_ARRAY_BUFFER, 0)
+//		glBindBuffer(GL_ARRAY_BUFFER, 0)
 	}
 	
 	def delete() = glDeleteBuffers(id)

@@ -75,6 +75,14 @@ class NumericProperty extends Property[Double] with Listenable with Updatable {
 
 		listeners += listener
 	}
+	
+	def +=(value: Double) = {
+		apply(apply() + value)
+	}
+	
+	def -=(value: Double) = {
+		apply(apply() - value)
+	}
 
 	private def determineName: String = {
 		if (_name != null) {
