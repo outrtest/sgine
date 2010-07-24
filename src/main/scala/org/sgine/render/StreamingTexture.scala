@@ -55,7 +55,6 @@ class StreamingTexture(val width: Int, val height: Int) extends Texture {
 	def update() = {
 		if ((dataDirty.get) || (bufferDirty.get)) {
 			bind()
-			unbind()
 		}
 	}
 	
@@ -78,12 +77,6 @@ class StreamingTexture(val width: Int, val height: Int) extends Texture {
 			
 			Texture.current = id
 		}
-	}
-	
-	def unbind() = {
-		glBindTexture(GL_TEXTURE_2D, 0)
-		
-		Texture.current = -1
 	}
 	
 	def invalidateTexture() = dataDirty.set(true)

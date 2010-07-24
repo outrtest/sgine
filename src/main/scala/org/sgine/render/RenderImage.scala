@@ -31,6 +31,8 @@ class RenderImage protected() extends Function0[Unit] {
 			
 //			println("DRAW:" + x1 + "x" + y1 + " - " + x2 + "x" + y2 + " - " + w + "x" + h)
 			
+			glDisable(GL_CULL_FACE)
+			
 			glBegin(GL_QUADS)
 			
 			// Bottom-Left

@@ -14,7 +14,7 @@ import scala.math.Pi
  */
 object TestAnimatingBox extends StandardDisplay with Debug with Updatable {
 
-  private var box: Box = new Box()
+  private var box: Cuboid = new Cuboid()
 
   private val animationTimeSeconds = 2.0;
 

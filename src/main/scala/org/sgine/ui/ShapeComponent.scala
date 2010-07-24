@@ -23,6 +23,8 @@ trait ShapeComponent extends Component {
 	protected[ui] def drawComponent() = {
 		if (texture != null) {
 			texture.bind()
+		} else {
+			Texture.unbind()
 		}
 		shape.render()
 	}

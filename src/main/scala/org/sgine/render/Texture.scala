@@ -32,13 +32,17 @@ trait Texture {
 	 * Bind the texture to be used. Must be called within the OpenGL thread.
 	 */
 	def bind(): Unit
-	
-	/**
-	 * Unbinds the texture from the current OpenGL state.
-	 */
-	def unbind(): Unit
 }
 
 object Texture {
 	@volatile var current: Int = -1
+	
+	/**
+	 * Unbinds the texture from the current OpenGL state.
+	 */
+	def unbind() = {
+		glBindTexture(GL_TEXTURE_2D, 0)
+		
+		Texture.current = -1
+	}
 }
