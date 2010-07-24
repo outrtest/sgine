@@ -23,11 +23,11 @@ import org.sgine.scene.MutableNodeContainer
 
 import scala.math._
 
-object TestCube extends StandardDisplay with Debug {
+object TestImageCube extends StandardDisplay with Debug {
 	override val settings = RenderSettings.High
 	
 	def setup() = {
-		val c = CubeCreator.createCube(scene, 10.0, 20.0, 0.5)
+		val c = ImageCubeCreator.createCube(scene, 10.0, 20.0, 0.5)
 	}
 	
 	private def test(evt: org.sgine.event.Event) = {
@@ -35,7 +35,7 @@ object TestCube extends StandardDisplay with Debug {
 	}
 }
 
-object CubeCreator {
+object ImageCubeCreator {
 	private lazy val quad = createQuad()
 	
 	private def createQuad() = {

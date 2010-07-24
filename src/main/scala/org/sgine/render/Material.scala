@@ -11,5 +11,6 @@ object Material extends Enumerated[Material] {
 	case object Diffuse extends Material
 	case object Specular extends Material
 	case object AmbientAndDiffuse extends Material
+	
 	Material(Emission, Ambient, Diffuse, Specular, AmbientAndDiffuse)
 }

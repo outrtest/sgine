@@ -137,7 +137,7 @@ class VBO() {
 				glTexCoordPointer(2, GL_FLOAT, 0, offset)
 			}
 		}
-		glDrawArrays(data.mode, 0, length)
+		glDrawArrays(data.mode.value, 0, length)
 		
 //		glDisableClientState(GL_VERTEX_ARRAY)
 //		if (data.hasColor) {

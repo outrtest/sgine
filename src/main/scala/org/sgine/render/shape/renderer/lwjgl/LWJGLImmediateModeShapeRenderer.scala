@@ -20,7 +20,7 @@ class LWJGLImmediateModeShapeRenderer extends LWJGLShapeRenderer {
 		}
 
 		this.data = data
-		glBegin(data.mode)
+		glBegin(data.mode.value)
 		range.foreach(renderVertex)
 		glEnd()
 	}

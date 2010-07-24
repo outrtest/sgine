@@ -16,6 +16,7 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.shape.MutableShapeData
 import org.sgine.render.shape.Shape
+import org.sgine.render.shape.ShapeMode
 
 import simplex3d.math.doublem.renamed._
 
@@ -53,7 +54,7 @@ class TexturedQuad extends Function0[Unit] {
 	def update() = {
 		if (dirty.compareAndSet(true, false)) {
 			if (isValid) {
-				val data = MutableShapeData(GL_QUADS, 4)
+				val data = MutableShapeData(ShapeMode.Quads, 4)
 				data.cull = cull()
 				
 				texture() match {
