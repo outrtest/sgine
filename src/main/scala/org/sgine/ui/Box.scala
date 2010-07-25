@@ -1,5 +1,7 @@
 package org.sgine.ui
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 import org.sgine.core.Color
 import org.sgine.core.Face
 import org.sgine.core.Resource
@@ -12,6 +14,7 @@ import org.sgine.property.NumericProperty
 import org.sgine.property.NumericPropertyChangeEvent
 import org.sgine.property.event.PropertyChangeEvent
 
+import org.sgine.render.Renderer
 import org.sgine.render.TextureManager
 import org.sgine.render.shape.MutableShapeData
 import org.sgine.render.shape.ShapeMode
@@ -39,10 +42,22 @@ class Box extends AdvancedComponent with ShapeComponent {
 	height.listeners += numericHandler
 	depth.listeners += numericHandler
 	
+	private val data = MutableShapeData(ShapeMode.Quads, 24)
+	
+	private val dirty = new AtomicBoolean(false)
+	
 	def this(source: Resource) = {
 		this()
 		
 		this.source := source
+	}
+	
+	override def update(renderer: Renderer) = {
+		super.update(renderer)
+		
+		if (dirty.compareAndSet(true, false)) {
+			updateShape()
+		}
 	}
 	
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
@@ -53,17 +68,18 @@ class Box extends AdvancedComponent with ShapeComponent {
 			depth := texture.width
 		}
 		
-		updateShape()
+		dirty.set(true)
 	}
 	
-	private def cullChanged(evt: PropertyChangeEvent[Face]) = updateShape()
+	private def cullChanged(evt: PropertyChangeEvent[Face]) = {
+		dirty.set(true)
+	}
 	
 	private def numericChanged(evt: NumericPropertyChangeEvent) = {
-		updateShape()
+		dirty.set(true)
 	}
 	
 	private def updateShape() = {
-		val data = MutableShapeData(ShapeMode.Quads, 24)
 		data.cull = cull()
 		
 		val w = width() / 2.0
