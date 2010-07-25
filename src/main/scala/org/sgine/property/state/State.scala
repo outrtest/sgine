@@ -70,7 +70,7 @@ case class StateItem(key: String, value: Any, restore: Any = null) {
 					original
 				}
 			}
-			case _ => throw new RuntimeException("Unable to find match: " + o)
+			case _ => throw new RuntimeException("Unable to find match: " + o + ", " + key + ": " + value)
 		}
 	}
 }
