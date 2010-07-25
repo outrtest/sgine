@@ -34,10 +34,10 @@ class Box extends AdvancedComponent with ShapeComponent {
 	
 	source.listeners += EventHandler(sourceChanged, ProcessingMode.Blocking)
 	cull.listeners += EventHandler(cullChanged, ProcessingMode.Blocking)
-	private val numericChanged = EventHandler((evt: NumericPropertyChangeEvent) => updateShape(), ProcessingMode.Blocking)
-	width.listeners += numericChanged
-	height.listeners += numericChanged
-	depth.listeners += numericChanged
+	private val numericHandler = EventHandler(numericChanged, ProcessingMode.Blocking)
+	width.listeners += numericHandler
+	height.listeners += numericHandler
+	depth.listeners += numericHandler
 	
 	def this(source: Resource) = {
 		this()
@@ -58,42 +58,47 @@ class Box extends AdvancedComponent with ShapeComponent {
 	
 	private def cullChanged(evt: PropertyChangeEvent[Face]) = updateShape()
 	
+	private def numericChanged(evt: NumericPropertyChangeEvent) = {
+		updateShape()
+	}
+	
 	private def updateShape() = {
 		val data = MutableShapeData(ShapeMode.Quads, 24)
 		data.cull = cull()
 		
 		val w = width() / 2.0
 		val h = height() / 2.0
+		val d = depth() / 2.0
 		data.vertices = List(	// Front Face
-								Vec3(-w, -h, w),		// Bottom-Left
-								Vec3(w, -h, w),			// Bottom-Right
-								Vec3(w, h, w),			// Top-Right
-								Vec3(-w, h, w),			// Top-Left
+								Vec3(-w, -h, d),		// Bottom-Left
+								Vec3(w, -h, d),			// Bottom-Right
+								Vec3(w, h, d),			// Top-Right
+								Vec3(-w, h, d),			// Top-Left
 								// Left Face
-								Vec3(-w, -h, -w),		// Bottom-Left
-								Vec3(-w, -h, w),		// Bottom-Right
-								Vec3(-w, h, w),			// Top-Right
-								Vec3(-w, h, -w),		// Top-Left
+								Vec3(-w, -h, -d),		// Bottom-Left
+								Vec3(-w, -h, d),		// Bottom-Right
+								Vec3(-w, h, d),			// Top-Right
+								Vec3(-w, h, -d),		// Top-Left
 								// Back Face
-								Vec3(-w, h, -w),		// Top-Left
-								Vec3(w, h, -w),			// Top-Right
-								Vec3(w, -h, -w),		// Bottom-Right
-								Vec3(-w, -h, -w),		// Bottom-Left
+								Vec3(-w, h, -d),		// Top-Left
+								Vec3(w, h, -d),			// Top-Right
+								Vec3(w, -h, -d),		// Bottom-Right
+								Vec3(-w, -h, -d),		// Bottom-Left
 								// Right Face
-								Vec3(w, h, -w),			// Top-Left
-								Vec3(w, h, w),			// Top-Right
-								Vec3(w, -h, w),			// Bottom-Right
-								Vec3(w, -h, -w),		// Bottom-Left
+								Vec3(w, h, -d),			// Top-Left
+								Vec3(w, h, d),			// Top-Right
+								Vec3(w, -h, d),			// Bottom-Right
+								Vec3(w, -h, -d),		// Bottom-Left
 								// Top Face
-								Vec3(-w, h, w),			// Bottom-Left
-								Vec3(w, h, w),			// Bottom-Right
-								Vec3(w, h, -w),			// Top-Right
-								Vec3(-w, h, -w),		// Top-Left
+								Vec3(-w, h, d),			// Bottom-Left
+								Vec3(w, h, d),			// Bottom-Right
+								Vec3(w, h, -d),			// Top-Right
+								Vec3(-w, h, -d),		// Top-Left
 								// Bottom Face
-								Vec3(-w, -h, -w),		// Top-Left
-								Vec3(w, -h, -w),		// Top-Right
-								Vec3(w, -h, w),			// Bottom-Right
-								Vec3(-w, -h, w)			// Bottom-Left
+								Vec3(-w, -h, -d),		// Top-Left
+								Vec3(w, -h, -d),		// Top-Right
+								Vec3(w, -h, d),			// Bottom-Right
+								Vec3(-w, -h, d)			// Bottom-Left
 							 )
 		
 		texture match {

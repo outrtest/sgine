@@ -21,4 +21,6 @@ trait Enumerated[E <: Enumeration] extends Traversable[E] {
 	  case Some(e) => indexOf(e)
 	  case None => -1
   }
+  
+  def random = values(new scala.util.Random().nextInt(values.length))
 }
