@@ -32,8 +32,6 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 	
 	def sort() = {
 		if (sortFunction != null) {
-			// TODO: how do we avoid recreating?
-//			queue = queue.sortWith(sortFunction)
 			org.sgine.util.Sort.bubbleSort(queue, sortFunction)
 		}
 	}

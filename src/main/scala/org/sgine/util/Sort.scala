@@ -21,4 +21,10 @@ object Sort {
 			array
 		}
 	}
+	
+	// TODO: add quicksort
+	
+	// TODO: add mergesort
+	
+	// TODO: add heapsort
 }

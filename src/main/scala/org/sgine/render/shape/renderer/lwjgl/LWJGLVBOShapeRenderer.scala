@@ -28,11 +28,7 @@ class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
 		vbo.update(data)
 	}
 	
-	override protected[shape] def render(data: ShapeData) = {
-		super.render(data)
-		
-		vbo.draw()
-	}
+	override protected[shape] def renderInternal(data: ShapeData) = vbo.draw()
 }
 
 object LWJGLVBOShapeRenderer {

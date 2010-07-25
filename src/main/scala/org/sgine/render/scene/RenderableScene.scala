@@ -53,9 +53,9 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		if (!initted) init()
 
 		// TODO: handle sorting function
-//		updatableView.sort()
+		updatableView.sort()
 		updatableView.foreach(updateItem)
-//		renderableView.sort()					// TODO: is this the most efficient way to handle this?
+		renderableView.sort()					// TODO: is this the most efficient way to handle this?
 		renderableView.foreach(renderItem)
 		if (showFPS) fps()
 	}
