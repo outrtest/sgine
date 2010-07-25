@@ -10,7 +10,7 @@ object Back {
 	
 	def easeOut(time:Double, start:Double, change:Double, duration:Double):Double = {
 		val t = time / duration - 1
-		change * (time * time * ((overshoot + 1) * time + overshoot) + 1) + start
+		change * (t * t * ((overshoot + 1.0) * t + overshoot) + 1) + start
 	}
 	
 	def easeInOut(time:Double, start:Double, change:Double, duration:Double):Double = {
