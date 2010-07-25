@@ -12,9 +12,7 @@ class LWJGLImmediateModeShapeRenderer extends LWJGLShapeRenderer {
 		// Immediate mode, nothing to do
 	}
 	
-	override protected[shape] def render(data: ShapeData) = {
-		super.render(data)
-		
+	override protected[shape] def renderInternal(data: ShapeData) = {
 		if ((range == null) || (range.length != data.length)) {
 			range = 0 until data.length
 		}

@@ -10,13 +10,19 @@ object TestBox extends StandardDisplay with Debug {
 	override val settings = RenderSettings.High
 	
 	def setup() = {
+		val image = new Image(Resource("puppies.jpg"))
+		image.location.z := -300.0
+		image.scale.set(2.0)
+		scene += image
+		
 		val component = new Box()
-		component.scale.set(0.5)
+		component.cull := org.sgine.core.Face.None
 //		component.manualSize := true
 //		component.width := 512.0
 //		component.height := 256.0
 //		component.depth := 512.0
 		component.source := Resource("sgine_256.png")
+		component.alpha := 0.5
 		scene += component
 		
 		component.rotation.x.animator = new org.sgine.property.animate.LinearNumericAnimator(1.5)
