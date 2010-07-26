@@ -11,12 +11,18 @@ import org.sgine.db.DBFactory
 
 import scala.collection.JavaConversions._
 
-class DB(container: ODB) extends org.sgine.db.DB {
-	def store(obj: AnyRef) = container.store(obj)
+class DB(container: ODB, val autoCommit: Boolean) extends org.sgine.db.DB {
+	def store(obj: AnyRef) = {
+		container.store(obj)
+		if (autoCommit) commit()
+	}
 	
 	def query[T](predicate: T => Boolean) = new RichObjects(container.getObjects(new ObjectQuery(predicate)))
 	
-	def delete(obj: AnyRef) = container.delete(obj)
+	def delete(obj: AnyRef) = {
+		container.delete(obj)
+		if (autoCommit) commit()
+	}
 	
 	def commit() = container.commit()
 	
@@ -35,5 +41,5 @@ class RichObjects[T](objects: Objects[T]) extends Iterator[T] {
 }
 
 object DB extends DBFactory {
-	def apply(file: File) = new DB(ODBFactory.open(file.getAbsolutePath()))
+	def apply(file: File, autoCommit: Boolean) = new DB(ODBFactory.open(file.getAbsolutePath()), autoCommit)
 }

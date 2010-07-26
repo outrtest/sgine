@@ -3,6 +3,8 @@ package org.sgine.db
 import java.io.File
 
 trait DB {
+	def autoCommit: Boolean
+	
 	def store(obj: AnyRef): Unit
 	
 	def query[T](predicate: T => Boolean): Iterator[T]
@@ -23,12 +25,15 @@ object DB {
 	
 	def apply(name: String) = map(name)
 	
-	def open(name: String, file: File) = {
+	def open(name: String, file: File, autoCommit: Boolean = false) = {
 		synchronized {
 			val db = map.get(name) match {
-				case Some(db) => db
+				case Some(db) => {
+					if (db.autoCommit != autoCommit) throw new RuntimeException("Connection already exists and AutoCommit is " + db.autoCommit)
+					db
+				}
 				case None => {
-					val db = Factory(file)
+					val db = Factory(file, autoCommit)
 					map += name -> db
 					db
 				}
