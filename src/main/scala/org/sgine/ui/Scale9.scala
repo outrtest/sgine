@@ -59,58 +59,58 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 		// Load texture
 		this.source := source
 		updateResource(null)
-		val t = topLeft.quad().texture()
+		val t = topLeft.quad.texture()
 		
 		// Create properly defined RenderImages
-		val tli = topLeft.quad()
+		val tli = topLeft.quad
 		tli.x := 0.0
 		tli.y := 0.0
 		tli.width := x1
 		tli.height := y1
 		
-		val ti = top.quad()
+		val ti = top.quad
 		ti.x := x1
 		ti.y := 0.0
 		ti.width := x2 - x1
 		ti.height := y1
 		
-		val tri = topRight.quad()
+		val tri = topRight.quad
 		tri.x := x2
 		tri.y := 0.0
 		tri.width := t.width - x2
 		tri.height := y1
 		
-		val li = left.quad()
+		val li = left.quad
 		li.x := 0.0
 		li.y := y1
 		li.width := x1
 		li.height := y2 - y1
 		
-		val ci = center.quad()
+		val ci = center.quad
 		ci.x := x1
 		ci.y := y1
 		ci.width := x2 - x1
 		ci.height := y2 - y1
 		
-		val ri = right.quad()
+		val ri = right.quad
 		ri.x := x2
 		ri.y := y1
 		ri.width := t.width - x2
 		ri.height := y2 - y1
 		
-		val bli = bottomLeft.quad()
+		val bli = bottomLeft.quad
 		bli.x := 0.0
 		bli.y := y2
 		bli.width := x1
 		bli.height := t.height - y2
 		
-		val bi = bottom.quad()
+		val bi = bottom.quad
 		bi.x := x1
 		bi.y := y2
 		bi.width := x2 - x1
 		bi.height := t.height - y2
 		
-		val bri = bottomRight.quad()
+		val bri = bottomRight.quad
 		bri.x := x2
 		bri.y := y2
 		bri.width := t.width - x2
@@ -129,9 +129,9 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 	}
 	
 	private def updateSize(evt: Event = null) = {
-		if ((width() > 0.0) && (height() > 0.0) && (topLeft.quad().texture() != null)) {
-			val textureWidth = topLeft.quad().texture().width
-			val textureHeight = topLeft.quad().texture().height
+		if ((width() > 0.0) && (height() > 0.0) && (topLeft.quad.texture() != null)) {
+			val textureWidth = topLeft.quad.texture().width
+			val textureHeight = topLeft.quad.texture().height
 			val preWidth = x1 + (textureWidth - x2)
 			val preHeight = y1 + (textureHeight - y2)
 			
@@ -183,14 +183,14 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 		// Load texture
 		val t = TextureManager(source())
 		
-		topLeft.quad().texture := t
-		top.quad().texture := t
-		topRight.quad().texture := t
-		left.quad().texture := t
-		center.quad().texture := t
-		right.quad().texture := t
-		bottomLeft.quad().texture := t
-		bottom.quad().texture := t
-		bottomRight.quad().texture := t
+		topLeft.quad.texture := t
+		top.quad.texture := t
+		topRight.quad.texture := t
+		left.quad.texture := t
+		center.quad.texture := t
+		right.quad.texture := t
+		bottomLeft.quad.texture := t
+		bottom.quad.texture := t
+		bottomRight.quad.texture := t
 	}
 }
