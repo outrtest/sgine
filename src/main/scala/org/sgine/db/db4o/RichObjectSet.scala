@@ -1,4 +1,4 @@
-package org.sgine.db
+package org.sgine.db.db4o
 
 import com.db4o.ObjectSet
 
