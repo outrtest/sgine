@@ -24,11 +24,11 @@ import org.sgine.ui.event.ImageUpdateEvent
 import org.sgine.ui.ext.AdvancedComponent
 
 class Image extends AdvancedComponent with BoundingObject {
-	val quad = new AdvancedProperty[TexturedQuad](new TexturedQuad(), this)
+	protected[ui] val quad = new TexturedQuad()
 	
 	val source = new AdvancedProperty[Resource](null, this)
 	val cull = new AdvancedProperty[Face](Face.Back, this)
-	quad().cull bind cull
+	quad.cull bind cull
 	
 	protected val _bounding = BoundingQuad()
 	
@@ -45,7 +45,7 @@ class Image extends AdvancedComponent with BoundingObject {
 	override def update(renderer: Renderer) = {
 		super.update(renderer)
 		
-		quad().update()
+		quad.update()
 		
 		if (imageDirty.compareAndSet(true, false)) {
 			Event.enqueue(ImageUpdateEvent(this))
@@ -53,39 +53,28 @@ class Image extends AdvancedComponent with BoundingObject {
 	}
 	
 	def drawComponent() = {
-		quad().render()
+		quad.render()
 	}
 	
 	private def configureListeners() = {
 		source.listeners += EventHandler(sourceChanged, ProcessingMode.Blocking)
-		quad.listeners += EventHandler(quadChanged, ProcessingMode.Blocking)
 	}
 	
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
 		val t = TextureManager(source())
-		quad().texture := t
-		quad().width := t.width
-		quad().height := t.height
+		quad.texture := t
+		quad.width := t.width
+		quad.height := t.height
 		
-		imageDirty.set(true)
-	}
-	
-	private def quadChanged(evt: PropertyChangeEvent[TexturedQuad]) = {
-		if (evt.oldValue != null) {
-			evt.oldValue.cull unbind cull
-		}
-		if (evt.newValue != null) {
-			evt.newValue.cull bind cull
-		}
-		
-		val i = evt.newValue
-		if ((_bounding.width != i.width()) || (_bounding.height != i.height())) {
-			_bounding.width = i.width()
-			_bounding.height = i.height()
+		if ((_bounding.width != quad.width()) || (_bounding.height != quad.height())) {
+			_bounding.width = quad.width()
+			_bounding.height = quad.height()
 			
 			val e = new BoundingChangeEvent(this, _bounding)
 			Event.enqueue(e)
 		}
+		
+		imageDirty.set(true)
 	}
 	
 	override def toString() = "Image(" + source + ")"

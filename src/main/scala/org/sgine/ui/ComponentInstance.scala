@@ -1,5 +1,7 @@
 package org.sgine.ui
 
+import org.sgine.bounding.BoundingObject
+
 import org.sgine.property.AdvancedProperty
 
 import org.sgine.ui.ext.AdvancedComponent
@@ -11,8 +13,13 @@ import org.sgine.ui.ext.AdvancedComponent
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class ComponentInstance private() extends AdvancedComponent {
+class ComponentInstance private() extends AdvancedComponent with BoundingObject {
 	val instance = new AdvancedProperty[Component](null, this)
+	
+	protected def _bounding = instance() match {
+		case bo: BoundingObject => bo.bounding()
+		case _ => null
+	}
 	
 	protected[ui] def drawComponent() = {
 		instance() match {
