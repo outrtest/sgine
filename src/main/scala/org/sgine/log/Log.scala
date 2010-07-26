@@ -5,24 +5,42 @@ import java.io.File
 import java.util.Calendar
 import java.util.UUID
 
-case class Log(
-			   message: String,
-			   messageType: String = null,
-			   method: String = null,
-			   className: String = null,
-			   level: LogLevel = LogLevel.Info,
-			   reference: AnyRef = null,
-			   date: Calendar = Calendar.getInstance,
-			   thread: String = Thread.currentThread.getName,
-			   application: String = Log.application,
-			   uuid: UUID = UUID.randomUUID()
+class Log protected(
+			   val message: String,
+			   val messageType: String,
+			   val method: String,
+			   val className: String,
+			   val level: LogLevel,
+			   val reference: AnyRef,
+			   val date: Calendar,
+			   val thread: String,
+			   val application: String,
+			   val uuid: UUID
 		) {
-	def send() = Log.log(this)
+	protected def send(): Unit = Log.log(this)
+	
+	private val _fields = List(date _, application _, level _, thread _, messageType _, method _, className _, reference _, message _)
+	protected def fields = _fields
 	
 	override def toString() = {
-		String.format(Log.dateFormat, date) +
-		"\t" +
-		message + " (" + level.name + " - " + level.value + ")"
+		val b = new StringBuilder()
+		
+		for (f <- fields) {
+			val value = f() match {
+				case null => null
+				case c: Calendar => String.format(Log.dateFormat, c)
+				case l: LogLevel => level.name
+				case o => o
+			}
+			if (value != null) {
+				if (b.length > 0) {
+					b.append(' ')
+				}
+				b.append(value.toString)
+			}
+		}
+		
+		b.toString
 	}
 }
 		
@@ -30,7 +48,7 @@ object Log {
 	val All = 0
 	val None = Int.MaxValue
 	
-	var dateFormat = "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %1$tZ"
+	var dateFormat = "%1$tb %1$td %1$tH:%1$tM:%1$tS"
 	var application: String = null
 	var logger: Logger = ConsoleLogger
 	var level: Int = LogLevel.Info.value
@@ -43,7 +61,24 @@ object Log {
 		}
 	}
 	
+	// TODO: add support for args: AnyRef* to be applied via String.format(message, args)
+	def apply( message: String,
+			   messageType: String = "default",
+			   method: String = null,
+			   className: String = null,
+			   level: LogLevel = LogLevel.Info,
+			   reference: AnyRef = null,
+			   date: Calendar = Calendar.getInstance,
+			   thread: String = Thread.currentThread.getName,
+			   application: String = Log.application,
+			   uuid: UUID = UUID.randomUUID()) = {
+		val l = new Log(message, messageType, method, className, level, reference, date, thread, application, uuid)
+		l.send()
+		l
+	}
+	
 	def main(args: Array[String]): Unit = {
-		Log("testing").send()
+		Log("testing")
+		WebLog("testing 2")
 	}
 }
