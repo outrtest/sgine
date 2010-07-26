@@ -28,6 +28,30 @@ object TestGridLayout extends StandardDisplay with Debug {
 		layout(i3, 2, 2)
 		container += i3
 		
+		val i4 = ComponentInstance(i1)
+		i4.color := Color.Blue
+		container += i4
+		
+		val i5 = ComponentInstance(i1)
+		i5.color := Color.Cyan
+		container += i5
+		
+		val i6 = ComponentInstance(i1)
+		i6.color := Color.Magenta
+		container += i6
+		
+		val i7 = ComponentInstance(i1)
+		i7.color := Color.Yellow
+		container += i7
+		
+		val i8 = ComponentInstance(i1)
+		i8.color := Color.Pink
+		container += i8
+		
+		val i9 = ComponentInstance(i1)
+		i9.color := Color.Brown
+		container += i9
+		
 		scene += container
 	}
 }

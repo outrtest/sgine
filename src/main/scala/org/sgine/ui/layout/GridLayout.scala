@@ -9,6 +9,8 @@ import org.sgine.core.VerticalAlignment
 
 import org.sgine.event.Event
 
+import org.sgine.log._
+
 import org.sgine.scene.Node
 import org.sgine.scene.NodeContainer
 
@@ -21,6 +23,26 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	private var items: List[GridItem] = Nil
 	
 	def apply(container: NodeContainer) = {
+		// Make sure everything is configured
+		if (container.size != items.size) {
+			// Add missing
+			for (n <- container) {
+				if (get(n) == None) {
+					nextAvailable match {
+						case Some((row, column)) => apply(n, row, column)
+						case None => warn("No more room found in GridLayout")
+					}
+				}
+			}
+			// Remove no longer used
+			for (item <- items) {
+				if (container.indexOf(item.n) == -1) {
+					items = items filterNot (i => item == i)
+				}
+			}
+		}
+		
+		// Lay out each item
 		for (item <- items) {
 			layout(item)
 		}
@@ -41,11 +63,11 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 		}
 	}
 	
-	def apply(n: Node, row: Int, column: Int, colspan: Int = 1, rowspan: Int = 1) = {
+	def apply(n: Node, row: Int, column: Int) = {
 		val item = get(n) match {
 			case Some(i) => i
 			case None => {
-				val i = GridItem(n, row, column, colspan, rowspan)
+				val i = GridItem(n, row, column)
 				synchronized {
 					items = i :: items
 				}
@@ -54,11 +76,21 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 		}
 		item.row = row
 		item.column = column
-		item.colspan = colspan
-		item.rowspan = rowspan
 		
 		layout(item)
 	}
+	
+	def nextAvailable = (0 until rows * columns) find(value => {
+		val (row, column) = rc(value)
+		!isUsed(row, column)
+	}) match {
+		case Some(value) => Some(rc(value))
+		case None => None
+	}
+	
+	private def rc(value: Int) = (value / columns, value % columns)
+	
+	def isUsed(row: Int, column: Int) = items.find(item => item.row == row && item.column == column) != None
 	
 	private def layout(item: GridItem) = {
 		val offsetX = (item.column * (itemWidth + spacing)) - (width / 2.0)
@@ -75,7 +107,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	private def get(n: Node) = items.find(item => item.n == n)
 }
 
-private case class GridItem(n: Node, var row: Int, var column: Int, var colspan: Int, var rowspan: Int)
+private case class GridItem(n: Node, var row: Int, var column: Int)
 
 object GridLayout {
 	def apply(rows: Int, columns: Int, spacing: Int, itemWidth: Double, itemHeight: Double) = {
