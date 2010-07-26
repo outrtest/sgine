@@ -93,6 +93,7 @@ class Renderer extends PropertyContainer {
 	
 	private def run(): Unit = {
 		try {
+			thread.setName("renderer")
 			initGL()
 			Renderer.instance.set(this)
 			while ((keepAlive) && (!GLDisplay.isCloseRequested)) {

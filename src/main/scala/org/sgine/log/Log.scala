@@ -63,7 +63,7 @@ object Log {
 	
 	// TODO: add support for args: AnyRef* to be applied via String.format(message, args)
 	def apply( message: String,
-			   messageType: String = "default",
+			   messageType: String = null,
 			   method: String = null,
 			   className: String = null,
 			   level: LogLevel = LogLevel.Info,
