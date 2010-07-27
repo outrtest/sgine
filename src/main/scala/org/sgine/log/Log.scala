@@ -50,18 +50,25 @@ object Log {
 	
 	var dateFormat = "%1$tb %1$td %1$tH:%1$tM:%1$tS"
 	var application: String = null
-	var logger: Logger = ConsoleLogger
+	private var loggers: List[Logger] = Nil
 	var level: Int = LogLevel.Info.value
 	
+	addLogger(ConsoleLogger)		// Configure default logger
+	
 	private def log(log: Log) = {
-		if (log.level.value >= level) {
+		for (logger <- loggers) {
 			if (logger.valid(log)) {
 				logger.log(log)
 			}
 		}
 	}
 	
-	// TODO: add support for args: AnyRef* to be applied via String.format(message, args)
+	def addLogger(logger: Logger) = {
+		synchronized {
+			loggers = logger :: loggers
+		}
+	}
+	
 	def apply( message: String,
 			   messageType: String = null,
 			   method: String = null,
@@ -71,14 +78,22 @@ object Log {
 			   date: Calendar = Calendar.getInstance,
 			   thread: String = Thread.currentThread.getName,
 			   application: String = Log.application,
-			   uuid: UUID = UUID.randomUUID()) = {
-		val l = new Log(message, messageType, method, className, level, reference, date, thread, application, uuid)
-		l.send()
-		l
+			   uuid: UUID = UUID.randomUUID(),
+			   args: Seq[AnyRef] = null) = {
+		if (level.value >= this.level) {
+			val m = args match {
+				case null => message
+				case _ => String.format(message, args: _*)
+			}
+			val l = new Log(m, messageType, method, className, level, reference, date, thread, application, uuid)
+			l.send()
+			l
+		}
 	}
 	
 	def main(args: Array[String]): Unit = {
-		Log("testing")
+		Log("testing %1s / %2s, Today: %3$tA", args = List("First", "Second", Calendar.getInstance))
+		
 		WebLog("testing 2")
 	}
 }

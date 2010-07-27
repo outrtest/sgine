@@ -11,13 +11,13 @@ object LogLevel {
 	private var named = Map.empty[String, LogLevel]
 	private var levels = Map.empty[Int, LogLevel]
 	
-	val Config = LogLevel("config", 700)
-	val Fine = LogLevel("fine", 500)
-	val Finer = LogLevel("finer", 400)
 	val Finest = LogLevel("finest", 300)
+	val Finer = LogLevel("finer", 400)
+	val Fine = LogLevel("fine", 500)
+	val Config = LogLevel("config", 700)
 	val Info = LogLevel("info", 800)
-	val Severe = LogLevel("severe", 1000)
 	val Warning = LogLevel("warning", 900)
+	val Severe = LogLevel("severe", 1000)
 	
 	val All = 0
 	val None = Int.MaxValue
