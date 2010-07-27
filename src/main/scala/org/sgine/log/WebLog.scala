@@ -35,9 +35,16 @@ object WebLog {
 			   date: Calendar = Calendar.getInstance,
 			   thread: String = Thread.currentThread.getName,
 			   application: String = Log.application,
-			   uuid: UUID = UUID.randomUUID()) = {
-		val l = new WebLog(message, messageType, user, host, session, method, className, level, reference, date, thread, application, uuid)
-		l.send()
-		l
+			   uuid: UUID = UUID.randomUUID(),
+			   args: Seq[AnyRef] = null) = {
+		if (level.value >= Log.level) {
+			val m = args match {
+				case null => message
+				case _ => String.format(message, args: _*)
+			}
+			val l = new WebLog(m, messageType, user, host, session, method, className, level, reference, date, thread, application, uuid)
+			l.send()
+			l
+		}
 	}
 }
