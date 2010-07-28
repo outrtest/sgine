@@ -69,31 +69,31 @@ object Log {
 		}
 	}
 	
-	def apply( message: String,
-			   messageType: String = null,
-			   method: String = null,
-			   className: String = null,
-			   level: LogLevel = LogLevel.Info,
-			   reference: AnyRef = null,
-			   date: Calendar = Calendar.getInstance,
-			   thread: String = Thread.currentThread.getName,
-			   application: String = Log.application,
-			   uuid: UUID = UUID.randomUUID(),
-			   args: Seq[AnyRef] = null) = {
+	def apply(message: String,
+			  messageType: String = null,
+			  method: String = null,
+			  className: String = null,
+			  level: LogLevel = LogLevel.Info,
+			  reference: AnyRef = null,
+			  args: Seq[AnyRef] = null) = {
 		if (level.value >= this.level) {
 			val m = args match {
 				case null => message
 				case _ => String.format(message, args: _*)
 			}
-			val l = new Log(m, messageType, method, className, level, reference, date, thread, application, uuid)
+			val l = new Log(m, messageType, method, className, level, reference, Calendar.getInstance, Thread.currentThread.getName, Log.application, UUID.randomUUID)
 			l.send()
 			l
 		}
+	}
+	
+	def test(message: String)(implicit date: Calendar = Calendar.getInstance) = {
 	}
 	
 	def main(args: Array[String]): Unit = {
 		Log("testing %1s / %2s, Today: %3$tA", args = List("First", "Second", Calendar.getInstance))
 		
 		WebLog("testing 2")
+		test("one")()
 	}
 }

@@ -14,6 +14,7 @@ object LogLevel {
 	val Finest = LogLevel("finest", 300)
 	val Finer = LogLevel("finer", 400)
 	val Fine = LogLevel("fine", 500)
+	val Debug = LogLevel("debug", 600)
 	val Config = LogLevel("config", 700)
 	val Info = LogLevel("info", 800)
 	val Warning = LogLevel("warning", 900)
