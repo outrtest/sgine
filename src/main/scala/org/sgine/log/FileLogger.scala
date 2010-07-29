@@ -10,5 +10,6 @@ class FileLogger(file: File) extends Logger {
 	def log(log: Log) = {
 		out.write(log.toString)
 		out.newLine()
+		out.flush()
 	}
 }

@@ -9,6 +9,15 @@ trait DB {
 	
 	def query[T](predicate: T => Boolean): Iterator[T]
 	
+	def find[T](predicate: T => Boolean) = {
+		val i = query(predicate)
+		if (i.hasNext) {
+			Some(i.next)
+		} else {
+			None
+		}
+	}
+	
 	def delete(obj: AnyRef): Unit
 	
 	def commit(): Unit
