@@ -1,7 +1,4 @@
-package org.sgine.render
-
-import org.sgine.core.Enumeration
-import org.sgine.core.Enumerated
+package org.sgine.core
 
 sealed trait Material extends Enumeration
 

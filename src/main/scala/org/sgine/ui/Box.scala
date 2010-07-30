@@ -30,7 +30,8 @@ import simplex3d.math.doublem.renamed._
 
 class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
 	val source = new AdvancedProperty[Resource](null, this)
-	val cull = new AdvancedProperty[Face](Face.Back, this)
+	val cull = _cull
+	val material = _material
 	/**
 	 * If false width, height, and depth will update automatically
 	 * based on the associated texture.
@@ -40,8 +41,8 @@ class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
 	val height = new NumericProperty(0.0, this)
 	val depth = new NumericProperty(0.0, this)
 	
+	_mode := ShapeMode.Quads
 	source.listeners += EventHandler(sourceChanged, ProcessingMode.Blocking)
-	cull.listeners += EventHandler(cullChanged, ProcessingMode.Blocking)
 	private val numericHandler = EventHandler(numericChanged, ProcessingMode.Blocking)
 	width.listeners += numericHandler
 	height.listeners += numericHandler
@@ -51,20 +52,10 @@ class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
 	
 	private val data = MutableShapeData(ShapeMode.Quads, 24)
 	
-	private val dirty = new AtomicBoolean(false)
-	
 	def this(source: Resource) = {
 		this()
 		
 		this.source := source
-	}
-	
-	override def update(renderer: Renderer) = {
-		super.update(renderer)
-		
-		if (dirty.compareAndSet(true, false)) {
-			updateShape()
-		}
 	}
 	
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
@@ -73,101 +64,53 @@ class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
 			width := texture.width
 			height := texture.height
 			depth := texture.width
+			
+			updateVertices()
 		}
-		
-		dirty.set(true)
-	}
-	
-	private def cullChanged(evt: PropertyChangeEvent[Face]) = {
-		dirty.set(true)
+		_texcoords := Box.DefaultTextureCoords
 	}
 	
 	private def numericChanged(evt: NumericPropertyChangeEvent) = {
-		dirty.set(true)
+		updateVertices()
 	}
 	
-	private def updateShape() = {
-		data.cull = cull()
-		
+	private def updateVertices() = {
 		val w = width() / 2.0
 		val h = height() / 2.0
 		val d = depth() / 2.0
-		data.vertices = List(	// Front Face
-								Vec3(-w, -h, d),		// Bottom-Left
-								Vec3(w, -h, d),			// Bottom-Right
-								Vec3(w, h, d),			// Top-Right
-								Vec3(-w, h, d),			// Top-Left
-								// Left Face
-								Vec3(-w, -h, -d),		// Bottom-Left
-								Vec3(-w, -h, d),		// Bottom-Right
-								Vec3(-w, h, d),			// Top-Right
-								Vec3(-w, h, -d),		// Top-Left
-								// Back Face
-								Vec3(-w, h, -d),		// Top-Left
-								Vec3(w, h, -d),			// Top-Right
-								Vec3(w, -h, -d),		// Bottom-Right
-								Vec3(-w, -h, -d),		// Bottom-Left
-								// Right Face
-								Vec3(w, h, -d),			// Top-Left
-								Vec3(w, h, d),			// Top-Right
-								Vec3(w, -h, d),			// Bottom-Right
-								Vec3(w, -h, -d),		// Bottom-Left
-								// Top Face
-								Vec3(-w, h, d),			// Bottom-Left
-								Vec3(w, h, d),			// Bottom-Right
-								Vec3(w, h, -d),			// Top-Right
-								Vec3(-w, h, -d),		// Top-Left
-								// Bottom Face
-								Vec3(-w, -h, -d),		// Top-Left
-								Vec3(w, -h, -d),		// Top-Right
-								Vec3(w, -h, d),			// Bottom-Right
-								Vec3(-w, -h, d)			// Bottom-Left
-							 )
-		
-		texture match {
-			case null =>
-			case t => {
-				val x1 = 0.0
-				val y1 = 0.0
-				val x2 = 1.0
-				val y2 = 1.0
-				
-				data.textureCoords = List(	// Front Face
-											Vec2(x1, y2),
-											Vec2(x2, y2),
-											Vec2(x2, y1),
-											Vec2(x1, y1),
-											// Left Face
-											Vec2(x1, y2),
-											Vec2(x2, y2),
-											Vec2(x2, y1),
-											Vec2(x1, y1),
-											// Back Face
-											Vec2(x2, y1),
-											Vec2(x1, y1),
-											Vec2(x1, y2),
-											Vec2(x2, y2),
-											// Right Face
-											Vec2(x2, y1),
-											Vec2(x1, y1),
-											Vec2(x1, y2),
-											Vec2(x2, y2),
-											// Top Face
-											Vec2(x1, y2),
-											Vec2(x2, y2),
-											Vec2(x2, y1),
-											Vec2(x1, y1),
-											// Bottom Face
-											Vec2(x2, y1),
-											Vec2(x1, y1),
-											Vec2(x1, y2),
-											Vec2(x2, y2)
-										)
-			}
-		}
-							 
-		shape(data)
-		
+		_vertices := List(	// Front Face
+							Vec3(-w, -h, d),		// Bottom-Left
+							Vec3(w, -h, d),			// Bottom-Right
+							Vec3(w, h, d),			// Top-Right
+							Vec3(-w, h, d),			// Top-Left
+							// Left Face
+							Vec3(-w, -h, -d),		// Bottom-Left
+							Vec3(-w, -h, d),		// Bottom-Right
+							Vec3(-w, h, d),			// Top-Right
+							Vec3(-w, h, -d),		// Top-Left
+							// Back Face
+							Vec3(-w, h, -d),		// Top-Left
+							Vec3(w, h, -d),			// Top-Right
+							Vec3(w, -h, -d),		// Bottom-Right
+							Vec3(-w, -h, -d),		// Bottom-Left
+							// Right Face
+							Vec3(w, h, -d),			// Top-Left
+							Vec3(w, h, d),			// Top-Right
+							Vec3(w, -h, d),			// Bottom-Right
+							Vec3(w, -h, -d),		// Bottom-Left
+							// Top Face
+							Vec3(-w, h, d),			// Bottom-Left
+							Vec3(w, h, d),			// Bottom-Right
+							Vec3(w, h, -d),			// Top-Right
+							Vec3(-w, h, -d),		// Top-Left
+							// Bottom Face
+							Vec3(-w, -h, -d),		// Top-Left
+							Vec3(w, -h, -d),		// Top-Right
+							Vec3(w, -h, d),			// Bottom-Right
+							Vec3(-w, -h, d)			// Bottom-Left
+						 )
+						 
+		// Update bounding
 		if ((_bounding.width != width()) || (_bounding.height != height()) || (_bounding.depth != depth())) {
 			_bounding.width = width()
 			_bounding.height = height()
@@ -176,5 +119,48 @@ class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
 			val e = new BoundingChangeEvent(this, _bounding)
 			Event.enqueue(e)
 		}
+	}
+}
+
+object Box {
+	lazy val DefaultTextureCoords = generateDefaultTexCoords()
+	
+	private def generateDefaultTexCoords() = {
+		val x1 = 0.0
+		val y1 = 0.0
+		val x2 = 1.0
+		val y2 = 1.0
+		
+		List(	// Front Face
+			Vec2(x1, y2),
+			Vec2(x2, y2),
+			Vec2(x2, y1),
+			Vec2(x1, y1),
+			// Left Face
+			Vec2(x1, y2),
+			Vec2(x2, y2),
+			Vec2(x2, y1),
+			Vec2(x1, y1),
+			// Back Face
+			Vec2(x2, y1),
+			Vec2(x1, y1),
+			Vec2(x1, y2),
+			Vec2(x2, y2),
+			// Right Face
+			Vec2(x2, y1),
+			Vec2(x1, y1),
+			Vec2(x1, y2),
+			Vec2(x2, y2),
+			// Top Face
+			Vec2(x1, y2),
+			Vec2(x2, y2),
+			Vec2(x2, y1),
+			Vec2(x1, y1),
+			// Bottom Face
+			Vec2(x2, y1),
+			Vec2(x1, y1),
+			Vec2(x1, y2),
+			Vec2(x2, y2)
+		)
 	}
 }

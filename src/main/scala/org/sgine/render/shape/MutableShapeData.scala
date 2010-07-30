@@ -1,9 +1,6 @@
 package org.sgine.render.shape
 
-import org.sgine.core.Color
-import org.sgine.core.Face
-
-import org.sgine.render.Material
+import org.sgine.core._
 
 import simplex3d.math.doublem._
 
