@@ -29,8 +29,6 @@ class Light private[render](val index: Int, val renderer: Renderer) extends Prop
 	
 	def update() = {
 		if (enabled.uncommitted) {
-			renderer.updateLighting()
-			
 			enabled.commit()
 			enabled() match {
 				case true => glEnable(glLightIndex)

@@ -2,10 +2,15 @@ package org.sgine.ui
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import org.sgine.bounding.BoundingObject
+import org.sgine.bounding.event.BoundingChangeEvent
+import org.sgine.bounding.mutable.BoundingBox
+
 import org.sgine.core.Color
 import org.sgine.core.Face
 import org.sgine.core.Resource
 
+import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
@@ -23,7 +28,7 @@ import org.sgine.ui.ext.AdvancedComponent
 
 import simplex3d.math.doublem.renamed._
 
-class Box extends AdvancedComponent with ShapeComponent {
+class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
 	val source = new AdvancedProperty[Resource](null, this)
 	val cull = new AdvancedProperty[Face](Face.Back, this)
 	/**
@@ -41,6 +46,8 @@ class Box extends AdvancedComponent with ShapeComponent {
 	width.listeners += numericHandler
 	height.listeners += numericHandler
 	depth.listeners += numericHandler
+	
+	protected val _bounding = BoundingBox()
 	
 	private val data = MutableShapeData(ShapeMode.Quads, 24)
 	
@@ -160,5 +167,14 @@ class Box extends AdvancedComponent with ShapeComponent {
 		}
 							 
 		shape(data)
+		
+		if ((_bounding.width != width()) || (_bounding.height != height()) || (_bounding.depth != depth())) {
+			_bounding.width = width()
+			_bounding.height = height()
+			_bounding.depth = depth()
+			
+			val e = new BoundingChangeEvent(this, _bounding)
+			Event.enqueue(e)
+		}
 	}
 }

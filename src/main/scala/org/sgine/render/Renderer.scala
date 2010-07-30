@@ -64,8 +64,7 @@ class Renderer extends PropertyContainer {
 	val background = new AdvancedProperty[Color](Color.Black, this) with TransactionalProperty[Color]
 	val settings = new AdvancedProperty[RenderSettings](RenderSettings.Default, this) with TransactionalProperty[RenderSettings]
 	
-	private var _lights = false
-	def lights = _lights
+	val lighting = new AdvancedProperty[Boolean](false, this) with TransactionalProperty[Boolean]
 	val light0 = new Light(0, this)
 	val light1 = new Light(1, this)
 	val light2 = new Light(2, this)
@@ -110,16 +109,6 @@ class Renderer extends PropertyContainer {
 			
 			destroy()
 			System.exit(0)
-		}
-	}
-	
-	private[render] def updateLighting() = {
-		if ((light0.enabled()) || (light1.enabled()) || (light2.enabled()) || (light3.enabled()) || (light4.enabled()) || (light5.enabled()) || (light6.enabled()) || (light7.enabled())) {
-			glEnable(GL_LIGHTING)
-			_lights = true
-		} else {
-			glDisable(GL_LIGHTING)
-			_lights = false
 		}
 	}
 	
@@ -191,6 +180,13 @@ class Renderer extends PropertyContainer {
 			background.commit()
 			val c = background()
 			glClearColor(c.red.toFloat, c.green.toFloat, c.blue.toFloat, c.alpha.toFloat)
+		}
+		if (lighting.uncommitted) {
+			lighting.commit()
+			lighting() match {
+				case true => glEnable(GL_LIGHTING)
+				case false => glDisable(GL_LIGHTING)
+			}
 		}
 		if (settings.uncommitted) {
 			throw new RuntimeException("Changing of settings after renderer has started is not currently supported.")
