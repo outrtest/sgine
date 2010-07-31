@@ -3,6 +3,8 @@ package org.sgine.input
 import org.sgine.event.Event
 import org.sgine.event.Listenable
 
+import org.sgine.log._
+
 import org.sgine.work.Updatable
 
 import org.lwjgl.input.{Keyboard => GLKeyboard}
@@ -69,7 +71,7 @@ object Keyboard extends Listenable with Updatable {
 				}
 				val key = Key(GLKeyboard.getEventKey, isShiftDown, isCapsDown)
 				if (key == null) {
-					println("org.sgine.input.Keyboard.update: Unable to find key: " + GLKeyboard.getEventKey + " - " + isShiftDown + " - " + isCapsDown + " - state: " + state + ", " + GLKeyboard.getKeyName(GLKeyboard.getEventKey))
+					warn("org.sgine.input.Keyboard.update: Unable to find key: " + GLKeyboard.getEventKey + " - " + isShiftDown + " - " + isCapsDown + " - state: " + state + ", " + GLKeyboard.getKeyName(GLKeyboard.getEventKey))
 				} else {
 					val evt = event.KeyEvent(
 												key,

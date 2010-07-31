@@ -277,8 +277,4 @@ object Color {
 		
 		names
 	}
-	
-	def main(args: Array[String]): Unit = {
-		println(Color.random.name)
-	}
 }

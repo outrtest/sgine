@@ -4,6 +4,8 @@ import java.awt.{Font => AWTFont}
 import java.awt.RenderingHints
 import java.awt.font.FontRenderContext
 
+import org.sgine.log._
+
 import org.sgine.render.TextureUtil
 
 import org.sgine.util.GeneralReusableGraphic
@@ -16,12 +18,12 @@ object BitmapFontCreator {
 		val context = new FontRenderContext(null, true, true)
 		val lm = font.getLineMetrics("a", context)
 		val r = font.getStringBounds("a", context)
-		println(lm.getAscent)
-		println(lm.getBaselineIndex)
-		println(lm.getDescent)
-		println(lm.getHeight)
-		println(lm.getLeading)
-		println(r.getX + ", " + r.getCenterX + ", " + r.getMinX + ", " + r.getMaxX + ", " + r.getWidth)
+		info(lm.getAscent)
+		info(lm.getBaselineIndex)
+		info(lm.getDescent)
+		info(lm.getHeight)
+		info(lm.getLeading)
+		info(r.getX + ", " + r.getCenterX + ", " + r.getMinX + ", " + r.getMaxX + ", " + r.getWidth)
 		
 		val rg = GeneralReusableGraphic
 		val g = rg(800, 600)

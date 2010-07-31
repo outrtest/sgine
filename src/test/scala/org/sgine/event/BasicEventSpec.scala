@@ -3,6 +3,8 @@ package org.sgine.event
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
+import org.sgine.log._
+
 import java.util.concurrent._
 
 class BasicEventSpec extends FlatSpec with ShouldMatchers {
@@ -86,22 +88,22 @@ class BasicEventSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	def simpleListener1(evt: Event) = {
-		println("listener1")
+		log("listener1")
 		listenerIncrement1 += 1
 	}
 	
 	def simpleListener2(evt: Event) = {
-		println("listener2")
+		log("listener2")
 		listenerIncrement2 += 1
 	}
 	
 	def simpleListener3(evt: Event) = {
-		println("listener3")
+		log("listener3")
 		listenerIncrement3 += 1
 	}
 	
 	def exclusiveListener1(evt: ExclusiveEvent1) = {
-		println("listener4")
+		log("listener4")
 		listenerIncrement4 += 1
 	}
 }

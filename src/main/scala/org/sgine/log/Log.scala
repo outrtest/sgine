@@ -69,17 +69,17 @@ object Log {
 		}
 	}
 	
-	def apply(message: String,
+	def apply(message: Any,
 			  messageType: String = null,
 			  method: String = null,
 			  className: String = null,
 			  level: LogLevel = LogLevel.Info,
 			  reference: AnyRef = null,
-			  args: Seq[AnyRef] = null) = {
+			  args: Seq[Any] = null) = {
 		if (level.value >= this.level) {
 			val m = args match {
-				case null => message
-				case _ => String.format(message, args: _*)
+				case null => message.toString
+				case _ => String.format(message.toString, args.asInstanceOf[Seq[AnyRef]]: _*)
 			}
 			val l = new Log(m, messageType, method, className, level, reference, Calendar.getInstance, Thread.currentThread.getName, Log.application, UUID.randomUUID)
 			l.send()

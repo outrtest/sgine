@@ -2,6 +2,8 @@ package org.sgine.property
 
 import org.sgine.easing.Linear
 
+import org.sgine.log._
+
 import org.sgine.property.animate.EasingNumericAnimator
 
 import org.sgine.work.Updatable
@@ -15,13 +17,13 @@ object TestAdjustableProperties {
 		var time = System.currentTimeMillis
 		p := 100.0
 		p.waitForTarget()
-		println("Elapsed: " + (System.currentTimeMillis - time) + " to reach: " + p())
+		info("Elapsed: " + (System.currentTimeMillis - time) + " to reach: " + p())
 		
 		// Stage 2
 		time = System.currentTimeMillis
 		p.set(0.0)
 		p := 100.0
 		p.waitForTarget()
-		println("Elapsed: " + (System.currentTimeMillis - time) + " to reach: " + p())
+		info("Elapsed: " + (System.currentTimeMillis - time) + " to reach: " + p())
 	}
 }

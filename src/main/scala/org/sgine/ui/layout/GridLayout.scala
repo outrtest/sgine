@@ -25,19 +25,24 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	def apply(container: NodeContainer) = {
 		// Make sure everything is configured
 		if (container.size != items.size) {
-			// Add missing
-			for (n <- container) {
-				if (get(n) == None) {
-					nextAvailable match {
-						case Some((row, column)) => apply(n, row, column)
-						case None => warn("No more room found in GridLayout")
+			synchronized {
+				// Add missing
+				for (n <- container) {
+					if (get(n) == None) {
+						nextAvailable match {
+							case Some((row, column)) => {
+								info("Node not already in layout, specifying: " + n + " at " + row + "x" + column)
+								apply(n, row, column)
+							}
+							case None => warn("No more room found in GridLayout")
+						}
 					}
 				}
-			}
-			// Remove no longer used
-			for (item <- items) {
-				if (container.indexOf(item.n) == -1) {
-					items = items filterNot (i => item == i)
+				// Remove no longer used
+				for (item <- items) {
+					if (container.indexOf(item.n) == -1) {
+						items = items filterNot (i => item == i)
+					}
 				}
 			}
 		}
@@ -63,21 +68,29 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 		}
 	}
 	
+	def apply(row: Int, column: Int) = items.find(item => item.row == row && item.column == column) match {
+		case Some(i) => i.n
+		case None => None
+	}
+	
 	def apply(n: Node, row: Int, column: Int) = {
-		val item = get(n) match {
-			case Some(i) => i
-			case None => {
-				val i = GridItem(n, row, column)
-				synchronized {
+		synchronized {
+			if (row >= rows) throw new IndexOutOfBoundsException("Specified row exceeds row count. Specified: " + row + ", Max: " + rows)
+			if (column >= columns) throw new IndexOutOfBoundsException("Specified column exceeds column count. Specified: " + column + ", Max: " + columns)
+			
+			val item = get(n) match {
+				case Some(i) => i
+				case None => {
+					val i = GridItem(n, row, column)
 					items = i :: items
+					i
 				}
-				i
 			}
+			item.row = row
+			item.column = column
+			
+			layout(item)
 		}
-		item.row = row
-		item.column = column
-		
-		layout(item)
 	}
 	
 	def nextAvailable = (0 until rows * columns) find(value => {

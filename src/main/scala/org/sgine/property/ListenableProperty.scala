@@ -32,7 +32,6 @@ trait ListenableProperty[T] extends ChangeableProperty[T] with Listenable {
 				adjusting = true
 			}
 		}
-//		println("PropertyChanged: " + this + " - " + oldValue + " to " + newValue)
 		Event.enqueue(PropertyChangeEvent(this, oldValue, newValue, adjusting))
 	}
 }

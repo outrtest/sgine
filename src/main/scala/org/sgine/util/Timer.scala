@@ -35,19 +35,4 @@ class Timer private() {
 
 object Timer {
 	def apply() = new Timer()
-	
-	def main(args: Array[String]): Unit = {
-		val t = Timer()
-		t.start("First")
-		t.start("Second")
-		Thread.sleep(1000)
-		t.stop("First")
-		Thread.sleep(1000)
-		t.stop("Second")
-		t.start("First")
-		Thread.sleep(1000)
-		t.stop("First")
-		println("First: " + t.get("First"))
-		println("Second: " + t.get("Second"))
-	}
 }

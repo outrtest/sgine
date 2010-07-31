@@ -1,5 +1,7 @@
 package org.sgine.work
 
+import org.sgine.log._
+
 import org.sgine.work.unit._;
 
 object TestWork {
@@ -10,15 +12,15 @@ object TestWork {
 		
 		DefaultWorkManager.maxThreads = 2
 		DefaultWorkManager.process(0 until 20, test)
-		println("Finished")
+		log("Finished")
 	}
 	
 	def testOne(): Unit = {
-		println("Test One!");
+		log("Test One!");
 	}
 	
 	def test(n: Int) = {
-		println("Test: " + n)
+		log("Test: " + n)
 		Thread.sleep(500)
 	}
 }
@@ -27,15 +29,14 @@ object TestDependent extends DependentUnit {
 	val time = System.currentTimeMillis();
 	
 	def apply() = {
-		println("Dependent works!");
+		log("Dependent works!");
 	}
 	
 	def isReady() = {
 		if (System.currentTimeMillis() > time + 3000) {
-			println("ready!");
+			log("ready!");
 			true;
 		} else {
-//			println("not ready");
 			false;
 		}
 	}

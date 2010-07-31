@@ -2,6 +2,8 @@ package org.sgine.scene
 
 import org.sgine.event._
 
+import org.sgine.log._
+
 import org.sgine.scene.event._
 
 import org.scalatest.FlatSpec
@@ -49,7 +51,7 @@ class BasicSceneSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	def listener1(evt: Event) = {
-		println("listener1: " + evt)
+		info("listener1: " + evt)
 	}
 	
 	def containerEvent(evt: NodeContainerEvent) = {

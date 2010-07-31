@@ -5,7 +5,7 @@ package object log {
 	
 	val info = Log
 	
-	def warn(message: String,
+	def warn(message: Any,
 			 messageType: String = null,
 			 method: String = null,
 			 className: String = null,
@@ -13,7 +13,7 @@ package object log {
 			 reference: AnyRef = null,
 			 args: Seq[AnyRef] = null) = Log(message, messageType, method, className, level, reference, args)
 			 
-	def trace(message: String,
+	def trace(message: Any,
 			  throwable: Throwable,
 			  messageType: String = "stacktrace",
 			  method: String = null,
@@ -21,7 +21,7 @@ package object log {
 			  level: LogLevel = LogLevel.Warning,
 			  args: Seq[AnyRef] = null) = Log(message, messageType, method, className, level, throwable, args)
 	
-	def debug(message: String,
+	def debug(message: Any,
 			  messageType: String = null,
 			  method: String = null,
 			  className: String = null,

@@ -3,6 +3,8 @@ package org.sgine.ui
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.util.glu.tessellation._
 
+import org.sgine.log._
+
 import org.sgine.render._
 
 import org.sgine.ui.ext._
@@ -21,19 +23,19 @@ object TestTesselate extends StandardDisplay {
 				
 				val tessCb = new org.lwjgl.util.glu.GLUtessellatorCallbackAdapter() {
 					override def begin(t: Int) = {
-//						println("begin " + t)
+//						info("begin " + t)
 						glBegin(t)
 					}
 					
 					override def vertex(vertexData: AnyRef) = {
-//						println("vertex")
+//						info("vertex")
 						val vert = vertexData.asInstanceOf[Array[Double]]
 						glVertex2d(vert(0), vert(1))
 						count += 1
 					}
 					
 					override def combine(coords: Array[Double], data: Array[AnyRef], weight: Array[Float], outData: Array[AnyRef]) = {
-//						println("combine " + coords.length + ", " + data + ", " + weight + ", " + outData)
+//						info("combine " + coords.length + ", " + data + ", " + weight + ", " + outData)
 						for (i <- 0 until outData.length) {
 							val combined = new Array[Double](6)
 							combined(0) = coords(0).toFloat
@@ -43,7 +45,7 @@ object TestTesselate extends StandardDisplay {
 					}
 					
 					override def end() = {
-//						println("end")
+//						info("end")
 						glEnd()
 					}
 				}

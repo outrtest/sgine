@@ -8,6 +8,8 @@ import org.sgine.input.event.KeyEvent
 import simplex3d.math.doublem.renamed._
 import simplex3d.math.doublem.DoubleMath._
 
+import org.sgine.log._
+
 import org.sgine.render.font.BitmapFont
 
 import org.sgine.work._
@@ -41,10 +43,10 @@ object TestFonts {
 		
 		Keyboard.listeners += test _
 		
-		println(franklinFont.measureWidth("Franklin Gothic Heavy with a blue gradient.", true))
+		info(franklinFont.measureWidth("Franklin Gothic Heavy with a blue gradient.", true))
 	}
 	
-	private def test(evt: KeyEvent) ={
-		println("test: " + evt)
+	private def test(evt: KeyEvent): Unit = {
+		info("test: " + evt)
 	}
 }

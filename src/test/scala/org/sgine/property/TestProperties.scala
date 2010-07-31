@@ -1,15 +1,19 @@
 package org.sgine.property
 
 import org.sgine._
+
+import org.sgine.log._
+
 import org.sgine.property.animate._
 import org.sgine.property.container._
 import org.sgine.property.event._
+
 import org.sgine.work._
 import org.sgine.work.unit._
 
 object TestProperties {
 	val p = new MutableProperty[Int] with ChangeableProperty[Int] {
-		override def changed(oldValue:Int, newValue:Int):Unit = println("Changed: " + oldValue + " to " + newValue)
+		override def changed(oldValue:Int, newValue:Int):Unit = info("Changed: " + oldValue + " to " + newValue)
 	}
 	val p2 = new MutableProperty[Int] with ListenableProperty[Int]
 	val p3 = new MutableProperty[Double] with AnimatingProperty[Double]
@@ -34,21 +38,21 @@ object TestProperties {
 		p3.animator = new LinearNumericAnimator(5.0)
 		p3 := 50.0
 		val time = System.currentTimeMillis
-		println("Current: " + p3())
+		info("Current: " + p3())
 		Thread.sleep(1000)
-		println("Delayed1: " + p3())
+		info("Delayed1: " + p3())
 		Thread.sleep(1000)
-		println("Delayed2: " + p3())
+		info("Delayed2: " + p3())
 		p3.waitForTarget()
-		println("Done: " + p3() + " in " + (System.currentTimeMillis - time) + "ms")
+		info("Done: " + p3() + " in " + (System.currentTimeMillis - time) + "ms")
 		
 		p4 := "One"
 		p5 := "Two"
 		p5 bind p4
 		p4 := "Three"
-		println("p4: " + p4() + ", p5: " + p5())
+		info("p4: " + p4() + ", p5: " + p5())
 		
-		println("PropertyContainer: " + pg1.properties.size)
+		info("PropertyContainer: " + pg1.properties.size)
 		
 		ap1.listeners += ap1Changed _
 		ap1 := "One"
@@ -56,14 +60,14 @@ object TestProperties {
 		p4 bind ap1
 		ap1 := "Changed"
 		
-		println("ap1: " + ap1() + ", p4: " + p4() + ", p5: " + p5())
+		info("ap1: " + ap1() + ", p4: " + p4() + ", p5: " + p5())
 	}
 	
 	def p2Changed(evt: PropertyChangeEvent[Int]):Unit = {
-		println("p2Changed: " + evt.oldValue + " to " + evt.newValue)
+		info("p2Changed: " + evt.oldValue + " to " + evt.newValue)
 	}
 	
 	def ap1Changed(evt: PropertyChangeEvent[String]):Unit = {
-		println("ap1Changed: " + evt.oldValue + " to " + evt.newValue)
+		info("ap1Changed: " + evt.oldValue + " to " + evt.newValue)
 	}
 }

@@ -7,6 +7,8 @@ import org.sgine.input.Key
 import org.sgine.input.Keyboard
 import org.sgine.input.event.KeyPressEvent
 
+import org.sgine.log._
+
 import org.sgine.render.font.FontManager
 
 import org.sgine.scene.GeneralNodeContainer
@@ -42,7 +44,7 @@ trait Debug extends Display {
 			Renderer().shutdown()
 		} else if (evt.keyChar.toLower == 'l') {		// Toggle lighting
 			Renderer().lighting := !Renderer().lighting()
-			println("Lighting turned " + (if (Renderer().lighting()) "on" else "off"))
+			info("Lighting turned " + (if (Renderer().lighting()) "on" else "off"))
 		}
 	}
 }
