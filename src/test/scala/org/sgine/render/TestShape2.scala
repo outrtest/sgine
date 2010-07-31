@@ -6,6 +6,8 @@ import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Color
 
+import org.sgine.log._
+
 import org.sgine.render.shape._
 
 import simplex3d.math._
@@ -32,7 +34,7 @@ object TestShape2 {
 		val shape = glyphVector.getOutline
 		val rect = new java.awt.geom.Rectangle2D.Double(0.0, 0.0, 5.0, 5.0)
 		val data = ShapeUtilities.convert(shape)
-		println("Data: " + data.length)
+		info("Data: " + data.length)
 		s(data)
 		val fps = FPS(1.0)
 		

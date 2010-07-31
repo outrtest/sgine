@@ -7,6 +7,8 @@ import javax.imageio._
 
 import org.lwjgl.opengl.GL11._
 
+import org.sgine.log._
+
 object TestRenderer {
 	def main(args: Array[String]): Unit = {
 		val r = Renderer.createFrame(1024, 768, "Test Renderer", RenderSettings.High)
@@ -23,7 +25,7 @@ object TestRenderer {
 		a(2) = fps
 		r.renderable := RenderList(MatrixState(m), i, fps)
 		
-		println("Renderer started!")
+		info("Renderer started!")
 		while (r.isAlive) {
 			m := Mat3x4 rotateY(0.001) concatenate(m)
 			

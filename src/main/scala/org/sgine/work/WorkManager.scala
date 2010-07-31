@@ -113,10 +113,6 @@ class WorkManager (val name: String) {
 						addWorker()
 					}
 				}
-//				println("Test: " + allProcessing + ", " + workCount + ", " + workLoadThreshold + ", " + allowOverloading + ", " + workers.length)
-//				if ((allProcessing) && (workCount > workLoadThreshold) && (allowOverloading)) {
-//					addWorker()
-//				}
 			}
 			
 			Thread.sleep(10)

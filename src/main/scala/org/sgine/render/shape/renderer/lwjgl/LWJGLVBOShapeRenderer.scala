@@ -109,7 +109,6 @@ class VBO() {
 	def draw() = {
 		val length = data.length
 		if (LWJGLVBOShapeRenderer.current != id) {
-//			println("New! " + id + ", Current: " + LWJGLVBOShapeRenderer.current)
 			LWJGLVBOShapeRenderer.current = id
 			
 			glEnableClientState(GL_VERTEX_ARRAY)

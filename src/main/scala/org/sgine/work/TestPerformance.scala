@@ -2,6 +2,8 @@ package org.sgine.work
 
 import java.util.concurrent._;
 
+import org.sgine.log._
+
 object TestPerformance extends Function0[Unit] {
 	var count = 0;
 	var iterations = 10000000;
@@ -15,7 +17,7 @@ object TestPerformance extends Function0[Unit] {
 			Thread.sleep(1);
 		}
 		
-		println("Completed work: " + iterations + " in " + (TimeUnit.MILLISECONDS.convert(System.nanoTime() - time, TimeUnit.NANOSECONDS) / 1000.0f) + " seconds, Threads: " + DefaultWorkManager.threadCount);
+		info("Completed work: " + iterations + " in " + (TimeUnit.MILLISECONDS.convert(System.nanoTime() - time, TimeUnit.NANOSECONDS) / 1000.0f) + " seconds, Threads: " + DefaultWorkManager.threadCount);
 	}
 	
 	def apply() = {

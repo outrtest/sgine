@@ -1,5 +1,7 @@
 package org.sgine.work
 
+import org.sgine.log._
+
 object TestWorkManager {
 	def main(args: Array[String]): Unit = {
 		DefaultWorkManager += test _
@@ -7,7 +9,7 @@ object TestWorkManager {
 		Thread.sleep(1000000)
 	}
 	
-	def test() = {
-		println("Testing!")
+	def test(): Unit = {
+		info("Testing!")
 	}
 }

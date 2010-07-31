@@ -2,6 +2,8 @@ package org.sgine.render
 
 import org.lwjgl.opengl.GL11._
 
+import org.sgine.log._
+
 import org.sgine.render.font.Font
 
 import simplex3d.math._
@@ -21,7 +23,7 @@ class FPS private(frequency: Double, font: Font, matrix: Mat3x4d) extends Functi
 			accurate = (frames / elapsed).round.toInt
 			elapsed = 0.0;
 			
-			if (font == null) println("FPS: " + accurate);
+			if (font == null) log("FPS: " + accurate);
 			frames = 0
 		}
 		

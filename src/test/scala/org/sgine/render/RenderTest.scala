@@ -13,6 +13,8 @@ import java.nio._
 
 import org.sgine.core.Color
 
+import org.sgine.log._
+
 import org.lwjgl.opengl.{Display => GLDisplay}
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL12._
@@ -132,7 +134,7 @@ object RenderTest {
 			frames += 1
 			if (elapsed > 1.0) {
 				elapsed = 0.0
-				System.out.println("FPS: " + frames)
+				info("FPS: " + frames)
 				frames = 0
 			}
 			

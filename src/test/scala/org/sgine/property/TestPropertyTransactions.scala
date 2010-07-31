@@ -1,6 +1,9 @@
 package org.sgine.property
 
 import org.sgine.event._
+
+import org.sgine.log._
+
 import org.sgine.property.event._
 
 object TestPropertyTransactions {
@@ -24,13 +27,13 @@ object TestPropertyTransactions {
 	}
 	
 	def test() = {
-		println("Original: " + p.originalValue)
-		println("Current: " + p())
-		println("Uncommitted: " + p.uncommitted)
-		println("----------------------------------")
+		info("Original: " + p.originalValue)
+		info("Current: " + p())
+		info("Uncommitted: " + p.uncommitted)
+		info("----------------------------------")
 	}
 	
 	def events(evt: PropertyTransactionEvent[String]) = {
-		println("Event: " + evt.oldValue + " to " + evt.newValue + " " + (if (evt.isCommit) "commit" else "revert"))
+		info("Event: " + evt.oldValue + " to " + evt.newValue + " " + (if (evt.isCommit) "commit" else "revert"))
 	}
 }

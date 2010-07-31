@@ -1,11 +1,13 @@
 package org.sgine.work
 
+import org.sgine.log._
+
 object TestUpdatable {
 	def main(args: Array[String]): Unit = {
 		val u = new TestUpdatable()
-		println("Starting...")
+		info("Starting...")
 		Thread.sleep(5000)
-		println("Stopping...")
+		info("Stopping...")
 	}
 }
 
@@ -13,7 +15,7 @@ class TestUpdatable extends Updatable {
 	initUpdatable()
 	
 	override def update(time: Double) = {
-		println("Update! " + time)
+		info("Update! " + time)
 		Thread.sleep(10)
 	}
 }

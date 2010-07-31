@@ -66,7 +66,6 @@ object Updatable extends Function0[Unit] {
 			val shouldWait = update()
 			
 			if (shouldWait > 0) {
-//				println("Should wait: " + shouldWait + " - " + shouldElapse)
 				Thread.sleep(shouldWait)
 			}
 		}

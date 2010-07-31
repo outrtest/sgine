@@ -29,8 +29,6 @@ class RenderImage protected() extends Function0[Unit] {
 			val w = (width - insetX1 - insetX2) / 2.0
 			val h = (height - insetY1 - insetY2) / 2.0
 			
-//			println("DRAW:" + x1 + "x" + y1 + " - " + x2 + "x" + y2 + " - " + w + "x" + h)
-			
 			glDisable(GL_CULL_FACE)
 			
 			glBegin(GL_QUADS)

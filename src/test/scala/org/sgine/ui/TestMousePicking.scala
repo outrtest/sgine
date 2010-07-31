@@ -6,6 +6,8 @@ import org.sgine.event.EventHandler
 
 import org.sgine.input.event.MouseEvent
 
+import org.sgine.log._
+
 import org.sgine.render.Renderer
 import org.sgine.render.scene.RenderableScene
 
@@ -40,6 +42,6 @@ object TestMousePicking {
 	
 	// The method that is invoked when a mouse event occurs on the picture
 	private def mouseEvent(evt: MouseEvent) = {
-		println("MouseEvent: " + evt)
+		info("MouseEvent: " + evt)
 	}
 }

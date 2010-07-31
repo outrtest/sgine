@@ -87,8 +87,4 @@ object Time {
 		
 		b.toString()
 	}
-	
-	def main(args: Array[String]): Unit = {
-		println(elapsed(Minute + (30 * Second)))
-	}
 }

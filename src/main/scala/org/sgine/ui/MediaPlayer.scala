@@ -33,6 +33,7 @@ class MediaPlayer extends CachedComponent with AdvancedComponent {
 	val volume = new AdvancedProperty[Double](1.0, this)
 	val balance = new AdvancedProperty[Double](0.0, this)
 	val mute = new AdvancedProperty[Boolean](false, this)
+	val repeat = new AdvancedProperty[Boolean](false, this)
 	
 	private val provider = new MediaProvider()
 	private val dataBuffer = new VideoDataBuffer(null, 0, 0, 0, VideoDataBuffer.Format.BGR)
@@ -46,6 +47,7 @@ class MediaPlayer extends CachedComponent with AdvancedComponent {
 		pixelFormat := GL_BGRA
 		
 		source.listeners += EventHandler(sourceChanged, processingMode = ProcessingMode.Blocking)
+		repeat.listeners += EventHandler(repeatChanged, processingMode = ProcessingMode.Blocking)
 	}
 	
 	def play() = {
@@ -89,5 +91,9 @@ class MediaPlayer extends CachedComponent with AdvancedComponent {
 		
 		width := videoControl.getFrameWidth
 		height := videoControl.getFrameHeight
+	}
+	
+	private def repeatChanged(evt: PropertyChangeEvent[Boolean]) = {
+		provider.setRepeating(repeat())
 	}
 }

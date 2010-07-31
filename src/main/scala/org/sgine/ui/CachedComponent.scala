@@ -10,6 +10,8 @@ import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
+import org.sgine.log._
+
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeEvent
 
@@ -66,7 +68,7 @@ trait CachedComponent extends Component with BoundingObject {
 		if ((width() > 0) && (height() > 0)) {
 			if (texture == null) {
 				texture = new StreamingTexture(width(), height())
-				println("Streaming: " + width() + "x" + height())
+				info("Streaming: " + width() + "x" + height())
 				texture.internalTextureFormat = GL_RGBA
 				texture.pixelTextureFormat = pixelFormat()
 				texture.updateFunction = redraw
