@@ -23,9 +23,9 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	private var items: List[GridItem] = Nil
 	
 	def apply(container: NodeContainer) = {
-		// Make sure everything is configured
-		if (container.size != items.size) {
-			synchronized {
+		synchronized {
+			// Make sure everything is configured
+			if (container.size != items.size) {
 				// Add missing
 				for (n <- container) {
 					if (get(n) == None) {
@@ -45,26 +45,26 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 					}
 				}
 			}
-		}
-		
-		// Lay out each item
-		for (item <- items) {
-			layout(item)
-		}
-		
-		// Update bounding of container if necessary
-		container match {
-			case bo: BoundingObject => bo.bounding() match {
-				case bb: BoundingBox => {
-					bb.width = width
-					bb.height = height
-					
-					val e = new BoundingChangeEvent(bo, bb)
-					Event.enqueue(e)
+			
+			// Lay out each item
+			for (item <- items) {
+				layout(item)
+			}
+			
+			// Update bounding of container if necessary
+			container match {
+				case bo: BoundingObject => bo.bounding() match {
+					case bb: BoundingBox => {
+						bb.width = width
+						bb.height = height
+						
+						val e = new BoundingChangeEvent(bo, bb)
+						Event.enqueue(e)
+					}
+					case _ =>
 				}
 				case _ =>
 			}
-			case _ =>
 		}
 	}
 	
@@ -78,7 +78,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 			if (row >= rows) throw new IndexOutOfBoundsException("Specified row exceeds row count. Specified: " + row + ", Max: " + rows)
 			if (column >= columns) throw new IndexOutOfBoundsException("Specified column exceeds column count. Specified: " + column + ", Max: " + columns)
 			
-			val item = get(n) match {
+			val item = getInternal(n) match {
 				case Some(i) => i
 				case None => {
 					val i = GridItem(n, row, column)
@@ -105,6 +105,11 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	
 	def isUsed(row: Int, column: Int) = items.find(item => item.row == row && item.column == column) != None
 	
+	def check(row: Int, column: Int) = items.find(item => item.row == row && item.column == column) match {
+		case Some(item) => Some(item.n)
+		case None => None
+	}
+	
 	private def layout(item: GridItem) = {
 		val offsetX = (item.column * (itemWidth + spacing)) - (width / 2.0)
 		val offsetY = (-item.row * (itemHeight + spacing)) - (height / -2.0)
@@ -117,7 +122,12 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 		}
 	}
 	
-	private def get(n: Node) = items.find(item => item.n == n)
+	def get(n: Node) = getInternal(n) match {
+		case Some(item) => Some((item.row, item.column))
+		case None => None
+	}
+	
+	private def getInternal(n: Node) = items.find(item => item.n == n)
 }
 
 private case class GridItem(n: Node, var row: Int, var column: Int)
