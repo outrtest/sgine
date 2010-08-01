@@ -22,6 +22,12 @@ class Label extends AdvancedComponent with BoundingObject {
 	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
 	val text = new AdvancedProperty[String]("", this)
 	
+	def this(text: String) = {
+		this()
+		
+		this.text := text
+	}
+	
 	configureListeners()
 	
 	def drawComponent() = {
