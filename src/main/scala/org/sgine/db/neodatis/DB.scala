@@ -5,7 +5,7 @@ import java.io.File
 import org.neodatis.odb.Objects
 import org.neodatis.odb.ODB
 import org.neodatis.odb.ODBFactory
-import org.neodatis.odb.core.query.nq.SimpleNativeQuery
+import org.neodatis.odb.core.query.nq.NativeQuery
 
 import org.sgine.db.DBFactory
 
@@ -16,6 +16,8 @@ class DB(container: ODB, val autoCommit: Boolean) extends org.sgine.db.DB {
 		container.store(obj)
 		if (autoCommit) commit()
 	}
+	
+	def query[T](clazz: Class[T]) = new RichObjects(container.getObjects(clazz))
 	
 	def query[T](predicate: T => Boolean) = new RichObjects(container.getObjects(new ObjectQuery(predicate)))
 	
@@ -31,8 +33,13 @@ class DB(container: ODB, val autoCommit: Boolean) extends org.sgine.db.DB {
 	protected def close() = container.close()
 }
 
-class ObjectQuery[T](predicate: T => Boolean) extends SimpleNativeQuery {
-	def `match`(entry: T) = predicate(entry)
+class ObjectQuery[T](predicate: T => Boolean) extends NativeQuery {
+	override def `match`(entry: AnyRef) = {
+		println("MATCH: " + entry)
+		predicate(entry.asInstanceOf[T])
+	}
+	
+	def getObjectType = classOf[AnyRef]
 }
 
 class RichObjects[T](objects: Objects[T]) extends Iterator[T] {

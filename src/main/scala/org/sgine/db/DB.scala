@@ -7,10 +7,21 @@ trait DB {
 	
 	def store(obj: AnyRef): Unit
 	
+	def query[T](clazz: Class[T]): Iterator[T]
+	
 	def query[T](predicate: T => Boolean): Iterator[T]
 	
 	def find[T](predicate: T => Boolean) = {
 		val i = query(predicate)
+		if (i.hasNext) {
+			Some(i.next)
+		} else {
+			None
+		}
+	}
+	
+	def find[T](clazz: Class[T]) = {
+		val i = query(clazz)
 		if (i.hasNext) {
 			Some(i.next)
 		} else {
@@ -28,7 +39,8 @@ trait DB {
 }
 
 object DB {
-	var Factory: DBFactory = neodatis.DB
+	// TODO: fix neodatis support and make default - neodatis doesn't support extended classes
+	var Factory = org.sgine.db.db4o.DB
 	
 	private var map = Map.empty[String, DB]
 	
