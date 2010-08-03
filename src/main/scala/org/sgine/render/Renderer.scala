@@ -236,8 +236,7 @@ class Renderer extends PropertyContainer {
 	}
 
 	def screenToWorldCoords(screenCoords: inVec3d) = {
-		// TODO: store screenDimensions as a Const vector.
-		camera.screenToWorldCoords(screenCoords, Vec2d(canvas.getWidth, canvas.getHeight))
+		camera.screenToWorldCoords(screenCoords)
 	}
 	
 	def translateLocal(x: Double, y: Double, m: Mat3x4d, store: outVec3d) = {

@@ -21,10 +21,10 @@ class Camera(
 		inverseViewProjection := inverse(viewProjection)
 	}
 
-	def screenToWorldCoords(screenCoords: inVec3, screenDimensions: inVec2) = {
+	def screenToWorldCoords(screenCoords: inVec3) = {
 		val normalizedScreenCoords = Vec4(
-			2*screenCoords.x/screenDimensions.x - 1,
-      		-2*screenCoords.y/screenDimensions.y + 1,
+			screenCoords.x,
+      		-screenCoords.y,
       		screenCoords.z,
       		1
 		)
@@ -32,13 +32,12 @@ class Camera(
     	worldCoords.xyz/worldCoords.w
 	}
 
-	def worldToScreenCoords(worldCoords: inVec3, screenDimensions: inVec2) = {
-		val halfScreen = screenDimensions*0.5
+	def worldToScreenCoords(worldCoords: inVec3) = {
 		val transformed = viewProjection*Vec4(worldCoords, 1)
 		val normalizedScreenCoords = transformed.xyz/transformed.w
 		Vec3(
-			normalizedScreenCoords.x*halfScreen.x + halfScreen.x,
-			-normalizedScreenCoords.y*halfScreen.y + halfScreen.y,
+			normalizedScreenCoords.x,
+			-normalizedScreenCoords.y,
 			normalizedScreenCoords.z
 		)
 	}
