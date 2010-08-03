@@ -24,7 +24,7 @@ class Camera(
 	def screenToWorldCoords(screenCoords: inVec3) = {
 		val normalizedScreenCoords = Vec4(
 			screenCoords.x,
-      		-screenCoords.y,
+      		screenCoords.y,
       		screenCoords.z,
       		1
 		)
@@ -37,7 +37,7 @@ class Camera(
 		val normalizedScreenCoords = transformed.xyz/transformed.w
 		Vec3(
 			normalizedScreenCoords.x,
-			-normalizedScreenCoords.y,
+			normalizedScreenCoords.y,
 			normalizedScreenCoords.z
 		)
 	}
