@@ -1,7 +1,18 @@
 package org.sgine.util
 
+import java.util.Calendar
+
+import scala.math._
+
+/**
+ * Time represents convenience values and utilities
+ * for lengths of time. All values are represented
+ * as Doubles of time in seconds.
+ * 
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
 object Time {
-	val Second = 1000.0
+	val Second = 1.0
 	val Minute = 60.0 * Second
 	val Hour = 60.0 * Minute
 	val Day = 24.0 * Hour
@@ -86,5 +97,11 @@ object Time {
 		b.append(elapsed + "ms")
 		
 		b.toString()
+	}
+	
+	def futureCalendar(time: Double) = {
+		val c = Calendar.getInstance
+		c.add(Calendar.MILLISECOND, round((time * 1000.0).toFloat))
+		c
 	}
 }
