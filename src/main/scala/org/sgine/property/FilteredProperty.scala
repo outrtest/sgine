@@ -1,7 +1,7 @@
 package org.sgine.property
 
 trait FilteredProperty[T] extends Property[T] {
-	var filter: T => T = _
+	def filter: T => T
 	
 	abstract override def apply(value: T): Property[T] = {
 		if (filter != null) {
