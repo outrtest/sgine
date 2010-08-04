@@ -99,9 +99,27 @@ object Time {
 		b.toString()
 	}
 	
-	def futureCalendar(time: Double) = {
-		val c = Calendar.getInstance
-		c.add(Calendar.MILLISECOND, round((time * 1000.0).toFloat))
+	def futureCalendar(time: Double, c: Calendar = Calendar.getInstance) = {
+		c.add(Calendar.MILLISECOND, millis(time))
 		c
+	}
+	
+	def sleep(time: Double) = Thread.sleep(millis(time))
+	
+	def millis(time: Double) = round((time * 1000.0).toFloat)
+	
+	@scala.annotation.tailrec
+	def waitFor(condition: () => Boolean, time: Double, precision: Long = 10, start: Long = System.currentTimeMillis): Boolean = {
+		if (!condition()) {
+			if (System.currentTimeMillis - start > millis(time)) {
+				false
+			} else {
+				Thread.sleep(precision)
+				
+				waitFor(condition, time, precision, start)
+			}
+		} else {
+			true
+		}
 	}
 }
