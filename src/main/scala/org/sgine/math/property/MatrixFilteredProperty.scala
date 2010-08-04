@@ -16,7 +16,7 @@ trait MatrixFilteredProperty extends FilteredProperty[ReadMat3x4] {
 		super.apply(value)
 		
 		this match {
-			case cp: ChangeableProperty[ReadMat3x4] => cp.changed(apply(), apply())
+			case cp: ChangeableProperty[_] => cp.changed(apply(), apply())
 			case _ =>
 		}
 		

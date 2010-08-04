@@ -166,6 +166,11 @@ class WorkManager (val name: String) {
 		work
 	}
 	
+	def offer[T <: () => Unit](work: T): Boolean = {
+		init()
+		queue.offer(work)
+	}
+	
 	def -=(work:() => Unit) = {
 		queue.remove(work)
 	}
@@ -195,7 +200,7 @@ class WorkManager (val name: String) {
 	
 	def threadCount = workers.length
 	
-	def waitForIdle(timeout:Long, unit:TimeUnit):Boolean = {
+	def waitForIdle(timeout: Long, unit: TimeUnit = TimeUnit.MILLISECONDS):Boolean = {
 		val t = System.currentTimeMillis + TimeUnit.MILLISECONDS.convert(timeout, unit)
 		var b = false
 		while (System.currentTimeMillis < t) {
@@ -222,6 +227,8 @@ class WorkManager (val name: String) {
 		}
 		false
 	}
+	
+	def isFull() = queue.size == maxQueue
 	
 	def working():Int = {
 		var count = 0
@@ -250,7 +257,14 @@ class WorkManager (val name: String) {
 		keepAlive = false
 	}
 	
+	def shutdownForced() = {
+		workers.foreach(shutdownWorkThreadForced)
+		keepAlive = false
+	}
+	
 	private val shutdownWorkThread = (w: WorkThread) => w.shutdown()
+	
+	private val shutdownWorkThreadForced = (w: WorkThread) => w.shutdownForced()
 }
 
 object WorkManager {

@@ -92,7 +92,9 @@ private[work] class WorkThread(name: String, workManager: WorkManager) {
 	
 	def interrupt() = thread.interrupt()
 	
-	def shutdown() = {
+	def shutdown() = keepAlive = false
+	
+	def shutdownForced() = {
 		keepAlive = false
 		interrupt()
 	}
