@@ -1,6 +1,8 @@
 package org.sgine.db
 
 trait Transaction {
+	def db: DB
+	
 	def store(obj: AnyRef): Unit
 	
 	def query[T](clazz: Class[T]): Iterator[T]
