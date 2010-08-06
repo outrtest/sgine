@@ -139,9 +139,10 @@ class WorkManager (val name: String) {
 	 * @param values
 	 * @param f
 	 */
-	def process[A](values: Seq[A], f: (A) => Unit, blocking: Boolean = true) = {
-		val count = new java.util.concurrent.atomic.AtomicInteger(values.length)
+	def process[A, B](values: Iterable[A], f: (A) => B, blocking: Boolean = true) = {
+		val count = new java.util.concurrent.atomic.AtomicInteger(0)
 		for (v <- values) {
+			count.addAndGet(1)
 			val work: () => Unit = () => {
 				try {
 					f(v)
