@@ -11,12 +11,12 @@ import java.io.File
 import org.sgine.db.DBFactory
 
 class DB(server: ObjectServer) extends org.sgine.db.DB {
-	protected def createTransaction() = new Transaction(server.openClient())
+	protected def createTransaction() = new Transaction(this, server.openClient())
 	
 	def close() = server.close()
 }
 
-class Transaction(container: ObjectContainer) extends org.sgine.db.Transaction {
+class Transaction(val db: DB, container: ObjectContainer) extends org.sgine.db.Transaction {
 	def store(obj: AnyRef) = container.store(obj)
 	
 	def query[T](clazz: Class[T]) = new RichObjectSet(container.query(clazz))

@@ -1,6 +1,8 @@
 package org.sgine.db
 
 class AutoCommitTransaction(transaction: Transaction) extends Transaction {
+	def db = transaction.db
+	
 	def store(obj: AnyRef) = {
 		transaction.store(obj)
 		transaction.commit()
