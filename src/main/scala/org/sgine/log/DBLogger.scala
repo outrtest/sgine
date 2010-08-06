@@ -4,8 +4,8 @@ import java.io.File
 
 import org.sgine.db._
 
-class DB4OLogger(file: File) extends Logger {
-	lazy val db = DB.open(file.getName, file, true)
+class DB4OLogger(db: DB) extends Logger {
+	lazy val transaction = db.transaction(true)
 	
-	def log(log: Log) = db.store(log)
+	def log(log: Log) = transaction.store(log)
 }
