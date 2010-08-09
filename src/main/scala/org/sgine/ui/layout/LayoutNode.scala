@@ -2,8 +2,11 @@ package org.sgine.ui.layout
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import org.sgine.bounding.BoundingObject
 import org.sgine.bounding.event.BoundingChangeEvent
+import org.sgine.bounding.mutable.BoundingBox
 
+import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 import org.sgine.event.Recursion
@@ -45,8 +48,32 @@ trait LayoutNode extends NodeContainer with Updatable {
 		if (revalidateLayout.compareAndSet(true, false)) {
 			layout.option match {
 				case Some(l) => l(this)
-				case None =>
+				case None => revalidateBounds()
 			}
 		}
+	}
+	
+	private def revalidateBounds() = {
+		// TODO: support
+//		var width, height, depth = 0.0
+//		for (c <- this) c match {
+//			case bo: BoundingObject => {
+//				width = max()
+//			}
+//		}
+//		this match {
+//			case bo: BoundingObject => bo.bounding() match {
+//				case bb: BoundingBox => {
+//					bb.width = width
+//					bb.height = height
+//					bb.depth = depth
+//					
+//					val e = new BoundingChangeEvent(bo, bb)
+//					Event.enqueue(e)
+//				}
+//				case _ =>
+//			}
+//			case _ =>
+//		}
 	}
 }
