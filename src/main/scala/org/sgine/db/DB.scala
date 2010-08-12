@@ -7,6 +7,8 @@ trait DB {
 	
 	def transaction(autoCommit: Boolean = false) = if (autoCommit) new AutoCommitTransaction(createTransaction()) else createTransaction()
 	
+	def readOnlyTransaction(): ReadTransaction = new ReadOnlyTransaction(createTransaction())
+	
 	def close(): Unit
 }
 
