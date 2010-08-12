@@ -22,7 +22,7 @@ import org.sgine.work.Updatable
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class ObjectCache[T](val name: String, val db: DB, refreshFunction: (Transaction) => Unit, val refreshRate: Double = Time.Hour) extends Updatable {
+class ObjectCache(val name: String, val db: DB, refreshFunction: (Transaction) => Unit, val refreshRate: Double = Time.Hour) extends Updatable {
 	val read = db.readOnlyTransaction()
 	
 	private val write = db.transaction()
