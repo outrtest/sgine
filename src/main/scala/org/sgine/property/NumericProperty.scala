@@ -222,6 +222,14 @@ class NumericProperty extends Property[Double] with Listenable with Updatable {
 			p.bindings = p.bindings.filterNot(_ == this)
 		}
 	}
+	
+	override def resolveElement(key: String) = key match {
+		case "animator" => Some(animator)
+		case "target" => Some(target)
+		case "name" => Some(name)
+		case "parent" => Some(parent)
+		case _ => super.resolveElement(key)
+	}
 }
 
 class NumericPropertyChangeEvent protected() extends Event(null) with Cacheable[NumericPropertyChangeEvent] {

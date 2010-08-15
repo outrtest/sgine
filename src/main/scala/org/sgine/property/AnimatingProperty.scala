@@ -66,4 +66,10 @@ trait AnimatingProperty[T] extends Property[T] with Updatable {
 			Thread.sleep(10)
 		}
 	}
+	
+	abstract override def resolveElement(key: String) = key match {
+		case "animator" => Some(animator)
+		case "target" => Some(target)
+		case _ => super.resolveElement(key)
+	}
 }
