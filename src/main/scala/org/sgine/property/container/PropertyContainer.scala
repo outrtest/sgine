@@ -98,7 +98,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 			_properties += p												// Add the property to the list
 
 			p match {														// Assign an alias if one already exists
-				case np: NamedProperty => {
+				case np: NamedProperty[_] => {
 					if (np.name != null) {
 						aliases += np.name -> p
 					}
@@ -113,7 +113,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	def removeProperty(p: Property[_]): PropertyContainer = {
 		_properties -= p
 		p match {
-			case np: NamedProperty => aliases -= np.name
+			case np: NamedProperty[_] => aliases -= np.name
 			case _ =>
 		}
 		
@@ -159,6 +159,14 @@ trait PropertyContainer extends Listenable with Property[Int] {
 				_properties = _properties.reverse
 				initialized = true
 			}
+		}
+	}
+	
+	abstract override def resolveElement(key: String) = {
+		if (contains(key)) {
+			this(key)
+		} else {
+			super.resolveElement(key)
 		}
 	}
 }

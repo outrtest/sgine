@@ -34,4 +34,9 @@ trait ListenableProperty[T] extends ChangeableProperty[T] with Listenable {
 		}
 		Event.enqueue(PropertyChangeEvent(this, oldValue, newValue, adjusting))
 	}
+	
+	abstract override def resolveElement(key: String) = key match {
+		case "parent" => Some(parent)
+		case _ => super.resolveElement(key)
+	}
 }
