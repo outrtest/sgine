@@ -1,6 +1,6 @@
 package org.sgine.event
 
-class EventListener[E <: Event] private (val eventClass:Class[E], val f: Function1[E, Unit]) extends Function1[Event, Unit] {
+class EventListener[E <: Event] private (val eventClass: Class[E], val f: Function1[E, Unit]) extends Function1[Event, Unit] {
 	def apply(evt: Event) = {
 		if (isValidEvent(evt)) {
 			f(evt.asInstanceOf[E])
@@ -23,7 +23,7 @@ object EventListener {
 		}
 	}
 	
-	private def determineEventClass[E <: Event](f: Function1[E, Unit]):Class[E] = {
+	private def determineEventClass[E <: Event](f: Function1[E, Unit]): Class[E] = {
 		for (m <- f.getClass.getMethods) {
 			if (m.getName == "apply") {
 				if (m.getParameterTypes.length == 1) {
@@ -33,6 +33,15 @@ object EventListener {
 				}
 			}
 		}
-		null
+		for (m <- f.getClass.getMethods) {
+			if (m.getName == "apply") {
+				if (m.getParameterTypes.length == 1) {
+					if (m.getParameterTypes()(0) == classOf[AnyRef]) {
+						return m.getParameterTypes()(0).asInstanceOf[Class[E]]
+					}
+				}
+			}
+		}
+		throw new NullPointerException("Unable to find event class for " + f.getClass)
 	}
 }
