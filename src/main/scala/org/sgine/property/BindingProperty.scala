@@ -2,20 +2,63 @@ package org.sgine.property
 
 import java.util.concurrent._
 
+import org.sgine.path.OPath
+
+import org.sgine.property.bind.Binding
+import org.sgine.property.bind.DirectBinding
+import org.sgine.property.bind.PathBinding
+
 trait BindingProperty[T] extends ChangeableProperty[T] {
-	protected var bindings: List[BindingProperty[T]] = Nil
+	protected var bindings: List[Binding[T]] = Nil
+	protected var pathBindings: List[PathBinding[T]] = Nil
 	
 	def bind(p: BindingProperty[T]) = {
 		apply(p())		// Synchronize the values
 		
-		p.synchronized {
-			p.bindings = this :: p.bindings
+		p.reverseBind(new DirectBinding(this))
+	}
+	
+	def reverseBind(b: Binding[T]) = {
+		synchronized {
+			bindings = b :: bindings
 		}
 	}
 	
 	def unbind(p: BindingProperty[T]) = {
 		p.synchronized {
-			p.bindings = p.bindings.filterNot(_ == this)
+			p.bindings = p.bindings.filterNot(directUnbind)
+		}
+	}
+	
+	def reverseUnbind(b: Binding[T]) = {
+		synchronized {
+			bindings = bindings.filterNot(_ == b)
+		}
+	}
+	
+	def bindPath(path: OPath) = {
+		synchronized {
+			pathBindings = new PathBinding(this, path) :: pathBindings
+		}
+	}
+	
+	def unbindPath(path: OPath) = {
+		synchronized {
+			pathBindings = pathBindings.filterNot(pathUnbind(_, path))
+		}
+	}
+	
+	private val directUnbind = (b: Binding[_]) => b match {
+		case db: DirectBinding[_] => db.property == this
+		case _ => false
+	}
+	
+	private val pathUnbind = (b: PathBinding[_], path: OPath) => {
+		if (b.path == path) {
+			b.disconnect()
+			true
+		} else {
+			false
 		}
 	}
 	
@@ -26,6 +69,4 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 			b := newValue
 		}
 	}
-	
-	// TODO: support checking getter on update
 }
