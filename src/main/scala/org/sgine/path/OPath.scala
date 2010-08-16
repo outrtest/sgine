@@ -54,6 +54,11 @@ class OPath private(val root: AnyRef, val path: List[String], val dynamic: Boole
 			Event.enqueue(evt)
 		}
 	}
+	
+	def apply() = elements(0) match {
+		case null => None
+		case e => e.value
+	}
 }
 
 object OPath {
@@ -119,9 +124,9 @@ object OPath {
 		val parser = path.split("\\.")
 		for (s <- parser) {
 			if (s.indexOf('(') != -1) {
-				list = s.substring(0, s.indexOf('(')) :: s.substring(s.indexOf('(')) :: list
+				list = s.substring(s.indexOf('(')) :: s.substring(0, s.indexOf('(')) :: list
 			} else if (s.indexOf('[') != -1) {
-				list = s.substring(0, s.indexOf('[')) :: s.substring(s.indexOf('[')) :: list
+				list = s.substring(s.indexOf('[')) :: s.substring(0, s.indexOf('[')) :: list
 			} else {
 				list = s :: list
 			}
