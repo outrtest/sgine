@@ -27,6 +27,10 @@ class PathSpec extends FlatSpec with ShouldMatchers {
 		TestStructure.resolve("container1.prop2.value") should equal(Some("World"))
 	}
 	
+	it should "revolve value of prop2()" in {
+		TestStructure.resolve("container1.prop2()") should equal(Some("World"))
+	}
+	
 	it should "not resolve prop3" in {
 		TestStructure.resolve("container1.prop3") should equal(None)
 	}
@@ -62,8 +66,10 @@ class PathSpec extends FlatSpec with ShouldMatchers {
 		}
 		path.listeners += EventHandler(pathChanged _, ProcessingMode.Blocking)
 		pathChangeCount should equal(0)
+		path() should equal(None)
 		TestStructure.prop4 := TestStructure.container1
 		pathChangeCount should equal(1)
+		path() should equal(Some("World"))
 	}
 }
 

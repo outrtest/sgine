@@ -27,6 +27,8 @@ trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
 	def resolveElement(key: String) = {
 		if (key == "value") {
 			Some(apply())
+		} else if (key == "()") {
+			Some(apply())
 		} else {
 			None
 		}
