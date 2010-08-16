@@ -1,12 +1,15 @@
 package org.sgine.property.event
 
 import org.sgine.event._
+
+import org.sgine.path.PathElementChangeEvent
+
 import org.sgine.property._
 
 import org.sgine.util.Cacheable
 import org.sgine.util.ObjectCache
 
-class PropertyChangeEvent[T] protected() extends Event(null) { //with Cacheable[PropertyChangeEvent[_]] {
+class PropertyChangeEvent[T] protected() extends Event(null) with PathElementChangeEvent { //with Cacheable[PropertyChangeEvent[_]] {
 	protected var _property: ListenableProperty[T] = _
 	protected var _oldValue: T = _
 	protected var _newValue: T = _

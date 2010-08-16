@@ -9,6 +9,7 @@ final class EventProcessor(listenable: Listenable) extends Iterable[EventHandler
 	}
 	
 	def +=(handler: EventHandler): EventHandler = {
+		if (handler == null) throw new NullPointerException("EventHandler must not be null")
 		synchronized {
 			if (!handlers.contains(handler)) {
 				handlers = handler :: handlers
