@@ -1,7 +1,10 @@
 package org.sgine.property.container
 
 import org.sgine.event._
+
 import org.sgine.property._
+
+import scala.reflect.Manifest
 
 trait MutablePropertyContainer extends PropertyContainer {
 	override def addProperty(p: Property[_]): PropertyContainer = super.addProperty(p)

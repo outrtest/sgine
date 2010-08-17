@@ -1,5 +1,7 @@
 package org.sgine.property;
 
+import scala.reflect.Manifest
+
 /**
  * MutableProperty provides an extremely simple Property implementation
  * that may be modified. Calls to <code>apply(t:T)</code> will modify the
@@ -7,8 +9,8 @@ package org.sgine.property;
  * 
  * @author Matt Hicks
  */
-class MutableProperty[T] extends Property[T] {
-	def this(initialValue: T) = {
+class MutableProperty[T](protected implicit val manifest: Manifest[T]) extends Property[T] {
+	def this(initialValue: T)(implicit manifest: Manifest[T]) = {
 		this()
 		apply(initialValue)
 	}

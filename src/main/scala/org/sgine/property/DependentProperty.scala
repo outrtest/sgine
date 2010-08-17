@@ -7,6 +7,8 @@ import org.sgine.event.ProcessingMode
 
 import org.sgine.property.event.PropertyChangeEvent
 
+import scala.reflect.Manifest
+
 trait DependentProperty[T] extends Property[T] {
 	protected def dependency: Property[T]
 	
@@ -19,7 +21,7 @@ trait DependentProperty[T] extends Property[T] {
 		
 		if ((initialized != null) && (dependency != null) && (initialized.compareAndSet(false, true))) {
 			dependency match {
-				case lp: ListenableProperty[_] => lp.listeners += EventHandler(dependencyChanged, ProcessingMode.Blocking)
+				case lp: ListenableProperty[T] => lp.listeners += EventHandler(dependencyChanged, ProcessingMode.Blocking)
 				case _ =>
 			}
 		}

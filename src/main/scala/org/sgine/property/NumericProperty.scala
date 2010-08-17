@@ -14,7 +14,7 @@ import org.sgine.property.event.NumericPropertyChangeEvent
 
 import org.sgine.work.Updatable
 
-class NumericProperty extends Property[Double] with Listenable with Updatable {
+class NumericProperty(protected implicit val manifest: Manifest[Double]) extends Property[Double] with Listenable with Updatable {
 	private var _name: String = _
 	private var _dependency: Property[Double] = _
 	

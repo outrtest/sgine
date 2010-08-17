@@ -2,6 +2,8 @@ package org.sgine.property;
 
 import org.sgine.path.PathSupport
 
+import scala.reflect.Manifest
+
 /**
  * Property provides an abstraction and hierarchical control over objects and
  * an alternative methodology to getter/setter principles.
@@ -9,6 +11,8 @@ import org.sgine.path.PathSupport
  * @author Matt Hicks
  */
 trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
+	protected implicit val manifest: Manifest[T]
+	
 	def :=(value: T): Property[T] = {
 		apply(value);
 	}

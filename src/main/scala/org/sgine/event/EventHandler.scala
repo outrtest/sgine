@@ -1,5 +1,7 @@
 package org.sgine.event
 
+import scala.reflect.Manifest
+
 class EventHandler private (val listener: Event => Unit) {
 	var processingMode : ProcessingMode = ProcessingMode.Normal
 	var recursion : Recursion = Recursion.None
@@ -21,7 +23,7 @@ class EventHandler private (val listener: Event => Unit) {
 }
 
 object EventHandler {
-	def apply[E <: Event](listener: E => Unit, processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: Event => Boolean = null): EventHandler = {
+	def apply[E <: Event](listener: E => Unit, processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: Event => Boolean = null)(implicit manifest: Manifest[E]): EventHandler = {
 		val eh = new EventHandler(EventListener(listener))
 		eh.processingMode  = processingMode
 		eh.recursion = recursion
