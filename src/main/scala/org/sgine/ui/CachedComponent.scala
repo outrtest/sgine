@@ -3,7 +3,6 @@ package org.sgine.ui
 import java.nio.ByteBuffer
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
 import org.sgine.event.Event
@@ -26,8 +25,6 @@ trait CachedComponent extends Component with BoundingObject {
 	val height = new AdvancedProperty[Int](0, this)
 	val pixelFormat = new AdvancedProperty[Int](GL_RGBA, this)
 	
-	protected val _bounding = BoundingQuad()
-	
 	protected var texture: StreamingTexture = _
 	protected var image = new RenderImage()
 	
@@ -46,12 +43,9 @@ trait CachedComponent extends Component with BoundingObject {
 		
 		image.width = width()
 		image.height = height()
-		if ((_bounding.width != width()) || (_bounding.height != height())) {
-			_bounding.width = width()
-			_bounding.height = height()
-			
-			val e = new BoundingChangeEvent(this, _bounding)
-			Event.enqueue(e)
+		if ((dimension.width() != width()) || (dimension.height() != height())) {
+			dimension.width := width()
+			dimension.height := height()
 		}
 	}
 	

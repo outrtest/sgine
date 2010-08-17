@@ -32,7 +32,7 @@ object TestGraphics3D {
 	}
 }
 
-class TestGraphics3D extends AdvancedComponent {
+class TestGraphics3D extends Component {
 	def drawComponent() = {
 		drawRect(0.0, 0.0, 100.0, 100.0)
 		

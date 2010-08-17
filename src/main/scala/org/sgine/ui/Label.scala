@@ -1,7 +1,6 @@
 package org.sgine.ui
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
 import org.sgine.event.Event
@@ -14,11 +13,7 @@ import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.render.font.Font
 import org.sgine.render.font.FontManager
 
-import org.sgine.ui.ext.AdvancedComponent
-
-class Label extends AdvancedComponent with BoundingObject {
-	protected val _bounding = BoundingQuad()
-	
+class Label extends Component {
 	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
 	val text = new AdvancedProperty[String]("", this)
 	
@@ -49,12 +44,9 @@ class Label extends AdvancedComponent with BoundingObject {
 			height = font().lineHeight
 		}
 		
-		if ((width != _bounding.width) || (height != _bounding.height)) {
-			_bounding.width = width
-			_bounding.height = height
-			
-			val evt = new BoundingChangeEvent(this, _bounding)
-			Event.enqueue(evt)
+		if ((width != dimension.width()) || (height != dimension.height())) {
+			dimension.width := width
+			dimension.height := height
 		}
 	}
 	

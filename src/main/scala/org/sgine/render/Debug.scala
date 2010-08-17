@@ -18,6 +18,7 @@ import org.sgine.ui.FPSLabel
 
 trait Debug extends Display {
 	val debugContainer = new GeneralNodeContainer() with ResolutionNode
+	val fps = new FPSLabel()
 	
 	abstract override def init() = {
 		super.init()
@@ -27,7 +28,6 @@ trait Debug extends Display {
 		debugContainer.setResolution(1600, 1200)
 		scene += debugContainer
 		
-		val fps = new FPSLabel()
 		fps.font := FontManager("lcd")
 		fps.location.x := -795.0
 		fps.location.x.align := org.sgine.core.HorizontalAlignment.Left
@@ -45,6 +45,9 @@ trait Debug extends Display {
 		} else if (evt.keyChar.toLower == 'l') {		// Toggle lighting
 			Renderer().lighting := !Renderer().lighting()
 			info("Lighting turned " + (if (Renderer().lighting()) "on" else "off"))
+		} else if (evt.keyChar.toLower == 'f') {		// Toggle fps display
+			fps.visible := !fps.visible()
+			println("Size: " + fps.dimension.width() + "x" + fps.dimension.height() + " - " + fps.bounding())
 		}
 	}
 }

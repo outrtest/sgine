@@ -18,12 +18,10 @@ import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.render.font.Font
 import org.sgine.render.font.FontManager
 
-import org.sgine.ui.ext.AdvancedComponent
-import org.sgine.ui.ext.PaddingComponent
 import org.sgine.ui.layout.BoxLayout
 import org.sgine.ui.style.Theme
 
-class Button extends PressableComponent with AdvancedComponent with PaddingComponent {
+class Button extends PressableComponent with Component {
 	protected val normalResource = Button.normalSkin()
 	protected val hoverResource = Button.hoverSkin()
 	protected val pressedResource = Button.pressedSkin()
@@ -99,7 +97,7 @@ class Button extends PressableComponent with AdvancedComponent with PaddingCompo
 	}
 	
 	private def configureListeners() = {
-		face.listeners += EventHandler(updateBounding, ProcessingMode.Blocking)
+		face.bounding.listeners += EventHandler(updateBounding, ProcessingMode.Blocking)
 		
 		iconPlacement.listeners += EventHandler(generateLayout, ProcessingMode.Blocking)
 		iconSpacing.listeners += EventHandler(generateLayout, ProcessingMode.Blocking)

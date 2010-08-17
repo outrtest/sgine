@@ -3,7 +3,6 @@ package org.sgine.ui
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingBox
 
 import org.sgine.core.Color
@@ -16,7 +15,7 @@ import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty
-import org.sgine.property.NumericPropertyChangeEvent
+import org.sgine.property.event.NumericPropertyChangeEvent
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.Renderer
@@ -24,11 +23,9 @@ import org.sgine.render.TextureManager
 import org.sgine.render.shape.MutableShapeData
 import org.sgine.render.shape.ShapeMode
 
-import org.sgine.ui.ext.AdvancedComponent
-
 import simplex3d.math.doublem.renamed._
 
-class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
+class Box extends Component with ShapeComponent {
 	val source = new AdvancedProperty[Resource](null, this)
 	val cull = _cull
 	val material = _material
@@ -47,8 +44,6 @@ class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
 	width.listeners += numericHandler
 	height.listeners += numericHandler
 	depth.listeners += numericHandler
-	
-	protected val _bounding = BoundingBox()
 	
 	private val data = MutableShapeData(ShapeMode.Quads, 24)
 	
@@ -111,13 +106,10 @@ class Box extends AdvancedComponent with ShapeComponent with BoundingObject {
 						 )
 						 
 		// Update bounding
-		if ((_bounding.width != width()) || (_bounding.height != height()) || (_bounding.depth != depth())) {
-			_bounding.width = width()
-			_bounding.height = height()
-			_bounding.depth = depth()
-			
-			val e = new BoundingChangeEvent(this, _bounding)
-			Event.enqueue(e)
+		if ((dimension.width() != width()) || (dimension.height() != height()) || (dimension.depth() != depth())) {
+			dimension.width := width()
+			dimension.height := height()
+			dimension.depth := depth()
 		}
 	}
 }

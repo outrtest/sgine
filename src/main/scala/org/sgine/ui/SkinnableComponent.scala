@@ -1,7 +1,6 @@
 package org.sgine.ui
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
 import org.sgine.core.Resource
@@ -16,20 +15,14 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.scene.ext.FocusableNode
 
-import org.sgine.ui.ext.AdvancedComponent
-import org.sgine.ui.ext.LocationComponent
-import org.sgine.ui.ext.PaddingComponent
-
-trait SkinnableComponent extends CompositeComponent with BoundingObject with PaddingComponent with FocusableNode {
+trait SkinnableComponent extends CompositeComponent with FocusableNode {
 	protected val skin = new Scale9()
-	
-	protected val _bounding = new BoundingQuad()
 	
 	protected def normalResource: Resource
 	protected def hoverResource: Resource
 	protected def focusedResource: Resource
 	
-	protected def face: LocationComponent
+	protected def face: Component
 	
 	protected def skinX1: Double
 	protected def skinY1: Double
@@ -49,15 +42,12 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 	}
 	
 	protected def setSize(width: Double, height: Double) = {
-		_bounding.width = width + padding.left() + padding.right()
-		_bounding.height = height + padding.top() + padding.bottom()
-		
-		val evt = new BoundingChangeEvent(this, _bounding)
-		Event.enqueue(evt)
+		dimension.width := width + padding.left() + padding.right()
+		dimension.height := height + padding.top() + padding.bottom()
 	}
 	
 	private def configureListeners() = {
-		listeners += EventHandler(boundingChanged, ProcessingMode.Blocking)
+		bounding.listeners += EventHandler(boundingChanged, ProcessingMode.Blocking)
 		
 		// Mouse states for button
 		listeners += EventHandler(mouseOver, ProcessingMode.Blocking)
@@ -69,12 +59,12 @@ trait SkinnableComponent extends CompositeComponent with BoundingObject with Pad
 		focused.listeners += EventHandler(focusChange, ProcessingMode.Blocking)
 	}
 	
-	private def boundingChanged(evt: BoundingChangeEvent) = {
-		skin.width := _bounding.width
-		skin.height := _bounding.height
+	private def boundingChanged(evt: PropertyChangeEvent[_]) = {
+		skin.width := dimension.width()
+		skin.height := dimension.height()
 	}
 	
-	protected def updateBounding(evt: BoundingChangeEvent = null) = {
+	protected def updateBounding(evt: PropertyChangeEvent[_] = null) = {
 		face match {
 			case bo: BoundingObject => setSize(bo.bounding().width, bo.bounding().height)
 			case _ => // No bounding object

@@ -23,11 +23,9 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.RenderImage
 
-import org.sgine.ui.ext.AdvancedComponent
-
 import scala.math._
 
-class MediaPlayer extends CachedComponent with AdvancedComponent {
+class MediaPlayer extends CachedComponent {
 	val source = new AdvancedProperty[Resource](null, this)
 	val fader = new AdvancedProperty[Double](0.0, this)
 	val volume = new AdvancedProperty[Double](1.0, this)

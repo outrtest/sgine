@@ -1,7 +1,6 @@
 package org.sgine.ui
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
 import org.sgine.core.Resource
@@ -15,9 +14,7 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.{RenderImage, Texture, TextureManager}
 
-import org.sgine.ui.ext.AdvancedComponent
-
-class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObject {
+class Scale9 extends CompositeComponent {
 	private val topLeft = new Image()
 	private val top = new Image()
 	private val topRight = new Image()
@@ -30,8 +27,6 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 	
 	private var x1, y1, x2, y2: Double = _
 	
-	protected val _bounding = new BoundingQuad()
-
 	val source = new AdvancedProperty[Resource](null, this)
 	val width = new AdvancedProperty[Double](0.0, this)
 	val height = new AdvancedProperty[Double](0.0, this)
@@ -171,11 +166,8 @@ class Scale9 extends CompositeComponent with AdvancedComponent with BoundingObje
 			bottom.location.set(posX2, posY3)
 			bottomRight.location.set(posX3, posY3)
 			
-			_bounding.width = width()
-			_bounding.height = height()
-			
-			val evt = new BoundingChangeEvent(this, _bounding)
-			Event.enqueue(evt)
+			dimension.width := width()
+			dimension.height := height()
 		}
 	}
 	

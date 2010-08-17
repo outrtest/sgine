@@ -1,7 +1,6 @@
 package org.sgine.ui.layout
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingBox
 
 import org.sgine.core.Direction
@@ -10,21 +9,20 @@ import org.sgine.core.VerticalAlignment
 
 import org.sgine.event.Event
 
-import org.sgine.scene.NodeContainer
-
-import org.sgine.ui.ext.LocationComponent
+import org.sgine.ui.Component
+import org.sgine.ui.Container
 
 import scala.math._
 
 class BoxLayout private(val direction: Direction, val spacing: Double, val reverse: Boolean = false) extends Layout {
-	def apply(container: NodeContainer) = {
+	def apply(container: Container) = {
 		// Determine size for offset
 		var items = 0
 		var width = 0.0
 		var height = 0.0
 		var depth = 0.0
 		for (n <- container) n match {
-			case c: LocationComponent with BoundingObject => {
+			case c: Component => {
 				items += 1
 				if (direction == Direction.Vertical) {
 					width = max(width, c.bounding().width)
@@ -55,7 +53,7 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 			position = -position
 		}
 		for (n <- container) n match {
-			case c: LocationComponent with BoundingObject => {
+			case c: Component with BoundingObject => {
 				if (direction == Direction.Vertical) {
 					c.location.y.align := (if (reverse) VerticalAlignment.Bottom else VerticalAlignment.Top)
 					c.location.y := position
@@ -83,21 +81,7 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 			case _ =>
 		}
 		
-		// Update bounding of container if necessary
-		container match {
-			case bo: BoundingObject => bo.bounding() match {
-				case bb: BoundingBox => {
-					bb.width = width
-					bb.height = height
-					bb.depth = depth
-					
-					val e = new BoundingChangeEvent(bo, bb)
-					Event.enqueue(e)
-				}
-				case _ =>
-			}
-			case _ =>
-		}
+		container.dimension.set(width, height, depth)
 	}
 }
 

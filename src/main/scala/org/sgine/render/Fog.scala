@@ -52,6 +52,7 @@ class Fog private[render](val renderer: Renderer) extends PropertyContainer {
 				case FogEquation.Linear => GL_LINEAR
 				case FogEquation.Exp => GL_EXP
 				case FogEquation.Exp2 => GL_EXP2
+				case _ => throw new RuntimeException("Unknown fog equation: " + equation())
 			}
 			glFogi(GL_FOG_MODE, q)
 		}

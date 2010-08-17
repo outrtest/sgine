@@ -19,8 +19,6 @@ import org.sgine.render.shape.Shape
 import org.sgine.render.shape.ShapeData
 import org.sgine.render.shape.ShapeMode
 
-import org.sgine.ui.ext.AdvancedComponent
-
 import simplex3d.math.doublem.renamed._
 
 trait ShapeComponent extends Component {
@@ -90,4 +88,4 @@ object ShapeComponent {
 	def apply() = new ShapeComponentImpl()
 }
 
-class ShapeComponentImpl extends AdvancedComponent with ShapeComponent		// TODO: make BoundingObject
+class ShapeComponentImpl extends ShapeComponent		// TODO: make BoundingObject

@@ -13,45 +13,47 @@ class OPath private(val root: AnyRef, val path: List[String], val dynamic: Boole
 	
 	updateElements()
 	
-	private def updateElements(evt: PathElementChangeEvent = null): Unit = {
-		val structure = OPath.resolveHierarchically(root, path, Nil)
-		
-		var changed = false
-		for (index <- 0 until path.length) {
-			val e = elements(index) match {
-				case null => null
-				case element => element.value.getOrElse(null)
-			}
-			val s = if (structure.length > index) {
-				structure(index).getOrElse(null)
-			} else {
-				null
-			}
-			if (e != s) {							// Different, need to change
-				if (dynamic) {
-					e match {						// Disconnect changed
-						case l: Listenable => l.listeners -= handler
-						case _ =>
+	private def updateElements(evt: Event = null): Unit = {
+		if ((evt == null) || (evt.isInstanceOf[PathElementChangeEvent])) {
+			val structure = OPath.resolveHierarchically(root, path, Nil)
+			
+			var changed = false
+			for (index <- 0 until path.length) {
+				val e = elements(index) match {
+					case null => null
+					case element => element.value.getOrElse(null)
+				}
+				val s = if (structure.length > index) {
+					structure(index).getOrElse(null)
+				} else {
+					null
+				}
+				if (e != s) {							// Different, need to change
+					if (dynamic) {
+						e match {						// Disconnect changed
+							case l: Listenable => l.listeners -= handler
+							case _ =>
+						}
+					}
+					
+					// Assign new path element
+					elements(index) = OPathElement(path(index), if (s != null) Some(s) else None)
+					
+					changed = true
+					
+					if (dynamic) {
+						s match {						// Connect new element
+							case l: Listenable => l.listeners += handler
+							case _ =>
+						}
 					}
 				}
-				
-				// Assign new path element
-				elements(index) = OPathElement(path(index), if (s != null) Some(s) else None)
-				
-				changed = true
-				
-				if (dynamic) {
-					s match {						// Connect new element
-						case l: Listenable => l.listeners += handler
-						case _ =>
-					}
-				}
 			}
-		}
-		
-		if (changed) {
-			val evt = new PathChangeEvent(this)
-			Event.enqueue(evt)
+			
+			if (changed) {
+				val evt = new PathChangeEvent(this)
+				Event.enqueue(evt)
+			}
 		}
 	}
 	
