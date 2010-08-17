@@ -1,6 +1,8 @@
 package org.sgine.event
 
-class EventListener[E <: Event] private (val eventClass: Class[E], val f: Function1[E, Unit]) extends Function1[Event, Unit] {
+import scala.reflect.Manifest
+
+class EventListener[E <: Event] private (val eventClass: Class[E], val f: Function1[E, Unit])(implicit manifest: Manifest[E]) extends Function1[Event, Unit] {
 	def apply(evt: Event) = {
 		if (isValidEvent(evt)) {
 			f(evt.asInstanceOf[E])
@@ -12,7 +14,7 @@ class EventListener[E <: Event] private (val eventClass: Class[E], val f: Functi
 }
 
 object EventListener {
-	def apply[E <: Event](f: E => Unit): Event => Unit = {
+	def apply[E <: Event](f: E => Unit)(implicit manifest: Manifest[E]): Event => Unit = {
 		val eventClass:Class[E] = EventListener.determineEventClass(f)
 		if (eventClass == classOf[Event]) {
 			// Don't wrap in EventListener if Event

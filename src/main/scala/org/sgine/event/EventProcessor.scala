@@ -1,9 +1,11 @@
 package org.sgine.event
 
+import scala.reflect.Manifest
+
 final class EventProcessor(listenable: Listenable) extends Iterable[EventHandler] {
 	private var handlers: List[EventHandler] = Nil
 	
-	def +=[E <: Event](listener: E => Unit): EventHandler = {
+	def +=[E <: Event](listener: E => Unit)(implicit manifest: Manifest[E]): EventHandler = {
 		val h = EventHandler(EventListener(listener))
 		this += h
 	}

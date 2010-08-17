@@ -1,11 +1,15 @@
 package org.sgine.property.container
 
 import scala.collection.immutable.HashMap
+import scala.reflect.ClassManifest
+
 import org.sgine._
 import org.sgine.event._
 import org.sgine.property._
 
 trait PropertyContainer extends Listenable with Property[Int] {
+	protected val manifest = ClassManifest.Int
+	
 	private var _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
 	private var aliases = new HashMap[String, Property[_]]()
 	private val staticPropertyFields = getStaticPropertyFields
