@@ -100,8 +100,6 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	}
 	
 	override protected def updateLocalMatrix(): Unit = {
-		localMatrix() := Mat3x4d.Identity
-		
 		val s = Vec3d(scale.x(), scale.y(), scale.z())
 		val r = Vec3d(rotation.actual.x(), rotation.actual.y(), rotation.actual.z())
 		val t = Vec3d(location.actual.x(), location.actual.y(), location.actual.z())
