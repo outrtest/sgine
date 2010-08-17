@@ -11,7 +11,7 @@ import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty
-import org.sgine.property.NumericPropertyChangeEvent
+import org.sgine.property.event.NumericPropertyChangeEvent
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.shape.MutableShapeData

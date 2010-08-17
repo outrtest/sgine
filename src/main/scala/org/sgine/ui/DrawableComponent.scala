@@ -6,7 +6,6 @@ import java.nio.ByteOrder
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
 import org.sgine.event.Event
@@ -21,8 +20,6 @@ import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.render.RenderImage
 import org.sgine.render.StreamingTexture
 import org.sgine.render.TextureUtil
-
-import org.sgine.ui.ext.AdvancedComponent
 
 import org.sgine.util.GeneralReusableGraphic
 
@@ -57,4 +54,4 @@ object DrawableComponent {
 	def apply() = new DefaultDrawableComponent
 }
 
-class DefaultDrawableComponent extends DrawableComponent with AdvancedComponent
+class DefaultDrawableComponent extends DrawableComponent

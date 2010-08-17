@@ -12,11 +12,9 @@ import org.sgine.property.container.PropertyContainer
 
 import org.sgine.render.font.Font
 
-import org.sgine.ui.ext.AdvancedComponent
-import org.sgine.ui.ext.PaddingComponent
 import org.sgine.ui.style.Theme
 
-class TextInput extends SkinnableComponent with AdvancedComponent with PaddingComponent {
+class TextInput extends SkinnableComponent {
 	protected val normalResource = TextInput.normalSkin()
 	protected val hoverResource = TextInput.hoverSkin()
 	protected val focusedResource = TextInput.focusedSkin()
@@ -55,7 +53,7 @@ class TextInput extends SkinnableComponent with AdvancedComponent with PaddingCo
 	}
 	
 	private def configureListeners() = {
-		face.listeners += EventHandler(updateBounding, ProcessingMode.Blocking)
+		face.bounding.listeners += EventHandler(updateBounding, ProcessingMode.Blocking)
 	}
 }
 

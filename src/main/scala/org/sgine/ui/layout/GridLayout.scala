@@ -1,7 +1,6 @@
 package org.sgine.ui.layout
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingBox
 
 import org.sgine.core.HorizontalAlignment
@@ -12,9 +11,9 @@ import org.sgine.event.Event
 import org.sgine.log._
 
 import org.sgine.scene.Node
-import org.sgine.scene.NodeContainer
 
-import org.sgine.ui.ext.LocationComponent
+import org.sgine.ui.Component
+import org.sgine.ui.Container
 
 class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val itemWidth: Double, val itemHeight: Double) extends Layout {
 	val width = (columns * itemWidth) + ((columns - 1) * spacing)
@@ -22,7 +21,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	
 	private var items: List[GridItem] = Nil
 	
-	def apply(container: NodeContainer) = {
+	def apply(container: Container) = {
 		synchronized {
 			// Make sure everything is configured
 			if (container.size != items.size) {
@@ -51,20 +50,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 				layout(item)
 			}
 			
-			// Update bounding of container if necessary
-			container match {
-				case bo: BoundingObject => bo.bounding() match {
-					case bb: BoundingBox => {
-						bb.width = width
-						bb.height = height
-						
-						val e = new BoundingChangeEvent(bo, bb)
-						Event.enqueue(e)
-					}
-					case _ =>
-				}
-				case _ =>
-			}
+			container.dimension.set(width, height)
 		}
 	}
 	
@@ -114,7 +100,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 		val offsetX = (item.column * (itemWidth + spacing)) - (width / 2.0)
 		val offsetY = (-item.row * (itemHeight + spacing)) - (height / -2.0)
 		item.n match {
-			case c: LocationComponent => {
+			case c: Component => {
 				c.location.x.align := HorizontalAlignment.Left
 				c.location.y.align := VerticalAlignment.Top
 				c.location.set(offsetX, offsetY)

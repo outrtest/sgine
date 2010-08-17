@@ -14,6 +14,7 @@ trait LWJGLShapeRenderer extends ShapeRenderer {
 			case Face.Front => GL_FRONT
 			case Face.Back => GL_BACK
 			case Face.Both => GL_FRONT
+			case _ => throw new RuntimeException("Unknown Face: " + data.cull)
 		}
 		
 		if (data.material != null) {

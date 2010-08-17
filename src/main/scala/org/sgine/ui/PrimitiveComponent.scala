@@ -1,6 +1,5 @@
 package org.sgine.ui
 
-import ext.AdvancedComponent
 import org.sgine.event.{ProcessingMode, Event, EventHandler}
 import org.sgine.render.primitive.Primitive
 
@@ -8,7 +7,7 @@ import org.sgine.render.primitive.Primitive
  * Common trait for primitive 3D shapes.
  * Wraps a Primitive instance that handles the rendering.
  */
-trait PrimitiveComponent extends AdvancedComponent {
+trait PrimitiveComponent extends Component {
 
   private var primitive: Primitive = null
 

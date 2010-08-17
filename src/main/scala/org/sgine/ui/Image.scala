@@ -3,7 +3,6 @@ package org.sgine.ui
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.sgine.bounding.BoundingObject
-import org.sgine.bounding.event.BoundingChangeEvent
 import org.sgine.bounding.mutable.BoundingQuad
 
 import org.sgine.core.Face
@@ -21,16 +20,13 @@ import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.render.{Renderer, RenderImage, TextureManager, TexturedQuad}
 
 import org.sgine.ui.event.ImageUpdateEvent
-import org.sgine.ui.ext.AdvancedComponent
 
-class Image extends AdvancedComponent with BoundingObject {
+class Image extends Component {
 	protected[ui] val quad = new TexturedQuad()
 	
 	val source = new AdvancedProperty[Resource](null, this)
 	val cull = new AdvancedProperty[Face](Face.Back, this)
 	quad.cull bind cull
-	
-	protected val _bounding = BoundingQuad()
 	
 	private val imageDirty = new AtomicBoolean(false)
 	
@@ -66,12 +62,9 @@ class Image extends AdvancedComponent with BoundingObject {
 		quad.width := t.width
 		quad.height := t.height
 		
-		if ((_bounding.width != quad.width()) || (_bounding.height != quad.height())) {
-			_bounding.width = quad.width()
-			_bounding.height = quad.height()
-			
-			val e = new BoundingChangeEvent(this, _bounding)
-			Event.enqueue(e)
+		if ((dimension.width() != quad.width()) || (dimension.height() != quad.height())) {
+			dimension.width := quad.width()
+			dimension.height := quad.height()
 		}
 		
 		imageDirty.set(true)

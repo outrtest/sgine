@@ -13,8 +13,6 @@ import org.sgine.render.Debug
 import org.sgine.render.RenderSettings
 import org.sgine.render.StandardDisplay
 
-import org.sgine.ui.ext.AdvancedComponent
-
 import scala.math._
 
 object TestStressBoxes extends StandardDisplay with Debug {
@@ -62,7 +60,7 @@ object TestStressBoxes extends StandardDisplay with Debug {
 		instance
 	}
 	
-	private def animate(component: AdvancedComponent) = {
+	private def animate(component: Component) = {
 		component.rotation.x.animator = new LinearNumericAnimator(2.0)
 		component.rotation.y.animator = new LinearNumericAnimator(2.0)
 		component.rotation.z.animator = new LinearNumericAnimator(2.0)

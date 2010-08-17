@@ -1,9 +1,9 @@
 package org.sgine.bounding
 
-import org.sgine.property.DelegateProperty
+import org.sgine.event.Listenable
 
-trait BoundingObject {
-	val bounding = new DelegateProperty(() => _bounding)
-	
-	protected def _bounding: Bounding
+import org.sgine.property.AdvancedProperty
+
+trait BoundingObject extends Listenable {
+	val bounding = new AdvancedProperty[Bounding](null, this)
 }

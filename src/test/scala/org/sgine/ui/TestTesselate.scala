@@ -15,7 +15,7 @@ object TestTesselate extends StandardDisplay {
 	private var count = 0
 	
 	def setup() = {
-		val c = new AdvancedComponent() {
+		val c = new Component() {
 			private lazy val tess = generateTess()
 			
 			private def generateTess() = {

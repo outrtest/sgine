@@ -20,6 +20,7 @@ trait FilteredLogger extends Logger {
 				filterMode match {
 					case FilterMode.AllMatch => !foundFalse
 					case FilterMode.AnyMatch => foundTrue
+					case _ => throw new RuntimeException("Unknown filter mode: " + filterMode)
 				}
 			} else {
 				true		// No filters

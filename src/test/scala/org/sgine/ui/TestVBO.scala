@@ -34,7 +34,7 @@ object TestVBO {
 		val m = scene.worldMatrix()
 		m := m scale(100.0) translate(Vec3(0.0, 0.0, -400.0))
 		
-		scene += new AdvancedComponent() {
+		scene += new Component() {
 			def drawComponent() = {
 				glEnable(GL_VERTEX_ARRAY)
 				glEnable(GL_COLOR_ARRAY)
