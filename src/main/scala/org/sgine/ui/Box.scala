@@ -34,16 +34,13 @@ class Box extends Component with ShapeComponent {
 	 * based on the associated texture.
 	 */
 	val manualSize = new AdvancedProperty[Boolean](false, this)
-	val width = new NumericProperty(0.0, this)
-	val height = new NumericProperty(0.0, this)
-	val depth = new NumericProperty(0.0, this)
 	
 	_mode := ShapeMode.Quads
 	source.listeners += EventHandler(sourceChanged, ProcessingMode.Blocking)
 	private val numericHandler = EventHandler(numericChanged, ProcessingMode.Blocking)
-	width.listeners += numericHandler
-	height.listeners += numericHandler
-	depth.listeners += numericHandler
+	dimension.width.listeners += numericHandler
+	dimension.height.listeners += numericHandler
+	dimension.depth.listeners += numericHandler
 	
 	private val data = MutableShapeData(ShapeMode.Quads, 24)
 	
@@ -56,9 +53,9 @@ class Box extends Component with ShapeComponent {
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
 		texture = TextureManager(source())
 		if (!manualSize()) {
-			width := texture.width
-			height := texture.height
-			depth := texture.width
+			dimension.width := texture.width
+			dimension.height := texture.height
+			dimension.depth := texture.width
 			
 			updateVertices()
 		}
@@ -70,9 +67,9 @@ class Box extends Component with ShapeComponent {
 	}
 	
 	private def updateVertices() = {
-		val w = width() / 2.0
-		val h = height() / 2.0
-		val d = depth() / 2.0
+		val w = dimension.width() / 2.0
+		val h = dimension.height() / 2.0
+		val d = dimension.depth() / 2.0
 		_vertices := List(	// Front Face
 							Vec3(-w, -h, d),		// Bottom-Left
 							Vec3(w, -h, d),			// Bottom-Right
@@ -104,13 +101,6 @@ class Box extends Component with ShapeComponent {
 							Vec3(w, -h, d),			// Bottom-Right
 							Vec3(-w, -h, d)			// Bottom-Left
 						 )
-						 
-		// Update bounding
-		if ((dimension.width() != width()) || (dimension.height() != height()) || (dimension.depth() != depth())) {
-			dimension.width := width()
-			dimension.height := height()
-			dimension.depth := depth()
-		}
 	}
 }
 

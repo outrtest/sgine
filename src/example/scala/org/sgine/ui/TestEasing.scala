@@ -30,7 +30,7 @@ object TestEasing extends StandardDisplay with Debug {
 	def setup() = {
 		renderer.verticalSync := true
 		
-		image.scale.set(0.5)
+		image.scale(0.5)
 		image.location.x.animator = animator
 		scene += image
 		

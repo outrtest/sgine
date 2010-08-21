@@ -10,7 +10,7 @@ import org.sgine.ui.layout.GridLayout
 object TestGridLayout extends StandardDisplay with Debug {
 	def setup() = {
 		val container = new Container()
-		container.scale.set(0.5)
+		container.scale(0.5)
 		val layout = GridLayout(3, 3, 0, 256.0, 256.0)
 		container.layout := layout
 		

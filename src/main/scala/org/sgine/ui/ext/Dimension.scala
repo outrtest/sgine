@@ -20,12 +20,12 @@ class Dimension(override val parent: Component) extends PropertyContainer {
 	height.listeners += handler
 	depth.listeners += handler
 	
-	def set(width: Double, height: Double) = {
+	def apply(width: Double, height: Double) = {
 		this.width := width
 		this.height := height
 	}
 	
-	def set(width: Double, height: Double, depth: Double) = {
+	def apply(width: Double, height: Double, depth: Double) = {
 		this.width := width
 		this.height := height
 		this.depth := depth

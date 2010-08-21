@@ -154,17 +154,17 @@ class Scale9 extends CompositeComponent {
 			val posY2 = posY1 - (y1 / 2.0) - (destHeight / 2.0)
 			val posY3 = posY2 - (destHeight / 2.0) - ((textureHeight - y2) / 2.0)
 			
-			topLeft.location.set(posX1, posY1)
-			top.location.set(posX2, posY1)
-			topRight.location.set(posX3, posY1)
+			topLeft.location(posX1, posY1)
+			top.location(posX2, posY1)
+			topRight.location(posX3, posY1)
 			
-			left.location.set(posX1, posY2)
-			center.location.set(posX2, posY2)
-			right.location.set(posX3, posY2)
+			left.location(posX1, posY2)
+			center.location(posX2, posY2)
+			right.location(posX3, posY2)
 			
-			bottomLeft.location.set(posX1, posY3)
-			bottom.location.set(posX2, posY3)
-			bottomRight.location.set(posX3, posY3)
+			bottomLeft.location(posX1, posY3)
+			bottom.location(posX2, posY3)
+			bottomRight.location(posX3, posY3)
 			
 			dimension.width := width()
 			dimension.height := height()

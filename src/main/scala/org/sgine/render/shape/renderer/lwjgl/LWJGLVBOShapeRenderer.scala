@@ -44,6 +44,10 @@ class VBO() {
 	private var fb: FloatBuffer = _
 	
 	def update(data: ShapeData) = {
+		if (data.length == 0) {
+			throw new RuntimeException("ShapeData must have vertex data!")
+		}
+		
 		// Bind the buffer
 		glBindBuffer(GL_ARRAY_BUFFER, id)
 		

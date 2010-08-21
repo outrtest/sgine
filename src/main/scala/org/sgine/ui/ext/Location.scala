@@ -12,12 +12,12 @@ class Location(override val parent: Component) extends PropertyContainer {
 	val z = new DepthNumericProperty(0.0, this)
 	val actual = new Actual(this)
 	
-	def set(x: Double, y: Double) = {
+	def apply(x: Double, y: Double) = {
 		this.x := x
 		this.y := y
 	}
 	
-	def set(x: Double, y: Double, z: Double) = {
+	def apply(x: Double, y: Double, z: Double) = {
 		this.x := x
 		this.y := y
 		this.z := z
