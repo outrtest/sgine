@@ -32,7 +32,12 @@
       <name>Scala-Tools Maven2 Repository - Snapshots</name>
       <url>http://scala-tools.org/repo-snapshots</url>
     </repository>
-
+<!--
+    <repository>
+      <id>source.db4o</id>
+      <url>http://source.db4o.com/maven</url>
+    </repository>
+-->
   </repositories>
 
   <!-- Places to retrieve maven plugins from -->
@@ -123,12 +128,21 @@
     </dependency>
 
     <dependency>
-      <groupId>simplex3d_float</groupId>
-      <artifactId>simplex3d_float</artifactId>
+      <groupId>simplex3d_double</groupId>
+      <artifactId>simplex3d_double</artifactId>
       <version>unknown</version>
       <scope>system</scope>
-      <systemPath>${basedir}/lib/simplex3d-math-float.jar</systemPath>
+      <systemPath>${basedir}/lib/simplex3d-math-double.jar</systemPath>
     </dependency>
+
+    <dependency>
+      <groupId>com.db4o</groupId>
+      <artifactId>db4o-full-java5</artifactId>
+      <version>unknown</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/db4o-7.12.145.14409-all-java5.jar</systemPath>
+    </dependency>
+
 
   </dependencies>
 
