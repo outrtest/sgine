@@ -12,7 +12,7 @@ object TestBox extends StandardDisplay with Debug {
 	def setup() = {
 		val image = new Image(Resource("puppies.jpg"))
 		image.location.z := -300.0
-		image.scale.set(2.0)
+		image.scale(2.0)
 		scene += image
 		
 		val component = new Box()

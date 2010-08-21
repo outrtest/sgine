@@ -50,7 +50,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 				layout(item)
 			}
 			
-			container.dimension.set(width, height)
+			container.dimension(width, height)
 		}
 	}
 	
@@ -103,7 +103,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 			case c: Component => {
 				c.location.x.align := HorizontalAlignment.Left
 				c.location.y.align := VerticalAlignment.Top
-				c.location.set(offsetX, offsetY)
+				c.location(offsetX, offsetY)
 			}
 		}
 	}

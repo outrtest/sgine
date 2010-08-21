@@ -35,8 +35,8 @@ object TestStressBoxes extends StandardDisplay with Debug {
 	
 	def createBox(y: Double, z: Double, scale: Double) = {
 		val box = new Box()
-		box.scale.set(scale)
-		box.location.set(0.0, y, z)
+		box.scale(scale)
+		box.location(0.0, y, z)
 		box.source := Resource("sgine_256.png")
 		
 		animate(box)
@@ -49,8 +49,8 @@ object TestStressBoxes extends StandardDisplay with Debug {
 	
 	def createInstance(component: Component, y: Double, z: Double, scale: Double) = {
 		val instance = ComponentInstance(component)
-		instance.scale.set(scale)
-		instance.location.set(0.0, y, z)
+		instance.scale(scale)
+		instance.location(0.0, y, z)
 		
 		animate(instance)
 		

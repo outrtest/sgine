@@ -81,7 +81,7 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 			case _ =>
 		}
 		
-		container.dimension.set(width, height, depth)
+		container.dimension(width, height, depth)
 	}
 }
 

@@ -68,15 +68,17 @@ trait ShapeComponent extends Component {
 	}
 	
 	protected def updateShape() = {
-		val data = ShapeData(_mode(),
-							 _vertices(),
-							 _cull(),
-							 _material(),
-							 _colors(),
-							 _texcoords(),
-							 _normal())
-							 
-		shape(data)
+		if (_vertices() != Nil) {
+			val data = ShapeData(_mode(),
+								 _vertices(),
+								 _cull(),
+								 _material(),
+								 _colors(),
+								 _texcoords(),
+								 _normal())
+								 
+			shape(data)
+		}
 	}
 	
 	private def shapeChanged(evt: PropertyChangeEvent[_]) = {
