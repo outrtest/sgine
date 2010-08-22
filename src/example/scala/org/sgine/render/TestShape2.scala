@@ -33,9 +33,7 @@ object TestShape2 {
 	    val glyphVector = font.createGlyphVector(fontRenderContext, "Sgine!")
 		val shape = glyphVector.getOutline
 		val rect = new java.awt.geom.Rectangle2D.Double(0.0, 0.0, 5.0, 5.0)
-		val data = ShapeUtilities.convert(shape)
-		info("Data: " + data.length)
-		s(data)
+		ShapeUtilities(shape, s)
 		val fps = FPS(1.0)
 		
 		r.renderable := RenderList(MatrixState(m), s, fps)

@@ -2,47 +2,45 @@ package org.sgine.render.shape.renderer.lwjgl
 
 import org.lwjgl.opengl.GL11._
 
-import org.sgine.render.shape.ShapeData
+import org.sgine.render.shape._
 
 class LWJGLImmediateModeShapeRenderer extends LWJGLShapeRenderer {
 	private var range: Range = _
-	private var data: ShapeData = _
+	private var shape: Shape = _
 	
-	protected[shape] def update(old: ShapeData, data: ShapeData) = {
-		// Immediate mode, nothing to do
-	}
+	protected[shape] def update(shape: Shape, vertexChanged: Boolean = false, colorChanged: Boolean = false, textureChanged: Boolean = false, normalChanged: Boolean = false) = {}
 	
-	override protected[shape] def renderInternal(data: ShapeData) = {
-		if ((range == null) || (range.length != data.length)) {
-			range = 0 until data.length
+	override protected[shape] def renderInternal(shape: Shape) = {
+		if ((range == null) || (range.length != shape.vertex.length)) {
+			range = 0 until shape.vertex.length
 		}
 
-		this.data = data
-		glBegin(data.mode.value)
+		this.shape = shape
+		glBegin(shape.mode.value)
 		range.foreach(renderVertex)
 		glEnd()
 	}
 	
 	private val renderVertex = (index: Int) => {
-		if (data.hasNormal) {
-			val n = data.normal(index)
+		if (shape.hasNormal) {
+			val n = shape.normal(index)
 			if (n != null) {
 				glNormal3d(n.x, n.y, n.z)
 			}
 		}
-		if (data.hasColor) {
-			val c = data.color(index)
+		if (shape.hasColor) {
+			val c = shape.color(index)
 			if (c != null) {
 				glColor4d(c.red, c.green, c.blue, c.alpha)
 			}
 		}
-		if (data.hasTexture) {
-			val t = data.texture(index)
+		if (shape.hasTexture) {
+			val t = shape.texture(index)
 			if (t != null) {
 				glTexCoord2d(t.x, t.y)
 			}
 		}
-		val v = data.vertex(index)
+		val v = shape.vertex(index)
 		if (v != null) {
 			glVertex3d(v.x, v.y, v.z)
 		}

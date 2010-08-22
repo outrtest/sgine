@@ -20,8 +20,7 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.Renderer
 import org.sgine.render.TextureManager
-import org.sgine.render.shape.MutableShapeData
-import org.sgine.render.shape.ShapeMode
+import org.sgine.render.shape._
 
 import simplex3d.math.doublem.renamed._
 
@@ -42,7 +41,8 @@ class Box extends Component with ShapeComponent {
 	dimension.height.listeners += numericHandler
 	dimension.depth.listeners += numericHandler
 	
-	private val data = MutableShapeData(ShapeMode.Quads, 24)
+	shape.mode = ShapeMode.Quads
+//	private val data = MutableShapeData(ShapeMode.Quads, 24)
 	
 	def this(source: Resource) = {
 		this()
