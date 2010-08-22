@@ -15,9 +15,7 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.Renderer
 import org.sgine.render.Texture
-import org.sgine.render.shape.Shape
-import org.sgine.render.shape.ShapeData
-import org.sgine.render.shape.ShapeMode
+import org.sgine.render.shape._
 
 import simplex3d.math.doublem.renamed._
 
@@ -69,15 +67,22 @@ trait ShapeComponent extends Component {
 	
 	protected def updateShape() = {
 		if (_vertices() != Nil) {
-			val data = ShapeData(_mode(),
-								 _vertices(),
-								 _cull(),
-								 _material(),
-								 _colors(),
-								 _texcoords(),
-								 _normal())
-								 
-			shape(data)
+			shape.mode = _mode()
+			shape.cull = _cull()
+			shape.material = _material()
+			shape.vertex = VertexData(_vertices())
+			_colors() match {
+				case null =>
+				case c => shape.color = ColorData(c)
+			}
+			_texcoords() match {
+				case null =>
+				case t => shape.texture = TextureData(t)
+			}
+			_normal() match {
+				case null =>
+				case n => shape.normal = NormalData(n)
+			}
 		}
 	}
 	

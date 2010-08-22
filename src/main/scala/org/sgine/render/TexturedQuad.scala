@@ -14,9 +14,7 @@ import org.sgine.property.NumericProperty
 import org.sgine.property.event.NumericPropertyChangeEvent
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.render.shape.MutableShapeData
-import org.sgine.render.shape.Shape
-import org.sgine.render.shape.ShapeMode
+import org.sgine.render.shape._
 
 import simplex3d.math.doublem.renamed._
 
@@ -54,8 +52,8 @@ class TexturedQuad extends Function0[Unit] {
 	def update() = {
 		if (dirty.compareAndSet(true, false)) {
 			if (isValid) {
-				val data = MutableShapeData(ShapeMode.Quads, 4)
-				data.cull = cull()
+				shape.mode = ShapeMode.Quads
+				shape.cull = cull()
 				
 				texture() match {
 					case null =>
@@ -64,18 +62,16 @@ class TexturedQuad extends Function0[Unit] {
 						val y1 = y() / t.height
 						val x2 = (x() + width()) / t.width
 						val y2 = (y() + height()) / t.height
-						data.textureCoords = List(Vec2(x1, y2), Vec2(x2, y2), Vec2(x2, y1), Vec2(x1, y1))
+						shape.texture = TextureData(List(Vec2(x1, y2), Vec2(x2, y2), Vec2(x2, y1), Vec2(x1, y1)))
 					}
 				}
 				
 				val w = width() / 2.0
 				val h = height() / 2.0
-				data.vertices = List(Vec3(-w, -h, 0.0),
+				shape.vertex = VertexData(List(Vec3(-w, -h, 0.0),
 									 Vec3(w, -h, 0.0),
 									 Vec3(w, h, 0.0),
-									 Vec3(-w, h, 0.0))
-				
-				shape(data)
+									 Vec3(-w, h, 0.0)))
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 package org.sgine.render.shape.renderer
 
-import org.sgine.render.shape.ShapeData
+import org.sgine.render.shape._
 
 trait ShapeRenderer {
 	/**
@@ -16,15 +16,15 @@ trait ShapeRenderer {
 	 * @param old
 	 * @param data
 	 */
-	protected[shape] def update(old: ShapeData, data: ShapeData): Unit
+	protected[shape] def update(shape: Shape, vertexChanged: Boolean = false, colorChanged: Boolean = false, textureChanged: Boolean = false, normalChanged: Boolean = false): Unit
 	
 	/**
 	 * Invoked to render data to the screen.
 	 * This method will always be invoked in the
-	 * GL thread and <code>data</code> will always
+	 * GL thread and <code>shape</code> will always
 	 * be non-null.
 	 * 
-	 * @param data
+	 * @param shape
 	 */
-	protected[shape] def render(data: ShapeData): Unit
+	protected[shape] def render(shape: Shape): Unit
 }

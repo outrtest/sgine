@@ -9,26 +9,24 @@ import org.lwjgl.opengl.GL15._
 
 import org.sgine.core.Face
 
-import org.sgine.render.shape.ShapeData
+import org.sgine.render.shape._
 
 class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
 	private var vbo: VBO = _
 	
-	protected[shape] def update(old: ShapeData, data: ShapeData) = {
-		if (old != null) {
-			if (old.length != data.length) {
-				// Delete buffer if already existing since the size changed
-				vbo.delete()
-				vbo = null
-			}
+	protected[shape] def update(shape: Shape, vertexChanged: Boolean = false, colorChanged: Boolean = false, textureChanged: Boolean = false, normalChanged: Boolean = false) = {
+		if ((vbo != null) && (vbo.length != shape.vertex.length)) {
+			// Delete buffer if already existing since the size changed
+			vbo.delete()
+			vbo = null
 		}
 		if (vbo == null) {
-			vbo = new VBO()
+			vbo = new VBO(shape.vertex.length)
 		}
-		vbo.update(data)
+		vbo.update(shape, vertexChanged, colorChanged, textureChanged, normalChanged)
 	}
 	
-	override protected[shape] def renderInternal(data: ShapeData) = vbo.draw()
+	override protected[shape] def renderInternal(shape: Shape) = vbo.draw()
 }
 
 object LWJGLVBOShapeRenderer {
@@ -37,15 +35,15 @@ object LWJGLVBOShapeRenderer {
 	lazy val capable = org.lwjgl.opengl.GLContext.getCapabilities.OpenGL15 && org.lwjgl.opengl.GLContext.getCapabilities.GL_ARB_vertex_buffer_object
 }
 
-class VBO() {
+class VBO(val length: Int) {
 	private var id: Int = glGenBuffers()
-	private var data: ShapeData = _
+	private var shape: Shape = _
 	private var bb: ByteBuffer = _
 	private var fb: FloatBuffer = _
 	
-	def update(data: ShapeData) = {
-		if (data.length == 0) {
-			throw new RuntimeException("ShapeData must have vertex data!")
+	def update(shape: Shape, vertexChanged: Boolean, colorChanged: Boolean, textureChanged: Boolean, normalChanged: Boolean) = {
+		if (shape.vertex.length == 0) {
+			throw new RuntimeException("Shape must have vertex data!")
 		}
 		
 		// Bind the buffer
@@ -53,7 +51,7 @@ class VBO() {
 		
 		// Generate the buffer allocation the first time around
 		if (bb == null) {
-			val bytes = data.bytes
+			val bytes = shape.bytes
 			glBufferData(GL_ARRAY_BUFFER, bytes, GL_STREAM_DRAW)
 		}
 		
@@ -65,29 +63,29 @@ class VBO() {
 		}
 		
 		// Update the FloatBuffer
-		val range = 0 until data.length
+		val range = 0 until shape.vertex.length
 		
 		fb.clear()
 		
 		for (i <- range) {	// Populate vertices
-			val v = data.vertex(i)
+			val v = shape.vertex(i)
 			fb.put(v.x.toFloat)
 			fb.put(v.y.toFloat)
 			fb.put(v.z.toFloat)
 		}
 		
-		if (data.hasNormal) {
+		if ((normalChanged) && (shape.hasNormal)) {
 			for (i <- range) {	// Populate normals
-				val n = data.normal(i)
+				val n = shape.normal(i)
 				fb.put(n.x.toFloat)
 				fb.put(n.y.toFloat)
 				fb.put(n.z.toFloat)
 			}
 		}
 		
-		if (data.hasColor) {
+		if ((colorChanged) && (shape.hasColor)) {
 			for (i <- range) {	// Populate colors
-				val c = data.color(i)
+				val c = shape.color(i)
 				fb.put(c.red.toFloat)
 				fb.put(c.green.toFloat)
 				fb.put(c.blue.toFloat)
@@ -95,9 +93,9 @@ class VBO() {
 			}
 		}
 		
-		if (data.hasTexture) {
+		if ((textureChanged) && (shape.hasTexture)) {
 			for (i <- range) {	// Populate texture
-				val t = data.texture(i)
+				val t = shape.texture(i)
 				fb.put(t.x.toFloat)
 				fb.put(t.y.toFloat)
 			}
@@ -106,12 +104,12 @@ class VBO() {
 		// Unmap the buffer
 		glUnmapBuffer(GL_ARRAY_BUFFER)
 		
-		// Assign data data
-		this.data = data
+		// Assign shape reference
+		this.shape = shape
 	}
 	
 	def draw() = {
-		val length = data.length
+		val length = shape.vertex.length
 		if (LWJGLVBOShapeRenderer.current != id) {
 			LWJGLVBOShapeRenderer.current = id
 			
@@ -121,22 +119,22 @@ class VBO() {
 			var offset = 0
 			glVertexPointer(3, GL_FLOAT, 0, offset)
 			offset += length * (3 * 4)
-			if (data.hasNormal) {
+			if (shape.hasNormal) {
 				glEnableClientState(GL_NORMAL_ARRAY)
 				glNormalPointer(GL_FLOAT, 0, offset)
 				offset += length * (3 * 4)
 			}
-			if (data.hasColor) {
+			if (shape.hasColor) {
 				glEnableClientState(GL_COLOR_ARRAY)
 				glColorPointer(4, GL_FLOAT, 0, offset)
 				offset += length * (4 * 4)
 			}
-			if (data.hasTexture) {
+			if (shape.hasTexture) {
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 				glTexCoordPointer(2, GL_FLOAT, 0, offset)
 			}
 		}
-		glDrawArrays(data.mode.value, 0, length)
+		glDrawArrays(shape.mode.value, 0, length)
 		
 //		glDisableClientState(GL_VERTEX_ARRAY)
 //		if (data.hasColor) {

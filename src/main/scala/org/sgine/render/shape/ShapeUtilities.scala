@@ -12,7 +12,7 @@ import scala.collection.mutable.ArrayBuffer
 import simplex3d.math.doublem._
 
 object ShapeUtilities {
-	def convert(awtShape: java.awt.Shape) = {
+	def apply(awtShape: java.awt.Shape, shape: Shape) = {
 		val tess = GLUtessellatorImpl.gluNewTess()
 		
 		val cb = new TessCallback()
@@ -45,10 +45,8 @@ object ShapeUtilities {
 		
 		tess.gluEndPolygon()
 		
-		val data = MutableShapeData(ShapeMode.Triangles, cb.buffer.length)
-		data.vertices = cb.buffer
-		
-		data
+		shape.mode = ShapeMode.Triangles
+		shape(VertexData(cb.buffer))
 	}
 	
 	def convertTriangleFan(coords: Seq[Vec3d]) = {

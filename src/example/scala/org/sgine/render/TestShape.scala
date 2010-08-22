@@ -94,24 +94,31 @@ object TestShape {
 //		}
 		
 		val triangles = ShapeUtilities.convertTriangleStrip(triangleStrip)
-		val data = new ShapeData() {
-			val mode = ShapeMode.Triangles
-			val cull = Face.None
-			val material = Material.AmbientAndDiffuse
-			val length = 9
-			def color(index: Int) = colors(index)
-			def vertex(index: Int) = vertices(index)
-			def texture(index: Int) = null
-			def normal(index: Int) = null
-			val hasColor = true
-			val hasTexture = false
-			val hasNormal = false
-			
-			val vertices = triangles
-			val colors = List(Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random)
-		}
+//		val data = new ShapeData() {
+//			val mode = ShapeMode.Triangles
+//			val cull = Face.None
+//			val material = Material.AmbientAndDiffuse
+//			val length = 9
+//			def color(index: Int) = colors(index)
+//			def vertex(index: Int) = vertices(index)
+//			def texture(index: Int) = null
+//			def normal(index: Int) = null
+//			val hasColor = true
+//			val hasTexture = false
+//			val hasNormal = false
+//			
+//			val vertices = triangles
+//			val colors = List(Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random)
+//		}
+//		
+//		s(data)
 		
-		s(data)
+		s.mode = ShapeMode.Triangles
+		s.cull = Face.None
+		s.material = Material.AmbientAndDiffuse
+		s.vertex = VertexData(triangles)
+		s.color = ColorData(List(Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random, Color.random))
+		
 		val fps = FPS(1.0)
 		
 		r.renderable := RenderList(MatrixState(m), s, fps)
