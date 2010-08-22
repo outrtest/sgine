@@ -45,7 +45,7 @@ class Color private[core]() {
 }
 
 object Color {
-	val AliceBlue = Color(0xfff08ff)
+	val AliceBlue = Color(0xfff0f8ff)
 	val AntiqueWhite = Color(0xfffaebd7)
 	val Aquamarine = Color(0xff7fffd4)
 	val Azure = Color(0xfff0fff)

@@ -58,7 +58,7 @@ trait ShapeComponent extends Component {
 		shape.update()
 	}
 	
-	protected[ui] def drawComponent() = {
+	def drawComponent() = {
 		if (texture != null) {
 			texture.bind()
 		} else {

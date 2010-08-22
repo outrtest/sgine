@@ -18,7 +18,7 @@ class ComponentInstance private() extends Component {
 	
 	bounding.bindPath(OPath(this, "instance.bounding"))
 	
-	protected[ui] def drawComponent() = {
+	def drawComponent() = {
 		instance() match {
 			case null =>
 			case c => c.drawComponent()

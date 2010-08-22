@@ -74,6 +74,6 @@ class Container extends GeneralNodeContainer with Component with Updatable {
 //		}
 	}
 	
-	protected[ui] def drawComponent() = {
+	def drawComponent() = {
 	}
 }

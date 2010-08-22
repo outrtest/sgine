@@ -29,7 +29,7 @@ trait PrimitiveComponent extends Component {
    */
   protected val invalidationHandler: EventHandler = EventHandler((e:Event) => invalidatePrimitive, ProcessingMode.Blocking)
 
-  protected[ui] def drawComponent() {
+  def drawComponent() {
     if (primitive == null) primitive = createPrimitive()
 
     // Draw primitive

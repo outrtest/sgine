@@ -119,7 +119,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		glColor4d(wc.red, wc.green, wc.blue, wc.alpha)
 	}
 	
-	protected[ui] def drawComponent()
+	def drawComponent()
 	
 	private def updateActualLocation(evt: Event) = {
 		var x = location.x()
