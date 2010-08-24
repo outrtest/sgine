@@ -63,6 +63,7 @@ class Renderer extends PropertyContainer {
 	val renderable = new AdvancedProperty[Renderable](null, this)
 	val background = new AdvancedProperty[Color](Color.Black, this) with TransactionalProperty[Color]
 	val settings = new AdvancedProperty[RenderSettings](RenderSettings.Default, this) with TransactionalProperty[RenderSettings]
+	val yielding = new AdvancedProperty[Boolean](false, this)
 	
 	val lighting = new AdvancedProperty[Boolean](false, this) with TransactionalProperty[Boolean]
 	val light0 = new Light(0, this)
@@ -101,6 +102,10 @@ class Renderer extends PropertyContainer {
 					Updatable.update()
 				}
 				render()
+				
+				if (yielding()) {
+					Thread.`yield`()
+				}
 			}
 		} catch {
 			case t: Throwable => t.printStackTrace()
