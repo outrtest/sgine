@@ -36,7 +36,7 @@ trait Updatable {
 }
 
 object Updatable extends Function0[Unit] {
-	var useWorkManager = false
+	var useWorkManager = true
 	var workManager = DefaultWorkManager
 	
 	private var array = new ArrayBuffer[WeakReference[Updatable]]()
