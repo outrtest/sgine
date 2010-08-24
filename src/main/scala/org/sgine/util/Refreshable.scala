@@ -14,6 +14,10 @@ trait Refreshable extends Updatable {
 	def refreshRate: Double
 	protected def refreshFunction: () => Unit
 	
+	def start() = {
+		initUpdatable()
+	}
+	
 	def refresh() = {
 		lock.lock()
 		try {
