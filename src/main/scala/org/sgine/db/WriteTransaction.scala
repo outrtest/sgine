@@ -1,11 +1,13 @@
 package org.sgine.db
 
+import scala.reflect.Manifest
+
 trait WriteTransaction {
 	def db: DB
 	
-	def store(obj: AnyRef): Unit
+	def store[T](obj: T)(implicit manifest: Manifest[T]): Unit
 	
-	def delete(obj: AnyRef): Unit
+	def delete[T](obj: T)(implicit manifest: Manifest[T]): Unit
 	
 	def commit(): Unit
 	
