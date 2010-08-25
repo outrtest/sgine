@@ -9,6 +9,7 @@ class BindingSpec extends FlatSpec with ShouldMatchers {
 	val p1 = new AdvancedProperty[String]("")
 	val p2 = new AdvancedProperty[String]("Hello")
 	val p3 = new AdvancedProperty[String]("World")
+	val p4 = new AdvancedProperty[Int](1)
 	
 	var path: OPath = _
 	
@@ -100,6 +101,19 @@ class BindingSpec extends FlatSpec with ShouldMatchers {
 		p1() should equal("Hello World")
 		t3.p3 := "Goodbye World"
 		p1() should equal("Hello World")
+	}
+	
+	it should "allow translation of values" in {
+		p4 bind(p1, (s: String) => s.length)
+		p4() should equal(11)
+		p1 := "Goodbye World"
+		p4() should equal(13)
+	}
+	
+	it should "disconnect binding properly" in {
+		p4 unbind p1
+		p1 := "Testing"
+		p4() should equal(13)
 	}
 }
 
