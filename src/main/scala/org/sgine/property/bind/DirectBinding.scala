@@ -2,6 +2,6 @@ package org.sgine.property.bind
 
 import org.sgine.property.BindingProperty
 
-class DirectBinding[T](val property: BindingProperty[T]) extends Binding[T] {
-	def :=(value: T) = property := value
+class DirectBinding[T, O](val property: BindingProperty[T], converter: (O) => T) extends Binding[O] {
+	def :=(value: O) = property := converter(value)
 }

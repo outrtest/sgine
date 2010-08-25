@@ -12,10 +12,14 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 	protected var bindings: List[Binding[T]] = Nil
 	protected var pathBindings: List[PathBinding[T]] = Nil
 	
-	def bind(p: BindingProperty[T]) = {
-		apply(p())		// Synchronize the values
+	private implicit val directConverter = (t: T) => t
+	
+	def bind(p: BindingProperty[T]): Unit = bind(p, directConverter)
+	
+	def bind[O](p: BindingProperty[O], converter: (O) => T): Unit = {
+		apply(converter(p()))		// Synchronize the values
 		
-		p.reverseBind(new DirectBinding(this))
+		p.reverseBind(new DirectBinding(this, converter))
 	}
 	
 	def reverseBind(b: Binding[T]) = {
@@ -24,7 +28,7 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 		}
 	}
 	
-	def unbind(p: BindingProperty[T]) = {
+	def unbind[O](p: BindingProperty[O]) = {
 		p.synchronized {
 			p.bindings = p.bindings.filterNot(directUnbind)
 		}
@@ -49,7 +53,7 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 	}
 	
 	private val directUnbind = (b: Binding[_]) => b match {
-		case db: DirectBinding[_] => db.property == this
+		case db: DirectBinding[_, _] => db.property == this
 		case _ => false
 	}
 	

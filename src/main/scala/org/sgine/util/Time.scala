@@ -109,14 +109,14 @@ object Time {
 	def millis(time: Double) = round((time * 1000.0).toFloat)
 	
 	@scala.annotation.tailrec
-	def waitFor(condition: () => Boolean, time: Double, precision: Long = 10, start: Long = System.currentTimeMillis): Boolean = {
-		if (!condition()) {
+	def waitFor(time: Double, precision: Long = 10, start: Long = System.currentTimeMillis)(condition: => Boolean): Boolean = {
+		if (!condition) {
 			if (System.currentTimeMillis - start > millis(time)) {
 				false
 			} else {
 				Thread.sleep(precision)
 				
-				waitFor(condition, time, precision, start)
+				waitFor(time, precision, start)(condition)
 			}
 		} else {
 			true

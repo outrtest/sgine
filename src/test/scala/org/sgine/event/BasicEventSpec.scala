@@ -5,6 +5,8 @@ import org.scalatest.matchers.ShouldMatchers
 
 import org.sgine.log._
 
+import org.sgine.util.Time
+
 import java.util.concurrent._
 
 class BasicEventSpec extends FlatSpec with ShouldMatchers {
@@ -59,14 +61,18 @@ class BasicEventSpec extends FlatSpec with ShouldMatchers {
 	it should "register the event occurrence in Normal mode" in {
 		Event.enqueue(new SimpleEvent2(listenable))
 		listenerIncrement2 should equal (0)
-		Event.workManager.waitForIdle(5, TimeUnit.SECONDS) should equal (true)
+		Time.waitFor(Time.Second * 5) {
+			listenerIncrement2 == 1
+		} should equal(true)
 		listenerIncrement2 should equal (1)
 	}
 	
 	it should "register the event occurrence in Asynchronous mode" in {
 		Event.enqueue(new SimpleEvent3(listenable))
 		listenerIncrement3 should equal (0)
-		Event.workManager.waitForIdle(5, TimeUnit.SECONDS) should equal (true)
+		Time.waitFor(Time.Second * 5) {
+			listenerIncrement3 == 1
+		} should equal(true)
 		listenerIncrement3 should equal (1)
 	}
 	
