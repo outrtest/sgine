@@ -108,10 +108,22 @@ object Time {
 	
 	def millis(time: Double) = round((time * 1000.0).toFloat)
 	
+	/**
+	 * Waits for <code>condition</code> to return true. This method will wait
+	 * <code>time</code> (in seconds) for the condition and will return false
+	 * if the condition is not met within that time. Further, a negative value
+	 * for <code>time</code> will cause the wait to occur until the condition
+	 * is true.
+	 * 
+	 * @param time
+	 * @param precision
+	 * @param start
+	 * @param condition
+	 */
 	@scala.annotation.tailrec
 	def waitFor(time: Double, precision: Long = 10, start: Long = System.currentTimeMillis)(condition: => Boolean): Boolean = {
 		if (!condition) {
-			if (System.currentTimeMillis - start > millis(time)) {
+			if ((time >= 0.0) && (System.currentTimeMillis - start > millis(time))) {
 				false
 			} else {
 				Thread.sleep(precision)

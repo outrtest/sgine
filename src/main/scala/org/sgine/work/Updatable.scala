@@ -78,6 +78,7 @@ object Updatable extends Function0[Unit] {
 		val frequency = (time - lastTime) / 1000000000.0
 		lastTime = time
 		val shouldElapse = round(1000.0 / Rate)
+		
 		for (wr <- array) {
 			val u = wr.get
 			if (u == null) {
@@ -88,9 +89,20 @@ object Updatable extends Function0[Unit] {
 				u.update(frequency)
 			}
 		}
+		
+//		val processFunction = process(frequency) _
+//		workManager.process(array, processFunction)
+		
 		val elapsed = (System.nanoTime - time) / 1000000
 		
 		shouldElapse - elapsed
+	}
+	
+	private def process(frequency: Double)(ref: WeakReference[Updatable]) = ref.get match {
+		case null => synchronized {
+			array -= ref
+		}
+		case u => u.update(frequency)
 	}
 	
 	private def add(u: Updatable) = {
