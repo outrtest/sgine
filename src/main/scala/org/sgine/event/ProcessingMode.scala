@@ -11,7 +11,7 @@ object ProcessingMode extends Enumerated[ProcessingMode] {
 	 * blocking the event queue from processing anything else until processing completes.
 	 * This should never be used for any functionality that takes much time to complete.
 	 */
-        case object Blocking extends ProcessingMode
+    case object Blocking extends ProcessingMode
 	
 	/**
 	 * Runs completely asynchronously from all other events. The event is processed within
@@ -26,5 +26,5 @@ object ProcessingMode extends Enumerated[ProcessingMode] {
 	 */
 	case object Normal extends ProcessingMode
 
-        ProcessingMode(Blocking, Asynchronous, Normal)
+    ProcessingMode(Blocking, Asynchronous, Normal)
 }

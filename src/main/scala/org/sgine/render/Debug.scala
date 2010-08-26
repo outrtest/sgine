@@ -36,7 +36,7 @@ trait Debug extends Display {
 		fps.location.z := 1.0
 		debugContainer += fps
 		
-		Keyboard.listeners += EventHandler(handleKey, ProcessingMode.Blocking)
+		Keyboard.listeners += EventHandler(handleKey, ProcessingMode.Blocking, worker = renderer)
 	}
 	
 	private def handleKey(evt: KeyPressEvent) = {

@@ -19,6 +19,8 @@ import org.sgine.core.Color
 import org.sgine.input.Keyboard
 import org.sgine.input.Mouse
 
+import org.sgine.log._
+
 import org.sgine.math.mutable._
 
 import org.sgine.property.AdvancedProperty
@@ -27,14 +29,16 @@ import org.sgine.property.TransactionalProperty
 import org.sgine.property.container.PropertyContainer
 
 import org.sgine.work.Updatable
+import org.sgine.work.Worker
 
 import org.sgine.util.FunctionRunnable
+import org.sgine.util.Time
 
 import simplex3d.math._
 import simplex3d.math.doublem._
 import simplex3d.math.doublem.DoubleMath._
 
-class Renderer extends PropertyContainer {
+class Renderer extends PropertyContainer with Worker {
 	private var rendered = false
 	private var keepAlive = true
 	private var lastRender = -1L
@@ -78,8 +82,6 @@ class Renderer extends PropertyContainer {
 	val fog = new Fog(this)
 	
 	private val resized = new java.util.concurrent.atomic.AtomicBoolean(false)
-	
-	private val invokeQueue = new java.util.concurrent.ConcurrentLinkedQueue[Function0[Unit]]
 	
 	def start() = {
 		thread.start()
@@ -224,10 +226,7 @@ class Renderer extends PropertyContainer {
 			
 			fog.update()
 			
-			invokeQueue.poll() match {
-				case null =>
-				case f => f()
-			}
+			doWork()
 			
 			val r = renderable()
 			if (r != null) Renderable.render(this, r)
@@ -268,10 +267,6 @@ class Renderer extends PropertyContainer {
 	
 	private def destroy() = {
 		GLDisplay.destroy()
-	}
-	
-	def invokeLater(f: () => Unit) = {
-		invokeQueue.add(f)
 	}
 }
 
