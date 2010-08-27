@@ -43,50 +43,55 @@ object Keyboard extends Listenable with Updatable {
 		super.update(time)
 		
 		if (GLKeyboard.isCreated) {
-			while (GLKeyboard.next()) {
-				val state = GLKeyboard.getEventKeyState
-				
-				// Toggle caps when caps is pressed
-				if ((GLKeyboard.getEventKey == GLKeyboard.KEY_CAPITAL) && (state)) {
-					caps = !caps
+			try {
+				while (GLKeyboard.next()) {
+					val state = GLKeyboard.getEventKeyState
+					
+					// Toggle caps when caps is pressed
+					if ((GLKeyboard.getEventKey == GLKeyboard.KEY_CAPITAL) && (state)) {
+						caps = !caps
+					}
+					
+					GLKeyboard.getEventKey match {
+						case KEY_LCONTROL => lControl = state
+						case KEY_RCONTROL => rControl = state
+						case KEY_LSHIFT => lShift = state
+						case KEY_RSHIFT => rShift = state
+						case KEY_LMETA => lMeta = state
+						case KEY_RMETA => rMeta = state
+						case KEY_LMENU => lMenu = state
+						case KEY_RMENU => rMenu = state
+						case KEY_APPS => apps = state
+						case _ =>
+					}
+					// Work-around for inability to determine caps-lock state
+					if ((!caps) && (!isShiftDown) && (Character.isUpperCase(GLKeyboard.getEventCharacter))) {
+						caps = true
+					} else if ((caps) && (!isShiftDown) && (Character.isLowerCase(GLKeyboard.getEventCharacter))) {
+						caps = false
+					}
+					val key = Key(GLKeyboard.getEventKey, isShiftDown, isCapsDown)
+					if (key == null) {
+						warn("org.sgine.input.Keyboard.update: Unable to find key: " + GLKeyboard.getEventKey + " - " + isShiftDown + " - " + isCapsDown + " - state: " + state + ", " + GLKeyboard.getKeyName(GLKeyboard.getEventKey))
+					} else {
+						val evt = event.KeyEvent(
+													key,
+													state,
+													GLKeyboard.getEventNanoseconds,
+													key.char,
+													isControlDown,
+													isShiftDown,
+													isMetaDown,
+													isMenuDown,
+													isAppsDown,
+													isCapsDown
+												 )
+						Event.enqueue(evt)
+					}
 				}
-				
-				GLKeyboard.getEventKey match {
-					case KEY_LCONTROL => lControl = state
-					case KEY_RCONTROL => rControl = state
-					case KEY_LSHIFT => lShift = state
-					case KEY_RSHIFT => rShift = state
-					case KEY_LMETA => lMeta = state
-					case KEY_RMETA => rMeta = state
-					case KEY_LMENU => lMenu = state
-					case KEY_RMENU => rMenu = state
-					case KEY_APPS => apps = state
-					case _ =>
-				}
-				// Work-around for inability to determine caps-lock state
-				if ((!caps) && (!isShiftDown) && (Character.isUpperCase(GLKeyboard.getEventCharacter))) {
-					caps = true
-				} else if ((caps) && (!isShiftDown) && (Character.isLowerCase(GLKeyboard.getEventCharacter))) {
-					caps = false
-				}
-				val key = Key(GLKeyboard.getEventKey, isShiftDown, isCapsDown)
-				if (key == null) {
-					warn("org.sgine.input.Keyboard.update: Unable to find key: " + GLKeyboard.getEventKey + " - " + isShiftDown + " - " + isCapsDown + " - state: " + state + ", " + GLKeyboard.getKeyName(GLKeyboard.getEventKey))
-				} else {
-					val evt = event.KeyEvent(
-												key,
-												state,
-												GLKeyboard.getEventNanoseconds,
-												key.char,
-												isControlDown,
-												isShiftDown,
-												isMetaDown,
-												isMenuDown,
-												isAppsDown,
-												isCapsDown
-											 )
-					Event.enqueue(evt)
-				}
+			} catch {
+				case exc: IllegalStateException => trace("Keyboard state error", exc)
+				case exc => throw exc
 			}
 		}
 	}
