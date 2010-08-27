@@ -47,7 +47,7 @@ trait Debug extends Display {
 			info("Lighting turned " + (if (Renderer().lighting()) "on" else "off"))
 		} else if (evt.keyChar.toLower == 'f') {		// Toggle fps display
 			fps.visible := !fps.visible()
-			println("Size: " + fps.dimension.width() + "x" + fps.dimension.height() + " - " + fps.bounding())
+			info("Size: %1sx%2s - %3s", args = List(fps.dimension.width(), fps.dimension.height(), fps.bounding()))
 		}
 	}
 }
