@@ -48,6 +48,16 @@ trait Debug extends Display {
 		} else if (evt.keyChar.toLower == 'f') {		// Toggle fps display
 			fps.visible := !fps.visible()
 			info("Size: %1sx%2s - %3s", args = List(fps.dimension.width(), fps.dimension.height(), fps.bounding()))
+		} else if (evt.keyChar.toLower == 'w') {
+			if (Renderer().polygonFront() == PolygonMode.Fill) {
+				Renderer().polygonFront := PolygonMode.Line
+				Renderer().polygonBack := PolygonMode.Line
+				info("Switched to polygon line")
+			} else {
+				Renderer().polygonFront := PolygonMode.Fill
+				Renderer().polygonBack := PolygonMode.Fill
+				info("Switched to polygon fill")
+			}
 		}
 	}
 }

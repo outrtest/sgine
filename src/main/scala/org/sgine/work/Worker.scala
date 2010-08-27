@@ -7,6 +7,8 @@ import org.sgine.util.Time
 trait Worker {
 	private val invokeQueue = new java.util.concurrent.ArrayBlockingQueue[Function0[Unit]](500)
 	
+	def thread: Thread
+	
 	def invokeLaterCurry(f: => Unit): Unit = invokeLater(() => f)
 	
 	def invokeLater(f: () => Unit): Unit = invokeQueue.add(f)
@@ -14,16 +16,20 @@ trait Worker {
 	def invokeAndWaitCurry(f: => Unit): Unit = invokeAndWait(() => f)
 	
 	def invokeAndWait(f: () => Unit): Unit = {
-		var finished = false
-		val delegate = () => {
+		if (thread == Thread.currentThread) {
 			f()
-			finished = true
-		}
-		invokeLater(delegate)
-		
-		// Wait
-		Time.waitFor(-1.0) {
-			finished
+		} else {
+			var finished = false
+			val delegate = () => {
+				f()
+				finished = true
+			}
+			invokeLater(delegate)
+			
+			// Wait
+			Time.waitFor(-1.0) {
+				finished
+			}
 		}
 	}
 	
