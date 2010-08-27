@@ -64,6 +64,8 @@ class Renderer extends PropertyContainer with Worker {
 	
 	val fullscreen = new AdvancedProperty[Boolean](false, this) with TransactionalProperty[Boolean]
 	val verticalSync = new AdvancedProperty[Boolean](true, this) with TransactionalProperty[Boolean]
+	val polygonFront = new AdvancedProperty[PolygonMode](PolygonMode.Fill, this) with TransactionalProperty[PolygonMode]
+	val polygonBack = new AdvancedProperty[PolygonMode](PolygonMode.Fill, this) with TransactionalProperty[PolygonMode]
 	val renderable = new AdvancedProperty[Renderable](null, this)
 	val background = new AdvancedProperty[Color](Color.Black, this) with TransactionalProperty[Color]
 	val settings = new AdvancedProperty[RenderSettings](RenderSettings.Default, this) with TransactionalProperty[RenderSettings]
@@ -182,6 +184,24 @@ class Renderer extends PropertyContainer with Worker {
 		if (verticalSync.uncommitted) {
 			verticalSync.commit()
 			GLDisplay.setVSyncEnabled(verticalSync())
+		}
+		if (polygonFront.uncommitted) {
+			polygonFront.commit()
+			glPolygonMode(GL_FRONT, polygonFront() match {
+				case PolygonMode.Point => GL_POINT
+				case PolygonMode.Line => GL_LINE
+				case PolygonMode.Fill => GL_FILL
+				case _ => throw new RuntimeException("polygonFront is not a valid value!")
+			})
+		}
+		if (polygonBack.uncommitted) {
+			polygonBack.commit()
+			glPolygonMode(GL_BACK, polygonBack() match {
+				case PolygonMode.Point => GL_POINT
+				case PolygonMode.Line => GL_LINE
+				case PolygonMode.Fill => GL_FILL
+				case _ => throw new RuntimeException("polygonFront is not a valid value!")
+			})
 		}
 		if (background.uncommitted) {
 			background.commit()
