@@ -46,9 +46,9 @@ object Updatable extends Function0[Unit] {
 	/**
 	 * The number of times per second all updatables will be updated.
 	 * 
-	 * Defaults to 60.
+	 * Defaults to 120.
 	 */
-	var Rate = 60.0
+	var Rate = 120.0
 	
 	private def initialize() = {
 		synchronized {
