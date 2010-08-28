@@ -74,7 +74,7 @@ class BasicTexture() extends Texture {
 	 * @param imageFormat
 	 * @param imageType
 	 */
-	def apply(x: Int, y: Int, width: Int, height: Int, buffer: ByteBuffer, textureFormat: Int = GL_RGBA, imageFormat: Int = GL_COMPRESSED_RGBA, imageType: Int = GL_UNSIGNED_BYTE): Unit = {
+	def apply(x: Int, y: Int, width: Int, height: Int, buffer: ByteBuffer, textureFormat: Int = GL_RGBA, imageFormat: Int = GL_RGBA, imageType: Int = GL_UNSIGNED_BYTE): Unit = {
 		updates.add(new TextureUpdate(x, y, width, height, buffer, textureFormat, imageFormat, imageType))
 	}
 	

@@ -21,8 +21,8 @@ class StreamingTexture(val width: Int, val height: Int) extends Texture {
 	private var _buffer: ByteBuffer = _
 	private lazy val length = width * height * textureDepth
 	
-	var internalTextureFormat = GL_COMPRESSED_RGBA
-	var pixelTextureFormat = GL_COMPRESSED_RGBA
+	var internalTextureFormat = GL_RGBA
+	var pixelTextureFormat = GL_RGBA
 	var textureType = GL_UNSIGNED_BYTE
 	var textureDepth = 4
 
