@@ -58,6 +58,11 @@ trait Debug extends Display {
 				Renderer().polygonBack := PolygonMode.Fill
 				info("Switched to polygon fill")
 			}
+		} else if (evt.menuDown) {
+			if (evt.key == Key.Enter) {
+				Renderer().fullscreen := !Renderer().fullscreen()
+				info("Toggling fullscreen mode")
+			}
 		}
 	}
 }

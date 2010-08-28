@@ -179,7 +179,18 @@ class Renderer extends PropertyContainer with Worker {
 		}
 		if (fullscreen.uncommitted) {
 			fullscreen.commit()
-			GLDisplay.setFullscreen(fullscreen())
+			val fs = fullscreen()
+			GLDisplay.setFullscreen(fs)
+			if (fs) {
+				// TODO: make configurable
+				val displayMode = GLDisplay.getDesktopDisplayMode
+				canvas.setSize(displayMode.getWidth, displayMode.getHeight)
+			} else {
+				val parentSize = canvas.getParent.getSize
+				val parentInsets = canvas.getParent.getInsets
+				canvas.setSize(parentSize.width - parentInsets.left - parentInsets.right, parentSize.height - parentInsets.top - parentInsets.bottom)
+			}
+			reshapeGL()
 		}
 		if (verticalSync.uncommitted) {
 			verticalSync.commit()
