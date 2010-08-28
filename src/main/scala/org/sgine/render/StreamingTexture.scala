@@ -7,6 +7,7 @@ import java.nio.ByteOrder
 
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL12._
+import org.lwjgl.opengl.GL13._
 import org.lwjgl.opengl.GL14._
 import org.lwjgl.opengl.GL15._
 import org.lwjgl.opengl.GL21._
@@ -20,8 +21,8 @@ class StreamingTexture(val width: Int, val height: Int) extends Texture {
 	private var _buffer: ByteBuffer = _
 	private lazy val length = width * height * textureDepth
 	
-	var internalTextureFormat = GL_RGBA
-	var pixelTextureFormat = GL_RGBA
+	var internalTextureFormat = GL_COMPRESSED_RGBA
+	var pixelTextureFormat = GL_COMPRESSED_RGBA
 	var textureType = GL_UNSIGNED_BYTE
 	var textureDepth = 4
 
