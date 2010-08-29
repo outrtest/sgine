@@ -31,7 +31,8 @@ trait CombiningProperty[T] extends Property[T] {
 	abstract override def apply() = {
 		val value = super.apply()
 		
-		if ((combine != null) && (combineFunction != null)) {
+		// TODO: validate the value might be allowed to equal null?
+		if ((combine != null) && (combineFunction != null) && (value != null)) {
 			combineFunction(combine(), value)
 		} else {
 			value
