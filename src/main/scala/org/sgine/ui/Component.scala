@@ -29,6 +29,7 @@ import org.sgine.render.Renderable
 import org.sgine.render.Renderer
 import org.sgine.render.RenderUpdatable
 
+import org.sgine.scene.Node
 import org.sgine.scene.NodeContainer
 
 import org.sgine.ui.ext._
@@ -75,27 +76,51 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	
 	def render(renderer: Renderer) = {
 		_renderer = renderer
-		if (visible()) {				// Only render if the component is visible
-			if (firstRender) {
-				firstRender = false
-				initComponent()
+		if (firstRender) {
+			firstRender = false
+			initComponent()
+		}
+		
+		// Disable lighting if enabled
+		if ((!lighting()) && (Renderer().lighting())) {
+			glDisable(GL_LIGHTING)
+		}
+		
+		preRender()
+		_renderer.loadMatrix(worldMatrix())
+		
+		preColor()
+		drawComponent()
+		
+		// Enable lighting if enabled
+		if ((!lighting()) && (Renderer().lighting())) {
+			glEnable(GL_LIGHTING)
+		}
+	}
+	
+	override def shouldRender = {
+		if (!isVisible) {
+			false
+		} else {
+			super.shouldRender
+		}
+	}
+	
+	def isVisible = {
+		checkVisible(this)
+	}
+	
+	private def checkVisible(node: Node): Boolean = {
+		node match {
+			case null => true
+			case component: Component => {
+				if (component.visible()) {
+					checkVisible(component.parent)
+				} else {
+					false
+				}
 			}
-			
-			// Disable lighting if enabled
-			if ((!lighting()) && (Renderer().lighting())) {
-				glDisable(GL_LIGHTING)
-			}
-			
-			preRender()
-			_renderer.loadMatrix(worldMatrix())
-			
-			preColor()
-			drawComponent()
-			
-			// Enable lighting if enabled
-			if ((!lighting()) && (Renderer().lighting())) {
-				glEnable(GL_LIGHTING)
-			}
+			case _ => checkVisible(node.parent)
 		}
 	}
 	

@@ -18,7 +18,7 @@ import org.sgine.ui.layout._
 import org.sgine.work.Updatable
 
 class Container extends GeneralNodeContainer with Component with Updatable {
-	var layout = new AdvancedProperty[(Container) => Unit](Layout.default, this)
+	val layout = new AdvancedProperty[(Container) => Unit](Layout.default, this)
 	
 	private val revalidateLayout = new AtomicBoolean(true)
 	

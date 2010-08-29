@@ -69,14 +69,14 @@ class StreamingTexture(val width: Int, val height: Int) extends Texture {
 			glBindTexture(GL_TEXTURE_2D, id)
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
 	
-			if (dataDirty.compareAndSet(true, false)) {
-				updateBuffer()
-			}
-			if (bufferDirty.compareAndSet(true, false)) {
-				applyBuffer()
-			}
-			
 			Texture.current = id
+		}
+		
+		if (dataDirty.compareAndSet(true, false)) {
+			updateBuffer()
+		}
+		if (bufferDirty.compareAndSet(true, false)) {
+			applyBuffer()
 		}
 	}
 	

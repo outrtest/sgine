@@ -20,9 +20,9 @@ import org.sgine.render.StreamingTexture
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.opengl.GL12._
 
+import scala.math._
+
 trait CachedComponent extends Component with BoundingObject {
-	val width = new AdvancedProperty[Int](0, this)
-	val height = new AdvancedProperty[Int](0, this)
 	val pixelFormat = new AdvancedProperty[Int](GL_RGBA, this)
 	
 	protected var texture: StreamingTexture = _
@@ -41,28 +41,28 @@ trait CachedComponent extends Component with BoundingObject {
 	private def redraw(buffer: ByteBuffer) = {
 		draw(buffer)
 		
-		image.width = width()
-		image.height = height()
-		if ((dimension.width() != width()) || (dimension.height() != height())) {
-			dimension.width := width()
-			dimension.height := height()
+		image.width = dimension.width()
+		image.height = dimension.height()
+		if ((dimension.width() != dimension.width()) || (dimension.height() != dimension.height())) {
+			dimension.width := dimension.width()
+			dimension.height := dimension.height()
 		}
 	}
 	
 	protected def draw(buffer: ByteBuffer): Unit
 	
 	protected def configureListeners() = {
-		width.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
-		height.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
+		dimension.width.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
+		dimension.height.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
 		
 		true
 	}
 	
 	def invalidateCache(evt: PropertyChangeEvent[_] = null) = {
-		if ((width() > 0) && (height() > 0)) {
+		if ((dimension.width() > 0) && (dimension.height() > 0)) {
 			if (texture == null) {
-				texture = new StreamingTexture(width(), height())
-				info("Streaming: " + width() + "x" + height())
+				texture = new StreamingTexture(round(dimension.width()).toInt, round(dimension.height()).toInt)
+				info("Streaming: " + dimension.width() + "x" + dimension.height())
 				texture.internalTextureFormat = GL_RGBA
 				texture.pixelTextureFormat = pixelFormat()
 				texture.updateFunction = redraw

@@ -1,5 +1,7 @@
 package org.sgine.render
 
+import org.sgine.core.Resource
+
 import org.sgine.event.EventHandler
 import org.sgine.event.ProcessingMode
 
@@ -15,10 +17,12 @@ import org.sgine.scene.GeneralNodeContainer
 import org.sgine.scene.ext.ResolutionNode
 
 import org.sgine.ui.FPSLabel
+import org.sgine.ui.Image
 
 trait Debug extends Display {
 	val debugContainer = new GeneralNodeContainer() with ResolutionNode
 	val fps = new FPSLabel()
+	val grid = new Image()
 	
 	abstract override def init() = {
 		super.init()
@@ -36,6 +40,11 @@ trait Debug extends Display {
 		fps.location.z := 1.0
 		debugContainer += fps
 		
+		grid.source := Resource("grid.png")
+		grid.location.z := 525.0
+		grid.visible := false
+		debugContainer += grid
+		
 		Keyboard.listeners += EventHandler(handleKey, ProcessingMode.Blocking, worker = renderer)
 	}
 	
@@ -47,7 +56,7 @@ trait Debug extends Display {
 			info("Lighting turned " + (if (Renderer().lighting()) "on" else "off"))
 		} else if (evt.keyChar.toLower == 'f') {		// Toggle fps display
 			fps.visible := !fps.visible()
-			info("Size: %1sx%2s - %3s", args = List(fps.dimension.width(), fps.dimension.height(), fps.bounding()))
+			info("FPS %1s", args = List(if (Renderer().fullscreen()) "enabled" else "disabled"))
 		} else if (evt.keyChar.toLower == 'w') {
 			if (Renderer().polygonFront() == PolygonMode.Fill) {
 				Renderer().polygonFront := PolygonMode.Line
@@ -61,8 +70,11 @@ trait Debug extends Display {
 		} else if (evt.menuDown) {
 			if (evt.key == Key.Enter) {
 				Renderer().fullscreen := !Renderer().fullscreen()
-				info("Toggling fullscreen mode")
+				info("Grid %1s", args = List(if (Renderer().fullscreen()) "enabled" else "disabled"))
 			}
+		} else if (evt.keyChar.toLower == 'g') {
+			grid.visible := !grid.visible()
+			info("Grid %1s", args = List(if (grid.visible()) "enabled" else "disabled"))
 		}
 	}
 }
