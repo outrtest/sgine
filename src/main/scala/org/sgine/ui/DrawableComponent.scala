@@ -25,13 +25,15 @@ import org.sgine.util.GeneralReusableGraphic
 
 import org.sgine.work.DefaultWorkManager
 
+import scala.math._
+
 trait DrawableComponent extends CachedComponent {
 	val painter = new AdvancedProperty[(java.awt.Graphics2D) => Unit](null, this)
 	
 	protected def draw(buffer: ByteBuffer): Unit = {
 		val painter = this.painter()
 		if (painter != null) {
-			val g = GeneralReusableGraphic(width(), height())
+			val g = GeneralReusableGraphic(round(dimension.width()).toInt, round(dimension.height()).toInt)
 			try {
 				painter(g)
 				

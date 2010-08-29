@@ -58,6 +58,8 @@ class Renderer extends PropertyContainer with Worker {
 	canvas.addComponentListener(new java.awt.event.ComponentAdapter() {
 		override def componentResized(e: java.awt.event.ComponentEvent) = {
 			resized.set(true)
+			screenWidth := canvas.getWidth()
+			screenHeight := canvas.getHeight()
 		}
 	})
 	lazy val thread = new Thread(FunctionRunnable(run))
@@ -82,6 +84,12 @@ class Renderer extends PropertyContainer with Worker {
 	val light7 = new Light(7, this)
 	
 	val fog = new Fog(this)
+	
+	val screenWidth = new AdvancedProperty[Int](0, this)
+	val screenHeight = new AdvancedProperty[Int](0, this)
+	val aspectRatio = new AdvancedProperty[Double](0.0, this)
+	aspectRatio.bind(screenWidth, (i: Int) => screenWidth().toDouble / screenHeight().toDouble)
+	aspectRatio.bind(screenHeight, (i: Int) => screenWidth().toDouble / screenHeight().toDouble)
 	
 	private val resized = new java.util.concurrent.atomic.AtomicBoolean(false)
 	
@@ -190,7 +198,7 @@ class Renderer extends PropertyContainer with Worker {
 				val parentInsets = canvas.getParent.getInsets
 				canvas.setSize(parentSize.width - parentInsets.left - parentInsets.right, parentSize.height - parentInsets.top - parentInsets.bottom)
 			}
-			reshapeGL()
+//			reshapeGL()
 		}
 		if (verticalSync.uncommitted) {
 			verticalSync.commit()
