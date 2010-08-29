@@ -19,9 +19,12 @@ import org.sgine.scene.ext.MatrixNode
 
 import org.sgine.math.MathUtil
 
+import org.sgine.path.OPath
+
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.DelegateProperty
 import org.sgine.property.ImmutableProperty
+import org.sgine.property.PathProperty
 import org.sgine.property.container.PropertyContainer
 import org.sgine.property.state.Stateful
 
@@ -39,8 +42,10 @@ import simplex3d.math.doublem._
 import simplex3d.math.doublem.DoubleMath._
 
 trait Component extends PropertyContainer with Renderable with RenderUpdatable with MatrixNode with ColorNode with Stateful with BoundingObject {
+	private val booleanCombiner = (b1: Boolean, b2: Boolean) => if ((b1) && (b2)) true else false
+	
 	val id = new AdvancedProperty[String](null, this)
-	val visible = new AdvancedProperty[Boolean](true, this)
+	val visible = new AdvancedProperty[Boolean](true, this, combine = new PathProperty[Boolean](OPath(this, "parent().visible()"), true), combineFunction = booleanCombiner)
 	val renderer = new DelegateProperty(() => _renderer)
 	val lighting = new AdvancedProperty[Boolean](true, this)
 	
@@ -99,28 +104,10 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	}
 	
 	override def shouldRender = {
-		if (!isVisible) {
+		if (!visible()) {
 			false
 		} else {
 			super.shouldRender
-		}
-	}
-	
-	def isVisible = {
-		checkVisible(this)
-	}
-	
-	private def checkVisible(node: Node): Boolean = {
-		node match {
-			case null => true
-			case component: Component => {
-				if (component.visible()) {
-					checkVisible(component.parent)
-				} else {
-					false
-				}
-			}
-			case _ => checkVisible(node.parent)
 		}
 	}
 	
