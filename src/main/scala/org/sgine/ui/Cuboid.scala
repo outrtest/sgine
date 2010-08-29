@@ -46,16 +46,16 @@ class Cuboid() extends PrimitiveComponent {
   }
 
   /* Width of the box (size along x axis). */
-  val width = new AdvancedProperty[Double](100, this, null, null, invalidationHandler)
+  val width = new AdvancedProperty[Double](100, this, listener = invalidationHandler)
 
   /* Height of the box (size along y axis). */
-  val height = new AdvancedProperty[Double](100, this, null, null, invalidationHandler)
+  val height = new AdvancedProperty[Double](100, this, listener = invalidationHandler)
 
   /* depth of the box (size along z axis). */
-  val depth = new AdvancedProperty[Double](100, this, null, null, invalidationHandler)
+  val depth = new AdvancedProperty[Double](100, this, listener = invalidationHandler)
 
   /* Texture image of the box, or null if no texture should be used. */
-  val texture = new AdvancedProperty[RenderImage](null, this, null, null, invalidationHandler)
+  val texture = new AdvancedProperty[RenderImage](null, this, listener = invalidationHandler)
 
   // Update mesh when color changes, because color info is embedded in it
   color.listeners += invalidationHandler

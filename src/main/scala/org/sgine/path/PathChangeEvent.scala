@@ -5,4 +5,4 @@ import org.sgine.event.Listenable
 
 import scala.reflect.Manifest
 
-class PathChangeEvent[T](val path: OPath[T], val oldValue: Any, val newValue: Any)(implicit manifest: Manifest[T]) extends BasicEvent(path)
+class PathChangeEvent[T](val path: OPath[T], val oldValue: T, val newValue: T)(implicit manifest: Manifest[T]) extends BasicEvent(path)
