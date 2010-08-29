@@ -15,12 +15,12 @@ class MutableProperty[T](protected implicit val manifest: Manifest[T]) extends P
 		apply(initialValue)
 	}
 
-	@volatile protected var value: T = _
+	@volatile protected var _value: T = _
 
-	def apply() = value
+	def apply() = _value
 	
 	def apply(value: T): Property[T] = {
-		this.value = value
+		this._value = value
 		
 		this
 	}

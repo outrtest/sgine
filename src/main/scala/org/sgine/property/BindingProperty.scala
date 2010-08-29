@@ -8,6 +8,8 @@ import org.sgine.property.bind.Binding
 import org.sgine.property.bind.DirectBinding
 import org.sgine.property.bind.PathBinding
 
+import scala.reflect.Manifest
+
 trait BindingProperty[T] extends ChangeableProperty[T] {
 	protected var bindings: List[Binding[T]] = Nil
 	protected var pathBindings: List[PathBinding[T]] = Nil
@@ -40,13 +42,13 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 		}
 	}
 	
-	def bindPath(path: OPath) = {
+	def bindPath(path: OPath[T])(implicit manifest: Manifest[T]) = {
 		synchronized {
 			pathBindings = new PathBinding(this, path) :: pathBindings
 		}
 	}
 	
-	def unbindPath(path: OPath) = {
+	def unbindPath(path: OPath[T])(implicit manifest: Manifest[T]) = {
 		synchronized {
 			pathBindings = pathBindings.filterNot(pathUnbind(_, path))
 		}
@@ -57,7 +59,7 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 		case _ => false
 	}
 	
-	private val pathUnbind = (b: PathBinding[_], path: OPath) => {
+	private val pathUnbind = (b: PathBinding[_], path: OPath[_]) => {
 		if (b.path == path) {
 			b.disconnect()
 			true

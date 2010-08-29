@@ -11,7 +11,7 @@ class BindingSpec extends FlatSpec with ShouldMatchers {
 	val p3 = new AdvancedProperty[String]("World")
 	val p4 = new AdvancedProperty[Int](1)
 	
-	var path: OPath = _
+	var path: OPath[String] = _
 	
 	val t1 = new BindingTest1
 	val t2 = new BindingTest2
@@ -65,7 +65,7 @@ class BindingSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	"Path Binding" should "properly bind for a simple path" in {
-		path = OPath(this, "p2")
+		path = OPath[String](this, "p2")
 		p1 bindPath path
 		p1() should equal("World")
 		p2() should equal("World")

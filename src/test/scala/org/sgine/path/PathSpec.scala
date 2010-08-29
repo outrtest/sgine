@@ -61,7 +61,7 @@ class PathSpec extends FlatSpec with ShouldMatchers {
 	it should "receive PathChangeEvent properly" in {
 		val path = OPath(TestStructure, "prop4.value.prop2.value")
 		var pathChangeCount = 0
-		def pathChanged(evt: PathChangeEvent) = {
+		def pathChanged(evt: PathChangeEvent[String]) = {
 			pathChangeCount += 1
 		}
 		path.listeners += EventHandler(pathChanged _, ProcessingMode.Blocking)
