@@ -21,7 +21,7 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 	lazy val name = determineName
 	def dependency = _dependency
 	
-	private var value = 0.0
+	private var _value = 0.0
 	
 	// Dependent property
 	private var initialized = new AtomicBoolean(false)
@@ -101,7 +101,7 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 		}
 		
 		if ((modified) || (dependency == null)) {
-			value
+			_value
 		} else {
 			dependency()
 		}
@@ -111,16 +111,16 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 		initUpdatable()
 		
 		if (animator != null) {
-			_target = value
+			_target = _value
 		} else {
-			apply(value, true)
+			apply(_value, true)
 		}
 		
 		this
 	}
 	
 	def apply(value: Double, invokeListeners: Boolean): Property[Double] = {
-		this.value = value
+		this._value = value
 		
 		if (!firstChanged) {
 			firstChanged = true

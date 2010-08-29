@@ -7,9 +7,21 @@ import org.sgine.event.EventHandler
 import org.sgine.event.Listenable
 import org.sgine.event.ProcessingMode
 
-class OPath private(val root: AnyRef, val path: List[String], val dynamic: Boolean) extends Listenable {
+import scala.reflect.Manifest
+
+/**
+ * OPath represents an Object path from <code>root</code>. An Object path is
+ * a String-defined path to resolve a specific object. If this path is specified
+ * as <code>dynamic</code>, PathChangeEvents will be thrown when an element or
+ * end-point on a path changes.
+ * 
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
+class OPath[T] private(val root: AnyRef, val path: List[String], val dynamic: Boolean)(implicit manifest: Manifest[T]) extends Listenable {
 	lazy val elements = new Array[OPathElement](path.length)
 	private val handler = EventHandler(updateElements, ProcessingMode.Blocking)
+	private var defaultValue: T = _
+	private var current: T = _
 	
 	updateElements()
 	
@@ -51,7 +63,13 @@ class OPath private(val root: AnyRef, val path: List[String], val dynamic: Boole
 			}
 			
 			if (changed) {
-				val evt = new PathChangeEvent(this)
+				val previous = current
+				current = apply() match {
+					case Some(c) => c
+					case None => defaultValue
+				}
+				
+				val evt = new PathChangeEvent[T](this, previous, current)
 				Event.enqueue(evt)
 			}
 		}
@@ -59,7 +77,10 @@ class OPath private(val root: AnyRef, val path: List[String], val dynamic: Boole
 	
 	def apply() = elements(0) match {
 		case null => None
-		case e => e.value
+		case e => e.value match {
+			case None => None
+			case v => v.asInstanceOf[Some[T]]
+		}
 	}
 }
 
@@ -67,7 +88,7 @@ object OPath {
 	private var resolvers = Map.empty[Class[_], Function2[Any, String, AnyRef]]
 	addResolver(classOf[AnyRef], ReflectionResolver)
 	
-	def apply(root: AnyRef, path: String, dynamic: Boolean = true) = new OPath(root, splitPath(path), dynamic)
+	def apply[T](root: AnyRef, path: String, dynamic: Boolean = true)(implicit manifest: Manifest[T]) = new OPath[T](root, splitPath(path), dynamic)
 	
 	def resolve(root: AnyRef, path: String) = resolveStructure(root, path).head
 	

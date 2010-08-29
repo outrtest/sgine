@@ -13,11 +13,13 @@ import scala.reflect.Manifest
 trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
 	protected implicit val manifest: Manifest[T]
 	
-	def :=(value: T): Property[T] = {
-		apply(value);
-	}
+	def :=(value: T) = apply(value)
 	
 	def get() = apply()
+	
+	def value = apply()
+	
+	def value_=(value: T) = apply(value)
 	
 	def option() = {
 		val v = apply()

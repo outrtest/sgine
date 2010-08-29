@@ -6,7 +6,9 @@ import org.sgine.path._
 
 import org.sgine.property.BindingProperty
 
-class PathBinding[T](val property: BindingProperty[T], val path: OPath) extends Binding[T] {
+import scala.reflect.Manifest
+
+class PathBinding[T](val property: BindingProperty[T], val path: OPath[T])(implicit manifest: Manifest[T]) extends Binding[T] {
 	private var reverse: BindingProperty[T] = _
 	
 	updateBinding()
@@ -17,7 +19,7 @@ class PathBinding[T](val property: BindingProperty[T], val path: OPath) extends 
 		case p => p := value
 	}
 	
-	private def updateBinding(evt: PathChangeEvent = null) = {
+	private def updateBinding(evt: PathChangeEvent[T] = null) = {
 		val p = path() match {
 			case Some(s) => s.asInstanceOf[BindingProperty[T]]
 			case None => null
