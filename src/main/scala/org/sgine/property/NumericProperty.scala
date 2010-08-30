@@ -111,9 +111,9 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 		initUpdatable()
 		
 		if (animator != null) {
-			_target = _value
+			_target = value
 		} else {
-			apply(_value, true)
+			apply(value, true)
 		}
 		
 		this
