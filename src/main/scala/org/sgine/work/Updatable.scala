@@ -88,6 +88,8 @@ object Updatable extends Function0[Unit] {
 			} else {
 				u.update(frequency)
 			}
+			// TODO: is this going to kill UI performance?
+			Thread.sleep(1)
 		}
 		
 //		val processFunction = process(frequency) _
