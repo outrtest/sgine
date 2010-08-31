@@ -93,6 +93,37 @@ class BasicEventSpec extends FlatSpec with ShouldMatchers {
 		ProcessingMode.Normal should not equal (ProcessingMode.Blocking)
 	}
 	
+	"Listenable.waitForEvent" should "return null" in {
+		val thread = new Thread() {
+			override def run() = {
+				Thread.sleep(100)
+				Event.enqueue(new SimpleEvent1(listenable))
+			}
+		}
+		thread.start()
+		val evt = listenable.waitForEvent[SimpleEvent2](Time.Second * 2.0, ProcessingMode.Blocking)
+		evt should equal(null)
+	}
+	
+	it should "return SimpleEvent3" in {
+		val evt1 = new SimpleEvent1(listenable)
+		val evt2 = new SimpleEvent2(listenable)
+		val evt3 = new SimpleEvent3(listenable)
+		val evt4 = new SimpleEvent4(listenable)
+		val thread = new Thread() {
+			override def run() = {
+				Thread.sleep(100)
+				Event.enqueue(evt1)
+				Event.enqueue(evt2)
+				Event.enqueue(evt3)
+				Event.enqueue(evt4)
+			}
+		}
+		thread.start()
+		val evt = listenable.waitForEvent[SimpleEvent3](Time.Second * 2.0, ProcessingMode.Blocking)
+		evt should equal(evt3)
+	}
+	
 	def simpleListener1(evt: Event) = {
 		log("listener1")
 		listenerIncrement1 += 1
