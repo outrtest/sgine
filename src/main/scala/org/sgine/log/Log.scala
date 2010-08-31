@@ -8,8 +8,9 @@ import java.util.UUID
 class Log protected(
 			   val message: String,
 			   val messageType: String,
-			   val method: String,
 			   val className: String,
+			   val method: String,
+			   val lineNumber: String,
 			   val level: LogLevel,
 			   val reference: AnyRef,
 			   val date: Calendar,
@@ -19,7 +20,13 @@ class Log protected(
 		) {
 	protected def send(): Unit = Log.log(this)
 	
-	private val _fields = List(date _, application _, level _, thread _, messageType _, method _, className _, reference _, message _)
+	def source = if (className != null) {
+		className + "." + method + "." + lineNumber
+	} else {
+		null
+	}
+	
+	private val _fields = List(date _, application _, level _, thread _, messageType _, source _, reference _, message _)
 	protected def fields = _fields
 	
 	override def toString() = {
@@ -52,6 +59,14 @@ object Log {
 	var application: String = null
 	private var loggers: List[Logger] = Nil
 	var level: Int = LogLevel.Info.value
+	/**
+	 * sourceLookup determines whether logging should default to
+	 * lookup the method and class of the caller by default if not
+	 * specified.
+	 * 
+	 * Defaults to false.
+	 */
+	var sourceLookup = false
 	
 	addLogger(ConsoleLogger)		// Configure default logger
 	
@@ -71,8 +86,9 @@ object Log {
 	
 	def apply(message: Any,
 			  messageType: String = null,
-			  method: String = null,
 			  className: String = null,
+			  method: String = null,
+			  lineNumber: String = null,
 			  level: LogLevel = LogLevel.Info,
 			  reference: AnyRef = null,
 			  args: Seq[Any] = null) = {
@@ -81,19 +97,18 @@ object Log {
 				case null => message.toString
 				case _ => String.format(message.toString, args.asInstanceOf[Seq[AnyRef]]: _*)
 			}
-			val l = new Log(m, messageType, method, className, level, reference, Calendar.getInstance, Thread.currentThread.getName, Log.application, UUID.randomUUID)
+			var cn = className
+			var mn = method
+			var ln = lineNumber
+			if ((mn == null) && (cn == null) && (sourceLookup)) {		// Do source lookups
+				val stack = Thread.currentThread.getStackTrace
+				mn = stack(2).getMethodName
+				cn = stack(2).getClassName
+				ln = stack(2).getLineNumber.toString
+			}
+			val l = new Log(m, messageType, cn, mn, ln, level, reference, Calendar.getInstance, Thread.currentThread.getName, Log.application, UUID.randomUUID)
 			l.send()
 			l
 		}
-	}
-	
-	def test(message: String)(implicit date: Calendar = Calendar.getInstance) = {
-	}
-	
-	def main(args: Array[String]): Unit = {
-		Log("testing %1s / %2s, Today: %3$tA", args = List("First", "Second", Calendar.getInstance))
-		
-		WebLog("testing 2")
-		test("one")()
 	}
 }
