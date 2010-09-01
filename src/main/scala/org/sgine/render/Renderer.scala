@@ -157,7 +157,8 @@ class Renderer extends PropertyContainer with Worker {
 		glEnable(GL_POLYGON_OFFSET_FILL)
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
 		glEnable(GL_TEXTURE_2D)
-		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+//		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA)
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 		
 		Keyboard.validate()
 		Mouse.validate()
