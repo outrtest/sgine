@@ -1,5 +1,7 @@
 package org.sgine.render
 
+import de.matthiasmann.twl.utils.PNGDecoder
+
 import java.awt.AlphaComposite
 import java.awt.image.BufferedImage
 
@@ -106,4 +108,20 @@ object TextureUtil {
 	 * 		Boolean
 	 */
 	private def isValidImage(image: BufferedImage) = image.getColorModel() == ReusableGraphic.rgba
+	
+	def loadPNG(url: URL, buffer: ByteBuffer = null) = {
+		val input = url.openStream
+		val decoder = new PNGDecoder(input)
+		val b = buffer match {
+			case null => ByteBuffer.allocateDirect((decoder.getWidth * decoder.getHeight) * 4).order(ByteOrder.nativeOrder)
+			case _ => buffer
+		}
+		decoder.decode(b, decoder.getWidth * 4, PNGDecoder.Format.RGBA)
+		b.flip()
+		
+		val texture = new BasicTexture(decoder.getWidth, decoder.getHeight)
+		texture(0, 0, decoder.getWidth, decoder.getHeight, b)
+		
+		texture
+	}
 }
