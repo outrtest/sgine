@@ -53,9 +53,9 @@ trait ColorNode extends Node with Updatable {
 		}
 		
 		// Update store
-		storeColor.red = storeColor.red * color().red * color().alpha * alpha()
-		storeColor.green = storeColor.green * color().green * color().alpha * alpha()
-		storeColor.blue = storeColor.blue * color().blue * color().alpha * alpha()
+		storeColor.red = storeColor.red * color().red
+		storeColor.green = storeColor.green * color().green
+		storeColor.blue = storeColor.blue * color().blue
 		storeColor.alpha = storeColor.alpha * color().alpha * alpha()
 		
 		// Update world color
