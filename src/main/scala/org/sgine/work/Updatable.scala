@@ -123,4 +123,6 @@ object Updatable extends Function0[Unit] {
 			}
 		}
 	}
+	
+	def size = array.size
 }
