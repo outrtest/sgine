@@ -30,12 +30,12 @@ class EasingColorAnimator (easing: Easing.EasingFunction, multiplier: Double, dy
 		if (timeElapsed >= timeToTarget) {
 			target
 		} else {
-      val r = easing(timeElapsed, start.red, target.red - start.red, timeToTarget)
-      val g = easing(timeElapsed, start.green, target.green- start.green, timeToTarget)
-      val b = easing(timeElapsed, start.blue, target.blue - start.blue, timeToTarget)
-      val a = easing(timeElapsed, start.alpha, target.alpha - start.alpha, timeToTarget)
-
-      Color(r,g,b,a)
+	      val r = easing(timeElapsed, start.red, target.red - start.red, timeToTarget)
+	      val g = easing(timeElapsed, start.green, target.green- start.green, timeToTarget)
+	      val b = easing(timeElapsed, start.blue, target.blue - start.blue, timeToTarget)
+	      val a = easing(timeElapsed, start.alpha, target.alpha - start.alpha, timeToTarget)
+	
+	      Color(r, g, b, a)
 		}
 	}
 
