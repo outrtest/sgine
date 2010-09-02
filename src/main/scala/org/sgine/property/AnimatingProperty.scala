@@ -12,18 +12,18 @@ import org.sgine.work.Updatable
  * 
  * @author Matt Hicks
  */
-trait AnimatingProperty[T] extends Property[T] with Updatable {
-	var animator: Function3[T, T, Double, T] = null
+trait AnimatingProperty[T] extends Property[T] with Animatable[T] {
+	var animator: PropertyAnimator[T] = null
 	
-	private[property] var _target: T = apply()
+	def target = if ((animator != null) && (animator.property != null)) {
+		animator.target
+	} else {
+		apply()
+	}
 	
-	def target = _target
-	
-	abstract override def apply(value:T):Property[T] = {
-		initUpdatable()
-		
+	abstract override def apply(value: T): Property[T] = {
 		if (animator != null) {
-			_target = value
+			animator(this, value)
 		} else {
 			set(value)
 		}
@@ -36,30 +36,37 @@ trait AnimatingProperty[T] extends Property[T] with Updatable {
 	 */
 	def set(value: T): Property[T] = {
 		super.apply(value)
-		_target = value
 		
 		if (animator != null) {
-			animator(_target, _target, 1.0)
+			animator.disable()
 		}
 		
 		this
 	}
 	
-	abstract override def update(time:Double) = {
-		super.update(time)
-		
-		if (animator != null) {
-			val current: T = apply()
-			
-			if (current != _target) {
-				val result: T = animator(current, _target, time)
-				
-				super.apply(result)
-			}
-		}
+//	abstract override def update(time:Double) = {
+//		super.update(time)
+//		
+//		if (animator != null) {
+//			val current: T = apply()
+//			
+//			if (current != _target) {
+//				val result: T = animator(current, _target, time)
+//				
+//				super.apply(result)
+//			}
+//		}
+//	}
+	
+	protected[property] def setAnimation(value: T) = {
+		super.apply(value)
 	}
 	
-	def isAnimating() = apply() != _target
+	def isAnimating() = if (animator != null) {
+		animator.enabled
+	} else {
+		false
+	}
 	
 	def waitForTarget() = {
 		while (isAnimating) {
@@ -72,4 +79,8 @@ trait AnimatingProperty[T] extends Property[T] with Updatable {
 		case "target" => Some(target)
 		case _ => super.resolveElement(key)
 	}
+}
+
+trait Animatable[T] extends Property[T] {
+	protected[property] def setAnimation(value: T): Unit
 }
