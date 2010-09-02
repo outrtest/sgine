@@ -9,12 +9,13 @@ import org.sgine.event.Listenable
 import org.sgine.event.ProcessingMode
 import org.sgine.event.Recursion
 
+import org.sgine.property.animate.PropertyAnimator
 import org.sgine.property.container.PropertyContainer
 import org.sgine.property.event.NumericPropertyChangeEvent
 
 import org.sgine.work.Updatable
 
-class NumericProperty(protected implicit val manifest: Manifest[Double]) extends Property[Double] with Listenable with Updatable {
+class NumericProperty(protected implicit val manifest: Manifest[Double]) extends Property[Double] with Listenable with Animatable[Double] {
 	private var _name: String = _
 	private var _dependency: Property[Double] = _
 	
@@ -38,11 +39,13 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 	
 	protected var bindings: List[NumericProperty] = Nil
 	
-	var animator: Function3[Double, Double, Double, Double] = null
+	var animator: PropertyAnimator[Double] = null
 	
-	private[property] var _target: Double = apply()
-	
-	def target = _target
+	def target = if ((animator != null) && (animator.property != null)) {
+		animator.target
+	} else {
+		apply()
+	}
 	
 	def this(value: Double) = {
 		this()
@@ -108,10 +111,8 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 	}
 	
 	def apply(value: Double): Property[Double] = {
-		initUpdatable()
-		
 		if (animator != null) {
-			_target = value
+			animator(this, value)
 		} else {
 			apply(value, true)
 		}
@@ -137,34 +138,27 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 	
 	def set(value: Double): Property[Double] = {
 		apply(value, true)
-		_target = value
 		
 		if (animator != null) {
-			animator(_target, _target, 1.0)
+			animator.disable()
 		}
 		
 		this
+	}
+	
+	protected[property] def setAnimation(value: Double) = {
+		apply(value, true)
 	}
 	
 	override def :=(value: Double) = apply(value)
 	
 	override def get() = apply()
 	
-	override def update(time: Double) = {
-		super.update(time)
-		
-		if (animator != null) {
-			val current = apply()
-			
-			if (current != _target) {
-				val result = animator(current, _target, time)
-				
-				apply(result, true)
-			}
-		}
+	def isAnimating() = if (animator != null) {
+		animator.enabled
+	} else {
+		false
 	}
-	
-	def isAnimating() = apply() != _target
 	
 	def waitForTarget() = {
 		while (isAnimating) {

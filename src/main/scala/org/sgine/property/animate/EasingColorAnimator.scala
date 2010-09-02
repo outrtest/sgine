@@ -8,14 +8,14 @@ import scala.math.abs
  * Animator for color values, using the specified easing function.
  */
 class EasingColorAnimator (easing: Easing.EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAnimator[Color] {
-	private var target: Color = _
+	private var _target: Color = _
 	private var start: Color = _
 	private var timeToTarget: Double = _
 	private var timeElapsed: Double = _
 
 	def apply(current: Color, target: Color, elapsed: Double): Color = {
-		if (this.target != target) {		// Target changed
-			this.target = target
+		if (_target != target) {		// Target changed
+			_target = target
 			start = current
 			timeElapsed = 0.0
 			if (dynamic) {
