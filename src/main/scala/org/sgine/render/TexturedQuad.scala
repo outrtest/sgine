@@ -11,7 +11,6 @@ import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty
-import org.sgine.property.event.NumericPropertyChangeEvent
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.shape._
@@ -86,7 +85,7 @@ class TexturedQuad extends Function0[Unit] {
 		shape.apply()
 	}
 	
-	private def propChanged(evt: NumericPropertyChangeEvent) = {
+	private def propChanged(evt: PropertyChangeEvent[_]) = {
 		dirty.set(true)
 	}
 	

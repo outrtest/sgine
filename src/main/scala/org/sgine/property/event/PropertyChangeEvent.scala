@@ -10,7 +10,7 @@ import org.sgine.util.Cacheable
 import org.sgine.util.ObjectCache
 
 class PropertyChangeEvent[T] protected() extends Event(null) with PathElementChangeEvent { //with Cacheable[PropertyChangeEvent[_]] {
-	protected var _property: ListenableProperty[T] = _
+	protected var _property: Property[T] with Listenable = _
 	protected var _oldValue: T = _
 	protected var _newValue: T = _
 	protected var _adjusting: Boolean = _
@@ -27,7 +27,7 @@ class PropertyChangeEvent[T] protected() extends Event(null) with PathElementCha
 }
 
 object PropertyChangeEvent {
-	def apply[T](property: ListenableProperty[T], oldValue: T, newValue: T, adjusting: Boolean) = {
+	def apply[T](property: Property[T] with Listenable, oldValue: T, newValue: T, adjusting: Boolean) = {
 //		val pce = PropertyChangeEventCache.request().asInstanceOf[PropertyChangeEvent[T]]
 		val pce = new PropertyChangeEvent[T]()
 		pce._property = property
