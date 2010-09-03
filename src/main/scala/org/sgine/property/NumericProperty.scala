@@ -11,7 +11,7 @@ import org.sgine.event.Recursion
 
 import org.sgine.property.animate.PropertyAnimator
 import org.sgine.property.container.PropertyContainer
-import org.sgine.property.event.NumericPropertyChangeEvent
+import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.work.Updatable
 
@@ -170,7 +170,7 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 		modified = false
 	}
 	
-	private def dependencyChanged(evt: NumericPropertyChangeEvent) = {
+	private def dependencyChanged(evt: PropertyChangeEvent[_]) = {
 		if (!modified) {
 			changed(false)
 		}
@@ -198,7 +198,7 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 			b := newValue
 		}
 		
-		Event.enqueue(NumericPropertyChangeEvent(this, oldValue, newValue, adjusting))
+		Event.enqueue(PropertyChangeEvent(this, oldValue, newValue, adjusting))
 	}
 	
 	def bind(p: NumericProperty) = {

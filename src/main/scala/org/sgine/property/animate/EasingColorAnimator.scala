@@ -7,7 +7,7 @@ import scala.math.abs
 /*
  * Animator for color values, using the specified easing function.
  */
-class EasingColorAnimator (easing: Easing.EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAnimator[Color] {
+class EasingColorAnimator (var easing: Easing.EasingFunction, var multiplier: Double, var dynamic: Boolean = true) extends PropertyAnimator[Color] {
 	private var _target: Color = _
 	private var start: Color = _
 	private var timeToTarget: Double = _

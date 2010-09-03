@@ -4,7 +4,7 @@ import org.sgine.easing.Easing._
 
 import scala.math._
 
-class EasingNumericAnimator(var easing: EasingFunction, multiplier: Double, dynamic: Boolean = true) extends PropertyAnimator[Double] {
+class EasingNumericAnimator(var easing: EasingFunction, var multiplier: Double, var dynamic: Boolean = true) extends PropertyAnimator[Double] {
 	private var _target: Double = _
 	private var start: Double = _
 	private var timeToTarget: Double = _

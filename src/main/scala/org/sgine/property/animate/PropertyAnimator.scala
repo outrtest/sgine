@@ -29,17 +29,18 @@ trait PropertyAnimator[T] extends Function3[T, T, Double, T] with Updatable {
 	abstract override def update(time: Double) = {
 		super.update(time)
 		
+		// TODO: support time-based instead of target based finishing
 		val p = property
 		val t = _target
 		if ((p != null) && (t != null)) {
 			val c = p()
-			if (c != t) {
-				val r = apply(c, t, time)
-				
-				p.setAnimation(r)
-			} else {
+			val r = apply(c, t, time)
+			
+			if (r == t) {
 				disable()
 			}
+			
+			p.setAnimation(r)
 		}
 	}
 }

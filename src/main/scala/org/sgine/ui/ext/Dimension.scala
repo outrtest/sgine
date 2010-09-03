@@ -6,7 +6,7 @@ import org.sgine.event._
 
 import org.sgine.property.NumericProperty
 import org.sgine.property.container.PropertyContainer
-import org.sgine.property.event.NumericPropertyChangeEvent
+import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.ui.Component
 
@@ -31,7 +31,7 @@ class Dimension(override val parent: Component) extends PropertyContainer {
 		this.depth := depth
 	}
 	
-	private def propertyChanged(evt: NumericPropertyChangeEvent) = {
+	private def propertyChanged(evt: PropertyChangeEvent[_]) = {
 		parent.bounding() match {
 			case mbb: MutableBoundingBox => {
 				mbb.width = width()

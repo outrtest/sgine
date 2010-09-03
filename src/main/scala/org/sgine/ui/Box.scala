@@ -15,7 +15,6 @@ import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty
-import org.sgine.property.event.NumericPropertyChangeEvent
 import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.render.Renderer
@@ -62,7 +61,7 @@ class Box extends Component with ShapeComponent {
 		_texcoords := Box.DefaultTextureCoords
 	}
 	
-	private def numericChanged(evt: NumericPropertyChangeEvent) = {
+	private def numericChanged(evt: PropertyChangeEvent[Double]) = {
 		updateVertices()
 	}
 	
