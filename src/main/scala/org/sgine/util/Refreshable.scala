@@ -4,6 +4,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 import org.sgine.log._
 
+import org.sgine.work.DefaultWorkManager
 import org.sgine.work.Updatable
 
 trait Refreshable extends Updatable {
@@ -60,7 +61,13 @@ trait Refreshable extends Updatable {
 	override def update(time: Double) = {
 		lastRefresh += time
 		if (lastRefresh > refreshRate) {
-			tryRefreshInternal(false)
+			if (!lock.isLocked) {
+				DefaultWorkManager += attemptRefresh _
+			}
 		}
+	}
+	
+	private def attemptRefresh(): Unit = {
+		tryRefreshInternal(false)
 	}
 }
