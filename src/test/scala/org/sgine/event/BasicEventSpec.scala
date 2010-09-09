@@ -24,20 +24,17 @@ class BasicEventSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "have one listener" in {
-		handler1 = listenable.listeners += simpleListener1 _
-		handler1.filter = EventTypeFilter(classOf[SimpleEvent1])
+		handler1 = listenable.listeners += EventListener(simpleListener1, EventTypeFilter(classOf[SimpleEvent1]))
 		listenable.listeners.size should equal (1)
 	}
 	
 	it should "have two listeners" in {
-		handler2 = listenable.listeners += simpleListener2 _
-		handler2.filter = EventTypeFilter(classOf[SimpleEvent2])
+		handler2 = listenable.listeners += EventListener(simpleListener2, EventTypeFilter(classOf[SimpleEvent2]))
 		listenable.listeners.size should equal (2)
 	}
 	
 	it should "have three listeners" in {
-		handler3 = listenable.listeners += simpleListener3 _
-		handler3.filter = EventTypeFilter(classOf[SimpleEvent3])
+		handler3 = listenable.listeners += EventListener(simpleListener3, EventTypeFilter(classOf[SimpleEvent3]))
 		listenable.listeners.size should equal (3)
 	}
 	
