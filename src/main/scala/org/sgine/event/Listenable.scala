@@ -48,7 +48,7 @@ trait Listenable {
 	 * @return
 	 * 		the event or null if waiting timed-out
 	 */
-	def waitForEvent[E <: Event](time: Double = 0.0, processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: Event => Boolean = null)(implicit manifest: Manifest[E]) = {
+	def waitForEvent[E <: Event](time: Double = 0.0, processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: E => Boolean = null)(implicit manifest: Manifest[E]) = {
 		var event: E = null.asInstanceOf[E]
 		val handler = EventHandler(new Function1[E, Unit] {
 			def apply(evt: E) = {
