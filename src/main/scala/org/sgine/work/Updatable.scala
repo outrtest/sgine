@@ -2,6 +2,8 @@ package org.sgine.work
 
 import java.lang.ref.WeakReference
 
+import org.sgine.log._
+
 import scala.collection.mutable.ArrayBuffer
 
 import scala.math._
@@ -86,7 +88,11 @@ object Updatable extends Function0[Unit] {
 					array -= wr
 				}
 			} else {
-				u.update(frequency)
+				try {
+					u.update(frequency)
+				} catch {
+					case exc => trace("Exception thrown while updating Updatable: %1s.", exc, args = List(u.getClass.getName))
+				}
 			}
 			// TODO: is this going to kill UI performance?
 //			Thread.sleep(1)
