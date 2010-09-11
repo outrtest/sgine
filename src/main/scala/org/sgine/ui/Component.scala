@@ -112,9 +112,13 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	}
 	
 	override protected def updateLocalMatrix(): Unit = {
+		val o = this match {
+			case oc: OffsetComponent => Vec3d(oc.offset.x(), oc.offset.y(), oc.offset.z())
+			case _ => Vec3d.Zero
+		}
 		val s = Vec3d(scale.x(), scale.y(), scale.z())
 		val r = Vec3d(rotation.actual.x(), rotation.actual.y(), rotation.actual.z())
-		val t = Vec3d(location.actual.x(), location.actual.y(), location.actual.z())
+		val t = Vec3d(o.x + location.actual.x(), o.y + location.actual.y(), o.z + location.actual.z())
 		localMatrix() := transformation(s, MathUtil.eulerMat(r.x, r.y, r.z), t)
 		
 		localMatrix.changedLocal()

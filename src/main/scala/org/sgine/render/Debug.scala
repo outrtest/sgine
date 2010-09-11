@@ -75,6 +75,9 @@ trait Debug extends Display {
 		} else if (evt.keyChar.toLower == 'g') {
 			grid.visible := !grid.visible()
 			info("Grid %1s", args = List(if (grid.visible()) "enabled" else "disabled"))
+		} else if (evt.keyChar.toLower == 'v') {
+			Renderer().verticalSync := !Renderer().verticalSync()
+			info("Vertical Sync %1s", args = List(if (Renderer().verticalSync()) "enabled" else "disabled"))
 		}
 	}
 }
