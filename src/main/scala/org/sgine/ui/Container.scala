@@ -17,7 +17,7 @@ import org.sgine.ui.layout._
 
 import org.sgine.work.Updatable
 
-class Container extends GeneralNodeContainer with Component with Updatable {
+class Container extends GeneralNodeContainer with Component with Updatable with OffsetComponent {
 	val layout = new AdvancedProperty[(Container) => Unit](Layout.default, this)
 	
 	private val revalidateLayout = new AtomicBoolean(true)
@@ -48,6 +48,12 @@ class Container extends GeneralNodeContainer with Component with Updatable {
 				case None => revalidateBounds()
 			}
 		}
+	}
+	
+	override protected def updateLocalMatrix(): Unit = {
+		
+		
+		super.updateLocalMatrix()
 	}
 	
 	private def revalidateBounds() = {
