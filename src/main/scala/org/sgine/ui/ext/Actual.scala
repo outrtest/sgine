@@ -11,12 +11,12 @@ class Actual(override val parent: PropertyContainer) extends PropertyContainer {
 	val y = new NumericProperty(0.0, this)
 	val z = new NumericProperty(0.0, this)
 	
-	def set(x: Double, y: Double) = {
+	def apply(x: Double, y: Double) = {
 		this.x := x
 		this.y := y
 	}
 	
-	def set(x: Double, y: Double, z: Double) = {
+	def apply(x: Double, y: Double, z: Double) = {
 		this.x := x
 		this.y := y
 		this.z := z
