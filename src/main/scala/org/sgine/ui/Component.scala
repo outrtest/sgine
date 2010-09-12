@@ -164,7 +164,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 			}
 		}
 		
-		location.actual.set(x, y, z)
+		location.actual(x, y, z)
 	}
 	
 	private def updateActualRotation(evt: Event) = {
@@ -193,6 +193,6 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 				z += bounding().depth / 2.0
 			}
 		}
-		rotation.actual.set(x, y, z)
+		rotation.actual(x, y, z)
 	}
 }
