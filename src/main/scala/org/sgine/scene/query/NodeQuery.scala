@@ -27,7 +27,7 @@ object NodeQuery {
 			f(node)
 		}
 		node match {
-			case container: NodeContainer => container.foreach(query(q, _, f))
+			case container: NodeContainer => container.children.foreach(query(q, _, f))
 			case _ =>
 		}
 	}

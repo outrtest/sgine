@@ -24,9 +24,9 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	def apply(container: Container) = {
 		synchronized {
 			// Make sure everything is configured
-			if (container.size != items.size) {
+			if (container.children.size != items.size) {
 				// Add missing
-				for (n <- container) {
+				for (n <- container.children) {
 					if (get(n) == None) {
 						nextAvailable match {
 							case Some((row, column)) => {
@@ -39,7 +39,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 				}
 				// Remove no longer used
 				for (item <- items) {
-					if (container.indexOf(item.n) == -1) {
+					if (container.children.indexOf(item.n) == -1) {
 						items = items filterNot (i => item == i)
 					}
 				}

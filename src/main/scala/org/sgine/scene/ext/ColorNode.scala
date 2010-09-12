@@ -76,7 +76,7 @@ trait ColorNode extends Node with Updatable {
 	private def invalidateChildren(n: Node): Unit = {
 		n match {
 			case container: NodeContainer => {
-				for (c <- container) c match {
+				for (c <- container.children) c match {
 					case cn: ColorNode => cn.invalidateColor()
 					case _ => invalidateChildren(c)
 				}

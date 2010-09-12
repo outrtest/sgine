@@ -20,7 +20,7 @@ class BasicSceneSpec extends FlatSpec with ShouldMatchers {
 	
 	"GeneralNodeContainer" should "be empty" in {
 		container = new GeneralNodeContainer()
-		container.size should be (0)
+		container.children.size should be (0)
 	}
 	
 	it should "support adding listeners" in {
