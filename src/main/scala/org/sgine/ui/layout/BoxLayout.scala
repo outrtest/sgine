@@ -21,7 +21,7 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 		var width = 0.0
 		var height = 0.0
 		var depth = 0.0
-		for (n <- container) n match {
+		for (n <- container.children) n match {
 			case c: Component => {
 				items += 1
 				if (direction == Direction.Vertical) {
@@ -52,7 +52,7 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 		if (reverse) {
 			position = -position
 		}
-		for (n <- container) n match {
+		for (n <- container.children) n match {
 			case c: Component with BoundingObject => {
 				if (direction == Direction.Vertical) {
 					c.location.y.align := (if (reverse) VerticalAlignment.Bottom else VerticalAlignment.Top)

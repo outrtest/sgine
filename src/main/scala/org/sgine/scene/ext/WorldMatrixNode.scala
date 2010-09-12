@@ -21,7 +21,7 @@ trait WorldMatrixNode extends Node {
 	private def invalidateChildren(n: Node): Unit = {
 		n match {
 			case container: NodeContainer => {
-				for (c <- container) c match {
+				for (c <- container.children) c match {
 					case mn: MatrixNode => mn.invalidateMatrix()
 					case _ => invalidateChildren(c)
 				}

@@ -57,7 +57,7 @@ trait Node extends Listenable {
 	
 	def hierarchyString(): String = {
 		if (parent != null) {
-			parent.hierarchyString + "(" + parent.indexOf(this) + ") -> " + getClass.getSimpleName
+			parent.hierarchyString + "(" + parent.children.indexOf(this) + ") -> " + getClass.getSimpleName
 		} else {
 			getClass.getSimpleName
 		}
@@ -72,8 +72,8 @@ trait Node extends Listenable {
 	
 	private def lastNodeInternal(n: Node): Node = n match {
 		case container: NodeContainer => {
-			if (container.size > 0) {
-				lastNodeInternal(container.last)
+			if (container.children.size > 0) {
+				lastNodeInternal(container.children.last)
 			} else {
 				container
 			}
@@ -116,7 +116,7 @@ object Node {
 			return None
 		}
 		var last: Node = null
-		for (c <- parent) {
+		for (c <- parent.children) {
 			if (child == c) {
 				last match {
 					case null => return Some(parent)
@@ -130,9 +130,9 @@ object Node {
 	}
 	
 	private def lastChild(container: NodeContainer): Option[Node] = {
-		if (container.size > 0) {
+		if (container.children.size > 0) {
 			var l: Node = null
-			for (child <- container) {
+			for (child <- container.children) {
 				l = child
 			}
 			l match {
@@ -153,8 +153,8 @@ object Node {
 	
 	private def nextChild(n: Node): Option[Node] = n match {
 		case c: NodeContainer => {
-			if (c.size > 0) {
-				Some(c.head)
+			if (c.children.size > 0) {
+				Some(c.children.head)
 			} else {
 				None
 			}
@@ -167,7 +167,7 @@ object Node {
 			return None
 		}
 		var found = false
-		for (c <- parent) {
+		for (c <- parent.children) {
 			if (c == child) {
 				found = true
 			} else if (found) {
