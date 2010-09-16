@@ -2,8 +2,9 @@ package org.sgine.property
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.event.PropertyChangeEvent
 

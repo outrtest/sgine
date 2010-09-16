@@ -1,5 +1,7 @@
 package org.sgine.scene
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event._
 
 import org.sgine.log._

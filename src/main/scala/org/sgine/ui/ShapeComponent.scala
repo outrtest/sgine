@@ -8,7 +8,6 @@ import org.sgine.core._
 
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeEvent

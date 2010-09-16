@@ -4,9 +4,10 @@ import org.lwjgl.opengl.GL11._
 
 import org.sgine.bounding.BoundingObject
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.input.Mouse
 import org.sgine.input.event.MouseEvent

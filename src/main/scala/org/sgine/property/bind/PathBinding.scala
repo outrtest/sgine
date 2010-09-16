@@ -1,5 +1,7 @@
 package org.sgine.property.bind
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event._
 
 import org.sgine.path._

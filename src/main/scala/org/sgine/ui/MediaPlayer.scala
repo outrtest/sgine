@@ -13,10 +13,10 @@ import java.nio.IntBuffer
 
 import org.lwjgl.opengl.GL12._
 
+import org.sgine.core.ProcessingMode
 import org.sgine.core.Resource
 
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeEvent

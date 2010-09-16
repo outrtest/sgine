@@ -3,8 +3,9 @@ package org.sgine.property
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.event.PropertyChangeEvent
 

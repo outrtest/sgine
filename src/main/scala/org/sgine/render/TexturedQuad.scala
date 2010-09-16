@@ -5,9 +5,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Face
+import org.sgine.core.ProcessingMode
 
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty

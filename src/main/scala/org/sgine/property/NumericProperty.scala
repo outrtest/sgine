@@ -2,11 +2,12 @@ package org.sgine.property
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event.Event
 import org.sgine.event.EventDelegate
 import org.sgine.event.EventHandler
 import org.sgine.event.Listenable
-import org.sgine.event.ProcessingMode
 import org.sgine.event.Recursion
 
 import org.sgine.property.animate.PropertyAnimator

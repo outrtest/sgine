@@ -1,11 +1,12 @@
 package org.sgine.path
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.path.resolve.ReflectionResolver
 
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.Listenable
-import org.sgine.event.ProcessingMode
 
 import scala.reflect.Manifest
 
