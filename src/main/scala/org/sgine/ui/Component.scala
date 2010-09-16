@@ -11,7 +11,6 @@ import org.sgine.core._
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
 import org.sgine.event.Listenable
-import org.sgine.event.ProcessingMode
 import org.sgine.event.Recursion
 
 import org.sgine.scene.ext.ColorNode

@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import org.sgine.bounding.BoundingObject
 import org.sgine.bounding.mutable.BoundingBox
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event._
 
 import org.sgine.property._

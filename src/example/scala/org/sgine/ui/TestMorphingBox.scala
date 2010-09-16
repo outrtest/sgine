@@ -6,7 +6,6 @@ import org.sgine.easing._
 
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.log._
 

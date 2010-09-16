@@ -2,6 +2,8 @@ package org.sgine.ui.ext
 
 import org.sgine.bounding.mutable.{BoundingBox => MutableBoundingBox}
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event._
 
 import org.sgine.property.NumericProperty

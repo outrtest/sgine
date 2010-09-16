@@ -1,8 +1,9 @@
 package org.sgine.render
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event.EventHandler
 import org.sgine.event.Listenable
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeDelegate

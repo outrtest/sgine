@@ -3,6 +3,8 @@ package org.sgine.event
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.log._
 
 import org.sgine.util.Time

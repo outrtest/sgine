@@ -6,6 +6,7 @@ import org.sgine.scene.event.NodeContainerEvent
 import org.sgine._
 import org.sgine.visual.time.RealtimeTimer
 import org.sgine.visual.time.Timer
+import org.sgine.core.ProcessingMode
 import org.sgine.event._
 import org.sgine.property._
 import org.sgine.property.container._

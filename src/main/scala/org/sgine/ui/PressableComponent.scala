@@ -1,9 +1,9 @@
 package org.sgine.ui
 
+import org.sgine.core.ProcessingMode
 import org.sgine.core.Resource
 
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.input.event.MouseOutEvent
 import org.sgine.input.event.MousePressEvent

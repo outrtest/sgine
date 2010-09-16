@@ -2,6 +2,8 @@ package org.sgine.scene.view
 
 import java.util.concurrent._
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event._
 
 import org.sgine.scene._

@@ -1,6 +1,7 @@
 package org.sgine.ui
 
-import org.sgine.event.{ProcessingMode, Event, EventHandler}
+import org.sgine.core.ProcessingMode
+import org.sgine.event.{Event, EventHandler}
 import org.sgine.render.primitive.Primitive
 
 /*

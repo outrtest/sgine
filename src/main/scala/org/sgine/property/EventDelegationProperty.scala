@@ -1,5 +1,7 @@
 package org.sgine.property
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event._
 
 trait EventDelegationProperty[T] extends ChangeableProperty[T] with Listenable {

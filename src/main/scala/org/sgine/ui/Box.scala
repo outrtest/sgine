@@ -7,11 +7,11 @@ import org.sgine.bounding.mutable.BoundingBox
 
 import org.sgine.core.Color
 import org.sgine.core.Face
+import org.sgine.core.ProcessingMode
 import org.sgine.core.Resource
 
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty

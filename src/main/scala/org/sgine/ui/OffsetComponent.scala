@@ -1,7 +1,8 @@
 package org.sgine.ui
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 import org.sgine.event.Recursion
 
 import org.sgine.ui.ext.Actual

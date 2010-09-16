@@ -1,7 +1,8 @@
 package org.sgine.scene.ext
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeDelegate

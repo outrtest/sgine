@@ -1,7 +1,8 @@
 package org.sgine.property
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.path.OPath
 import org.sgine.path.PathChangeEvent

@@ -3,10 +3,10 @@ package org.sgine.ui
 import org.sgine.core.Color
 import org.sgine.core.Direction
 import org.sgine.core.Placement
+import org.sgine.core.ProcessingMode
 import org.sgine.core.Resource
 
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.input.event._
 

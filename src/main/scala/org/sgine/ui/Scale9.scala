@@ -3,11 +3,11 @@ package org.sgine.ui
 import org.sgine.bounding.BoundingObject
 import org.sgine.bounding.mutable.BoundingQuad
 
+import org.sgine.core.ProcessingMode
 import org.sgine.core.Resource
 
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeEvent

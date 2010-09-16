@@ -3,10 +3,10 @@ package org.sgine.scene.ext
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.sgine.core.Color
+import org.sgine.core.ProcessingMode
 import org.sgine.core.mutable.{Color => MutableColor}
 
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.ImmutableProperty

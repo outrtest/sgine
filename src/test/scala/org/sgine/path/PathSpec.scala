@@ -1,7 +1,10 @@
 package org.sgine.path
 
 import org.scalatest.FlatSpec
+
 import org.scalatest.matchers.ShouldMatchers
+
+import org.sgine.core.ProcessingMode
 
 import org.sgine.event._
 

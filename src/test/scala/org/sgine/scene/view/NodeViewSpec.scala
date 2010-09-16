@@ -3,6 +3,8 @@ package org.sgine.scene.view
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.event._
 
 import org.sgine.scene._

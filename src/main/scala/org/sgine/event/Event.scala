@@ -1,5 +1,7 @@
 package org.sgine.event
 
+import org.sgine.core.ProcessingMode
+
 import org.sgine.util.Cacheable
 import org.sgine.util.ObjectCache
 

@@ -1,9 +1,9 @@
 package org.sgine.render
 
+import org.sgine.core.ProcessingMode
 import org.sgine.core.Resource
 
 import org.sgine.event.EventHandler
-import org.sgine.event.ProcessingMode
 
 import org.sgine.input.Key
 import org.sgine.input.Keyboard
