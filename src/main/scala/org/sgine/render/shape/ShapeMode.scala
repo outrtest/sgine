@@ -10,6 +10,7 @@ sealed class ShapeMode(val value: Int) extends Enumeration
 object ShapeMode extends Enumerated[ShapeMode] {
 	case object Quads extends ShapeMode(GL_QUADS)
 	case object Triangles extends ShapeMode(GL_TRIANGLES)
+	case object TriangleFan extends ShapeMode(GL_TRIANGLE_FAN)
 	
-	ShapeMode(Quads, Triangles)
+	ShapeMode(Quads, Triangles, TriangleFan)
 }
