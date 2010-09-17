@@ -91,29 +91,6 @@ class Shape private() extends Function0[Unit] {
 			
 			renderer.update(this, vc, cc, tc, nc)
 		}
-		
-//		if (dataVertex != null) {
-//			renderer.update(this, vertexChanged = true)
-//			_dataVertex.set(dataVertex)
-//		}
-//		
-//		val dataColor = _updateColor.getAndSet(null)
-//		if (dataColor != null) {
-//			renderer.update(this, colorChanged = true)
-//			_dataColor.set(dataColor)
-//		}
-//		
-//		val dataTexture = _updateTexture.getAndSet(null)
-//		if (dataTexture != null) {
-//			renderer.update(this, textureChanged = true)
-//			_dataTexture.set(dataTexture)
-//		}
-//		
-//		val dataNormal = _updateNormal.getAndSet(null)
-//		if (dataNormal != null) {
-//			renderer.update(this, normalChanged = true)
-//			_dataNormal.set(dataNormal)
-//		}
 	}
 	
 	def render() = {
