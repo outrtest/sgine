@@ -43,5 +43,5 @@ trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
 		}
 	}
 	
-	override def toString() = "Property(" + apply() + ")"
+	override def toString() = "Property[" + manifest.erasure.getSimpleName + "](value = " + apply() + ")"
 }

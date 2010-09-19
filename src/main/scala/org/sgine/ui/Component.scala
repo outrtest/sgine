@@ -194,4 +194,6 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		}
 		rotation.actual(x, y, z)
 	}
+	
+	override def toString() = getClass.getSimpleName
 }

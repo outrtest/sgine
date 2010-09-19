@@ -7,10 +7,8 @@ class Resource private(val url: URL)
 object Resource {
 	private var paths: List[ResourcePath] = Nil
 	addPath("")
-	addPath("resource/")
-	addPath("resource/font/")
+	addPath("font/")
 	addPath("", FileResourceFinder)
-	addPath("resource/", FileResourceFinder)
 	
 	def addPath(path: String, finder: ResourceFinder = ClassLoaderResourceFinder) = {
 		var p = path

@@ -10,7 +10,7 @@ import org.sgine.property._
 trait PropertyContainer extends Listenable with Property[Int] {
 	protected val manifest = ClassManifest.Int
 	
-	private var _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
+	private val _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
 	private var aliases = new HashMap[String, Property[_]]()
 	private val staticPropertyFields = getStaticPropertyFields
 	
@@ -152,16 +152,27 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	private def initialize() = {
 		if (!initialized) {
 			synchronized {
+				var properties: List[Property[_]] = Nil
+				var uninitialized = false
 				for (f <- staticPropertyFields) {
 					val p = f.get(this).asInstanceOf[Property[_]]
-					addProperty(p)
-					if (!aliases.contains(f.getName)) {
-						aliases += f.getName -> p
+					if (p == null) {
+						uninitialized = true
+					} else {
+						properties = p :: properties
+						if (!aliases.contains(f.getName)) {
+							aliases += f.getName -> p
+						}
 					}
 				}
 				
-				_properties = _properties.reverse
-				initialized = true
+				if (!uninitialized) {
+					for (p <- properties) {
+						addProperty(p)
+					}
+					_properties.reverse
+					initialized = true
+				}
 			}
 		}
 	}

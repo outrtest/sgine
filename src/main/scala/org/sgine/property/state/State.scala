@@ -1,5 +1,7 @@
 package org.sgine.property.state
 
+import org.sgine.path.OPath
+
 import org.sgine.property.Property
 import org.sgine.property.container.PropertyContainer
 
@@ -43,34 +45,16 @@ case class StateItem(key: String, value: Any, restore: Any = null) {
 	}
 	
 	private def process[T](o: Any, key: String, value: T): Any = {
-		// Process first part of key
-		var name = key
-		var tail: String = null
-		if ((name != null) && (name.indexOf('.') != -1)) {
-			name = name.substring(0, name.indexOf('.'))
-			tail = key.substring(key.indexOf('.') + 1)
-		}
-		
-		// Find out what we're processing here
-		o match {
-			case pc: PropertyContainer => {
-				val next = pc(name)
-				if (next == None) {
-					throw new NullPointerException("Unable to find property named: " + name + " in PropertyContainer: " + o)
-				}
-				process(next.get, tail, value)
-			}
-			case p: Property[_] => {
-				if (tail != null) {
-					process(p(), tail, value)
-				} else {
+		OPath.resolve(o.asInstanceOf[AnyRef], key) match {
+			case Some(m) => m match {
+				case p: Property[_] => {
 					val original = p()
 					p.asInstanceOf[Property[T]] := value
-					
 					original
 				}
+				case _ => throw new RuntimeException("Unsupported end-point: " + m.asInstanceOf[AnyRef].getClass.getName)
 			}
-			case _ => throw new RuntimeException("Unable to find match: " + o + ", " + key + ": " + value)
+			case None => throw new RuntimeException("Couldn't find: " + key + " in " + o + " with value: " + value)
 		}
 	}
 }

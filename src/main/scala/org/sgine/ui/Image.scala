@@ -70,5 +70,5 @@ class Image extends Component {
 		imageDirty.set(true)
 	}
 	
-	override def toString() = "Image(" + source + ")"
+	override def toString() = "Image(source = " + source() + ")"
 }

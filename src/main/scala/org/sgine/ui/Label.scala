@@ -51,5 +51,5 @@ class Label extends Component {
 		}
 	}
 	
-	override def toString() = "Label(" + text + ")"
+	override def toString() = "Label(text = " + text + ")"
 }
