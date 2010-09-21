@@ -22,6 +22,7 @@ import org.sgine.path.OPath
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.DelegateProperty
+import org.sgine.property.FilterType
 import org.sgine.property.ImmutableProperty
 import org.sgine.property.PathProperty
 import org.sgine.property.container.PropertyContainer
@@ -44,7 +45,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	private val booleanCombiner = (b1: Boolean, b2: Boolean) => if ((b1) && (b2)) true else false
 	
 	val id = new AdvancedProperty[String](null, this)
-	val visible = new AdvancedProperty[Boolean](true, this, combine = new PathProperty[Boolean](OPath(this, "parent().visible()"), true), combineFunction = booleanCombiner)
+	val visible = new AdvancedProperty[Boolean](true, this, filter = visibilityFilter, filterType = FilterType.Retrieve)
 	val renderer = new DelegateProperty(() => _renderer)
 	val lighting = new AdvancedProperty[Boolean](true, this)
 	
@@ -74,6 +75,18 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	private var firstRender = true
 	
 	private var _renderer: Renderer = _
+	
+	private def visibilityFilter(v: Boolean): Boolean = {
+		if (v) {
+			parent match {
+				case null => true
+				case p: Component => p.visible()
+				case _ => true
+			}
+		} else {
+			false
+		}
+	}
 	
 	def update(renderer: Renderer) = {
 	}
