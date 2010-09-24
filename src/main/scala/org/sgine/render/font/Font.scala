@@ -2,7 +2,7 @@ package org.sgine.render.font
 
 trait Font {
 	def face: String
-	def size: Int
+	def size: Double
 	def bold: Int
 	def italic: Int
 	def lineHeight: Int

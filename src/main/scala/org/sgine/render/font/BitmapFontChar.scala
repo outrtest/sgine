@@ -7,6 +7,10 @@ import org.lwjgl.opengl.GL11._
 class BitmapFontChar protected(quad: Quad) extends FontChar {
 	protected[render] var _font: BitmapFont = _
 	protected[render] var _code: Int = _
+	protected[render] var _x: Double = _
+	protected[render] var _y: Double = _
+	protected[render] var _width: Double = _
+	protected[render] var _height: Double = _
 	protected[render] var _xOffset: Double = _
 	protected[render] var _yOffset: Double = _
 	protected[render] var _xAdvance: Double = _
