@@ -20,10 +20,12 @@ class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
 			vbo.delete()
 			vbo = null
 		}
-		if (vbo == null) {
-			vbo = new VBO(shape.vertex.length)
+		if (shape.vertex != null) {
+			if (vbo == null) {
+				vbo = new VBO(shape.vertex.length)
+			}
+			vbo.update(shape, vertexChanged, colorChanged, textureChanged, normalChanged)
 		}
-		vbo.update(shape, vertexChanged, colorChanged, textureChanged, normalChanged)
 	}
 	
 	override protected[shape] def renderInternal(shape: Shape) = vbo.draw()

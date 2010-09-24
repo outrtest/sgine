@@ -12,7 +12,7 @@ import scala.collection.mutable.ArrayBuffer
 import simplex3d.math.doublem._
 
 object ShapeUtilities {
-	def apply(awtShape: java.awt.Shape, shape: Shape) = {
+	def apply(awtShape: java.awt.Shape, shape: MutableShape) = {
 		val tess = GLUtessellatorImpl.gluNewTess()
 		
 		val cb = new TessCallback()

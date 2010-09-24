@@ -11,8 +11,9 @@ import org.sgine.core.Resource
 import org.sgine.render.Texture
 import org.sgine.render.TextureMap
 import org.sgine.render.TextureManager
+import org.sgine.render.shape.Quad
 
-class BitmapFont private[font](texture: Texture) extends TextureMap[Int](texture) with Font {
+class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapFontChar](texture)((quad: Quad) => new BitmapFontChar(quad)) with Font {
 	private var _face: String = null
 	private var _size: Int = 0
 	private var _bold: Int = 0
@@ -48,8 +49,6 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int](texture
 	def scaleH = _scaleH
 	
 	override def apply(c: Int): BitmapFontChar = super.apply(c).asInstanceOf[BitmapFontChar]
-	
-	override protected def createImage() = new BitmapFontChar()
 	
 	def drawString(s: String, kern: Boolean = true) = {
 		glCullFace(GL_BACK)

@@ -17,7 +17,7 @@ class PathProperty[T](val path: OPath[T], overrideDefaultValue: T = null)(overri
 	
 	override def apply() = path().getOrElse(defaultValue)
 	
-	override def apply(value: T): Property[T] = throw new RuntimeException("PathProperty cannot be modified.")
+//	override def apply(value: T): Property[T] = throw new RuntimeException("PathProperty cannot be modified.")
 	
 	override def option() = path()
 	
