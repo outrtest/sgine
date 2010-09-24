@@ -7,7 +7,7 @@ import org.sgine.core._
 import org.sgine.render.shape.renderer._
 import org.sgine.render.shape.renderer.lwjgl._
 
-class Shape private() extends Function0[Unit] {
+class MutableShape private() extends Shape {
 	var cull: Face = Face.None
 	var material: Material = Material.AmbientAndDiffuse
 	var mode: ShapeMode = ShapeMode.Triangles
@@ -32,21 +32,15 @@ class Shape private() extends Function0[Unit] {
 	private val _updateTexture = new AtomicReference[TextureData]
 	private val _updateNormal = new AtomicReference[NormalData]
 
-	private lazy val renderer = createRenderer()
-	
 	def dirty = _updateVertex.get != null ||
 				_updateColor.get != null ||
 				_updateTexture.get != null ||
 				_updateNormal.get != null
 	
-	def hasColor = color != null
-	def hasTexture = texture != null
-	def hasNormal = normal != null
-				
-	def apply() = {
+	override def apply() = {
 		update()
 		
-		render()
+		super.apply()
 	}
 	
 	def update() = {
@@ -93,14 +87,6 @@ class Shape private() extends Function0[Unit] {
 		}
 	}
 	
-	def render() = {
-		// Render
-		val dataVertex = _dataVertex.get
-		if (dataVertex != null) {
-			renderer.render(this)
-		}
-	}
-	
 	def apply(data: VertexData) = _updateVertex.set(data)
 	
 	def apply(data: ColorData) = _updateColor.set(data)
@@ -108,31 +94,8 @@ class Shape private() extends Function0[Unit] {
 	def apply(data: TextureData) = _updateTexture.set(data)
 	
 	def apply(data: NormalData) = _updateNormal.set(data)
-	
-	private def createRenderer(): ShapeRenderer = {
-		if (LWJGLVBOShapeRenderer.capable) {
-			new LWJGLVBOShapeRenderer()
-		} else {
-			new LWJGLImmediateModeShapeRenderer()
-		}
-	}
-	
-	def bytes = {
-		var b = vertex.length * (3 * 4)
-		if (hasNormal) {
-			b += vertex.length * (3 * 4)
-		}
-		if (hasColor) {
-			b += vertex.length * (4 * 4)
-		}
-		if (hasTexture) {
-			b += vertex.length * (2 * 4)
-		}
-		
-		b
-	}
 }
 
-object Shape {
-	def apply() = new Shape()
+object MutableShape {
+	def apply() = new MutableShape()
 }

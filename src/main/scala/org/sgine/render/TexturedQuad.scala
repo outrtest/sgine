@@ -25,7 +25,7 @@ class TexturedQuad extends Function0[Unit] {
 	val height = new NumericProperty(0.0)
 	val cull = new AdvancedProperty[Face](Face.Back)
 	
-	private val shape = Shape()
+	private val shape = MutableShape()
 	private val dirty = new AtomicBoolean(false)
 	
 	private val changeHandler = EventHandler(propChanged, ProcessingMode.Blocking)

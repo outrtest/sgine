@@ -1,10 +1,10 @@
 package org.sgine.render.font
 
-import org.sgine.render.RenderImage
+import org.sgine.render.shape.Quad
 
 import org.lwjgl.opengl.GL11._
 
-class BitmapFontChar extends RenderImage with FontChar {
+class BitmapFontChar protected(quad: Quad) extends FontChar {
 	protected[render] var _font: BitmapFont = _
 	protected[render] var _code: Int = _
 	protected[render] var _xOffset: Double = _
@@ -35,10 +35,16 @@ class BitmapFontChar extends RenderImage with FontChar {
 		
 		// Adjust before we draw
 		val adjust = if (previous != null) previous.xAdvance / 2.0 else 0.0
-		glTranslated(adjust + (xAdvance / 2.0) + k, 0.0, 0.0)
+		val ox = xOffset
+		val oy = -yOffset + ((font.lineHeight / 2.0) - (quad.height / 2.0))
+		glTranslated(adjust + (xAdvance / 2.0) + k + ox, oy, 0.0)
 		
 		// Draw character to screen
-		draw(xOffset, -yOffset + ((font.lineHeight / 2.0) - (height / 2.0)))
+//		draw(xOffset, -yOffset + ((font.lineHeight / 2.0) - (height / 2.0)))
+		font.texture.bind()
+		quad()
+		
+		glTranslated(-ox, -oy, 0.0)
 	}
 	
 	def measureCharWidth(previous: FontChar = null, kern: Boolean = true) = {

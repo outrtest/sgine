@@ -22,7 +22,7 @@ trait DependentProperty[T] extends Property[T] {
 		
 		if ((initialized != null) && (dependency != null) && (initialized.compareAndSet(false, true))) {
 			dependency match {
-				case lp: ListenableProperty[T] => lp.listeners += EventHandler(dependencyChanged, ProcessingMode.Blocking)
+				case lp: ListenableProperty[_] => lp.listeners += EventHandler(dependencyChanged, ProcessingMode.Blocking)
 				case _ =>
 			}
 		}

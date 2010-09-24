@@ -30,7 +30,7 @@ trait ShapeComponent extends Component {
 	private val dirty = new AtomicBoolean(false)
 	
 	protected var texture: Texture = _
-	protected val shape = Shape()
+	protected val shape = MutableShape()
 	
 	configureListeners()
 	
