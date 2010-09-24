@@ -15,7 +15,7 @@ import org.sgine.render.shape.Quad
 
 class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapFontChar](texture)((quad: Quad) => new BitmapFontChar(quad)) with Font {
 	private var _face: String = null
-	private var _size: Int = 0
+	private var _size: Double = 0.0
 	private var _bold: Int = 0
 	private var _italic: Int = 0
 	private var _charset: String = ""
@@ -74,6 +74,46 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 		}
 		
 		width
+	}
+	
+	def derive(size: Double) = {
+		val scale = size / this.size
+		
+		// Create derived font
+		val font = new BitmapFont(texture)
+		font._face = face
+		font._size = size
+		font._bold = bold
+		font._italic = italic
+		font._charset = charset
+		font._unicode = unicode
+		font._stretchH = stretchH
+		font._smooth = smooth
+		font._aa = aa
+		font._padding = padding
+		font._spacing = spacing
+		font._lineHeight = lineHeight
+		font._base = base
+		font._scaleW = scaleW
+		font._scaleH = scaleH
+		
+		// Scaled characters
+		for (bfc <- instances) {
+			val fontChar = font.create(bfc.code, bfc._x, bfc._y, bfc._width, bfc._height, scale).asInstanceOf[BitmapFontChar]
+			fontChar._font = font
+			fontChar._code = bfc.code
+			fontChar._xOffset = bfc.xOffset * scale
+			fontChar._yOffset = bfc.yOffset * scale
+			fontChar._xAdvance = bfc.xAdvance * scale
+			
+			// Scaled kernings
+			for (k <- bfc.kernings) {
+				val kerning = FontKerning(k.previous, k.amount * scale)
+				fontChar._kernings = kerning :: fontChar._kernings
+			}
+		}
+		
+		font
 	}
 }
 
@@ -159,6 +199,10 @@ object BitmapFont {
 				val fontChar = font.create(id, x, y, width, height).asInstanceOf[BitmapFontChar]
 				fontChar._font = font
 				fontChar._code = id
+				fontChar._x = x
+				fontChar._y = y
+				fontChar._width = width
+				fontChar._height = height
 				fontChar._xOffset = m("xoffset").toDouble
 				fontChar._yOffset = m("yoffset").toDouble
 				fontChar._xAdvance = m("xadvance").toDouble

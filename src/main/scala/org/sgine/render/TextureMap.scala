@@ -17,6 +17,8 @@ class TextureMap[T, I] protected(val texture: Texture)(implicit creator: Functio
 	
 	def apply(name: T) = map(name)
 	
+	def instances = map.values
+	
 	def length = map.size
 }
 

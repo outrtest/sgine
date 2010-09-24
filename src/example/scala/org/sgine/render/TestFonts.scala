@@ -26,11 +26,13 @@ object TestFonts {
 		r.verticalSync := true
 
 		val franklinFont = BitmapFont("Franklin")
+		val franklinSmaller = franklinFont.derive(30.0)
 		val arialFont = BitmapFont("Arial")
 		val lcdFont = BitmapFont("lcd")
 		
-		val m1 = Mat3x4 scale(0.5) translate(Vec3(0, 0, -500.0))
-		val m2 = Mat3x4 scale(0.5) translate(Vec3(0, 50.0, -500.0))
+		val m1 = Mat3x4 scale(0.5) translate(Vec3(0.0, 0.0, -500.0))
+		val m2 = Mat3x4 scale(0.5) translate(Vec3(0.0, 50.0, -500.0))
+		val m3 = Mat3x4 scale(0.5) translate(Vec3(0.0, -50.0, -500.0))
 		val fps = FPS(1.0, lcdFont)
 		
 		r.renderable := RenderList(
@@ -38,6 +40,8 @@ object TestFonts {
 									() => franklinFont.drawString("Franklin Gothic Heavy with a blue gradient.", true),
 									MatrixState(m2),
 									() => arialFont.drawString("Standard Arial", false),
+									MatrixState(m3),
+									() => franklinSmaller.drawString("Derived version of Franklin Gothic Heavy.", true),
 									fps
 								   )
 		
