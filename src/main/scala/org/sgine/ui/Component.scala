@@ -53,7 +53,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	val rotation = new Rotation(this)
 	val scale = new Scale(this)
 	val padding = new Padding(this)
-	val dimension = new Dimension(this)
+	val size = new Size(this)
 	
 	bounding := BoundingBox(0.0, 0.0, 0.0)
 	

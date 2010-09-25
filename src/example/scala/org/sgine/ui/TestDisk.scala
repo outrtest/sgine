@@ -18,8 +18,8 @@ object TestDisk extends StandardDisplay with Debug {
 		val component = new Disk()
 		component.cull := org.sgine.core.Face.None
 		component.manualSize := true
-		component.dimension.width := 512.0
-		component.dimension.height := 256.0
+		component.size.width := 512.0
+		component.size.height := 256.0
 		component.color := Color.Blue
 //		component.source := Resource("sgine_256.png")
 		component.alpha := 0.5

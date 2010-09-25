@@ -39,8 +39,8 @@ class Disk extends Component with ShapeComponent {
 	_mode := ShapeMode.TriangleFan
 	source.listeners += EventHandler(sourceChanged, ProcessingMode.Blocking)
 	private val numericHandler = EventHandler(numericChanged, ProcessingMode.Blocking)
-	dimension.width.listeners += numericHandler
-	dimension.height.listeners += numericHandler
+	size.width.listeners += numericHandler
+	size.height.listeners += numericHandler
 	
 	def this(source: Resource) = {
 		this()
@@ -51,8 +51,8 @@ class Disk extends Component with ShapeComponent {
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
 		texture = TextureManager(source())
 		if (!manualSize()) {
-			dimension.width := texture.width
-			dimension.height := texture.height
+			size.width := texture.width
+			size.height := texture.height
 			
 			updateVertices()
 		}
@@ -60,8 +60,8 @@ class Disk extends Component with ShapeComponent {
 //		val array = new Array[Vec2](sides() + 2)
 //		array(0) = Vec2(0.0, 0.0)
 //		for (k <- 1 until array.length) {
-//			val x = _vertices()(k).x / dimension.width() + 1.0 / texture.width
-//			val y = _vertices()(k).y / dimension.height() + 1.5 / texture.height
+//			val x = _vertices()(k).x / size.width() + 1.0 / texture.width
+//			val y = _vertices()(k).y / size.height() + 1.5 / texture.height
 //			array(k) = Vec2(x, y)
 //		}
 //		_texcoords := array
@@ -72,14 +72,14 @@ class Disk extends Component with ShapeComponent {
 	}
 	
 	private def updateVertices() = {
-		val w = dimension.width() / 2.0
-		val h = dimension.height() / 2.0
+		val w = size.width() / 2.0
+		val h = size.height() / 2.0
 		val array = new Array[Vec3](sides() + 2)
 		array(0) = Vec3(0.0, 0.0, 0.0)
 		
 		for (k <- 1 until array.length) {
-			val x = sin(2.0 * Pi * k / sides()) * dimension.width() / 2.0
-			val y = cos(2.0 * Pi * k / sides()) * dimension.height() / 2.0
+			val x = sin(2.0 * Pi * k / sides()) * size.width() / 2.0
+			val y = cos(2.0 * Pi * k / sides()) * size.height() / 2.0
 			val z = 0.0
 			array(k) = Vec3(x, y, z)
 		}

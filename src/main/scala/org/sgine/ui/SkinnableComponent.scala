@@ -42,8 +42,8 @@ trait SkinnableComponent extends CompositeComponent with FocusableNode {
 	}
 	
 	protected def setSize(width: Double, height: Double) = {
-		dimension.width := width + padding.left() + padding.right()
-		dimension.height := height + padding.top() + padding.bottom()
+		size.width := width + padding.left() + padding.right()
+		size.height := height + padding.top() + padding.bottom()
 	}
 	
 	private def configureListeners() = {
@@ -60,8 +60,8 @@ trait SkinnableComponent extends CompositeComponent with FocusableNode {
 	}
 	
 	private def boundingChanged(evt: PropertyChangeEvent[_]) = {
-		skin.width := dimension.width()
-		skin.height := dimension.height()
+		skin.width := size.width()
+		skin.height := size.height()
 	}
 	
 	protected def updateBounding(evt: PropertyChangeEvent[_] = null) = {

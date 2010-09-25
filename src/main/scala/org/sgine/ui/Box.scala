@@ -36,9 +36,9 @@ class Box extends Component with ShapeComponent {
 	_mode := ShapeMode.Quads
 	source.listeners += EventHandler(sourceChanged, ProcessingMode.Blocking)
 	private val numericHandler = EventHandler(numericChanged, ProcessingMode.Blocking)
-	dimension.width.listeners += numericHandler
-	dimension.height.listeners += numericHandler
-	dimension.depth.listeners += numericHandler
+	size.width.listeners += numericHandler
+	size.height.listeners += numericHandler
+	size.depth.listeners += numericHandler
 	
 	shape.mode = ShapeMode.Quads
 //	private val data = MutableShapeData(ShapeMode.Quads, 24)
@@ -52,9 +52,9 @@ class Box extends Component with ShapeComponent {
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
 		texture = TextureManager(source())
 		if (!manualSize()) {
-			dimension.width := texture.width
-			dimension.height := texture.height
-			dimension.depth := texture.width
+			size.width := texture.width
+			size.height := texture.height
+			size.depth := texture.width
 			
 			updateVertices()
 		}
@@ -66,9 +66,9 @@ class Box extends Component with ShapeComponent {
 	}
 	
 	private def updateVertices() = {
-		val w = dimension.width() / 2.0
-		val h = dimension.height() / 2.0
-		val d = dimension.depth() / 2.0
+		val w = size.width() / 2.0
+		val h = size.height() / 2.0
+		val d = size.depth() / 2.0
 		_vertices := List(	// Front Face
 							Vec3(-w, -h, d),		// Bottom-Left
 							Vec3(w, -h, d),			// Bottom-Right

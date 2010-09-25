@@ -68,3 +68,7 @@ trait Listenable {
 		event
 	}
 }
+
+object Listenable {
+	def listenTo[E <: Event](handler: EventHandler, listenables: Listenable*)(implicit manifest: Manifest[E]) = listenables.foreach(l => l.listeners += handler)
+}

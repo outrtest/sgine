@@ -12,7 +12,7 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.ui.Component
 
-class Dimension(override val parent: Component) extends PropertyContainer {
+class Size(override val parent: Component) extends PropertyContainer {
 	val width = new NumericProperty(0.0, this)
 	val height = new NumericProperty(0.0, this)
 	val depth = new NumericProperty(0.0, this)

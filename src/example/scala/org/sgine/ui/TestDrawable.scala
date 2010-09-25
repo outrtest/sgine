@@ -5,8 +5,8 @@ import org.sgine.render.StandardDisplay
 object TestDrawable extends StandardDisplay {
 	def setup() = {
 		val component = DrawableComponent()
-		component.dimension.width := 250
-		component.dimension.height := 250
+		component.size.width := 250
+		component.size.height := 250
 		component.painter := testPaint
 		scene += component
 		
