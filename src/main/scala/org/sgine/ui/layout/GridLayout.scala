@@ -50,7 +50,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 				layout(item)
 			}
 			
-			container.dimension(width, height)
+			container.size(width, height)
 		}
 	}
 	

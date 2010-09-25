@@ -56,9 +56,9 @@ object TestMorphingBox extends StandardDisplay with Debug {
 		scene += box
 		
 		// Initialize animation
-		box.dimension.width.animator = widthAnimator
-		box.dimension.height.animator = heightAnimator
-		box.dimension.depth.animator = depthAnimator
+		box.size.width.animator = widthAnimator
+		box.size.height.animator = heightAnimator
+		box.size.depth.animator = depthAnimator
 		box.rotation.x.animator = rotationXAnimator
 		box.rotation.y.animator = rotationYAnimator
 		box.rotation.z.animator = rotationZAnimator
@@ -66,9 +66,9 @@ object TestMorphingBox extends StandardDisplay with Debug {
 		
 		// Initialize listeners
 		val handler = EventHandler(valueChanged, ProcessingMode.Normal)
-		box.dimension.width.listeners += handler
-		box.dimension.height.listeners += handler
-		box.dimension.depth.listeners += handler
+		box.size.width.listeners += handler
+		box.size.height.listeners += handler
+		box.size.depth.listeners += handler
 		box.rotation.x.listeners += handler
 		box.rotation.y.listeners += handler
 		box.rotation.z.listeners += handler
@@ -86,9 +86,9 @@ object TestMorphingBox extends StandardDisplay with Debug {
 		}
 	}
 	
-	def isAnimating = box.dimension.width.isAnimating ||
-					  box.dimension.height.isAnimating ||
-					  box.dimension.width.isAnimating ||
+	def isAnimating = box.size.width.isAnimating ||
+					  box.size.height.isAnimating ||
+					  box.size.width.isAnimating ||
 					  box.rotation.x.isAnimating ||
 					  box.rotation.y.isAnimating ||
 					  box.rotation.z.isAnimating ||
@@ -125,9 +125,9 @@ object TestMorphingBox extends StandardDisplay with Debug {
 		colorAnimator.multiplier = multiplier
 		
 		// Update size
-		box.dimension.width := (random * 500.0) + 20.0
-		box.dimension.height := (random * 500.0) + 20.0
-		box.dimension.depth := (random * 500.0) + 20.0
+		box.size.width := (random * 500.0) + 20.0
+		box.size.height := (random * 500.0) + 20.0
+		box.size.depth := (random * 500.0) + 20.0
 		
 		// Update rotation
 		box.rotation.x := random * 3.0 * Pi

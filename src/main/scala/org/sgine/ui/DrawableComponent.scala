@@ -34,7 +34,7 @@ trait DrawableComponent extends CachedComponent {
 	protected def draw(buffer: ByteBuffer): Unit = {
 		val painter = this.painter()
 		if (painter != null) {
-			val g = GeneralReusableGraphic(round(dimension.width()).toInt, round(dimension.height()).toInt)
+			val g = GeneralReusableGraphic(round(size.width()).toInt, round(size.height()).toInt)
 			try {
 				painter(g)
 				

@@ -166,8 +166,8 @@ class Scale9 extends CompositeComponent {
 			bottom.location(posX2, posY3)
 			bottomRight.location(posX3, posY3)
 			
-			dimension.width := width()
-			dimension.height := height()
+			size.width := width()
+			size.height := height()
 		}
 	}
 	

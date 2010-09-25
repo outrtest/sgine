@@ -42,28 +42,28 @@ trait CachedComponent extends Component with BoundingObject {
 	private def redraw(buffer: ByteBuffer) = {
 		draw(buffer)
 		
-		image.width = dimension.width()
-		image.height = dimension.height()
-		if ((dimension.width() != dimension.width()) || (dimension.height() != dimension.height())) {
-			dimension.width := dimension.width()
-			dimension.height := dimension.height()
+		image.width = size.width()
+		image.height = size.height()
+		if ((size.width() != size.width()) || (size.height() != size.height())) {
+			size.width := size.width()
+			size.height := size.height()
 		}
 	}
 	
 	protected def draw(buffer: ByteBuffer): Unit
 	
 	protected def configureListeners() = {
-		dimension.width.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
-		dimension.height.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
+		size.width.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
+		size.height.listeners += EventHandler(invalidateCache, processingMode = ProcessingMode.Blocking)
 		
 		true
 	}
 	
 	def invalidateCache(evt: PropertyChangeEvent[_] = null) = {
-		if ((dimension.width() > 0) && (dimension.height() > 0)) {
+		if ((size.width() > 0) && (size.height() > 0)) {
 			if (texture == null) {
-				texture = new StreamingTexture(round(dimension.width()).toInt, round(dimension.height()).toInt)
-				info("Streaming: " + dimension.width() + "x" + dimension.height())
+				texture = new StreamingTexture(round(size.width()).toInt, round(size.height()).toInt)
+				info("Streaming: " + size.width() + "x" + size.height())
 				texture.internalTextureFormat = GL_RGBA
 				texture.pixelTextureFormat = pixelFormat()
 				texture.updateFunction = redraw

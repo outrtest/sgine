@@ -87,8 +87,8 @@ class MediaPlayer extends CachedComponent {
 		audioControl.setVolume(volume().toFloat)
 		audioControl.setMute(mute())
 		
-		dimension.width := videoControl.getFrameWidth
-		dimension.height := videoControl.getFrameHeight
+		size.width := videoControl.getFrameWidth
+		size.height := videoControl.getFrameHeight
 	}
 	
 	private def repeatChanged(evt: PropertyChangeEvent[Boolean]) = {
