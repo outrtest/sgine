@@ -4,7 +4,7 @@ import org.sgine.render.shape.Quad
 
 import org.lwjgl.opengl.GL11._
 
-class BitmapFontChar protected(quad: Quad) extends FontChar {
+class BitmapFontChar protected(protected[render] val quad: Quad) extends FontChar {
 	protected[render] var _font: BitmapFont = _
 	protected[render] var _code: Int = _
 	protected[render] var _x: Double = _
