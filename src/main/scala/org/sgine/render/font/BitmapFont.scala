@@ -2,16 +2,26 @@ package org.sgine.render.font
 
 import java.net.URL
 
-import scala.io.Source
-
 import org.lwjgl.opengl.GL11._
 
 import org.sgine.core.Resource
+import org.sgine.core.HorizontalAlignment
+import org.sgine.core.VerticalAlignment
 
 import org.sgine.render.Texture
 import org.sgine.render.TextureMap
 import org.sgine.render.TextureManager
+import org.sgine.render.shape.MutableShape
 import org.sgine.render.shape.Quad
+import org.sgine.render.shape.ShapeMode
+import org.sgine.render.shape.TextureData
+import org.sgine.render.shape.VertexData
+
+import scala.io.Source
+
+import scala.collection.mutable.ArrayBuffer
+
+import simplex3d.math.doublem.renamed._
 
 class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapFontChar](texture)((quad: Quad) => new BitmapFontChar(quad)) with Font {
 	private var _face: String = null
@@ -49,6 +59,53 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	def scaleH = _scaleH
 	
 	override def apply(c: Int): BitmapFontChar = super.apply(c).asInstanceOf[BitmapFontChar]
+	
+	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, verticalAlignment: VerticalAlignment = VerticalAlignment.Middle, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center): Unit = {
+		// TODO: support alignment?
+		val lines = wrapWidth match {
+			case -1.0 => List(text)
+			case _ => wrapMethod(text, wrapWidth, this, kern)
+		}
+		val vertices = new ArrayBuffer[Vec3]
+		val texcoords = new ArrayBuffer[Vec2]
+		var yOffset = verticalAlignment match {
+			case VerticalAlignment.Middle => (lineHeight * lines.length) / 2.0
+			case VerticalAlignment.Top => 0.0
+			case VerticalAlignment.Bottom => lineHeight * lines.length
+		}
+		for (line <- lines) {
+			var xOffset = horizontalAlignment match {
+				case HorizontalAlignment.Center => measureWidth(line, kern) / -2.0
+				case HorizontalAlignment.Left => 0.0
+				case HorizontalAlignment.Right => -measureWidth(line, kern)
+			}
+			var previous: BitmapFontChar = null
+			for (c <- line) {
+				val fontChar = apply(c)
+				
+				if (kern) xOffset += fontChar.kerning(previous)
+				xOffset += fontChar.xAdvance / 2.0
+				
+				val charYOffset = -fontChar.yOffset + ((lineHeight / 2.0) - (fontChar.quad.height / 2.0))
+				
+				for (v <- fontChar.quad.vertex.data) {
+					val vec = Vec3(v.x + xOffset, v.y + yOffset + charYOffset, v.z)
+					vertices += vec
+				}
+				for (v <- fontChar.quad.texture.data) {
+					texcoords += v
+				}
+				
+				xOffset += fontChar.xAdvance / 2.0
+				
+				previous = fontChar
+			}
+			yOffset -= lineHeight
+		}
+		shape.mode = ShapeMode.Quads
+		shape.vertex = VertexData(vertices)
+		shape.texture = TextureData(texcoords)
+	}
 	
 	def drawString(s: String, kern: Boolean = true) = {
 		glCullFace(GL_BACK)
