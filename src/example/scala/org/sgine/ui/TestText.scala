@@ -10,7 +10,7 @@ object TestText extends StandardDisplay with Debug {
 	def setup() = {
 		val text = new Text()
 		text.text := "Now is the time for all good men to come to the aid of their country."
-		text.size.width := 200.0
+		text.size.width := 300.0
 		scene += text
 	}
 }
