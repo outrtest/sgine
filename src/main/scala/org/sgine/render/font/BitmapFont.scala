@@ -63,7 +63,7 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, verticalAlignment: VerticalAlignment = VerticalAlignment.Middle, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center): Unit = {
 		// TODO: support alignment?
 		val lines = wrapWidth match {
-			case -1.0 => List(text)
+			case x if (x <= 0.0) => List(text)
 			case _ => wrapMethod(text, wrapWidth, this, kern)
 		}
 		val vertices = new ArrayBuffer[Vec3]
