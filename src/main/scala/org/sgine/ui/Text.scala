@@ -13,6 +13,8 @@ import org.sgine.property.AdvancedProperty
 import org.sgine.render.font.BitmapFont
 import org.sgine.render.font.Font
 import org.sgine.render.font.FontManager
+import org.sgine.render.font.RenderedCharacter
+import org.sgine.render.font.RenderedLine
 import org.sgine.render.font.WordWrap
 
 import org.lwjgl.opengl.GL11._
@@ -24,6 +26,8 @@ class Text extends ShapeComponent {
 	val kern = new AdvancedProperty[Boolean](true, this)
 	val textHorizontalAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
 	val textVerticalAlignment = new AdvancedProperty[VerticalAlignment](VerticalAlignment.Middle, this)
+	
+	protected var lines: Seq[RenderedLine] = _
 	
 	Listenable.listenTo(EventHandler(invalidateText, ProcessingMode.Blocking),
 						font,
