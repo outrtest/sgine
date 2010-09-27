@@ -60,8 +60,7 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	
 	override def apply(c: Int): BitmapFontChar = super.apply(c).asInstanceOf[BitmapFontChar]
 	
-	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, verticalAlignment: VerticalAlignment = VerticalAlignment.Middle, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center): Unit = {
-		// TODO: support alignment?
+	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, verticalAlignment: VerticalAlignment = VerticalAlignment.Middle, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine] = {
 		val lines = wrapWidth match {
 			case x if (x <= 0.0) => List(text)
 			case _ => wrapMethod(text, wrapWidth, this, kern)
@@ -69,22 +68,27 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 		val vertices = new ArrayBuffer[Vec3]
 		val texcoords = new ArrayBuffer[Vec2]
 		var yOffset = verticalAlignment match {
-			case VerticalAlignment.Middle => (lineHeight * lines.length) / 2.0
 			case VerticalAlignment.Top => 0.0
 			case VerticalAlignment.Bottom => lineHeight * lines.length
+			case _ => (lineHeight * lines.length) / 2.0
 		}
-		for (line <- lines) {
+		var renderedLines = new Array[RenderedLine](lines.length)
+		for ((line, n) <- lines zipWithIndex) {
 			var xOffset = horizontalAlignment match {
-				case HorizontalAlignment.Center => measureWidth(line, kern) / -2.0
 				case HorizontalAlignment.Left => 0.0
 				case HorizontalAlignment.Right => -measureWidth(line, kern)
+				case _ => measureWidth(line, kern) / -2.0
 			}
 			var previous: BitmapFontChar = null
-			for (c <- line) {
+			val characters = new Array[RenderedCharacter](line.length)
+			val renderedLine = RenderedLine(line, characters)
+			for ((c, index) <- line zipWithIndex) {
 				val fontChar = apply(c)
 				
 				if (kern) xOffset += fontChar.kerning(previous)
 				xOffset += fontChar.xAdvance / 2.0
+				
+				characters(index) = RenderedCharacter(xOffset, yOffset, fontChar, renderedLine)
 				
 				val charYOffset = -fontChar.yOffset + ((lineHeight / 2.0) - (fontChar.quad.height / 2.0))
 				
@@ -101,10 +105,14 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 				previous = fontChar
 			}
 			yOffset -= lineHeight
+			
+			renderedLines(n) = renderedLine
 		}
 		shape.mode = ShapeMode.Quads
 		shape.vertex = VertexData(vertices)
 		shape.texture = TextureData(texcoords)
+		
+		renderedLines
 	}
 	
 	def drawString(s: String, kern: Boolean = true) = {
