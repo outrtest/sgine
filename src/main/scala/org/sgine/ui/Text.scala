@@ -17,6 +17,9 @@ import org.sgine.render.font.RenderedCharacter
 import org.sgine.render.font.RenderedLine
 import org.sgine.render.font.WordWrap
 
+import org.sgine.ui.ext.Caret
+import org.sgine.ui.ext.Selection
+
 import org.lwjgl.opengl.GL11._
 
 class Text extends ShapeComponent {
@@ -24,10 +27,12 @@ class Text extends ShapeComponent {
 	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
 	val text = new AdvancedProperty[String]("", this)
 	val kern = new AdvancedProperty[Boolean](true, this)
-	val textHorizontalAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
-	val textVerticalAlignment = new AdvancedProperty[VerticalAlignment](VerticalAlignment.Middle, this)
+	val horizontalAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
+	val verticalAlignment = new AdvancedProperty[VerticalAlignment](VerticalAlignment.Middle, this)
+	val caret = new Caret(this)
+	val selection = new Selection(this)
 	
-	protected var lines: Seq[RenderedLine] = _
+	protected[ui] var lines: Seq[RenderedLine] = Nil
 	
 	Listenable.listenTo(EventHandler(invalidateText, ProcessingMode.Blocking),
 						font,
@@ -35,8 +40,8 @@ class Text extends ShapeComponent {
 						size.width,
 						size.height,
 						kern,
-						textHorizontalAlignment,
-						textVerticalAlignment)
+						horizontalAlignment,
+						verticalAlignment)
 	private val revalidateText = new java.util.concurrent.atomic.AtomicBoolean(false)
 	
 	override def drawComponent() = {
@@ -46,12 +51,13 @@ class Text extends ShapeComponent {
 		}
 		
 		super.drawComponent()
+		caret.draw()
 	}
 	
 	private def invalidateText(evt: Event) = revalidateText.set(true)
 	
 	private def validateText() = {
-		font()(shape, text(), kern(), size.width(), WordWrap, textVerticalAlignment(), textHorizontalAlignment())
+		lines = font()(shape, text(), kern(), size.width(), WordWrap, verticalAlignment(), horizontalAlignment())
 		font() match {
 			case bf: BitmapFont => texture = bf.texture
 			case _ =>
