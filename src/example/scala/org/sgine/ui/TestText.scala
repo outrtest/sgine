@@ -1,5 +1,7 @@
 package org.sgine.ui
 
+import org.sgine.core._
+
 import org.sgine.render.Debug
 import org.sgine.render.RenderSettings
 import org.sgine.render.StandardDisplay

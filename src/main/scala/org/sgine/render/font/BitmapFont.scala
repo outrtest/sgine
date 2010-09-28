@@ -68,9 +68,9 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 		val vertices = new ArrayBuffer[Vec3]
 		val texcoords = new ArrayBuffer[Vec2]
 		var yOffset = verticalAlignment match {
-			case VerticalAlignment.Top => 0.0
-			case VerticalAlignment.Bottom => lineHeight * lines.length
-			case _ => (lineHeight * lines.length) / 2.0
+			case VerticalAlignment.Top => lineHeight / -2.0
+			case VerticalAlignment.Bottom => (lineHeight * lines.length) - (lineHeight / 2.0)
+			case _ => (lineHeight * (lines.length - 1)) / 2.0
 		}
 		var renderedLines = new Array[RenderedLine](lines.length)
 		for ((line, n) <- lines zipWithIndex) {
@@ -81,7 +81,7 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 			}
 			var previous: BitmapFontChar = null
 			val characters = new Array[RenderedCharacter](line.length)
-			val renderedLine = RenderedLine(line, characters)
+			val renderedLine = RenderedLine(line, characters, this)
 			for ((c, index) <- line zipWithIndex) {
 				val fontChar = apply(c)
 				
