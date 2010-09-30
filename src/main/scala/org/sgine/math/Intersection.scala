@@ -37,7 +37,7 @@ import simplex3d.math.doublem.renamed._
 import simplex3d.math.doublem.DoubleMath._
 
 
-/**
+/*
  * @author Aleksey Nikiforov (lex)
  */
 object Main {
@@ -51,7 +51,7 @@ object Main {
   }
 }
 
-/**
+/*
  * This class defines a directed line segment starting at the origin and ending
  * at (origin + direction).
  *
