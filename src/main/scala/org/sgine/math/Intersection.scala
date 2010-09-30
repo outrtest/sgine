@@ -30,7 +30,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.math
+package org.sgine.math.intersection
 
 import simplex3d.math._
 import simplex3d.math.doublem.renamed._
