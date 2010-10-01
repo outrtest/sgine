@@ -1,9 +1,9 @@
 package org.sgine.render
 
-import org.sgine.core.Enumeration
+import org.sgine.core.Enum
 import org.sgine.core.Enumerated
 
-sealed trait FogEquation extends Enumeration
+sealed trait FogEquation extends Enum
 
 object FogEquation extends Enumerated[FogEquation] {
 	case object Linear extends FogEquation

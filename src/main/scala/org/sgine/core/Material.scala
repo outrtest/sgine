@@ -1,6 +1,6 @@
 package org.sgine.core
 
-sealed trait Material extends Enumeration
+sealed trait Material extends Enum
 
 object Material extends Enumerated[Material] {
 	case object Emission extends Material

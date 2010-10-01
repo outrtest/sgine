@@ -1,9 +1,9 @@
 package org.sgine.scene.event
 
 import org.sgine.core.Enumerated
-import org.sgine.core.Enumeration
+import org.sgine.core.Enum
 
-sealed trait SceneEventType extends Enumeration
+sealed trait SceneEventType extends Enum
 
 object SceneEventType extends Enumerated[SceneEventType] {
 	

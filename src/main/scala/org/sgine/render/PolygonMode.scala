@@ -1,9 +1,9 @@
 package org.sgine.render
 
-import org.sgine.core.Enumeration
+import org.sgine.core.Enum
 import org.sgine.core.Enumerated
 
-sealed trait PolygonMode extends Enumeration
+sealed trait PolygonMode extends Enum
 
 object PolygonMode extends Enumerated[PolygonMode] {
 	case object Point extends PolygonMode

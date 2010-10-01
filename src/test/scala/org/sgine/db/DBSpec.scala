@@ -5,6 +5,8 @@ import java.io.File
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
+import org.sgine.core._
+
 import org.sgine.log._
 
 import org.sgine.property.AdvancedProperty
@@ -86,6 +88,41 @@ class DBSpec extends FlatSpec with ShouldMatchers {
 		tp.get.name() should equal("One")
 	}
 	
+	it should "persist several objects with references to enums" in {
+		transaction.store(new TestEnums(1, "left", "top"))
+		transaction.store(new TestEnums(2, "center", "top"))
+		transaction.store(new TestEnums(3, "right", "top"))
+		transaction.store(new TestEnums(4, "left", "middle"))
+		transaction.store(new TestEnums(5, "center", "middle"))
+		transaction.store(new TestEnums(6, "right", "middle"))
+		transaction.store(new TestEnums(7, "left", "bottom"))
+		transaction.store(new TestEnums(8, "center", "bottom"))
+		transaction.store(new TestEnums(9, "right", "bottom"))
+	}
+	
+	it should "query out all persisted enums properly" in {
+		def test(id: Int, halign: HorizontalAlignment, valign: VerticalAlignment) = {
+			val option = transaction.find((te: TestEnums) => te.id() == id)
+			option should not equal(None)
+			val te = option.get
+			te.halign() should equal(halign)
+			te.valign() should equal(valign)
+		}
+		test(1, "left", "top")
+		test(2, "center", "top")
+		test(3, "right", "top")
+		test(4, "left", "middle")
+		test(5, "center", "middle")
+		test(6, "right", "middle")
+		test(7, "left", "bottom")
+		test(8, "center", "bottom")
+		test(9, "right", "bottom")
+		
+		for (h <- transaction.query((ha: HorizontalAlignment) => true)) {
+			println(h)
+		}
+	}
+	
 	it should "close the transaction" in {
 		transaction.close()
 	}
@@ -105,4 +142,18 @@ class TestObject2 extends TestObject(2, "TO2")
 
 class TestProperties {
 	val name = new AdvancedProperty[String]("")
+}
+
+class TestEnums {
+	val id = new AdvancedProperty[Int](0)
+	val halign = new AdvancedProperty[HorizontalAlignment](null)
+	val valign = new AdvancedProperty[VerticalAlignment](null)
+	
+	def this(id: Int, halign: HorizontalAlignment, valign: VerticalAlignment) = {
+		this()
+		
+		this.id := id
+		this.halign := halign
+		this.valign := valign
+	}
 }

@@ -1,6 +1,6 @@
 package org.sgine.core
 
-sealed trait ProcessingMode extends Enumeration
+sealed trait ProcessingMode extends Enum
 
 object ProcessingMode extends Enumerated[ProcessingMode] {
 	/**

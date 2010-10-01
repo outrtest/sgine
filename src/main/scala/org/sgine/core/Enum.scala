@@ -1,6 +1,6 @@
 package org.sgine.core
 
-trait Enumeration {
+class Enum {
 	lazy val name: String = generateName()
 	lazy val ordinal = generateOrdinal()
 	lazy val enumeratedClass = generateEnumeratedClass()

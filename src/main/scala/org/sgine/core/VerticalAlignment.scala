@@ -1,6 +1,6 @@
 package org.sgine.core
 
-sealed trait VerticalAlignment extends Enumeration
+sealed trait VerticalAlignment extends Enum
 
 object VerticalAlignment extends Enumerated[VerticalAlignment] {
    case object Top extends VerticalAlignment
