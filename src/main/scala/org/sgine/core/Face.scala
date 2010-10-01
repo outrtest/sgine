@@ -1,6 +1,6 @@
 package org.sgine.core
 
-sealed trait Face extends Enumeration
+sealed class Face extends Enum
 
 object Face extends Enumerated[Face] {
 	case object None extends Face

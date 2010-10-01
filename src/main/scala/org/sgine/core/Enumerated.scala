@@ -1,6 +1,6 @@
 package org.sgine.core
 
-trait Enumerated[E <: Enumeration] extends Traversable[E] {
+trait Enumerated[E <: Enum] extends Traversable[E] {
   private var list: List[E] = _
   
   lazy val values: Seq[E] = list

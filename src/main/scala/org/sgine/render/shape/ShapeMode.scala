@@ -1,11 +1,11 @@
 package org.sgine.render.shape
 
-import org.sgine.core.Enumeration
+import org.sgine.core.Enum
 import org.sgine.core.Enumerated
 
 import org.lwjgl.opengl.GL11._
 
-sealed class ShapeMode(val value: Int) extends Enumeration
+sealed class ShapeMode(val value: Int) extends Enum
 
 object ShapeMode extends Enumerated[ShapeMode] {
 	case object Quads extends ShapeMode(GL_QUADS)

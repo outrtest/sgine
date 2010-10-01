@@ -1,9 +1,9 @@
 package org.sgine.easing
 
-import org.sgine.core.Enumeration
+import org.sgine.core.Enum
 import org.sgine.core.Enumerated
 
-sealed class Easing(val f: Function4[Double, Double, Double, Double, Double]) extends Enumeration
+sealed class Easing(val f: Function4[Double, Double, Double, Double, Double]) extends Enum
 
 object Easing extends Enumerated[Easing] {
 	type EasingFunction = Function4[Double, Double, Double, Double, Double]

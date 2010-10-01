@@ -4,6 +4,7 @@ import com.db4o.Db4o
 import com.db4o.ObjectContainer
 import com.db4o.ObjectServer
 import com.db4o.ObjectSet
+import com.db4o.config.ObjectConstructor
 import com.db4o.cs.Db4oClientServer
 import com.db4o.query.Predicate
 
@@ -45,6 +46,12 @@ class RichObjectSet[T](objectSet: ObjectSet[T]) extends Iterator[T] {
 object DB extends DBFactory {
 	def apply(file: File) = {
 		val config = Db4oClientServer.newServerConfiguration
+		config.common.optimizeNativeQueries(true)
+		
+		// Configure support for enums
+//		config.common.objectClass(classOf[org.sgine.core.Enum]).translate(EnumTranslator)
+//		config.common.objectClass(classOf[org.sgine.core.HorizontalAlignment]).translate(EnumTranslator)
+		
 		val path = file match {
 			case null => {		// Set to in-memory storage if file is null
 				config.file().storage(new com.db4o.io.PagingMemoryStorage())
@@ -53,5 +60,25 @@ object DB extends DBFactory {
 			case f => f.getAbsolutePath
 		}
 		new DB(Db4oClientServer.openServer(config, path, 0))
+	}
+}
+
+object EnumTranslator extends ObjectConstructor {
+	def onActivate(container: ObjectContainer, applicationObject: AnyRef, storedObject: AnyRef) = {
+		println("ACTIVATE! " + applicationObject + ", " + storedObject)
+	}
+	
+	def onStore(container: ObjectContainer, applicationObject: AnyRef) = {
+		println("Storing class!")
+		applicationObject.getClass
+	}
+	
+	def storedClass() = {
+		classOf[Class[org.sgine.core.Enum]]
+	}
+	
+	def onInstantiate(container: ObjectContainer, storedObject: AnyRef): AnyRef = {
+		println("instantiating: " + storedObject)
+		null
 	}
 }
