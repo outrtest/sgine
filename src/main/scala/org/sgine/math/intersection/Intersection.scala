@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2010 Sgine
  * All rights reserved.
  *
@@ -29,15 +29,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.sgine.math.intersection
 
 import simplex3d.math._
 import simplex3d.math.doublem.renamed._
 import simplex3d.math.doublem.DoubleMath._
 
-
-/*
+/**
  * @author Aleksey Nikiforov (lex)
  */
 object Main {
@@ -51,7 +49,7 @@ object Main {
   }
 }
 
-/*
+/**
  * This class defines a directed line segment starting at the origin and ending
  * at (origin + direction).
  *
