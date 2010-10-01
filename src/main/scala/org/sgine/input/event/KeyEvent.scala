@@ -16,7 +16,7 @@ abstract class KeyEvent protected(val key: Key,
 					val menuDown: Boolean,
 					val appsDown: Boolean,
 					val capsDown: Boolean,
-					listenable: Listenable = Keyboard) extends Event(listenable) {
+					listenable: Listenable) extends Event(listenable) {
 	override def toString() = key + (if (state) " Pressed" else " Released") + ". Modifiers: " + (if (controlDown) "Control " else "") + (if (shiftDown) "Shift " else "") + (if (metaDown) "Meta " else "") + (if (menuDown) "Menu " else "") + (if (appsDown) "Apps " else "") 
 }
 
@@ -29,7 +29,7 @@ class KeyPressEvent protected(key: Key,
 					menuDown: Boolean,
 					appsDown: Boolean,
 					capsDown: Boolean,
-					listenable: Listenable = Keyboard) extends KeyEvent(key, true, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable) {
+					listenable: Listenable) extends KeyEvent(key, true, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable) {
 	def retarget(target: org.sgine.event.Listenable): Event = new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, target)
 }
 
@@ -42,7 +42,7 @@ class KeyReleaseEvent protected(key: Key,
 					menuDown: Boolean,
 					appsDown: Boolean,
 					capsDown: Boolean,
-					listenable: Listenable = Keyboard) extends KeyEvent(key, false, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable) {
+					listenable: Listenable) extends KeyEvent(key, false, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable) {
 	def retarget(target: org.sgine.event.Listenable): Event = new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, target)
 }
 
@@ -56,11 +56,26 @@ object KeyEvent {
 			  metaDown: Boolean,
 			  menuDown: Boolean,
 			  appsDown: Boolean,
-			  capsDown: Boolean) = {
+			  capsDown: Boolean,
+			  listenable: Listenable = Keyboard): KeyEvent = {
 		if (state) {
-			new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown)
+			new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable)
 		} else {
-			new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown)
+			new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable)
 		}
+	}
+	
+	def apply(target: Listenable, original: KeyEvent): KeyEvent = {
+		apply(original.key,
+			  original.state,
+			  original.time,
+			  original.keyChar,
+			  original.controlDown,
+			  original.shiftDown,
+			  original.metaDown,
+			  original.menuDown,
+			  original.appsDown,
+			  original.capsDown,
+			  target)
 	}
 }

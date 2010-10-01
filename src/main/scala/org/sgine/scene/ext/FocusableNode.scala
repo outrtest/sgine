@@ -2,11 +2,12 @@ package org.sgine.scene.ext
 
 import org.sgine.core.ProcessingMode
 
+import org.sgine.event.Event
 import org.sgine.event.EventHandler
 
 import org.sgine.input.Key
 import org.sgine.input.Keyboard
-import org.sgine.input.event.KeyReleaseEvent
+import org.sgine.input.event._
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.DelegateProperty
@@ -36,6 +37,7 @@ object FocusableNode {
 	private var _focused: FocusableNode = _
 	
 	Keyboard.listeners += EventHandler(keyReleased, ProcessingMode.Blocking)
+	Keyboard.listeners += EventHandler(key, ProcessingMode.Blocking)
 	
 	def focus(n: FocusableNode) = {
 		val current = focused()
@@ -77,6 +79,23 @@ object FocusableNode {
 					}
 				}
 			}
+		}
+	}
+	
+	private def key(evt: KeyEvent) = {
+		if (!absorb(evt)) {
+			focused() match {
+				case null =>
+				case f => Event.enqueue(KeyEvent(f, evt))
+			}
+		}
+	}
+	
+	private def absorb(evt: KeyEvent) = {
+		if (evt.key == Key.Tab) {
+			true
+		} else {
+			false
 		}
 	}
 	

@@ -88,8 +88,8 @@ class Renderer extends PropertyContainer with Worker {
 	val screenWidth = new AdvancedProperty[Int](0, this)
 	val screenHeight = new AdvancedProperty[Int](0, this)
 	val aspectRatio = new AdvancedProperty[Double](0.0, this)
-	aspectRatio.bind(screenWidth, (i: Int) => screenWidth().toDouble / screenHeight().toDouble)
-	aspectRatio.bind(screenHeight, (i: Int) => screenWidth().toDouble / screenHeight().toDouble)
+	aspectRatio.bind(screenWidth, (i: Int) => Some(screenWidth().toDouble / screenHeight().toDouble))
+	aspectRatio.bind(screenHeight, (i: Int) => Some(screenWidth().toDouble / screenHeight().toDouble))
 	
 	private val resized = new java.util.concurrent.atomic.AtomicBoolean(false)
 	

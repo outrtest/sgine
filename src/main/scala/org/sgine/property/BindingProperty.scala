@@ -14,12 +14,15 @@ trait BindingProperty[T] extends ChangeableProperty[T] {
 	protected var bindings: List[Binding[T]] = Nil
 	protected var pathBindings: List[PathBinding[T]] = Nil
 	
-	private implicit val directConverter = (t: T) => t
+	private implicit val directConverter = (t: T) => Some(t)
 	
 	def bind(p: BindingProperty[T]): Unit = bind(p, directConverter)
 	
-	def bind[O](p: BindingProperty[O], converter: (O) => T): Unit = {
-		apply(converter(p()))		// Synchronize the values
+	def bind[O](p: BindingProperty[O], converter: (O) => Option[T]): Unit = {
+		converter(p()) match {
+			case Some(v) => apply(v)		// Synchronize the value
+			case None =>
+		}
 		
 		p.reverseBind(new DirectBinding(this, converter))
 	}

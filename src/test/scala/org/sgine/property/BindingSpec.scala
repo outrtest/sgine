@@ -104,7 +104,7 @@ class BindingSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "allow translation of values" in {
-		p4 bind(p1, (s: String) => s.length)
+		p4 bind(p1, (s: String) => Some(s.length))
 		p4() should equal(11)
 		p1 := "Goodbye World"
 		p4() should equal(13)
