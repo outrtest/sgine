@@ -13,6 +13,8 @@ import org.sgine.input.Mouse
 import org.sgine.input.event.MouseEvent
 import org.sgine.input.event.MouseMoveEvent
 
+import org.sgine.math.intersection.Ray
+
 import org.sgine.render.FPS
 import org.sgine.render.Renderable
 import org.sgine.render.Renderer
@@ -118,8 +120,6 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		if ((n.isInstanceOf[MatrixNode]) && (n.isInstanceOf[BoundingObject])) {
 			val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
 			
-			// Intersection code here.
-			import org.sgine.math.intersection._
 			val ray = new Ray(
 				renderer.screenToWorldCoords(Vec3d(currentMouseEvent.x, currentMouseEvent.y, -1)),
 				renderer.screenToWorldCoords(Vec3d(currentMouseEvent.x, currentMouseEvent.y, +1))
@@ -135,6 +135,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 			
 			if (!intersections.isEmpty) {
 				val v = ray.point(intersections(0))
+				// Not sure what this does, the values v.x and v.y are likely to require a transformation.
 				val evt = currentMouseEvent.retarget(c, v.x, v.y)
 				Event.enqueue(evt)
 				
