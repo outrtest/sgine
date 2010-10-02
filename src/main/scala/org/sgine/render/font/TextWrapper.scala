@@ -11,10 +11,7 @@ object WordWrap extends TextWrapper {
 		val words = text.split(" ")
 		val b = new StringBuilder()
 		for (w <- words) {
-			val word = b.length match {
-				case 0 => w
-				case _ => " " + w
-			}
+			val word = w + " "
 			val wordWidth = font.measureWidth(word, kern)
 			if ((lineWidth + wordWidth <= wrapWidth) || (b.length == 0)) {
 				b.append(word)
@@ -22,9 +19,8 @@ object WordWrap extends TextWrapper {
 			} else {
 				list = b.toString :: list
 				b.clear()
-				val trimmed = word.trim
-				b.append(trimmed)
-				lineWidth = font.measureWidth(trimmed, kern)
+				b.append(word)
+				lineWidth = font.measureWidth(word, kern)
 			}
 		}
 		if (b.length > 0) {
