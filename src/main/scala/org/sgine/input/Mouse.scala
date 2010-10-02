@@ -35,9 +35,9 @@ object Mouse extends Listenable {
 				val windowDY = dy / (renderer.canvas.getHeight / 2.0)
 
 				val nearHeight = 1.0
-				val normalizedX = nearHeight * (renderer.canvas.getWidth.asInstanceOf[Double] / renderer.canvas.getHeight.asInstanceOf[Double]) * windowX
+				val normalizedX = nearHeight * windowX
 				val normalizedY = nearHeight * windowY
-				val normalizedDX = nearHeight * (renderer.canvas.getWidth.asInstanceOf[Double] / renderer.canvas.getHeight.asInstanceOf[Double]) * windowDX
+				val normalizedDX = nearHeight * windowDX
 				val normalizedDY = nearHeight * windowDY
 				
 				val evt = MouseEvent(button, state, wheel, normalizedX, normalizedY, normalizedDX, normalizedDY)

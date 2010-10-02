@@ -134,6 +134,10 @@ class Ray(val origin: ConstVec3, val direction: ConstVec3) {
 
     ratio
   }
+  
+  override def toString() = {
+	  "Ray(" + origin + ", " + direction + ")"
+  }
 }
 
 object FrustumTestResult extends Enumeration {

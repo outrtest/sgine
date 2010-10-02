@@ -107,7 +107,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 //	}
 
 	// Coordinates are not sufficient to compute an intersection.
-	// Need new ray/model intersection that uses Ray(Vec3(evt.x, evt.y, 0), Vec3(evt.x, evt.y, 1))
+	// Need new ray/model intersection that uses Ray(Vec3(evt.x, evt.y, -1), Vec3(evt.x, evt.y, 1))
 	private def screenToModelCoords(evt: MouseEvent, n: Node) :Vec3d = {
 		val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
 		val im = inverse(c.worldMatrix())
@@ -117,26 +117,30 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	private val pickTest = (n: Node) => {
 		if ((n.isInstanceOf[MatrixNode]) && (n.isInstanceOf[BoundingObject])) {
 			val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
-			val v = screenToModelCoords(currentMouseEvent, n)
-//			renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
-			if (c.bounding().within(v)) {
+			
+			// Intersection code here.
+			import org.sgine.math.intersection._
+			val ray = new Ray(
+				renderer.screenToWorldCoords(Vec3d(currentMouseEvent.x, currentMouseEvent.y, -1)),
+				renderer.screenToWorldCoords(Vec3d(currentMouseEvent.x, currentMouseEvent.y, +1))
+			)
+			
+			val b = c.bounding()
+			// this is a hack, the bounding interface c.bound() should be reworked to return min and max.
+			val bound = Vec3d(b.width, b.height, -b.depth)/2
+			val intersections = ray.intersectObb(
+				-bound, +bound,
+				c.worldMatrix()
+			)
+			
+			if (!intersections.isEmpty) {
+				val v = ray.point(intersections(0))
 				val evt = currentMouseEvent.retarget(c, v.x, v.y)
 				Event.enqueue(evt)
 				
 				currentHits = c :: currentHits
 			}
 		}
-		// TODO: for some reason the following doesn't work!
-//		n match {
-//			case c: MatrixPropertyContainer with BoundingObject => {
-//				renderer.translateLocal(currentMouseEvent.x, currentMouseEvent.y, c.matrix(), storeVector3)
-//				if (c.bounding().within(storeVector3)) {
-//					val evt = currentMouseEvent.retarget(c, storeVector3.x, storeVector3.y)
-//					Event.enqueue(evt)
-//				}
-//			}
-//			case _ =>
-//		}
 	}
 }
 
