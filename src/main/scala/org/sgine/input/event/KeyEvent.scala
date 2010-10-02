@@ -80,6 +80,7 @@ object KeyEvent {
 			case KeyState.Pressed => new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable)
 			case KeyState.Released => new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable)
 			case KeyState.Typed => new KeyTypeEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable)
+			case _ => throw new RuntimeException("Unknown state: " + state)
 		}
 	}
 	
