@@ -7,7 +7,7 @@ import org.sgine.input.Key
 import org.sgine.input.Keyboard
 
 abstract class KeyEvent protected(val key: Key,
-					val state: Boolean,
+					val state: KeyState,
 					val time: Long,
 					val keyChar: Char,
 					val controlDown: Boolean,
@@ -16,8 +16,9 @@ abstract class KeyEvent protected(val key: Key,
 					val menuDown: Boolean,
 					val appsDown: Boolean,
 					val capsDown: Boolean,
+					val repeat: Boolean,
 					listenable: Listenable) extends Event(listenable) {
-	override def toString() = key + (if (state) " Pressed" else " Released") + ". Modifiers: " + (if (controlDown) "Control " else "") + (if (shiftDown) "Shift " else "") + (if (metaDown) "Meta " else "") + (if (menuDown) "Menu " else "") + (if (appsDown) "Apps " else "") 
+	override def toString() = key + state.name + ". Modifiers: " + (if (controlDown) "Control " else "") + (if (shiftDown) "Shift " else "") + (if (metaDown) "Meta " else "") + (if (menuDown) "Menu " else "") + (if (appsDown) "Apps " else "") 
 }
 
 class KeyPressEvent protected(key: Key,
@@ -29,8 +30,9 @@ class KeyPressEvent protected(key: Key,
 					menuDown: Boolean,
 					appsDown: Boolean,
 					capsDown: Boolean,
-					listenable: Listenable) extends KeyEvent(key, true, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable) {
-	def retarget(target: org.sgine.event.Listenable): Event = new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, target)
+					repeat: Boolean,
+					listenable: Listenable) extends KeyEvent(key, KeyState.Pressed, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable) {
+	def retarget(target: org.sgine.event.Listenable): Event = new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, target)
 }
 
 class KeyReleaseEvent protected(key: Key,
@@ -42,13 +44,28 @@ class KeyReleaseEvent protected(key: Key,
 					menuDown: Boolean,
 					appsDown: Boolean,
 					capsDown: Boolean,
-					listenable: Listenable) extends KeyEvent(key, false, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable) {
-	def retarget(target: org.sgine.event.Listenable): Event = new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, target)
+					repeat: Boolean,
+					listenable: Listenable) extends KeyEvent(key, KeyState.Released, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable) {
+	def retarget(target: org.sgine.event.Listenable): Event = new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, target)
+}
+
+class KeyTypeEvent protected(key: Key,
+					time: Long,
+					keyChar: Char,
+					controlDown: Boolean,
+					shiftDown: Boolean,
+					metaDown: Boolean,
+					menuDown: Boolean,
+					appsDown: Boolean,
+					capsDown: Boolean,
+					repeat: Boolean,
+					listenable: Listenable) extends KeyEvent(key, KeyState.Typed, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable) {
+	def retarget(target: org.sgine.event.Listenable): Event = new KeyTypeEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, target)
 }
 
 object KeyEvent {
 	def apply(key: Key,
-			  state: Boolean,
+			  state: KeyState,
 			  time: Long,
 			  keyChar: Char,
 			  controlDown: Boolean,
@@ -57,11 +74,12 @@ object KeyEvent {
 			  menuDown: Boolean,
 			  appsDown: Boolean,
 			  capsDown: Boolean,
+			  repeat: Boolean = false,
 			  listenable: Listenable = Keyboard): KeyEvent = {
-		if (state) {
-			new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable)
-		} else {
-			new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, listenable)
+		state match {
+			case KeyState.Pressed => new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable)
+			case KeyState.Released => new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable)
+			case KeyState.Typed => new KeyTypeEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable)
 		}
 	}
 	
@@ -76,6 +94,7 @@ object KeyEvent {
 			  original.menuDown,
 			  original.appsDown,
 			  original.capsDown,
+			  original.repeat,
 			  target)
 	}
 }

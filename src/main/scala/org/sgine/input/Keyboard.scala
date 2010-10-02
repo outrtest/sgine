@@ -3,6 +3,8 @@ package org.sgine.input
 import org.sgine.event.Event
 import org.sgine.event.Listenable
 
+import org.sgine.input.event.KeyState
+
 import org.sgine.log._
 
 import org.sgine.work.Updatable
@@ -35,6 +37,7 @@ object Keyboard extends Listenable with Updatable {
 		if (!GLKeyboard.isCreated) {
 			GLKeyboard.create()
 		}
+		GLKeyboard.enableRepeatEvents(true)
 		
 		initUpdatable()
 	}
@@ -45,23 +48,27 @@ object Keyboard extends Listenable with Updatable {
 		if (GLKeyboard.isCreated) {
 			try {
 				while (GLKeyboard.next()) {
-					val state = GLKeyboard.getEventKeyState
+					val keyState = GLKeyboard.getEventKeyState
+					val state = keyState match {
+						case true => KeyState.Pressed
+						case false => KeyState.Released
+					}
 					
 					// Toggle caps when caps is pressed
-					if ((GLKeyboard.getEventKey == GLKeyboard.KEY_CAPITAL) && (state)) {
+					if ((GLKeyboard.getEventKey == GLKeyboard.KEY_CAPITAL) && (keyState)) {
 						caps = !caps
 					}
 					
 					GLKeyboard.getEventKey match {
-						case KEY_LCONTROL => lControl = state
-						case KEY_RCONTROL => rControl = state
-						case KEY_LSHIFT => lShift = state
-						case KEY_RSHIFT => rShift = state
-						case KEY_LMETA => lMeta = state
-						case KEY_RMETA => rMeta = state
-						case KEY_LMENU => lMenu = state
-						case KEY_RMENU => rMenu = state
-						case KEY_APPS => apps = state
+						case KEY_LCONTROL => lControl = keyState
+						case KEY_RCONTROL => rControl = keyState
+						case KEY_LSHIFT => lShift = keyState
+						case KEY_RSHIFT => rShift = keyState
+						case KEY_LMETA => lMeta = keyState
+						case KEY_RMETA => rMeta = keyState
+						case KEY_LMENU => lMenu = keyState
+						case KEY_RMENU => rMenu = keyState
+						case KEY_APPS => apps = keyState
 						case _ =>
 					}
 					// Work-around for inability to determine caps-lock state
@@ -77,6 +84,23 @@ object Keyboard extends Listenable with Updatable {
 						val evt = event.KeyEvent(
 													key,
 													state,
+													GLKeyboard.getEventNanoseconds,
+													key.char,
+													isControlDown,
+													isShiftDown,
+													isMetaDown,
+													isMenuDown,
+													isAppsDown,
+													isCapsDown,
+													GLKeyboard.isRepeatEvent
+												 )
+						Event.enqueue(evt)
+					}
+					if (state == KeyState.Released) {
+						// Throw typed event
+						val evt = event.KeyEvent(
+													key,
+													KeyState.Typed,
 													GLKeyboard.getEventNanoseconds,
 													key.char,
 													isControlDown,
