@@ -7,6 +7,10 @@ case class Key(char: Char, code: Int, upperCase: Boolean = false, capsModified: 
 	
 	def name = _name
 	
+	def toUpperCase = Key(code, true, false)
+	
+	def toLowerCase = Key(code, false, false)
+	
 	override def toString() = name + " (" + code + ")"
 }
 

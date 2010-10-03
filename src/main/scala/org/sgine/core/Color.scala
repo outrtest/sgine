@@ -22,9 +22,9 @@ class Color private[core]() {
 	def divide(red: Double = 1.0, green: Double = 1.0, blue: Double = 1.0, alpha: Double = 1.0) = Color(_red / red, _green / green, _blue / blue, _alpha / alpha)
 	def set(red: Double = -1.0, green: Double = -1.0, blue: Double = -1.0, alpha: Double = -1.0) = {
 		val r = if (red != -1.0) red else _red
-		val g = if (green != -1.0) red else _green
-		val b = if (blue != -1.0) red else _blue
-		val a = if (alpha != -1.0) red else _alpha
+		val g = if (green != -1.0) green else _green
+		val b = if (blue != -1.0) blue else _blue
+		val a = if (alpha != -1.0) alpha else _alpha
 		Color(r, g, b, a)
 	}
 	

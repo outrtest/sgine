@@ -75,6 +75,7 @@ class Text extends ShapeComponent with FocusableNode {
 		}
 		
 		super.drawComponent()
+		selection.draw()
 		caret.draw()
 	}
 	
@@ -94,9 +95,30 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	
 	private def keyPress(evt: KeyPressEvent) = {
-		evt.key match {
-			case Key.Left => caret.position := caret.position() - 1
-			case Key.Right => caret.position := caret.position() + 1
+		evt.key.toUpperCase match {
+			case Key.Left => if (evt.shiftDown) {
+				if (selection.keyboardEnabled()) selection.end := selection.end() - 1
+			} else {
+				if (caret.keyboardEnabled()) {
+					caret.position := (caret.position() match {
+						case -1 => selection.left
+						case p => p - 1
+					})
+				}
+			}
+			case Key.Right => if (evt.shiftDown) {
+				if (selection.keyboardEnabled()) selection.end := selection.end() + 1
+			} else {
+				if (caret.keyboardEnabled()) {
+					caret.position := (caret.position() match {
+						case -1 => selection.right
+						case p => p + 1
+					})
+				}
+			}
+			case Key.A => if (evt.controlDown) {
+				selection.all()
+			}
 			case _ =>
 		}
 	}
