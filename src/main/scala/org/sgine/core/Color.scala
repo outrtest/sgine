@@ -161,7 +161,7 @@ object Color {
 	val SandyBrown = Color(0xfff4a460)
 	val SeaGreen = Color(0xff2e8b57)
 	val Seashell = Color(0xfffff5ee)
-	val SelectBlue = Color(0xff7fceff)
+	val SelectBlue = Color(0xff4394ff)
 	val Sienna = Color(0xffa0522d)
 	val SkyBlue = Color(0xff87ceeb)
 	val SlateBlue = Color(0xff6a5acd)

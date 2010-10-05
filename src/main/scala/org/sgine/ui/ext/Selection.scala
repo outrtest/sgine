@@ -19,7 +19,7 @@ class Selection(override val parent: Text) extends PropertyContainer {
 	val visible = new AdvancedProperty[Boolean](true, this)
 	val begin = new AdvancedProperty[Int](0, this, filter = filterSelection)
 	val end = new AdvancedProperty[Int](0, this, filter = filterSelection)
-	val color = new AdvancedProperty[Color](Color.HaloBlue.set(alpha = 0.5), this)
+	val color = new AdvancedProperty[Color](Color.SelectBlue.set(alpha = 0.5), this)
 	val mouseEnabled = new AdvancedProperty[Boolean](true, this)
 	val keyboardEnabled = new AdvancedProperty[Boolean](true, this)
 	

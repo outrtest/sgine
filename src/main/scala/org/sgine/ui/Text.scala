@@ -74,9 +74,10 @@ class Text extends ShapeComponent with FocusableNode {
 			validateText()
 		}
 		
-		super.drawComponent()
 		selection.draw()
 		caret.draw()
+		preColor()		// Reset color
+		super.drawComponent()
 	}
 	
 	private def invalidateText(evt: PropertyChangeEvent[_]) = {
