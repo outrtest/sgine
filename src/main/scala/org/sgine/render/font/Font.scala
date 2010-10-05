@@ -12,7 +12,7 @@ trait Font {
 	def italic: Int
 	def lineHeight: Int
 	
-	def apply(c: Int): FontChar
+	def apply(c: Int): Option[FontChar]
 	
 	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, verticalAlignment: VerticalAlignment = VerticalAlignment.Middle, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine]
 	

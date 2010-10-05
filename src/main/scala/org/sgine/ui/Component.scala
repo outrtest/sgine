@@ -142,7 +142,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	protected def preRender() = {
 	}
 	
-	private def preColor() = {
+	protected def preColor() = {
 		val wc = worldColor()
 		glColor4d(wc.red, wc.green, wc.blue, wc.alpha)
 	}

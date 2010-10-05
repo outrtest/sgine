@@ -15,7 +15,7 @@ class TextureMap[T, I] protected(val texture: Texture)(implicit creator: Functio
 		instance
 	}
 	
-	def apply(name: T) = map(name)
+	def apply(name: T) = map.get(name)
 	
 	def instances = map.values
 	

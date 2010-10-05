@@ -58,7 +58,7 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	def scaleW = _scaleW
 	def scaleH = _scaleH
 	
-	override def apply(c: Int): BitmapFontChar = super.apply(c).asInstanceOf[BitmapFontChar]
+	override def apply(c: Int) = super.apply(c).asInstanceOf[Option[BitmapFontChar]]
 	
 	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, verticalAlignment: VerticalAlignment = VerticalAlignment.Middle, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine] = {
 		val lines = wrapWidth match {
@@ -83,7 +83,10 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 			val characters = new Array[RenderedCharacter](line.length)
 			val renderedLine = RenderedLine(line, characters, this)
 			for ((c, index) <- line zipWithIndex) {
-				val fontChar = apply(c)
+				val fontChar = apply(c) match {
+					case Some(fc) => fc
+					case None => apply(' ').get
+				}
 				
 				if (kern) xOffset += fontChar.kerning(previous)
 				xOffset += fontChar.xAdvance / 2.0
@@ -123,7 +126,10 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 		
 		var previous: BitmapFontChar = null
 		for (c <- s) {
-			val current = apply(c)
+			val current = apply(c) match {
+				case Some(fc) => fc
+				case None => apply(' ').get
+			}
 			current.drawChar(previous, kern)
 			previous = current
 		}
@@ -133,7 +139,10 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 		var width = 0.0
 		var previous: BitmapFontChar = null
 		for (c <- s) {
-			val current = apply(c)
+			val current = apply(c) match {
+				case Some(fc) => fc
+				case None => apply(' ').get
+			}
 			width += current.measureCharWidth(previous, kern)
 			previous = current
 		}
@@ -275,7 +284,10 @@ object BitmapFont {
 				// Ignore
 			} else if (m.contains("kerning")) {
 				val k = FontKerning(m("first").toInt, m("amount").toInt)
-				val next = font(m("second").toInt)
+				val next = font(m("second").toInt) match {
+					case Some(fc) => fc
+					case None => font(' ').get
+				}
 				next._kernings = k :: next._kernings
 			} else {
 				throw new RuntimeException("Error parsing: " + lines(index))
@@ -290,7 +302,10 @@ object BitmapFont {
 			val m = processLine(lines(i))
 			
 			val k = FontKerning(m("first").toInt, m("amount").toInt)
-			val next = font(m("second").toInt)
+			val next = font(m("second").toInt) match {
+				case Some(fc) => fc
+				case None => font(' ').get
+			}
 			next._kernings = k :: next._kernings
 		}
 	}
