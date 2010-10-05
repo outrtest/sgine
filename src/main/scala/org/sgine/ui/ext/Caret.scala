@@ -129,8 +129,8 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	private def filterPosition(p: Int) = {
 		if (p == -1) {
 			-1
-		} else if (p > parent.text().length) {
-			parent.text().length
+		} else if (p > parent.characters().length) {
+			parent.characters().length
 		} else if (p < 0) {
 			0
 		} else {

@@ -122,8 +122,8 @@ class Selection(override val parent: Text) extends PropertyContainer {
 	
 	// Make sure the position isn't set to something unreasonable
 	private def filterSelection(p: Int) = {
-		if (p > parent.text().length) {
-			parent.text().length
+		if (p >= parent.characters().length) {
+			parent.characters().length - 1
 		} else if (p < 0) {
 			0
 		} else {

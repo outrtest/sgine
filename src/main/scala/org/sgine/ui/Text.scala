@@ -38,18 +38,10 @@ class Text extends ShapeComponent with FocusableNode {
 	val editable = new AdvancedProperty[Boolean](false, this)
 	
 	protected[ui] val lines = new AdvancedProperty[Seq[RenderedLine]](Nil, this)
-	@scala.annotation.tailrec
-	protected[ui] final def char(index: Int, lines: Seq[RenderedLine] = this.lines()): Option[RenderedCharacter] = {
-		if (lines == Nil) {
-			None
-		} else {
-			val l = lines.head
-			if (l.characters.length > index) {
-				Some(l.characters(index))
-			} else {
-				char(index - l.characters.length, lines.tail)
-			}
-		}
+	protected[ui] val characters = new AdvancedProperty[Seq[RenderedCharacter]](Nil, this)
+	protected[ui] def char(index: Int) = characters() match {
+		case t if (t.length > index) => Some(t(index))
+		case _ => None
 	}
 	
 	val selection = new Selection(this)
@@ -66,14 +58,7 @@ class Text extends ShapeComponent with FocusableNode {
 	
 	listeners += EventHandler(keyPress, ProcessingMode.Blocking)
 						
-	private val revalidateText = new java.util.concurrent.atomic.AtomicBoolean(false)
-	
 	override def drawComponent() = {
-		if (revalidateText.get) {
-			revalidateText.set(false)
-			validateText()
-		}
-		
 		selection.draw()
 		caret.draw()
 		preColor()		// Reset color
@@ -84,11 +69,15 @@ class Text extends ShapeComponent with FocusableNode {
 		if (evt.property == text) {
 			caret.position := 0
 		}
-		revalidateText.set(true)
-	}
-	
-	private def validateText() = {
+		
 		lines := font()(shape, text(), kern(), size.width(), WordWrap, verticalAlignment(), horizontalAlignment())
+		var chars: List[RenderedCharacter] = Nil
+		for (l <- lines) {
+			for (c <- l.characters) {
+				chars = c :: chars
+			}
+		}
+		characters := chars.reverse
 		font() match {
 			case bf: BitmapFont => texture = bf.texture
 			case _ =>
