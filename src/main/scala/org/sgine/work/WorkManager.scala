@@ -295,15 +295,15 @@ object WorkManager {
 	/**
 	 * The amount of time for each ProcessingThread to wait before recycling.
 	 * 
-	 * Default value: 50 milliseconds
+	 * Default value: 500 milliseconds
 	 */
-	val DEFAULT_THREAD_WAIT = 0.05
+	val DEFAULT_THREAD_WAIT = 0.5
 	/**
 	 * The default starting maximum thread count
 	 * 
-	 * Default value: 500
+	 * Default value: 100
 	 */
-	val DEFAULT_MAX_THREADS = 500
+	val DEFAULT_MAX_THREADS = 100
 	/**
 	 * The amount of time between iterations of the monitoring thread. This
 	 * is what checks to see if a work unit that has a timeout period has been

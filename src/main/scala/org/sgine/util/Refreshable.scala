@@ -37,8 +37,8 @@ trait Refreshable extends Updatable {
 	def tryRefresh() = tryRefreshInternal(true)
 	
 	private def tryRefreshInternal(manual: Boolean) = {
-		val s = if (manual) "try manual" else "automatic"
 		if (lock.tryLock()) {
+			val s = if (manual) "try manual" else "automatic"
 			try {
 				info("Began %1s refresh of %2s", args = List(s, name))
 				refreshInternal()
@@ -48,6 +48,7 @@ trait Refreshable extends Updatable {
 			}
 			true
 		} else {
+			val s = if (manual) "try manually" else "automatically"
 			info("%1s cannot be %2s refreshed as it is currently locked.", args = List(name, s))
 			false
 		}
@@ -61,6 +62,7 @@ trait Refreshable extends Updatable {
 	override def update(time: Double) = {
 		lastRefresh += time
 		if (lastRefresh > refreshRate) {
+			lastRefresh = 0.0		// Reset refresh either way
 			if (!lock.isLocked) {
 				DefaultWorkManager += attemptRefresh _
 			}
