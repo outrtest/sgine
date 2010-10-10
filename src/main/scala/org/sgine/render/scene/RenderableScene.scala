@@ -120,22 +120,23 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		if ((n.isInstanceOf[MatrixNode]) && (n.isInstanceOf[BoundingObject])) {
 			val c = n.asInstanceOf[MatrixNode with BoundingObject with Node]
 			
-			val ray = new Ray(
-				renderer.screenToWorldCoords(Vec3d(currentMouseEvent.x, currentMouseEvent.y, -1)),
-				renderer.screenToWorldCoords(Vec3d(currentMouseEvent.x, currentMouseEvent.y, +1))
+			val origin = renderer.screenToWorldCoords(Vec3d(currentMouseEvent.x, currentMouseEvent.y, -1))
+			val direction = renderer.screenToWorldCoords(Vec3d(currentMouseEvent.x, currentMouseEvent.y, +1)) - origin
+			
+			val worldToLocalMatrix = inverse(c.worldMatrix())  
+					
+			val localRay = new Ray(
+				worldToLocalMatrix.transformPoint(origin),
+				worldToLocalMatrix.transformVector(direction)
 			)
 			
 			val b = c.bounding()
 			// this is a hack, the bounding interface c.bound() should be reworked to return min and max.
 			val bound = Vec3d(b.width, b.height, -b.depth)/2
-			val intersections = ray.intersectObb(
-				-bound, +bound,
-				c.worldMatrix()
-			)
+			val intersections = localRay.intersectAabb(-bound, +bound)
 			
 			if (!intersections.isEmpty) {
-				val v = ray.point(intersections(0))
-				// Not sure what this does, the values v.x and v.y are likely to require a transformation.
+				val v = localRay.point(intersections(0))
 				val evt = currentMouseEvent.retarget(c, v.x, v.y)
 				Event.enqueue(evt)
 				
