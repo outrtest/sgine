@@ -29,7 +29,13 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	val mouseEnabled = new AdvancedProperty[Boolean](true, this)
 	val keyboardEnabled = new AdvancedProperty[Boolean](true, this)
 	
-	private var character: RenderedCharacter = null
+//	private var character: RenderedCharacter = null
+	private var caretDisplay: Boolean = _
+	private var caretX: Double = _
+	private var caretY: Double = _
+	private var caretWidth: Double = _
+	private var caretHeight: Double = _
+	
 	protected[ui] var elapsed = 0.0
 	protected[ui] var toggle = true
 	
@@ -67,29 +73,28 @@ class Caret(override val parent: Text) extends PropertyContainer {
 		}
 		positionChangeType.set(0)
 		
-		if ((shouldBeVisible) && (character != null)) {
-			drawCaret(character)
+		if ((shouldBeVisible) && (caretDisplay)) {
+			drawCaret()
 		}
 	}
 	
-	protected[ui] def drawCaret(c: RenderedCharacter) = {
+	protected[ui] def drawCaret() = {
 		if (toggle) {
 			Texture.unbind()
-				
-			val line = c.line
-			val x = c.x - (c.char.xAdvance / 2.0) - 2.0
-			val y = c.y
-			val h = line.font.lineHeight / 2.5
-			val width = this.width()
+			
+			val x = caretX
+			val y = caretY
+			val width = caretWidth
+			val height = caretHeight
 			val color = this.color()
 			
 			// TODO: handle better
 			glColor4d(color.red, color.green, color.blue, color.alpha)
 			glBegin(GL_QUADS)
-			glVertex3d(x, y - h, 0.0)
-			glVertex3d(x + width, y - h, 0.0)
-			glVertex3d(x + width, y + h, 0.0)
-			glVertex3d(x, y + h, 0.0)
+			glVertex3d(x, y - height, 0.0)
+			glVertex3d(x + width, y - height, 0.0)
+			glVertex3d(x + width, y + height, 0.0)
+			glVertex3d(x, y + height, 0.0)
 			glEnd()
 		}
 	}
@@ -109,20 +114,53 @@ class Caret(override val parent: Text) extends PropertyContainer {
 		}
 	}
 	
-	private def positionChanged(evt: PropertyChangeEvent[_]) = {
-		position() match {
-			case -1 => character = null
-			case p => parent.char(p) match {
+	protected[ui] def positionChanged(evt: PropertyChangeEvent[_]) = {
+		val position = this.position() match {
+			case -1 if (parent.editable()) => parent.selection.end()
+			case p => p
+		}
+		position match {
+			case -1 => caretDisplay = false							// Selection
+			case p if (parent.characters().length == 0) => {		// No text
+				caretDisplay = true
+				caretX = 0.0
+				caretY = 0.0
+				caretWidth = this.width()
+				caretHeight = parent.font().lineHeight / 2.5
+			}
+			case p if (p == parent.characters().length) => {		// End of line
+				val c = parent.characters().last
+				if (c.char == '\n') {
+					caretX = 0.0
+					caretY = c.y - c.line.font.lineHeight
+					caretWidth = this.width()
+					caretHeight = c.line.font.lineHeight / 2.5
+				} else {
+					caretX = c.x + (c.fontChar.xAdvance / 2.0)
+					caretY = c.y
+					caretWidth = this.width()
+					caretHeight = c.line.font.lineHeight / 2.5
+				}
+			}
+			case p => parent.char(p) match {						// Normal character (show in front of character)
 				case Some(c) => {
-					character = c
+					caretDisplay = true
+					updateCaret(c)
 					
 					// Reset blink so we see the movement
 					elapsed = 0.0
 					toggle = true
 				}
-				case None =>
+				case None => caretDisplay = false
 			}
 		}
+	}
+	
+	protected[ui] def updateCaret(c: RenderedCharacter) = {
+		caretX = c.x - (c.fontChar.xAdvance / 2.0) - 2.0
+		caretY = c.y
+		caretWidth = this.width()
+		caretHeight = c.line.font.lineHeight / 2.5
 	}
 	
 	// Make sure the position isn't set to something unreasonable

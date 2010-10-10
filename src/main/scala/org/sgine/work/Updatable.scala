@@ -65,7 +65,11 @@ object Updatable extends Function0[Unit] {
 	
 	def apply() = {
 		while (true) {
-			val shouldWait = update()
+			val shouldWait = if (useWorkManager) {
+				update()
+			} else {
+				round(1000.0 / Rate)
+			}
 			
 			if (shouldWait > 0) {
 				Thread.sleep(shouldWait)

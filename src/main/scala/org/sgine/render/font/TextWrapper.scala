@@ -8,7 +8,7 @@ object WordWrap extends TextWrapper {
 	def apply(text: String, wrapWidth: Double, font: Font, kern: Boolean) = {
 		var list: List[String] = Nil
 		var lineWidth = 0.0
-		val words = getWords(text + " ")
+		val words = getWords(text)
 		val b = new StringBuilder()
 		for (word <- words) {
 			val wordWidth = font.measureWidth(word, kern)

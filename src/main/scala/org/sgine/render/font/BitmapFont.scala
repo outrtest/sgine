@@ -91,7 +91,7 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 				if (kern) xOffset += fontChar.kerning(previous)
 				xOffset += fontChar.xAdvance / 2.0
 				
-				characters(index) = RenderedCharacter(xOffset, yOffset, fontChar, renderedLine)
+				characters(index) = RenderedCharacter(xOffset, yOffset, fontChar, c, renderedLine)
 				
 				val charYOffset = -fontChar.yOffset + ((lineHeight / 2.0) - (fontChar.quad.height / 2.0))
 				
