@@ -11,6 +11,8 @@ case class Key(char: Char, code: Int, upperCase: Boolean = false, capsModified: 
 	
 	def toLowerCase = Key(code, false, false)
 	
+	def hasChar = char.toInt > 0
+	
 	override def toString() = name + " (" + code + ")"
 }
 

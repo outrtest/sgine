@@ -83,7 +83,9 @@ class MutableShape private() extends Shape {
 				}
 			}
 			
-			renderer.update(this, vc, cc, tc, nc)
+			if ((dataVertex != null) && (this._dataVertex.get.length > 0)) {
+				renderer.update(this, vc, cc, tc, nc)
+			}
 		}
 	}
 	

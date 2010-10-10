@@ -43,6 +43,32 @@ class Text extends ShapeComponent with FocusableNode {
 		case t if (t.length > index) => Some(t(index))
 		case _ => None
 	}
+	protected[ui] def textWithout(start: Int, end: Int) = {
+		val b = new StringBuilder()
+		val characters = this.characters()
+		for (index <- 0 until characters.length) {
+			if ((index >= start) && (index <= end)) {
+				// Ignore
+			} else {
+				b.append(characters(index).char)
+			}
+		}
+		b.toString
+	}
+	protected[ui] def textInsert(position: Int, value: String) = {
+		val b = new StringBuilder()
+		val characters = this.characters()
+		var inserted = false
+		for (index <- 0 until characters.length) {
+			if (index == position) {
+				b.append(value)
+				inserted = true
+			}
+			b.append(characters(index).char)
+		}
+		if (!inserted) b.append(value)
+		b.toString
+	}
 	
 	val selection = new Selection(this)
 	val caret = new Caret(this)
@@ -57,7 +83,7 @@ class Text extends ShapeComponent with FocusableNode {
 						verticalAlignment)
 	
 	listeners += EventHandler(keyPress, ProcessingMode.Blocking)
-						
+	
 	override def drawComponent() = {
 		selection.draw()
 		caret.draw()
@@ -66,10 +92,6 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	
 	private def invalidateText(evt: PropertyChangeEvent[_]) = {
-		if (evt.property == text) {
-			caret.position := 0
-		}
-		
 		lines := font()(shape, text(), kern(), size.width(), WordWrap, verticalAlignment(), horizontalAlignment())
 		var chars: List[RenderedCharacter] = Nil
 		for (l <- lines) {
@@ -82,17 +104,25 @@ class Text extends ShapeComponent with FocusableNode {
 			case bf: BitmapFont => texture = bf.texture
 			case _ =>
 		}
+		
+		if (evt.property == text) {
+			caret.position := 0
+		}
 	}
 	
 	private def keyPress(evt: KeyPressEvent) = {
 		evt.key.toUpperCase match {
+			// Interaction / Selection
 			case Key.Left => if (evt.shiftDown) {
 				if (selection.keyboardEnabled()) selection.end := selection.end() - 1
 			} else {
 				if (caret.keyboardEnabled()) {
 					caret.position := (caret.position() match {
 						case -1 => selection.left
-						case p => p - 1
+						case p => p - 1 match {
+							case -1 => 0
+							case p => p
+						}
 					})
 				}
 			}
@@ -106,10 +136,49 @@ class Text extends ShapeComponent with FocusableNode {
 					})
 				}
 			}
-			case Key.A => if (evt.controlDown) {
-				selection.all()
+			case Key.Home => if (evt.shiftDown) {
+				if (selection.keyboardEnabled()) selection.end := 0
+			} else {
+				if (caret.keyboardEnabled()) caret.position := 0
 			}
-			case _ =>
+			case Key.End => if (evt.shiftDown) {
+				if (selection.keyboardEnabled()) selection.end := Int.MaxValue
+			} else {
+				if (caret.keyboardEnabled()) caret.position := Int.MaxValue
+			}
+			case Key.A if (evt.controlDown) => selection.all()
+			// Modification
+			case Key.Backspace => {
+				val p = caret.position()
+				if (p != -1) {
+					if (p > 0) {
+						val changed = textWithout(p - 1, p - 1)
+						text := changed
+						caret.position(p - 1, false)
+						caret.position.changed(false)
+					}
+				}
+			}
+			case Key.Delete => {
+				val p = caret.position()
+				if (p != -1) {
+					val changed = textWithout(p, p)
+					text := changed
+					caret.position(p, false)
+					caret.position.changed(false)
+				}
+			}
+			case k if (!k.hasChar) => 										// Ignore non-characters
+			case _ if (evt.controlDown) =>									// Ignore control-char
+			case _ => {														// Insert text
+				val p = caret.position()
+				if (p != -1) {
+					val changed = textInsert(p, evt.keyChar.toString)
+					text := changed
+					caret.position(p + 1, false)
+					caret.position.changed(false)
+				}
+			}
 		}
 	}
 }

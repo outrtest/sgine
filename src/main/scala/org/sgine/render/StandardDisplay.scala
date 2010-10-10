@@ -13,6 +13,8 @@ import org.sgine.render.scene.RenderableScene
 import org.sgine.scene.GeneralNodeContainer
 import org.sgine.scene.ext.ResolutionNode
 
+import org.sgine.work.Updatable
+
 /**
  * StandardDisplay provides a convenience trait that
  * can be inherited to seamlessly provide support for
@@ -44,6 +46,7 @@ trait StandardDisplay extends Listenable with Display {
 	}
 	
 	protected def initialize() = {
+		Updatable.useWorkManager = false
 		scene.setResolution(1024, 768)
 	}
 	

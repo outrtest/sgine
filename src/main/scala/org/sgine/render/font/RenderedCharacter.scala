@@ -1,5 +1,9 @@
 package org.sgine.render.font
 
-case class RenderedCharacter(x: Double, y: Double, char: FontChar, line: RenderedLine) {
-	override def toString() = "RenderedCharacter(" + x + ", " + y + ", " + char + ")"
+class RenderedCharacter(val x: Double, val y: Double, val fontChar: FontChar, val char: Char, val line: RenderedLine) {
+	override def toString() = "RenderedCharacter(" + x + ", " + y + ", " + fontChar + ")"
+}
+
+object RenderedCharacter {
+	def apply(x: Double, y: Double, fontChar: FontChar, char: Char, line: RenderedLine) = new RenderedCharacter(x, y, fontChar, char, line)
 }

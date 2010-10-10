@@ -120,12 +120,12 @@ class Renderer extends PropertyContainer with Worker {
 				}
 			}
 		} catch {
+			// TODO: use default uncaught exception handler
 			case t: Throwable => t.printStackTrace()
 		} finally {
 			keepAlive = false
 			
 			destroy()
-			System.exit(0)
 		}
 	}
 	
@@ -307,6 +307,14 @@ class Renderer extends PropertyContainer with Worker {
 	
 	private def destroy() = {
 		GLDisplay.destroy()
+		disposeContainer(canvas.getParent)
+	}
+	
+	@scala.annotation.tailrec
+	private def disposeContainer(c: java.awt.Container): Unit = c match {
+		case null =>
+		case frame: java.awt.Frame => frame.dispose()
+		case _ => disposeContainer(c.getParent)
 	}
 }
 

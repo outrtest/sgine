@@ -49,35 +49,25 @@ trait Debug extends Display {
 	}
 	
 	private def handleKey(evt: KeyPressEvent) = {
-		if (evt.key == Key.Escape) {					// Shutdown
-			Renderer().shutdown()
-		} else if (evt.keyChar.toLower == 'l') {		// Toggle lighting
-			Renderer().lighting := !Renderer().lighting()
-			info("Lighting turned " + (if (Renderer().lighting()) "on" else "off"))
-		} else if (evt.keyChar.toLower == 'f') {		// Toggle fps display
-			fps.visible := !fps.visible()
-			info("FPS %1s", args = List(if (Renderer().fullscreen()) "enabled" else "disabled"))
-		} else if (evt.keyChar.toLower == 'w') {
-			if (Renderer().polygonFront() == PolygonMode.Fill) {
-				Renderer().polygonFront := PolygonMode.Line
-				Renderer().polygonBack := PolygonMode.Line
-				info("Switched to polygon line")
-			} else {
-				Renderer().polygonFront := PolygonMode.Fill
-				Renderer().polygonBack := PolygonMode.Fill
-				info("Switched to polygon fill")
+		evt.key.toUpperCase match {
+			case Key.Escape => Renderer().shutdown()				// Shutdown
+			case Key.F1 => fps.visible := !fps.visible(); info("FPS %1s", args = List(if (Renderer().fullscreen()) "enabled" else "disabled"))
+			case Key.F2 => Renderer().lighting := !Renderer().lighting(); info("Lighting turned " + (if (Renderer().lighting()) "on" else "off"))
+			case Key.F3 => {
+				if (Renderer().polygonFront() == PolygonMode.Fill) {
+					Renderer().polygonFront := PolygonMode.Line
+					Renderer().polygonBack := PolygonMode.Line
+					info("Switched to polygon line")
+				} else {
+					Renderer().polygonFront := PolygonMode.Fill
+					Renderer().polygonBack := PolygonMode.Fill
+					info("Switched to polygon fill")
+				}
 			}
-		} else if (evt.menuDown) {
-			if (evt.key == Key.Enter) {
-				Renderer().fullscreen := !Renderer().fullscreen()
-				info("Grid %1s", args = List(if (Renderer().fullscreen()) "enabled" else "disabled"))
-			}
-		} else if (evt.keyChar.toLower == 'g') {
-			grid.visible := !grid.visible()
-			info("Grid %1s", args = List(if (grid.visible()) "enabled" else "disabled"))
-		} else if (evt.keyChar.toLower == 'v') {
-			Renderer().verticalSync := !Renderer().verticalSync()
-			info("Vertical Sync %1s", args = List(if (Renderer().verticalSync()) "enabled" else "disabled"))
+			case Key.F4 => grid.visible := !grid.visible(); info("Grid %1s", args = List(if (grid.visible()) "enabled" else "disabled"))
+			case Key.F5 => Renderer().verticalSync := !Renderer().verticalSync(); info("Vertical Sync %1s", args = List(if (Renderer().verticalSync()) "enabled" else "disabled"))
+			case Key.F12 => Renderer().fullscreen := !Renderer().fullscreen(); info("Fullscreen %1s", args = List(if (Renderer().fullscreen()) "enabled" else "disabled"))
+			case _ =>
 		}
 	}
 }

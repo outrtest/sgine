@@ -7,7 +7,7 @@ import org.sgine.render.StandardDisplay
 import org.sgine.render.RenderSettings
 
 object TestBox extends StandardDisplay with Debug {
-	override val settings = RenderSettings.High
+//	override val settings = RenderSettings.High
 	
 	def setup() = {
 		val image = new Image(Resource("puppies.jpg"))
