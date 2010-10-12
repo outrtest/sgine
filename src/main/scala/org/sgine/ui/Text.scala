@@ -35,8 +35,7 @@ class Text extends ShapeComponent with FocusableNode {
 	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
 	val text = new AdvancedProperty[String]("", this)
 	val kern = new AdvancedProperty[Boolean](true, this)
-	val horizontalAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
-	val verticalAlignment = new AdvancedProperty[VerticalAlignment](VerticalAlignment.Middle, this)
+	val textAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
 	val editable = new AdvancedProperty[Boolean](false, this)
 	
 	protected[ui] val lines = new AdvancedProperty[Seq[RenderedLine]](Nil, this)
@@ -83,8 +82,7 @@ class Text extends ShapeComponent with FocusableNode {
 						text,
 						size.width,
 						kern,
-						horizontalAlignment,
-						verticalAlignment)
+						textAlignment)
 	
 	listeners += EventHandler(keyPress, ProcessingMode.Blocking)
 	listeners += EventHandler(mousePress, ProcessingMode.Blocking)
@@ -97,7 +95,7 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	
 	private def invalidateText(evt: PropertyChangeEvent[_]) = {
-		lines := font()(shape, text(), kern(), size.width(), WordWrap, verticalAlignment(), horizontalAlignment())
+		lines := font()(shape, text(), kern(), size.width(), WordWrap, textAlignment())
 		var chars: List[RenderedCharacter] = Nil
 		var minY = 0.0
 		var maxY = 0.0
