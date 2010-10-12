@@ -86,6 +86,8 @@ class Text extends ShapeComponent with FocusableNode {
 	
 	listeners += EventHandler(keyPress, ProcessingMode.Blocking)
 	listeners += EventHandler(mousePress, ProcessingMode.Blocking)
+	listeners += EventHandler(mouseMove, ProcessingMode.Blocking)
+	listeners += EventHandler(mouseRelease, ProcessingMode.Blocking)
 	
 	override def drawComponent() = {
 		selection.draw()
@@ -145,6 +147,52 @@ class Text extends ShapeComponent with FocusableNode {
 					})
 				}
 			}
+			case Key.Up => if (evt.shiftDown) {
+				if (selection.keyboardEnabled()) {
+					val x = caret.caretX
+					val y = caret.caretY + font().lineHeight
+					val p = positionAtPoint(x, y)
+					if (selection.end() == p) {
+						selection.end := 0
+					} else {
+						selection.end := p
+					}
+				}
+			} else {
+				if (caret.keyboardEnabled()) {
+					val x = caret.caretX
+					val y = caret.caretY + font().lineHeight
+					val p = positionAtPoint(x, y)
+					if (caret.position() == p) {
+						caret.position := 0
+					} else {
+						caret.position := p
+					}
+				}
+			}
+			case Key.Down => if (evt.shiftDown) {
+				if (selection.keyboardEnabled()) {
+					val x = caret.caretX
+					val y = caret.caretY - font().lineHeight
+					val p = positionAtPoint(x, y)
+					if (selection.end() == p) {
+						selection.end := Int.MaxValue
+					} else {
+						selection.end := p
+					}
+				}
+			} else {
+				if (caret.keyboardEnabled()) {
+					val x = caret.caretX
+					val y = caret.caretY - font().lineHeight
+					val p = positionAtPoint(x, y)
+					if (caret.position() == p) {
+						caret.position := Int.MaxValue
+					} else {
+						caret.position := p
+					}
+				}
+			}
 			case Key.Home => if (evt.shiftDown) {
 				if (selection.keyboardEnabled()) selection.end := 0
 			} else {
@@ -170,7 +218,53 @@ class Text extends ShapeComponent with FocusableNode {
 		}
 	}
 	
+	def charAtPoint(x: Double, y: Double) = {
+		var nearest: RenderedCharacter = null
+		var nearestDistance = 0.0
+		for (c <- characters()) {
+			val distance = this.distance(c.x, c.y, x, y)
+			if ((nearest == null) || (distance < nearestDistance)) {
+				nearest = c
+				nearestDistance = distance
+			}
+		}
+		nearest
+	}
+	
+	def positionAtPoint(x: Double, y: Double) = {
+		val c = charAtPoint(x, y)
+		val position = characters().indexOf(c)
+		if (x - c.x > 0.0) {
+			position + 1
+		} else {
+			position
+		}
+	}
+	
+	def distance(x1: Double, y1: Double, x2: Double, y2: Double) = {		// TODO: put this in a utility object
+		val dx = x1 - x2
+		val dy = y1 - y2
+		sqrt(dx * dx + dy * dy)		// Good ol' Pythagoras
+	}
+	
+	private var pressed = false
 	private def mousePress(evt: MousePressEvent) = {
-		println("MOUSE PRES: " + evt)
+		if ((evt.button == 0) && (caret.mouseEnabled())) {
+			caret.position := positionAtPoint(evt.x, evt.y)
+			if (selection.mouseEnabled()) pressed = true
+		}
+	}
+	
+	private def mouseMove(evt: MouseMoveEvent) = {
+		if (pressed) {		// TODO: dragging functionality would be useful?
+			selection.end := positionAtPoint(evt.x, evt.y)
+		}
+	}
+	
+	private def mouseRelease(evt: MouseReleaseEvent) = {
+		if (pressed) {
+			selection.end := positionAtPoint(evt.x, evt.y)
+			pressed = false
+		}
 	}
 }
