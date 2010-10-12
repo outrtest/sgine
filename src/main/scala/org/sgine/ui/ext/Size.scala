@@ -44,4 +44,6 @@ class Size(override val parent: Component) extends PropertyContainer {
 			case _ => parent.bounding := MutableBoundingBox(width(), height(), depth())
 		}
 	}
+	
+	override def toString() = "Size(" + width() + ", " + height() + ", " + depth() + ")"
 }
