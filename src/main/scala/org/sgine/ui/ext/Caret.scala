@@ -29,12 +29,11 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	val mouseEnabled = new AdvancedProperty[Boolean](true, this)
 	val keyboardEnabled = new AdvancedProperty[Boolean](true, this)
 	
-//	private var character: RenderedCharacter = null
-	private var caretDisplay: Boolean = _
-	private var caretX: Double = _
-	private var caretY: Double = _
-	private var caretWidth: Double = _
-	private var caretHeight: Double = _
+	protected[ui] var caretDisplay: Boolean = _
+	protected[ui] var caretX: Double = _
+	protected[ui] var caretY: Double = _
+	protected[ui] var caretWidth: Double = _
+	protected[ui] var caretHeight: Double = _
 	
 	protected[ui] var elapsed = 0.0
 	protected[ui] var toggle = true
@@ -94,10 +93,10 @@ class Caret(override val parent: Text) extends PropertyContainer {
 			// TODO: handle better
 			glColor4d(color.red, color.green, color.blue, color.alpha)
 			glBegin(GL_QUADS)
-			glVertex3d(x, y - height, 0.0)
+			glVertex3d(x - width, y - height, 0.0)
 			glVertex3d(x + width, y - height, 0.0)
 			glVertex3d(x + width, y + height, 0.0)
-			glVertex3d(x, y + height, 0.0)
+			glVertex3d(x - width, y + height, 0.0)
 			glEnd()
 		}
 	}
@@ -128,7 +127,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 				caretDisplay = true
 				caretX = 0.0
 				caretY = 0.0
-				caretWidth = this.width()
+				caretWidth = this.width() / 2.0
 				caretHeight = parent.font().lineHeight / 2.5
 			}
 			case p if (p == parent.characters().length) => {		// End of line
@@ -136,12 +135,12 @@ class Caret(override val parent: Text) extends PropertyContainer {
 				if (c.char == '\n') {
 					caretX = 0.0
 					caretY = c.y - c.line.font.lineHeight
-					caretWidth = this.width()
+					caretWidth = this.width() / 2.0
 					caretHeight = c.line.font.lineHeight / 2.5
 				} else {
 					caretX = c.x + (c.fontChar.xAdvance / 2.0)
 					caretY = c.y
-					caretWidth = this.width()
+					caretWidth = this.width() / 2.0
 					caretHeight = c.line.font.lineHeight / 2.5
 				}
 			}
@@ -162,7 +161,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	protected[ui] def updateCaret(c: RenderedCharacter) = {
 		caretX = c.x - (c.fontChar.xAdvance / 2.0) - 2.0
 		caretY = c.y
-		caretWidth = this.width()
+		caretWidth = this.width() / 2.0
 		caretHeight = c.line.font.lineHeight / 2.5
 	}
 	
