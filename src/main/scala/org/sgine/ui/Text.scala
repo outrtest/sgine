@@ -43,12 +43,15 @@ class Text extends ShapeComponent with FocusableNode {
 		case t if (t.length > index) => Some(t(index))
 		case _ => None
 	}
-	protected[ui] def textWithout(start: Int, end: Int) = {
+	protected[ui] def textWithout(start: Int, end: Int, replacement: String = null) = {
 		val b = new StringBuilder()
 		val characters = this.characters()
 		for (index <- 0 until characters.length) {
 			if ((index >= start) && (index <= end)) {
 				// Ignore
+				if ((replacement != null) && (index == start)) {
+					b.append(replacement)
+				}
 			} else {
 				b.append(characters(index).char)
 			}
@@ -106,7 +109,8 @@ class Text extends ShapeComponent with FocusableNode {
 		}
 		
 		if (evt.property == text) {
-			caret.position := 0
+			caret.position(0, false)
+			caret.position.changed(false)
 		}
 	}
 	
@@ -148,36 +152,15 @@ class Text extends ShapeComponent with FocusableNode {
 			}
 			case Key.A if (evt.controlDown) => selection.all()
 			// Modification
-			case Key.Backspace => {
-				val p = caret.position()
-				if (p != -1) {
-					if (p > 0) {
-						val changed = textWithout(p - 1, p - 1)
-						text := changed
-						caret.position(p - 1, false)
-						caret.position.changed(false)
-					}
-				}
-			}
-			case Key.Delete => {
-				val p = caret.position()
-				if (p != -1) {
-					val changed = textWithout(p, p)
-					text := changed
-					caret.position(p, false)
-					caret.position.changed(false)
-				}
-			}
+			case Key.Backspace => selection.backspace()
+			case Key.Delete => selection.delete()
+			case Key.C if (evt.controlDown) => selection.copy()
+			case Key.V if (evt.controlDown) => selection.paste()
+			case Key.X if (evt.controlDown) => selection.cut()
 			case k if (!k.hasChar) => 										// Ignore non-characters
 			case _ if (evt.controlDown) =>									// Ignore control-char
 			case _ => {														// Insert text
-				val p = caret.position()
-				if (p != -1) {
-					val changed = textInsert(p, evt.keyChar.toString)
-					text := changed
-					caret.position(p + 1, false)
-					caret.position.changed(false)
-				}
+				selection.insert(evt.keyChar.toString)
 			}
 		}
 	}

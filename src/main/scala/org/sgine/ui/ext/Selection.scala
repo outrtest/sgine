@@ -1,5 +1,10 @@
 package org.sgine.ui.ext
 
+import java.awt.Toolkit
+import java.awt.datatransfer.Clipboard
+import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.StringSelection
+
 import org.lwjgl.opengl.GL11._
 
 import org.sgine.core._
@@ -35,6 +40,7 @@ class Selection(override val parent: Text) extends PropertyContainer {
 			""
 		}
 	}
+	def length = right - left
 	
 	private var l = 0
 	private var r = 0
@@ -53,6 +59,80 @@ class Selection(override val parent: Text) extends PropertyContainer {
 	def apply(begin: Int, end: Int) = {
 		this.begin := begin
 		this.end := end
+	}
+	
+	def backspace() = {
+		val p = parent.caret.position()
+		if (p != -1) {
+			if (p > 0) {
+				val changed = parent.textWithout(p - 1, p - 1)
+				parent.text := changed
+				parent.caret.position(p - 1, false)
+				parent.caret.position.changed(false)
+			}
+		} else {
+			val l = left
+			val changed = parent.textWithout(left, right - 1)
+			parent.text := changed
+			parent.caret.position(l, false)
+			parent.caret.position.changed(false)
+		}
+	}
+	
+	def delete() = {
+		val p = parent.caret.position()
+		if (p != -1) {
+			val changed = parent.textWithout(p, p)
+			parent.text := changed
+			parent.caret.position(p, false)
+			parent.caret.position.changed(false)
+		} else {
+			val l = left
+			val changed = parent.textWithout(left, right - 1)
+			parent.text := changed
+			parent.caret.position(l, false)
+			parent.caret.position.changed(false)
+		}
+	}
+	
+	def cut() = {
+		if (length > 0) {
+			copy()
+			delete()
+		}
+	}
+	
+	def copy() = {
+		val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
+		val stringSelection = new StringSelection(text)
+		clipboard.setContents(stringSelection, stringSelection)
+	}
+	
+	def paste() = {
+		val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
+		val transferable = clipboard.getContents(null)
+		if (transferable != null) {
+			if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+				val s = transferable.getTransferData(DataFlavor.stringFlavor).toString
+				insert(s)
+			}
+		}
+	}
+	
+	def insert(value: String) = {
+		val p = parent.caret.position()
+		if (p != -1) {
+			val changed = parent.textInsert(p, value)
+			parent.text := changed
+			parent.caret.position(p + value.length, false)
+			parent.caret.position.changed(false)
+		} else {
+			val l = left
+			val changed = parent.textWithout(left, right - 1, value)
+			parent.text := changed
+			parent.caret.position(l + value.length, false)
+			parent.caret.position.changed(false)
+		}
 	}
 	
 	def draw() = {
@@ -79,6 +159,13 @@ class Selection(override val parent: Text) extends PropertyContainer {
 					
 					// Update caret position
 					parent.caret.positionChanged(null)
+					
+					// Update System Selection
+					val selectionClipboard = Toolkit.getDefaultToolkit.getSystemSelection
+					if (selectionClipboard != null) {
+						val stringSelection = new StringSelection(text)
+						selectionClipboard.setContents(stringSelection, stringSelection)
+					}
 				}
 				
 				if ((l != r) && (lines != Nil)) {
