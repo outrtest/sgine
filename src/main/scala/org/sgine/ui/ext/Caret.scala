@@ -42,8 +42,8 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	Listenable.listenTo(EventHandler(updatePosition, ProcessingMode.Blocking), position, parent.selection.begin, parent.selection.end)
 	private val positionChangeType = new java.util.concurrent.atomic.AtomicInteger(0)		// 0 = no change, 1 = position, 2 = selection
 	
-	position.listeners += EventHandler(positionChanged, ProcessingMode.Blocking)
-	parent.lines.listeners += EventHandler(positionChanged, ProcessingMode.Blocking)
+	position.listeners += EventHandler(updatePosition, ProcessingMode.Blocking)
+	parent.lines.listeners += EventHandler(updatePosition, ProcessingMode.Blocking)
 	
 	def draw() = {
 		// Blink
@@ -63,11 +63,14 @@ class Caret(override val parent: Text) extends PropertyContainer {
 			case 1 if (position() != -1) => {
 				parent.selection.begin := position()
 				parent.selection.end := position()
+				positionChanged(null)
 			}
 			case 2 => if (parent.selection.begin() == parent.selection.end()) {
 				position := parent.selection.begin()
+				positionChanged(null)
 			} else {
 				position := -1
+				positionChanged(null)
 			}
 			case _ =>
 		}
