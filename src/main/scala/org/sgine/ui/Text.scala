@@ -28,6 +28,8 @@ import org.sgine.ui.ext.Selection
 
 import org.lwjgl.opengl.GL11._
 
+import scala.math._
+
 class Text extends ShapeComponent with FocusableNode {
 	val cull = _cull
 	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
@@ -80,12 +82,12 @@ class Text extends ShapeComponent with FocusableNode {
 						font,
 						text,
 						size.width,
-						size.height,
 						kern,
 						horizontalAlignment,
 						verticalAlignment)
 	
 	listeners += EventHandler(keyPress, ProcessingMode.Blocking)
+	listeners += EventHandler(mousePress, ProcessingMode.Blocking)
 	
 	override def drawComponent() = {
 		selection.draw()
@@ -97,11 +99,16 @@ class Text extends ShapeComponent with FocusableNode {
 	private def invalidateText(evt: PropertyChangeEvent[_]) = {
 		lines := font()(shape, text(), kern(), size.width(), WordWrap, verticalAlignment(), horizontalAlignment())
 		var chars: List[RenderedCharacter] = Nil
+		var minY = 0.0
+		var maxY = 0.0
 		for (l <- lines) {
 			for (c <- l.characters) {
 				chars = c :: chars
+				minY = min(c.y - (l.font.lineHeight / 2.0), minY)
+				maxY = max(c.y + (l.font.lineHeight / 2.0), maxY)
 			}
 		}
+		size.height := abs(minY) + abs(maxY)
 		characters := chars.reverse
 		font() match {
 			case bf: BitmapFont => texture = bf.texture
@@ -163,5 +170,9 @@ class Text extends ShapeComponent with FocusableNode {
 				selection.insert(evt.keyChar.toString)
 			}
 		}
+	}
+	
+	private def mousePress(evt: MousePressEvent) = {
+		println("MOUSE PRES: " + evt)
 	}
 }
