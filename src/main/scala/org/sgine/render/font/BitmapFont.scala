@@ -60,28 +60,25 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	
 	override def apply(c: Int) = super.apply(c).asInstanceOf[Option[BitmapFontChar]]
 	
-	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, verticalAlignment: VerticalAlignment = VerticalAlignment.Middle, horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine] = {
+	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, textAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine] = {
 		val lines = wrapWidth match {
 			case x if (x <= 0.0) => List(text)
 			case _ => wrapMethod(text, wrapWidth, this, kern)
 		}
 		val vertices = new ArrayBuffer[Vec3]
 		val texcoords = new ArrayBuffer[Vec2]
-		var yOffset = verticalAlignment match {
-			case VerticalAlignment.Top => lineHeight / -2.0
-			case VerticalAlignment.Bottom => (lineHeight * lines.length) - (lineHeight / 2.0)
-			case _ => (lineHeight * (lines.length - 1)) / 2.0
-		}
+		var yOffset = (lineHeight * (lines.length - 1)) / 2.0
 		var renderedLines = new Array[RenderedLine](lines.length)
 		for ((line, n) <- lines zipWithIndex) {
-			var xOffset = horizontalAlignment match {
-				case HorizontalAlignment.Left => 0.0
-				case HorizontalAlignment.Right => -measureWidth(line, kern)
-				case _ => measureWidth(line, kern) / -2.0
-			}
+			val lineWidth = measureWidth(line, kern)
 			var previous: BitmapFontChar = null
 			val characters = new Array[RenderedCharacter](line.length)
 			val renderedLine = RenderedLine(line, characters, this)
+			var xOffset = textAlignment match {
+				case HorizontalAlignment.Left => wrapWidth / -2.0
+				case HorizontalAlignment.Right => (wrapWidth / 2.0) - lineWidth
+				case _ => lineWidth / -2.0
+			}
 			for ((c, index) <- line zipWithIndex) {
 				val fontChar = apply(c) match {
 					case Some(fc) => fc

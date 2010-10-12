@@ -57,17 +57,20 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	
 	bounding := BoundingBox(0.0, 0.0, 0.0)
 	
-	private val updateActualLocationHandler = EventHandler(updateActualLocation, processingMode = ProcessingMode.Blocking)
-	location.x.listeners += updateActualLocationHandler
-	location.y.listeners += updateActualLocationHandler
-	location.z.listeners += updateActualLocationHandler
-	private val updateActualRotationHandler = EventHandler(updateActualRotation, processingMode = ProcessingMode.Blocking)
-	rotation.x.listeners += updateActualRotationHandler
-	rotation.y.listeners += updateActualRotationHandler
-	rotation.z.listeners += updateActualRotationHandler
-	
-	bounding.listeners += updateActualLocationHandler
-	
+	Listenable.listenTo(EventHandler(updateActualLocation, ProcessingMode.Blocking),
+						location.x,
+						location.x.align,
+						location.y,
+						location.y.align,
+						location.z,
+						location.z.align,
+						bounding)
+						
+	Listenable.listenTo(EventHandler(updateActualRotation, ProcessingMode.Blocking),
+						rotation.x,
+						rotation.y,
+						rotation.z)
+						
 	location.actual.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	rotation.actual.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 	scale.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
