@@ -17,30 +17,33 @@ import org.sgine.render.shape.ShapeMode
 import org.sgine.render.shape.TextureData
 import org.sgine.render.shape.VertexData
 
+import scala.collection.mutable.ArrayBuffer
+
 import scala.io.Source
 
-import scala.collection.mutable.ArrayBuffer
+import scala.math._
 
 import simplex3d.math.doublem.renamed._
 
 class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapFontChar](texture)((quad: Quad) => new BitmapFontChar(quad)) with Font {
-	private var _face: String = null
-	private var _size: Double = 0.0
-	private var _bold: Int = 0
-	private var _italic: Int = 0
-	private var _charset: String = ""
-	private var _unicode: Int = 0
-	private var _stretchH: Int = 0
-	private var _smooth: Int = 0
-	private var _aa: Int = 0
-	private var _padding: Array[Int] = new Array[Int](4)
-	private var _spacing: Array[Int] = new Array[Int](2)
-	private var _lineHeight: Int = 0
-	private var _base: Int = 0
-	private var _scaleW: Int = 0
-	private var _scaleH: Int = 0
-	private var _pages: Int = 0
-	private var _packed: Int = 0
+	private[font] var _face: String = null
+	private[font] var _style: Int = Font.Plain
+	private[font] var _size: Double = 0.0
+	private[font] var _bold: Int = 0
+	private[font] var _italic: Int = 0
+	private[font] var _charset: String = ""
+	private[font] var _unicode: Int = 0
+	private[font] var _stretchH: Int = 0
+	private[font] var _smooth: Int = 0
+	private[font] var _aa: Int = 0
+	private[font] var _padding: Array[Int] = new Array[Int](4)
+	private[font] var _spacing: Array[Int] = new Array[Int](2)
+	private[font] var _lineHeight: Int = 0
+	private[font] var _base: Int = 0
+	private[font] var _scaleW: Int = 0
+	private[font] var _scaleH: Int = 0
+	private[font] var _pages: Int = 0
+	private[font] var _packed: Int = 0
 	
 	def face = _face
 	def size = _size
@@ -163,7 +166,7 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 		font._aa = aa
 		font._padding = padding
 		font._spacing = spacing
-		font._lineHeight = lineHeight
+		font._lineHeight = round(lineHeight * scale).toInt
 		font._base = base
 		font._scaleW = scaleW
 		font._scaleH = scaleH

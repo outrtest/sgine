@@ -32,7 +32,7 @@ class BasicTexture() extends Texture {
 	}
 	
 	lazy val id = generateId()
-	var mipmap: Boolean = true
+	var mipmap = true
 	
 	private val updates = new java.util.concurrent.ArrayBlockingQueue[TextureUpdate](10)
 	

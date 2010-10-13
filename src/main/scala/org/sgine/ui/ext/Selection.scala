@@ -145,10 +145,10 @@ class Selection(override val parent: Text) extends PropertyContainer {
 					
 					c1 = parent.char(l).getOrElse(null)
 					c2 = parent.char(r).getOrElse(null)
-					val start = parent.lines.indexOf(c1.line)
+					val start = parent.lines().indexOf(c1.line)
 					val end = c2 match {
-						case null => parent.lines.length - 1
-						case c => parent.lines.indexOf(c.line)
+						case null => parent.lines().length - 1
+						case c => parent.lines().indexOf(c.line)
 					}
 					
 					lines = generateLines(start, end, Nil).reverse
@@ -178,7 +178,7 @@ class Selection(override val parent: Text) extends PropertyContainer {
 	}
 	
 	private def generateLines(current: Int, end: Int, lines: List[SelectedLine]): List[SelectedLine] = {
-		val line = parent.lines(current)
+		val line = parent.lines()(current)
 		val startChar = c1 match {
 			case null => line.characters.head
 			case c if (line == c.line) => c

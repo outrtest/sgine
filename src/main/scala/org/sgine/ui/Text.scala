@@ -32,7 +32,7 @@ import scala.math._
 
 class Text extends ShapeComponent with FocusableNode {
 	val cull = _cull
-	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
+	val font = new AdvancedProperty[Font](FontManager("Arial", 24), this)
 	val text = new AdvancedProperty[String]("", this)
 	val kern = new AdvancedProperty[Boolean](true, this)
 	val textAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
@@ -101,7 +101,7 @@ class Text extends ShapeComponent with FocusableNode {
 		var chars: List[RenderedCharacter] = Nil
 		var minY = 0.0
 		var maxY = 0.0
-		for (l <- lines) {
+		for (l <- lines()) {
 			for (c <- l.characters) {
 				chars = c :: chars
 				minY = min(c.y - (l.font.lineHeight / 2.0), minY)

@@ -15,7 +15,7 @@ import org.sgine.render.font.Font
 import org.sgine.render.font.FontManager
 
 class Label extends Component {
-	val font = new AdvancedProperty[Font](FontManager("Arial32"), this)
+	val font = new AdvancedProperty[Font](FontManager("Arial", 24), this)
 	val text = new AdvancedProperty[String]("", this)
 	
 	def this(text: String) = {

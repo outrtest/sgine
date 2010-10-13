@@ -29,13 +29,14 @@ trait Debug extends Display {
 		
 		renderer.verticalSync := false
 		
-		debugContainer.setResolution(1600, 1200)
+		debugContainer.setResolution(1024, 768)
 		scene += debugContainer
 		
-		fps.font := FontManager("lcd")
-		fps.location.x := -795.0
+		fps.font := FontManager("Digital-7", 36.0)
+		fps.color := org.sgine.core.Color.DarkGreen
+		fps.location.x := -520.0
 		fps.location.x.align := org.sgine.core.HorizontalAlignment.Left
-		fps.location.y := 595.0
+		fps.location.y := 380.0
 		fps.location.y.align := org.sgine.core.VerticalAlignment.Top
 		fps.location.z := 1.0
 		debugContainer += fps

@@ -1,7 +1,8 @@
 package org.sgine.render.font
 
+import java.awt.{Font => AWTFont}
+
 import org.sgine.core.HorizontalAlignment
-import org.sgine.core.VerticalAlignment
 
 import org.sgine.render.shape.MutableShape
 
@@ -19,4 +20,12 @@ trait Font {
 	def drawString(s: String, kern: Boolean = true): Unit
 	
 	def measureWidth(s: String, kern: Boolean = true): Double
+	
+	def derive(size: Double): Font
+}
+
+object Font {
+	val Plain = AWTFont.PLAIN
+	val Bold = AWTFont.BOLD
+	val Italic = AWTFont.ITALIC
 }
