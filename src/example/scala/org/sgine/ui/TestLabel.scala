@@ -19,7 +19,7 @@ object TestLabel {
 		scene.setResolution(1024, 768)
 		
 		val component = new Label()
-		component.font := FontManager("Arial32")
+		component.font := FontManager("Arial", 24.0)
 		component.text := "Hello World! Arial"
 		scene += component
 		

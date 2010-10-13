@@ -7,7 +7,7 @@ object XMLUtil {
 	
 	implicit def t2ua(t: Tuple2[String, String]) = new UnprefixedAttribute(t._1, t._2, Null)
 	
-	implicit def elem2eelem(e: Elem) = EnhancedElem(e)
+	implicit def node2eelem(n: Node) = EnhancedElem(n.asInstanceOf[Elem])
 	
 	def save(elem: Elem, file: java.io.File) = {
 		val s = printer.format(elem)
@@ -24,4 +24,8 @@ object XMLUtil {
 
 case class EnhancedElem (e: Elem) {
 	def +(child: Node) = Elem(e.prefix, e.label, e.attributes, e.scope, e.child ++ child: _*)
+	
+	def \@(name: String) = (e \ ("@" + name)).text
+	
+	def \!(name: String) = (e \ name).head
 }

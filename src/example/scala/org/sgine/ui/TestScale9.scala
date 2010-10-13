@@ -20,7 +20,7 @@ object TestScale9 {
 		
 		val component2 = new Label()
 		component2.location.z := 0.000001
-		component2.font := FontManager("Franklin")
+		component2.font := FontManager("Arial", 64.0)
 		component2.text := "Hello World!"
 		scene += component2
 		

@@ -2,7 +2,13 @@ package org.sgine.core
 
 import java.net.URL
 
-class Resource private(val url: URL)
+class Resource private(val url: URL) {
+	def parent = new Resource(new URL(url.toString.substring(0, url.toString.lastIndexOf("/"))))
+	
+	def child(name: String) = new Resource(new URL(url.toString + "/" + name))
+	
+	override def toString() = "Resource(" + url + ")"
+}
 
 object Resource {
 	private var paths: List[ResourcePath] = Nil

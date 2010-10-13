@@ -34,7 +34,7 @@ object WindowsTheme {
 		Theme.textInput.paddingLeft := 5.0
 		Theme.textInput.paddingRight := 5.0
 		
-		Theme.font := FontManager("Arial32")
+		Theme.font := FontManager("Arial", 24.0)
 		Theme.textColor := Color.Black
 	}
 }
