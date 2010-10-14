@@ -93,10 +93,10 @@ class Caret(override val parent: Text) extends PropertyContainer {
 			// TODO: handle better
 			glColor4d(color.red, color.green, color.blue, color.alpha)
 			glBegin(GL_QUADS)
-			glVertex3d(x - width, y - height, 0.0)
-			glVertex3d(x + width, y - height, 0.0)
-			glVertex3d(x + width, y + height, 0.0)
-			glVertex3d(x - width, y + height, 0.0)
+			glVertex3d(x - width, y - height, 0.1)
+			glVertex3d(x + width, y - height, 0.1)
+			glVertex3d(x + width, y + height, 0.1)
+			glVertex3d(x - width, y + height, 0.1)
 			glEnd()
 		}
 	}

@@ -215,10 +215,10 @@ class Selection(override val parent: Text) extends PropertyContainer {
 		
 		glColor4d(color.red, color.green, color.blue, color.alpha)
 		glBegin(GL_QUADS)
-		glVertex3d(sl.x1, sl.y1, 0.0)
-		glVertex3d(sl.x2, sl.y1, 0.0)
-		glVertex3d(sl.x2, sl.y2, 0.0)
-		glVertex3d(sl.x1, sl.y2, 0.0)
+		glVertex3d(sl.x1, sl.y1, -0.1)
+		glVertex3d(sl.x2, sl.y1, -0.1)
+		glVertex3d(sl.x2, sl.y2, -0.1)
+		glVertex3d(sl.x1, sl.y2, -0.1)
 		glEnd()
 	}
 	
