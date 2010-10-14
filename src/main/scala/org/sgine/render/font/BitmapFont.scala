@@ -46,6 +46,7 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	private[font] var _packed: Int = 0
 	
 	def face = _face
+	def style = _style
 	def size = _size
 	def bold = _bold
 	def italic = _italic

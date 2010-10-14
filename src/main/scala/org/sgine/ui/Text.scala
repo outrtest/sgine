@@ -32,7 +32,7 @@ import scala.math._
 
 class Text extends ShapeComponent with FocusableNode {
 	val cull = _cull
-	val font = new AdvancedProperty[Font](FontManager("Arial", 24), this)
+	val font = new AdvancedProperty[Font](FontManager("Arial", 36.0), this)
 	val text = new AdvancedProperty[String]("", this)
 	val kern = new AdvancedProperty[Boolean](true, this)
 	val textAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)

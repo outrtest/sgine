@@ -159,7 +159,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	}
 	
 	protected[ui] def updateCaret(c: RenderedCharacter) = {
-		caretX = c.x - (c.fontChar.xAdvance / 2.0) - 2.0
+		caretX = c.x - (c.fontChar.xAdvance / 2.0) + 0.5
 		caretY = c.y
 		caretWidth = this.width() / 2.0
 		caretHeight = c.line.font.lineHeight / 2.5

@@ -13,12 +13,9 @@ object TestText extends StandardDisplay with Debug {
 		val text = new Text()
 		text.focused := true
 		text.editable := true
-//		text.textAlignment := "right"
+		text.textAlignment := "left"
 		text.text := "Now\nis\nthe time for all good men to come to the aid of their country."
 		text.size.width := 300.0
 		scene += text
-		
-		println('A'.toInt)
-		println('y'.toInt)
 	}
 }

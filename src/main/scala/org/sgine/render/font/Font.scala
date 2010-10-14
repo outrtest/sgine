@@ -12,6 +12,7 @@ trait Font {
 	def bold: Int
 	def italic: Int
 	def lineHeight: Int
+	def style: Int
 	
 	def apply(c: Int): Option[FontChar]
 	
