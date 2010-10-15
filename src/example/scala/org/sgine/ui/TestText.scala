@@ -13,11 +13,11 @@ object TestText extends StandardDisplay with Debug {
 	def setup() = {
 		val text = new Text()
 		
-//		text.clip.enabled := true
-		text.clip.x1 := -150.0
-		text.clip.y1 := 150.0
-		text.clip.x2 := 150.0
-		text.clip.y2 := -150.0
+		text.clip.enabled := true
+		text.clip.x1 := -250.0
+		text.clip.y1 := -150.0
+		text.clip.x2 := 250.0
+		text.clip.y2 := 150.0
 		
 		text.font := FontManager("Arial", 64.0)
 		text.focused := true
@@ -29,7 +29,7 @@ object TestText extends StandardDisplay with Debug {
 		scene += text
 		
 		val box = new Box()
-		box.size(300.0, 300.0, 0.1)
+		box.size(500.0, 300.0, 0.1)
 		box.color := Color.Red
 		box.location.z := -1.0
 		scene += box
