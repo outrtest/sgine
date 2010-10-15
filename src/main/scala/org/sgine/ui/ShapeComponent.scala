@@ -18,7 +18,7 @@ import org.sgine.render.shape._
 
 import simplex3d.math.doublem.renamed._
 
-trait ShapeComponent extends Component {
+trait ShapeComponent extends Component with ClippableComponent {
 	protected val _cull = new AdvancedProperty[Face](Face.Back, this)
 	protected val _mode = new AdvancedProperty[ShapeMode](ShapeMode.Triangles, this)
 	protected val _vertices = new AdvancedProperty[Seq[Vec3]](Nil, this)
@@ -81,6 +81,10 @@ trait ShapeComponent extends Component {
 			_normal() match {
 				case null =>
 				case n => shape.normal = NormalData(n)
+			}
+			
+			if (clip.enabled()) {
+				ShapeUtilities.clip(shape, clip.x1(), clip.y1(), clip.x2(), clip.y2())
 			}
 		}
 	}

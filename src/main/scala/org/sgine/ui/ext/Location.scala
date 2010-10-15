@@ -4,8 +4,6 @@ import org.sgine.property.container.PropertyContainer
 
 import org.sgine.ui.Component
 
-import org.sgine.property.NumericProperty
-
 class Location(override val parent: Component) extends PropertyContainer {
 	val x = new HorizontalNumericProperty(0.0, this)
 	val y = new VerticalNumericProperty(0.0, this)

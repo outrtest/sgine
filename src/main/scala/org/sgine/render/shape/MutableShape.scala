@@ -22,6 +22,23 @@ class MutableShape private() extends Shape {
 	def texture_=(data: TextureData) = apply(data)
 	def normal_=(data: NormalData) = apply(data)
 	
+	def vertexLatest = _updateVertex.get match {
+		case null => vertex
+		case v => v
+	}
+	def colorLatest = _updateColor.get match {
+		case null => color
+		case c => c
+	}
+	def textureLatest = _updateTexture.get match {
+		case null => texture
+		case t => t
+	}
+	def normalLatest = _updateNormal.get match {
+		case null => normal
+		case n => n
+	}
+	
 	private val _dataVertex = new AtomicReference[VertexData]
 	private val _dataColor = new AtomicReference[ColorData]
 	private val _dataTexture = new AtomicReference[TextureData]

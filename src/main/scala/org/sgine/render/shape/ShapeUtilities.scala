@@ -9,6 +9,8 @@ import org.lwjgl.util.glu.tessellation._
 
 import scala.collection.mutable.ArrayBuffer
 
+import scala.math._
+
 import simplex3d.math.doublem._
 
 object ShapeUtilities {
@@ -80,6 +82,109 @@ object ShapeUtilities {
 		}
 		
 		data.reverse
+	}
+	
+	def clip(shape: MutableShape, x1: Double, y1: Double, x2: Double, y2: Double) = shape.mode match {
+		case ShapeMode.Quads => clipQuads(shape, x1, y1, x2, y2)
+		case _ => throw new RuntimeException("Mode not supported for clipping: " + shape.mode)
+	}
+	
+	def clipQuads(shape: MutableShape, x1: Double, y1: Double, x2: Double, y2: Double) = {
+		var vertices: List[Vec3d] = Nil
+		var texcoords: List[Vec2d] = Nil
+		
+		val vl = shape.vertexLatest
+		val tl = shape.textureLatest
+		
+		for (index <- 0 until vl.length by 4) {
+			val v1 = vl(index)
+			val v2 = vl(index + 1)
+			val v3 = vl(index + 2)
+			val v4 = vl(index + 3)
+			
+			val o1 = outside(v1, x1, y1, x2, y2)
+			val o2 = outside(v2, x1, y1, x2, y2)
+			val o3 = outside(v3, x1, y1, x2, y2)
+			val o4 = outside(v4, x1, y1, x2, y2)
+			
+			if (o1 && o2 && o3 && o4) {
+				// Excluded
+			} else if (o1 || o2 || o3 || o4) {
+				// Needs to be adjusted
+				val ow = abs(v2.x - v1.x)
+				val oh = abs(v3.y - v1.y)
+				
+				var ux1 = v1.x
+				var uy1 = v1.y
+				var ux2 = v2.x
+				var uy2 = v3.y
+				
+				if (ux1 < x1) {
+					ux1 = x1
+				}
+				if (uy1 < y2) {
+					uy1 = y2
+				}
+				if (ux2 > x2) {
+					ux2 = x2
+				}
+				if (uy2 > y1) {
+					uy2 = y1
+				}
+				
+				val ax1 = abs(v1.x - ux1)
+				val ay1 = abs(v1.y - uy1)
+				val ax2 = abs(v2.x - ux2)
+				val ay2 = abs(v3.y - uy2)
+				
+				val px1 = ax1 / ow
+				val py1 = ay1 / oh
+				val px2 = ax2 / ow
+				val py2 = ay2 / oh
+				
+				println("Difference: " + ow + "x" + oh + " - (" + ax1 + "x" + ay1 + "x" + ax2 + "x" + ay2 + ")")
+				
+				vertices = Vec3d(ux1, uy1, v1.z) :: vertices
+				vertices = Vec3d(ux2, uy1, v2.z) :: vertices
+				vertices = Vec3d(ux2, uy2, v3.z) :: vertices
+				vertices = Vec3d(ux1, uy2, v4.z) :: vertices
+				
+				if (tl != Nil) {
+					texcoords = tl(index) :: texcoords
+					texcoords = tl(index + 1) :: texcoords
+					texcoords = tl(index + 2) :: texcoords
+					texcoords = tl(index + 3) :: texcoords
+				}
+			} else {
+				vertices = v1 :: vertices
+				vertices = v2 :: vertices
+				vertices = v3 :: vertices
+				vertices = v4 :: vertices
+				
+				if (tl != Nil) {
+					texcoords = tl(index) :: texcoords
+					texcoords = tl(index + 1) :: texcoords
+					texcoords = tl(index + 2) :: texcoords
+					texcoords = tl(index + 3) :: texcoords
+				}
+			}
+		}
+		
+		vertices = vertices.reverse
+		texcoords = texcoords.reverse
+		
+		shape.vertex = VertexData(vertices)
+		shape.texture = TextureData(texcoords)
+	}
+	
+	def outside(v: Vec3d, x1: Double, y1: Double, x2: Double, y2: Double) = {
+		if ((v.x < x1) || (v.x > x2)) {
+			true
+		} else if ((v.y < y2) || (v.y > y1)) {
+			true
+		} else {
+			false
+		}
 	}
 }
 
