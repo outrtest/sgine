@@ -98,6 +98,11 @@ class Text extends ShapeComponent with FocusableNode {
 	
 	private def invalidateText(evt: PropertyChangeEvent[_]) = {
 		lines := font()(shape, text(), kern(), size.width(), WordWrap, textAlignment())
+
+		if (clip.enabled()) {
+			org.sgine.render.shape.ShapeUtilities.clip(shape, clip.x1(), clip.y1(), clip.x2(), clip.y2())
+		}
+		
 		var chars: List[RenderedCharacter] = Nil
 		var minY = 0.0
 		var maxY = 0.0
@@ -205,15 +210,17 @@ class Text extends ShapeComponent with FocusableNode {
 			}
 			case Key.A if (evt.controlDown) => selection.all()
 			// Modification
-			case Key.Backspace => selection.backspace()
-			case Key.Delete => selection.delete()
+			case Key.Backspace => if (editable()) selection.backspace()
+			case Key.Delete => if (editable()) selection.delete()
 			case Key.C if (evt.controlDown) => selection.copy()
-			case Key.V if (evt.controlDown) => selection.paste()
-			case Key.X if (evt.controlDown) => selection.cut()
+			case Key.V if (evt.controlDown) => if (editable()) selection.paste()
+			case Key.X if (evt.controlDown) => if (editable()) selection.cut()
 			case k if (!k.hasChar) => 										// Ignore non-characters
 			case _ if (evt.controlDown) =>									// Ignore control-char
 			case _ => {														// Insert text
-				selection.insert(evt.keyChar.toString)
+				if (editable()) {
+					selection.insert(evt.keyChar.toString)
+				}
 			}
 		}
 	}
