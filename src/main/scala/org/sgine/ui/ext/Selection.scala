@@ -65,14 +65,14 @@ class Selection(override val parent: Text) extends PropertyContainer {
 		val p = parent.caret.position()
 		if (p != -1) {
 			if (p > 0) {
-				val changed = parent.textWithout(p - 1, p - 1)
+				val (changed, inserted) = parent.textWithout(p - 1, p - 1)
 				parent.text := changed
 				parent.caret.position(p - 1, false)
 				parent.caret.position.changed(false)
 			}
 		} else {
 			val l = left
-			val changed = parent.textWithout(left, right - 1)
+			val (changed, inserted) = parent.textWithout(left, right - 1)
 			parent.text := changed
 			parent.caret.position(l, false)
 			parent.caret.position.changed(false)
@@ -82,13 +82,13 @@ class Selection(override val parent: Text) extends PropertyContainer {
 	def delete() = {
 		val p = parent.caret.position()
 		if (p != -1) {
-			val changed = parent.textWithout(p, p)
+			val (changed, inserted) = parent.textWithout(p, p)
 			parent.text := changed
 			parent.caret.position(p, false)
 			parent.caret.position.changed(false)
 		} else {
 			val l = left
-			val changed = parent.textWithout(left, right - 1)
+			val (changed, inserted) = parent.textWithout(left, right - 1)
 			parent.text := changed
 			parent.caret.position(l, false)
 			parent.caret.position.changed(false)
@@ -122,15 +122,15 @@ class Selection(override val parent: Text) extends PropertyContainer {
 	def insert(value: String) = {
 		val p = parent.caret.position()
 		if (p != -1) {
-			val changed = parent.textInsert(p, value)
+			val (changed, inserted) = parent.textInsert(p, value)
 			parent.text := changed
-			parent.caret.position(p + value.length, false)
+			parent.caret.position(p + inserted.length, false)
 			parent.caret.position.changed(false)
 		} else {
 			val l = left
-			val changed = parent.textWithout(left, right - 1, value)
+			val (changed, inserted) = parent.textWithout(left, right - 1, value)
 			parent.text := changed
-			parent.caret.position(l + value.length, false)
+			parent.caret.position(l + inserted.length, false)
 			parent.caret.position.changed(false)
 		}
 	}

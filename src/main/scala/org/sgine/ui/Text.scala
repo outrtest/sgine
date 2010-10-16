@@ -34,34 +34,53 @@ import scala.math._
 class Text extends ShapeComponent with FocusableNode {
 	val cull = _cull
 	val font = new AdvancedProperty[Font](FontManager("Arial", 36.0), this)
-	val text = new AdvancedProperty[String]("", this)
+	val text = new AdvancedProperty[String]("", this, filter = filterText)
 	val kern = new AdvancedProperty[Boolean](true, this)
 	val textAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
 	val editable = new AdvancedProperty[Boolean](false, this)
 	val multiline = new AdvancedProperty[Boolean](true, this)
+	val maxLength = new AdvancedProperty[Int](-1, this)
 	
 	protected[ui] val lines = new AdvancedProperty[Seq[RenderedLine]](Nil, this)
 	protected[ui] val characters = new AdvancedProperty[Seq[RenderedCharacter]](Nil, this)
+	
+	val selection = new Selection(this)
+	val caret = new Caret(this)
+	
 	protected[ui] def char(index: Int) = characters() match {
 		case t if (t.length > index) => Some(t(index))
 		case _ => None
 	}
 	protected[ui] def textWithout(start: Int, end: Int, replacement: String = null) = {
+		val length = end - start + 1
+		val value = if ((maxLength() != -1) && (replacement != null) && (this.text().length - length + replacement.length > maxLength())) {
+			val clipLength = min(replacement.length, maxLength() - this.text().length + length)
+			replacement.substring(0, clipLength)
+		} else {
+			replacement
+		}
+		
 		val b = new StringBuilder()
 		val characters = this.characters()
 		for (index <- 0 until characters.length) {
 			if ((index >= start) && (index <= end)) {
 				// Ignore
-				if ((replacement != null) && (index == start)) {
-					b.append(replacement)
+				if ((value != null) && (index == start)) {
+					b.append(value)
 				}
 			} else {
 				b.append(characters(index).char)
 			}
 		}
-		b.toString
+		b.toString -> value
 	}
-	protected[ui] def textInsert(position: Int, value: String) = {
+	protected[ui] def textInsert(position: Int, text: String) = {
+		val value = if ((maxLength() != -1) && (this.text().length + text.length > maxLength())) {
+			text.substring(0, maxLength() - this.text().length)
+		} else {
+			text
+		}
+		
 		val b = new StringBuilder()
 		val characters = this.characters()
 		var inserted = false
@@ -73,11 +92,16 @@ class Text extends ShapeComponent with FocusableNode {
 			b.append(characters(index).char)
 		}
 		if (!inserted) b.append(value)
-		b.toString
+		b.toString -> value
 	}
 	
-	val selection = new Selection(this)
-	val caret = new Caret(this)
+	private def filterText(text: String) = {
+		if ((maxLength() != -1) && (text.length > maxLength())) {
+			text.substring(0, maxLength())
+		} else {
+			text
+		}
+	}
 	
 	Listenable.listenTo(EventHandler(invalidateText, ProcessingMode.Blocking),
 						font,
@@ -221,10 +245,10 @@ class Text extends ShapeComponent with FocusableNode {
 				if (caret.keyboardEnabled()) caret.position := endPosition
 			}
 			case Key.A if (evt.controlDown) => selection.all()
+			case Key.C if (evt.controlDown) => selection.copy()
 			// Modification
 			case Key.Backspace => if (editable()) selection.backspace()
 			case Key.Delete => if (editable()) selection.delete()
-			case Key.C if (evt.controlDown) => selection.copy()
 			case Key.V if (evt.controlDown) => if (editable()) selection.paste()
 			case Key.X if (evt.controlDown) => if (editable()) selection.cut()
 			case Key.Enter if (!multiline()) => // TODO: throw ActionEvent
@@ -232,7 +256,9 @@ class Text extends ShapeComponent with FocusableNode {
 			case _ if (evt.controlDown) =>									// Ignore control-char
 			case _ => {														// Insert text
 				if (editable()) {
-					selection.insert(evt.keyChar.toString)
+					if ((maxLength() == -1) || (text().length < maxLength())) {
+						selection.insert(evt.keyChar.toString)
+					}
 				}
 			}
 		}
