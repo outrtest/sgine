@@ -4,6 +4,13 @@ trait TextWrapper {
 	def apply(text: String, wrapWidth: Double, font: Font, kern: Boolean): Seq[String]
 }
 
+object NoWrap extends TextWrapper {
+	def apply(text: String, wrapWidth: Double, font: Font, kern: Boolean) = {
+		val t = text.replaceAll("\r\n", " ").replaceAll("\r", " ")
+		List(t)
+	}
+}
+
 object WordWrap extends TextWrapper {
 	def apply(text: String, wrapWidth: Double, font: Font, kern: Boolean) = {
 		var list: List[String] = Nil

@@ -20,14 +20,15 @@ object TestScale9 {
 		
 		val component2 = new Label()
 		component2.location.z := 0.000001
-		component2.font := FontManager("Arial", 64.0)
+		component2.font := FontManager("Arial", 48.0)
 		component2.text := "Hello World!"
+		component2.color := Color.Black
 		scene += component2
 		
 		val component = new Scale9()
 		component(Resource("scale9/windows/button/hover.png"), 3.0, 3.0, 4.0, 5.0)
-		component.width := 300.0
-		component.height := 100.0
+		component.size.width := 300.0
+		component.size.height := 100.0
 		scene += component
 		
 		r.renderable := RenderableScene(scene)

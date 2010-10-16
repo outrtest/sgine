@@ -12,8 +12,7 @@ object TestText extends StandardDisplay with Debug {
 	
 	def setup() = {
 		val text = new Text()
-		
-		text.clip.enabled := true
+		text.clip.enabled := false
 		text.clip.x1 := -250.0
 		text.clip.y1 := -150.0
 		text.clip.x2 := 250.0

@@ -17,6 +17,7 @@ import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.render.font.BitmapFont
 import org.sgine.render.font.Font
 import org.sgine.render.font.FontManager
+import org.sgine.render.font.NoWrap
 import org.sgine.render.font.RenderedCharacter
 import org.sgine.render.font.RenderedLine
 import org.sgine.render.font.WordWrap
@@ -37,6 +38,7 @@ class Text extends ShapeComponent with FocusableNode {
 	val kern = new AdvancedProperty[Boolean](true, this)
 	val textAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
 	val editable = new AdvancedProperty[Boolean](false, this)
+	val multiline = new AdvancedProperty[Boolean](true, this)
 	
 	protected[ui] val lines = new AdvancedProperty[Seq[RenderedLine]](Nil, this)
 	protected[ui] val characters = new AdvancedProperty[Seq[RenderedCharacter]](Nil, this)
@@ -82,7 +84,13 @@ class Text extends ShapeComponent with FocusableNode {
 						text,
 						size.width,
 						kern,
-						textAlignment)
+						textAlignment,
+						multiline,
+						clip.enabled,
+						clip.x1,
+						clip.y1,
+						clip.x2,
+						clip.y2)
 	
 	listeners += EventHandler(keyPress, ProcessingMode.Blocking)
 	listeners += EventHandler(mousePress, ProcessingMode.Blocking)
@@ -97,7 +105,11 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	
 	private def invalidateText(evt: PropertyChangeEvent[_]) = {
-		lines := font()(shape, text(), kern(), size.width(), WordWrap, textAlignment())
+		val wrapMethod = multiline() match {
+			case true => WordWrap
+			case false => NoWrap
+		}
+		lines := font()(shape, text(), kern(), size.width(), wrapMethod, textAlignment())
 
 		if (clip.enabled()) {
 			org.sgine.render.shape.ShapeUtilities.clip(shape, clip.x1(), clip.y1(), clip.x2(), clip.y2())
@@ -199,14 +211,14 @@ class Text extends ShapeComponent with FocusableNode {
 				}
 			}
 			case Key.Home => if (evt.shiftDown) {
-				if (selection.keyboardEnabled()) selection.end := 0
+				if (selection.keyboardEnabled()) selection.end := homePosition
 			} else {
-				if (caret.keyboardEnabled()) caret.position := 0
+				if (caret.keyboardEnabled()) caret.position := homePosition
 			}
 			case Key.End => if (evt.shiftDown) {
-				if (selection.keyboardEnabled()) selection.end := Int.MaxValue
+				if (selection.keyboardEnabled()) selection.end := endPosition
 			} else {
-				if (caret.keyboardEnabled()) caret.position := Int.MaxValue
+				if (caret.keyboardEnabled()) caret.position := endPosition
 			}
 			case Key.A if (evt.controlDown) => selection.all()
 			// Modification
@@ -215,6 +227,7 @@ class Text extends ShapeComponent with FocusableNode {
 			case Key.C if (evt.controlDown) => selection.copy()
 			case Key.V if (evt.controlDown) => if (editable()) selection.paste()
 			case Key.X if (evt.controlDown) => if (editable()) selection.cut()
+			case Key.Enter if (!multiline()) => // TODO: throw ActionEvent
 			case k if (!k.hasChar) => 										// Ignore non-characters
 			case _ if (evt.controlDown) =>									// Ignore control-char
 			case _ => {														// Insert text
@@ -222,6 +235,48 @@ class Text extends ShapeComponent with FocusableNode {
 					selection.insert(evt.keyChar.toString)
 				}
 			}
+		}
+	}
+	
+	def homePosition = {
+		val p = selection.end()
+		val homeCharacter = char(p) match {
+			case Some(c) => c.line.characters.head
+			case None => if (p > 0) {
+				char(p - 1) match {
+					case Some(c) => c.line.characters.head
+					case None => null
+				}
+			}
+		}
+		if (homeCharacter != null) {
+			characters().indexOf(homeCharacter)
+		} else {
+			0
+		}
+	}
+	
+	def endPosition = {
+		val p = selection.end()
+		val endCharacter = char(p) match {
+			case Some(c) => c.line.characters.last
+			case None => if (p > 0) {
+				char(p - 1) match {
+					case Some(c) => c.line.characters.last
+					case None => null
+				}
+			} else {
+				null
+			}
+		}
+		if (endCharacter != null) {
+			if (endCharacter.line == lines().last) {
+				characters().length
+			} else {
+				characters().indexOf(endCharacter)
+			}
+		} else {
+			0
 		}
 	}
 	

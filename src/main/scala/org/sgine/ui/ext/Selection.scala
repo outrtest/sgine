@@ -195,18 +195,30 @@ class Selection(override val parent: Text) extends PropertyContainer {
 			case c if (line == c.line) => c
 			case c => line.characters.last
 		}
-		val x1 = startChar.x - (startChar.fontChar.xAdvance / 2.0) - 2.0
-		val y1 = startChar.y - (startChar.line.font.lineHeight / 2.0)
-		val x2 = eol match {
+		var x1 = startChar.x - (startChar.fontChar.xAdvance / 2.0) - 2.0
+		var y1 = startChar.y - (startChar.line.font.lineHeight / 2.0)
+		var x2 = eol match {
 			case true => endChar.x + (endChar.fontChar.xAdvance / 2.0)
 			case false => endChar.x - (endChar.fontChar.xAdvance / 2.0)
 		}
-		val y2 = startChar.y + (startChar.line.font.lineHeight / 2.0)
+		var y2 = startChar.y + (startChar.line.font.lineHeight / 2.0)
+		
+		if (parent.clip.enabled()) {
+			x1 = max(x1, parent.clip.x1())
+			y1 = max(y1, parent.clip.y1())
+			x2 = min(x2, parent.clip.x2())
+			y2 = min(y2, parent.clip.y2())
+		}
 		val sl = new SelectedLine(x1, y1, x2, y2)
-		if (current == end) {
+		val updated = if ((x1 < x2) && (y1 < y2)) {
 			sl :: lines
 		} else {
-			generateLines(current + 1, end, sl :: lines)
+			lines
+		}
+		if (current == end) {
+			updated
+		} else {
+			generateLines(current + 1, end, updated)
 		}
 	}
 	

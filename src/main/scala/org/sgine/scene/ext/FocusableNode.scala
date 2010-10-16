@@ -18,8 +18,11 @@ import org.sgine.scene.Node
 trait FocusableNode extends Node {
 	val focused = new AdvancedProperty[Boolean](false, this)
 	val focusable = new AdvancedProperty[Boolean](true, this)
+	val mouseFocusable = new AdvancedProperty[Boolean](true, this)
 	
 	focused.listeners += EventHandler(focusChanged, ProcessingMode.Blocking)
+	
+	listeners += EventHandler(mousePressed, ProcessingMode.Blocking)
 	
 	private def focusChanged(evt: PropertyChangeEvent[Boolean]) = {
 		if (evt.newValue) {
@@ -28,9 +31,16 @@ trait FocusableNode extends Node {
 			FocusableNode.blur(this)
 		}
 	}
+	
+	private def mousePressed(evt: MousePressEvent) = {
+		if (mouseFocusable()) {
+			focused := true
+		}
+	}
 }
 
 object FocusableNode {
+	// TODO: convert to FocusManager instead since multiple contexts could exist
 	val focused = new DelegateProperty[FocusableNode](() => _focused)
 	val enabled = new AdvancedProperty[Boolean](true)
 	
@@ -98,8 +108,6 @@ object FocusableNode {
 			false
 		}
 	}
-	
-//	private val focusableTest = (n: Node) => n.isInstanceOf[FocusableNode]
 	
 	private val focusableTest = (n: Node) => n match {
 		case fn: FocusableNode => fn.focusable()

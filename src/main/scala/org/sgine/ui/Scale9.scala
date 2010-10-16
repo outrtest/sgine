@@ -28,12 +28,12 @@ class Scale9 extends CompositeComponent {
 	private var x1, y1, x2, y2: Double = _
 	
 	val source = new AdvancedProperty[Resource](null, this)
-	val width = new AdvancedProperty[Double](0.0, this)
-	val height = new AdvancedProperty[Double](0.0, this)
+//	val width = new AdvancedProperty[Double](0.0, this)
+//	val height = new AdvancedProperty[Double](0.0, this)
 	
 	source.listeners += EventHandler(updateResource, ProcessingMode.Blocking)
-	width.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
-	height.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
+	size.width.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
+	size.height.listeners += EventHandler(updateSize, ProcessingMode.Blocking)
 	
 	this += topLeft
 	this += top
@@ -112,11 +112,11 @@ class Scale9 extends CompositeComponent {
 		bri.height := t.height - y2
 		
 		// Update width and height if zero
-		if (width() == 0.0) {
-			width := t.width
+		if (size.width() == 0.0) {
+			size.width := t.width
 		}
-		if (height() == 0.0) {
-			height := t.height
+		if (size.height() == 0.0) {
+			size.height := t.height
 		}
 		
 		// Spread to width
@@ -124,7 +124,7 @@ class Scale9 extends CompositeComponent {
 	}
 	
 	private def updateSize(evt: Event = null) = {
-		if ((width() > 0.0) && (height() > 0.0) && (topLeft.quad.texture() != null)) {
+		if ((size.width() > 0.0) && (size.height() > 0.0) && (topLeft.quad.texture() != null)) {
 			val textureWidth = topLeft.quad.texture().width
 			val textureHeight = topLeft.quad.texture().height
 			val preWidth = x1 + (textureWidth - x2)
@@ -133,8 +133,8 @@ class Scale9 extends CompositeComponent {
 			val wide = textureWidth - preWidth
 			val tall = textureHeight - preHeight
 			
-			val destWidth = width() - preWidth
-			val destHeight = height() - preHeight
+			val destWidth = size.width() - preWidth
+			val destHeight = size.height() - preHeight
 			
 			val scaleWidth = destWidth / wide
 			val scaleHeight = destHeight / tall
@@ -165,9 +165,6 @@ class Scale9 extends CompositeComponent {
 			bottomLeft.location(posX1, posY3)
 			bottom.location(posX2, posY3)
 			bottomRight.location(posX3, posY3)
-			
-			size.width := width()
-			size.height := height()
 		}
 	}
 	
