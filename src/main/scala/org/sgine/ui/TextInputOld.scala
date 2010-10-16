@@ -1,6 +1,7 @@
 package org.sgine.ui
 
 import org.sgine.core.Color
+import org.sgine.core.HorizontalAlignment
 import org.sgine.core.ProcessingMode
 import org.sgine.core.Resource
 
@@ -14,22 +15,22 @@ import org.sgine.render.font.Font
 
 import org.sgine.ui.style.Theme
 
-class TextInput extends SkinnableComponent {
-	protected val normalResource = TextInput.normalSkin()
-	protected val hoverResource = TextInput.hoverSkin()
-	protected val focusedResource = TextInput.focusedSkin()
+class TextInputOld extends SkinnableComponent {
+	protected val normalResource = TextInputOld.normalSkin()
+	protected val hoverResource = TextInputOld.hoverSkin()
+	protected val focusedResource = TextInputOld.focusedSkin()
 	
-	protected val face = new Label()
+	protected val face = createFace()
 	
-	protected val skinX1 = TextInput.skinX1()
-	protected val skinY1 = TextInput.skinY1()
-	protected val skinX2 = TextInput.skinX2()
-	protected val skinY2 = TextInput.skinY2()
+	protected val skinX1 = TextInputOld.skinX1()
+	protected val skinY1 = TextInputOld.skinY1()
+	protected val skinX2 = TextInputOld.skinX2()
+	protected val skinY2 = TextInputOld.skinY2()
 	
-	padding.top := TextInput.paddingTop()
-	padding.bottom := TextInput.paddingBottom()
-	padding.left := TextInput.paddingLeft()
-	padding.right := TextInput.paddingRight()
+	padding.top := TextInputOld.paddingTop()
+	padding.bottom := TextInputOld.paddingBottom()
+	padding.left := TextInputOld.paddingLeft()
+	padding.right := TextInputOld.paddingRight()
 	
 	val font = new AdvancedProperty[Font](null, this, null, Theme.font)
 	val text = new AdvancedProperty[String]("", this)
@@ -42,6 +43,16 @@ class TextInput extends SkinnableComponent {
 		this()
 		
 		this.text := text
+	}
+	
+	protected def createFace() = {
+		val t = new Text()
+		
+		t.multiline := false
+		t.textAlignment := HorizontalAlignment.Left
+		t.size.width := 200.0
+		
+		t
 	}
 	
 	protected def configureBindings() = {
@@ -57,7 +68,7 @@ class TextInput extends SkinnableComponent {
 	}
 }
 
-object TextInput extends PropertyContainer with ListenableProperty[Int] {
+object TextInputOld extends PropertyContainer with ListenableProperty[Int] {
 	val normalSkin = new AdvancedProperty[Resource](null, this)
 	val hoverSkin = new AdvancedProperty[Resource](null, this)
 	val focusedSkin = new AdvancedProperty[Resource](null, this)

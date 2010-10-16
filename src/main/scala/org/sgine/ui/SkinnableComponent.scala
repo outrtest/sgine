@@ -38,6 +38,10 @@ trait SkinnableComponent extends CompositeComponent with FocusableNode {
 		this += face
 		
 		skin(normalResource, skinX1, skinY1, skinX2, skinY2)
+		
+		skin.size.width bind size.width
+		skin.size.height bind size.height
+		
 		updateState()
 	}
 	
@@ -47,7 +51,7 @@ trait SkinnableComponent extends CompositeComponent with FocusableNode {
 	}
 	
 	private def configureListeners() = {
-		bounding.listeners += EventHandler(boundingChanged, ProcessingMode.Blocking)
+//		bounding.listeners += EventHandler(boundingChanged, ProcessingMode.Blocking)
 		
 		// Mouse states for button
 		listeners += EventHandler(mouseOver, ProcessingMode.Blocking)
@@ -59,10 +63,10 @@ trait SkinnableComponent extends CompositeComponent with FocusableNode {
 		focused.listeners += EventHandler(focusChange, ProcessingMode.Blocking)
 	}
 	
-	private def boundingChanged(evt: PropertyChangeEvent[_]) = {
-		skin.width := size.width()
-		skin.height := size.height()
-	}
+//	private def boundingChanged(evt: PropertyChangeEvent[_]) = {
+//		skin.width := size.width()
+//		skin.height := size.height()
+//	}
 	
 	protected def updateBounding(evt: PropertyChangeEvent[_] = null) = {
 		face match {
@@ -82,7 +86,6 @@ trait SkinnableComponent extends CompositeComponent with FocusableNode {
 	}
 	
 	private def mouseDown(evt: MousePressEvent) = {
-		focused := true
 		updateState()
 	}
 	

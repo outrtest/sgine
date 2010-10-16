@@ -20,6 +20,8 @@ import org.sgine.scene.ext.FocusableNode
 
 import org.sgine.ui.Text
 
+import scala.math._
+
 class Caret(override val parent: Text) extends PropertyContainer {
 	val visible = new AdvancedProperty[Boolean](true, this)
 	val position = new AdvancedProperty[Int](0, this, filter = filterPosition)
@@ -90,14 +92,28 @@ class Caret(override val parent: Text) extends PropertyContainer {
 			val height = caretHeight
 			val color = this.color()
 			
-			// TODO: handle better
-			glColor4d(color.red, color.green, color.blue, color.alpha)
-			glBegin(GL_QUADS)
-			glVertex3d(x - width, y - height, 0.1)
-			glVertex3d(x + width, y - height, 0.1)
-			glVertex3d(x + width, y + height, 0.1)
-			glVertex3d(x - width, y + height, 0.1)
-			glEnd()
+			var x1 = x - width
+			var y1 = y - height
+			var x2 = x + width
+			var y2 = y + height
+			
+			if (parent.clip.enabled()) {
+				x1 = max(x1, parent.clip.x1())
+				y1 = max(y1, parent.clip.y1())
+				x2 = min(x2, parent.clip.x2())
+				y2 = min(y2, parent.clip.y2())
+			}
+			
+			if ((x1 < x2) && (y1 < y2)) {
+				// TODO: handle better
+				glColor4d(color.red, color.green, color.blue, color.alpha)
+				glBegin(GL_QUADS)
+				glVertex3d(x1, y1, 0.1)
+				glVertex3d(x2, y1, 0.1)
+				glVertex3d(x2, y2, 0.1)
+				glVertex3d(x1, y2, 0.1)
+				glEnd()
+			}
 		}
 	}
 	
