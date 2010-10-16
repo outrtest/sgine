@@ -55,6 +55,9 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	val padding = new Padding(this)
 	val size = new Size(this)
 	
+	private lazy val _predrawables = predrawables
+	private lazy val _postdrawables = postdrawables
+	
 	bounding := BoundingBox(0.0, 0.0, 0.0)
 	
 	Listenable.listenTo(EventHandler(updateActualLocation, ProcessingMode.Blocking),
@@ -110,13 +113,17 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		_renderer.loadMatrix(worldMatrix())
 		
 		preColor()
+		_predrawables.foreach(draw)
 		drawComponent()
+		_postdrawables.foreach(draw)
 		
 		// Enable lighting if enabled
 		if ((!lighting()) && (Renderer().lighting())) {
 			glEnable(GL_LIGHTING)
 		}
 	}
+	
+	private val draw = (f: Function0[_]) => f()
 	
 	override def shouldRender = {
 		if (!visible()) {
@@ -149,6 +156,10 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		val wc = worldColor()
 		glColor4d(wc.red, wc.green, wc.blue, wc.alpha)
 	}
+	
+	protected def predrawables: List[Function0[_]] = Nil
+	
+	protected def postdrawables: List[Function0[_]] = Nil
 	
 	def drawComponent()
 	

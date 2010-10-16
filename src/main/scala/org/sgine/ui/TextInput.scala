@@ -9,7 +9,7 @@ import org.sgine.property.container.PropertyContainer
 
 import org.sgine.ui.style.Theme
 
-class TextInput extends Text {
+class TextInput extends Text with SkinnedComponent {
 	configureText()
 	
 	protected def configureText() = {

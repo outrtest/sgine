@@ -1,11 +1,12 @@
 package org.sgine.ui
 
+import org.sgine.render.Debug
 import org.sgine.render.StandardDisplay
 
 import org.sgine.scene.Node
 import org.sgine.scene.ext.FocusableNode
 
-object TestFocus extends StandardDisplay {
+object TestFocus extends StandardDisplay with Debug {
 	def setup() = {
 		val component1 = new Button()
 		component1.text := "Button 1"
