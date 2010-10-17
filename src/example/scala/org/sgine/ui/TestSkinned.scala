@@ -26,18 +26,20 @@ object TestSkinned extends StandardDisplay with Debug {
 		
 		scene += skinned
 		
-		skinned.size.width.animator = new LinearNumericAnimator(350.0)
-		skinned.size.height.animator = new LinearNumericAnimator(350.0)
+		skinned.size.width.animator = new LinearNumericAnimator(500.0)
+		skinned.size.height.animator = new LinearNumericAnimator(500.0)
 		
 		DefaultWorkManager += (() => {
-			skinned.size.width := 1000.0
-			skinned.size.width.waitForTarget()
-			skinned.size.height := 200.0
-			skinned.size.height.waitForTarget()
-			skinned.size.width := 500.0
-			skinned.size.width.waitForTarget()
-			skinned.size.height := 500.0
-			skinned.size.height.waitForTarget()
+			while (true) {
+				skinned.size.width := 1000.0
+				skinned.size.width.waitForTarget()
+				skinned.size.height := 200.0
+				skinned.size.height.waitForTarget()
+				skinned.size.width := 500.0
+				skinned.size.width.waitForTarget()
+				skinned.size.height := 500.0
+				skinned.size.height.waitForTarget()
+			}
 		})
 	}
 }

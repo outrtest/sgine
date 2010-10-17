@@ -20,13 +20,16 @@ import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.render.{Renderer, RenderImage, TextureManager, TexturedQuad}
 
 import org.sgine.ui.event.ImageUpdateEvent
+import org.sgine.ui.style._
 
 class Image extends Component {
 	protected[ui] val quad = new TexturedQuad()
 	
 	val source = new AdvancedProperty[Resource](null, this)
-	val cull = new AdvancedProperty[Face](Face.Back, this)
+	val cull = new AdvancedProperty[Face](null, this, dependency = style.cull)
 	quad.cull bind cull
+	
+	override def style: ImageStyle = Image.style
 	
 	private val imageDirty = new AtomicBoolean(false)
 	
@@ -71,4 +74,16 @@ class Image extends Component {
 	}
 	
 	override def toString() = "Image(source = " + source() + ")"
+}
+
+object Image {
+	val style = new ImageStyle {
+		val alpha = StyleProperty(0.0, this, Component.style.alpha)
+		val color = StyleProperty(null, this, Component.style.color)
+		val cull = StyleProperty[Face](Face.Back, this)
+	}
+}
+
+trait ImageStyle extends ComponentStyle {
+	val cull: StyleProperty[Face]
 }

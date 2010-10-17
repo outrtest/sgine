@@ -3,15 +3,18 @@ package org.sgine.property
 import org.sgine.property.container.PropertyContainer
 
 trait NamedProperty[T] extends Property[T] {
-	protected def _name: String
+	private var _name: String = _
 	
-	final def name = {
+	def name = {
 		val defaultName = "Unnamed"
 		_name match {
 			case null => {
 				this match {
 					case lp: ListenableProperty[_] => lp.parent match {
-						case pc: PropertyContainer => pc.name(this)
+						case pc: PropertyContainer => {
+							_name = pc.name(this)
+							_name
+						}
 						case _ => defaultName
 					}
 					case _ => defaultName
