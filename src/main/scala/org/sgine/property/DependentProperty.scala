@@ -11,7 +11,7 @@ import org.sgine.property.event.PropertyChangeEvent
 import scala.reflect.Manifest
 
 trait DependentProperty[T] extends Property[T] {
-	protected def dependency: Property[T]
+	protected def dependency: Function0[T]
 	
 	private val initialized = new AtomicBoolean(false)
 	private var firstChanged = false

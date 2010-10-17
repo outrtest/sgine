@@ -20,7 +20,7 @@ import org.sgine.scene.NodeContainer
 import org.sgine.work.Updatable
 
 trait ColorNode extends Node with Updatable {
-	val color = new AdvancedProperty[Color](Color.White, this) with ModifiableProperty[Color]
+	val color = new AdvancedProperty[Color](null, this) with ModifiableProperty[Color]
 	val alpha = new AdvancedProperty[Double](1.0, this)
 	val worldColor = new ImmutableProperty[MutableColor](MutableColor(Color.White))
 	
