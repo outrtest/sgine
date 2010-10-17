@@ -21,12 +21,12 @@ import org.sgine.ui.Text
 import scala.math._
 
 class Selection(override val parent: Text) extends PropertyContainer {
-	val visible = new AdvancedProperty[Boolean](true, this)
+	val visible = new AdvancedProperty[Boolean](false, this, dependency = parent.style.selection.visible)
 	val begin = new AdvancedProperty[Int](0, this, filter = filterSelection)
 	val end = new AdvancedProperty[Int](0, this, filter = filterSelection)
-	val color = new AdvancedProperty[Color](Color.SelectBlue.set(alpha = 0.5), this)
-	val mouseEnabled = new AdvancedProperty[Boolean](true, this)
-	val keyboardEnabled = new AdvancedProperty[Boolean](true, this)
+	val color = new AdvancedProperty[Color](null, this, dependency = parent.style.selection.color)
+	val mouseEnabled = new AdvancedProperty[Boolean](false, this, dependency = parent.style.selection.mouseEnabled)
+	val keyboardEnabled = new AdvancedProperty[Boolean](false, this, dependency = parent.style.selection.keyboardEnabled)
 	def text = {
 		val l = left
 		val r = right

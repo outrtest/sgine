@@ -46,8 +46,10 @@ trait DependentProperty[T] extends Property[T] {
 		this
 	}
 	
-	def useDependency() = {
-		modified = false
+	def useDependency = !modified
+	
+	def useDependency_=(b: Boolean) = {
+		modified = !b
 	}
 	
 	private def dependencyChanged(evt: PropertyChangeEvent[T]) = {

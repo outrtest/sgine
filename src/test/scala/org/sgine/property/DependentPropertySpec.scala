@@ -41,7 +41,7 @@ class DependentPropertySpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "reference the dependency again after useDependency() is called" in {
-		p2.useDependency()
+		p2.useDependency = true
 		p2() should equal (p1())
 	}
 }

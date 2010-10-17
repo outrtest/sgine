@@ -12,7 +12,6 @@ object TestText extends StandardDisplay with Debug {
 	
 	def setup() = {
 		val text = new Text()
-		text.maxLength := 20
 		
 		text.clip.enabled := false
 		text.clip.x1 := -250.0
@@ -22,17 +21,12 @@ object TestText extends StandardDisplay with Debug {
 		
 		text.font := FontManager("Arial", 64.0)
 		text.focused := true
+		text.multiline := true
 		text.editable := true
 		text.textAlignment := "left"
-		text.text := "Now\nis\nthe time for all good men to come to the aid of their country."
+		text.text := "Now is the time for all good men to come to the aid of their country.\n\nCharles E. Weller"
 		text.size.width := 600.0
-//		text.rotation.y := 1.0
+		text.rotation.y := 1.0
 		scene += text
-		
-		val box = new Box()
-		box.size(500.0, 300.0, 0.1)
-		box.color := Color.Red
-		box.location.z := -1.0
-		scene += box
 	}
 }

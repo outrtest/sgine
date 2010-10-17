@@ -84,9 +84,9 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		
 		// Init styles
 		alpha.dependency = style.alpha
-		alpha.useDependency()
+		alpha.useDependency = true
 		color.dependency = style.color
-		color.useDependency()
+		color.useDependency = true
 	}
 	
 	private var firstRender = true

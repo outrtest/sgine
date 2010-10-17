@@ -18,7 +18,7 @@ import org.sgine.work.Updatable
 
 class NumericProperty(protected implicit val manifest: Manifest[Double]) extends Property[Double] with Listenable with Animatable[Double] {
 	private var _name: String = _
-	private var _dependency: Property[Double] = _
+	private var _dependency: Function0[Double] = _
 	
 	lazy val name = determineName
 	def dependency = _dependency
@@ -66,13 +66,13 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 		_name = name
 	}
 	
-	def this(value: Double, parent: Listenable, name: String, dependency: Property[Double]) = {
+	def this(value: Double, parent: Listenable, name: String, dependency: Function0[Double]) = {
 		this(value, parent, name)
 		
 		_dependency = dependency
 	}
 	
-	def this(value: Double, parent: Listenable, name: String, dependency: Property[Double], listener: EventHandler) = {
+	def this(value: Double, parent: Listenable, name: String, dependency: Function0[Double], listener: EventHandler) = {
 		this(value, parent, name, dependency)
 
 		listeners += listener
