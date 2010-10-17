@@ -23,13 +23,13 @@ import org.sgine.ui.Text
 import scala.math._
 
 class Caret(override val parent: Text) extends PropertyContainer {
-	val visible = new AdvancedProperty[Boolean](true, this)
+	val visible = new AdvancedProperty[Boolean](false, this, dependency = parent.style.caret.visible)
 	val position = new AdvancedProperty[Int](0, this, filter = filterPosition)
-	val width = new AdvancedProperty[Double](1.0, this)
-	val color = new AdvancedProperty[Color](Color.White, this)
-	val rate = new NumericProperty(0.5, this)
-	val mouseEnabled = new AdvancedProperty[Boolean](true, this)
-	val keyboardEnabled = new AdvancedProperty[Boolean](true, this)
+	val width = new AdvancedProperty[Double](0.0, this, dependency = parent.style.caret.width)
+	val color = new AdvancedProperty[Color](null, this, dependency = parent.style.caret.color)
+	val rate = new NumericProperty(0.0, this, null, parent.style.caret.rate)
+	val mouseEnabled = new AdvancedProperty[Boolean](false, this, dependency = parent.style.caret.mouseEnabled)
+	val keyboardEnabled = new AdvancedProperty[Boolean](false, this, dependency = parent.style.caret.keyboardEnabled)
 	
 	protected[ui] var caretDisplay: Boolean = _
 	protected[ui] var caretX: Double = _
