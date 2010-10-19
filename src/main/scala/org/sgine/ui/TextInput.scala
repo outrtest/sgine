@@ -16,7 +16,20 @@ class TextInput extends Text with SkinnedComponent {
 	configureText()
 	
 	protected def configureText() = {
-		size.width := 200.0
+		size.width := 300.0
+		
+		font := org.sgine.render.font.FontManager("Arial", 24.0)
+		val scale9 = new org.sgine.ui.skin.Scale9Skin()
+		scale9(Resource("scale9/windows/textinput/focused.png"), 2.0, 2.0, 3.0, 3.0)
+		skin := scale9
+		textColor := org.sgine.core.Color.Blue
+		caret.color := org.sgine.core.Color.Black
+		clip.enabled := true
+		clip.x1 := -150.0
+		clip.x2 := 150.0
+		clip.y1 := -200.0
+		clip.y2 := 200.0
+		padding(5.0)
 	}
 }
 
@@ -28,6 +41,7 @@ object TextInput {
 		val font = StyleProperty(null, this, Text.style.font)
 		val text = StyleProperty(null, this, Text.style.text)
 		val kern = StyleProperty(true, this, Text.style.kern)
+		val textColor = StyleProperty(null, this, Text.style.textColor)
 		val textAlignment = StyleProperty(null, this, Text.style.textAlignment)
 		val editable = StyleProperty(false, this, Text.style.editable)
 		val multiline = StyleProperty(false, this, Text.style.multiline)

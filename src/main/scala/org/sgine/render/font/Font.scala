@@ -16,7 +16,13 @@ trait Font {
 	
 	def apply(c: Int): Option[FontChar]
 	
-	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, textAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine]
+	def apply(shape: MutableShape,
+			  text: String,
+			  kern: Boolean = true,
+			  wrapWidth: Double = -1.0,
+			  wrapMethod: TextWrapper = WordWrap,
+			  textAlignment: HorizontalAlignment = HorizontalAlignment.Center
+			 ): Seq[RenderedLine]
 	
 	def drawString(s: String, kern: Boolean = true): Unit
 	

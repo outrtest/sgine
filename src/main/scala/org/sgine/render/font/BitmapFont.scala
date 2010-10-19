@@ -64,7 +64,12 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	
 	override def apply(c: Int) = super.apply(c).asInstanceOf[Option[BitmapFontChar]]
 	
-	def apply(shape: MutableShape, text: String, kern: Boolean = true, wrapWidth: Double = -1.0, wrapMethod: TextWrapper = WordWrap, textAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine] = {
+	def apply(shape: MutableShape,
+			  text: String,
+			  kern: Boolean = true,
+			  wrapWidth: Double = -1.0,
+			  wrapMethod: TextWrapper = WordWrap,
+			  textAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine] = {
 		val lines = wrapWidth match {
 			case x if (x <= 0.0) => List(text)
 			case _ => wrapMethod(text, wrapWidth, this, kern)

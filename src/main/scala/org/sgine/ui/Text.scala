@@ -35,6 +35,7 @@ class Text extends ShapeComponent with FocusableNode {
 	val font = new AdvancedProperty[Font](null, this, dependency = style.font)
 	val text = new AdvancedProperty[String](null, this, filter = filterText, dependency = style.text)
 	val kern = new AdvancedProperty[Boolean](false, this, dependency = style.kern)
+	val textColor = new AdvancedProperty[Color](null, this, dependency = style.textColor)
 	val textAlignment = new AdvancedProperty[HorizontalAlignment](null, this, dependency = style.textAlignment)
 	val editable = new AdvancedProperty[Boolean](false, this, dependency = style.editable)
 	val multiline = new AdvancedProperty[Boolean](false, this, dependency = style.multiline)
@@ -126,7 +127,7 @@ class Text extends ShapeComponent with FocusableNode {
 	override def drawComponent() = {
 		selection.draw()
 		caret.draw()
-		preColor()		// Reset color
+		multColor(textColor())
 		super.drawComponent()
 	}
 	
@@ -367,6 +368,7 @@ object Text {
 		val font = StyleProperty(FontManager("Arial", 36.0), this)
 		val text = StyleProperty("", this)
 		val kern = StyleProperty(true, this)
+		val textColor = StyleProperty(Color.White, this)
 		val textAlignment = StyleProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
 		val editable = StyleProperty(false, this)
 		val multiline = StyleProperty(false, this)
@@ -393,6 +395,7 @@ trait TextStyle extends ComponentStyle {
 	val font: StyleProperty[Font]
 	val text: StyleProperty[String]
 	val kern: StyleProperty[Boolean]
+	val textColor: StyleProperty[Color]
 	val textAlignment: StyleProperty[HorizontalAlignment]
 	val editable: StyleProperty[Boolean]
 	val multiline: StyleProperty[Boolean]
