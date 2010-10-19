@@ -7,10 +7,15 @@ import javax.imageio.ImageIO
 import org.sgine.core.Resource
 
 object TextureManager {
-	private var map = Map.empty[URL, Texture]
+	private val mapLocal = new ThreadLocal[Map[URL, Texture]]
 	
 	def apply(resource: Resource) = {
 		synchronized {
+			val map = mapLocal.get match {
+				case null => Map.empty[URL, Texture]
+				case m => m
+			}
+			
 			if (map.contains(resource.url)) {
 				map(resource.url)
 			} else {
@@ -18,7 +23,7 @@ object TextureManager {
 					case s: String if (s.toLowerCase.endsWith(".png")) => TextureUtil.loadPNG(resource.url)
 					case _ => TextureUtil(ImageIO.read(resource.url))
 				}
-				map += resource.url -> t
+				mapLocal.set(map + (resource.url -> t))
 				t
 			}
 		}

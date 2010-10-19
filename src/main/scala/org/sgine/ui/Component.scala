@@ -164,8 +164,13 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	}
 	
 	protected def preColor() = {
+		val c = worldColor()
+		glColor4d(c.red, c.green, c.blue, c.alpha)
+	}
+	
+	protected def multColor(c: Color) = {
 		val wc = worldColor()
-		glColor4d(wc.red, wc.green, wc.blue, wc.alpha)
+		glColor4d(wc.red * c.red, wc.green * c.green, wc.blue * c.blue, wc.alpha * c.alpha)
 	}
 	
 	protected def predrawables: List[Function0[_]] = Nil
