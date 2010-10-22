@@ -64,64 +64,74 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	
 	override def apply(c: Int) = super.apply(c).asInstanceOf[Option[BitmapFontChar]]
 	
-	def apply(shape: MutableShape,
-			  text: String,
-			  kern: Boolean = true,
-			  wrapWidth: Double = -1.0,
-			  wrapMethod: TextWrapper = WordWrap,
-			  textAlignment: HorizontalAlignment = HorizontalAlignment.Center): Seq[RenderedLine] = {
-		val lines = wrapWidth match {
-			case x if (x <= 0.0) => List(text)
-			case _ => wrapMethod(text, wrapWidth, this, kern)
+	def generate(builder: TextBuilder) = {
+		val lines = builder.wrapWidth match {
+			case x if (x <= 0.0) => List(builder.text)
+			case _ => builder.wrapMethod(builder.text, builder.wrapWidth, this, builder.kern)
 		}
 		val vertices = new ArrayBuffer[Vec3]
 		val texcoords = new ArrayBuffer[Vec2]
-		var yOffset = (lineHeight * (lines.length - 1)) / 2.0
-		var renderedLines = new Array[RenderedLine](lines.length)
-		for ((line, n) <- lines zipWithIndex) {
-			val lineWidth = measureWidth(line, kern)
-			var previous: BitmapFontChar = null
-			val characters = new Array[RenderedCharacter](line.length)
-			val renderedLine = RenderedLine(line, characters, this)
-			var xOffset = textAlignment match {
-				case HorizontalAlignment.Left => wrapWidth / -2.0
-				case HorizontalAlignment.Right => (wrapWidth / 2.0) - lineWidth
-				case _ => lineWidth / -2.0
-			}
-			for ((c, index) <- line zipWithIndex) {
-				val fontChar = apply(c) match {
-					case Some(fc) => fc
-					case None => apply(' ').get
-				}
-				
-				if (kern) xOffset += fontChar.kerning(previous)
-				xOffset += fontChar.xAdvance / 2.0
-				
-				characters(index) = RenderedCharacter(xOffset, yOffset, fontChar, c, renderedLine)
-				
-				val charYOffset = -fontChar.yOffset + ((lineHeight / 2.0) - (fontChar.quad.height / 2.0))
-				
-				for (v <- fontChar.quad.vertex.data) {
-					val vec = Vec3(v.x + xOffset, v.y + yOffset + charYOffset, v.z)
-					vertices += vec
-				}
-				for (v <- fontChar.quad.texture.data) {
-					texcoords += v
-				}
-				
-				xOffset += fontChar.xAdvance / 2.0
-				
-				previous = fontChar
-			}
-			yOffset -= lineHeight
-			
-			renderedLines(n) = renderedLine
-		}
-		shape.mode = ShapeMode.Quads
-		shape.vertex = VertexData(vertices)
-		shape.texture = TextureData(texcoords)
+		var yOffset = (lineHeight * (lines.length - 1)) / 2.0		// Adjust so vertically centered
 		
-		renderedLines
+		yOffset -= builder.yOffset
+		
+		generateLines(lines, yOffset, builder)
+	}
+	
+	@scala.annotation.tailrec
+	private def generateLines(lines: List[String], yOffset: Double, builder: TextBuilder): Unit = {
+		val line = lines.head
+		val lineWidth = measureWidth(line, builder.kern)
+		var xOffset = builder.textAlignment match {
+			case HorizontalAlignment.Left => builder.wrapWidth / -2.0
+			case HorizontalAlignment.Right => (builder.wrapWidth / 2.0) - lineWidth
+			case _ => lineWidth / -2.0
+		}
+		
+		xOffset += builder.xOffset
+		
+		val chars = new ArrayBuffer[RenderedCharacter]
+		val rl = RenderedLine(line, chars, this)
+		generateChars(line, xOffset, yOffset, null, rl, chars, builder)
+		builder.lines += rl									// Add RenderedLine
+		
+		if (lines.tail != Nil) {
+			generateLines(lines.tail, yOffset - lineHeight, builder)
+		}
+	}
+	
+	@scala.annotation.tailrec
+	private def generateChars(line: String, xOffset: Double, yOffset: Double, previous: FontChar, rl: RenderedLine, chars: ArrayBuffer[RenderedCharacter], builder: TextBuilder): Unit = {
+		if (line.length > 0) {
+			val char = line.head
+			val fontChar = apply(char) match {
+				case Some(fc) => fc
+				case None => apply(' ').get
+			}
+			var x = xOffset
+			if (builder.kern) x += fontChar.kerning(previous)
+			x += fontChar.xAdvance / 2.0
+			
+			val rc = RenderedCharacter(x, yOffset, fontChar, char, rl)
+			chars += rc
+			
+			val charYOffset = -fontChar.yOffset + ((lineHeight / 2.0) - (fontChar.quad.height / 2.0))
+			val y = yOffset + charYOffset
+			
+			for (v <- fontChar.quad.vertex.data) {
+				val vec = Vec3(v.x + x, v.y + y, v.z)
+				builder.vertices += vec
+			}
+			for (v <- fontChar.quad.texture.data) {
+				builder.texcoords += v
+			}
+			
+			x += fontChar.xAdvance / 2.0
+			
+			if (line.tail != Nil) {
+				generateChars(line.tail, x, yOffset, fontChar, rl, chars, builder)
+			}
+		}
 	}
 	
 	def drawString(s: String, kern: Boolean = true) = {

@@ -22,7 +22,7 @@ class TextInput extends Text with SkinnedComponent {
 		val scale9 = new org.sgine.ui.skin.Scale9Skin()
 		scale9(Resource("scale9/windows/textinput/focused.png"), 2.0, 2.0, 3.0, 3.0)
 		skin := scale9
-		textColor := org.sgine.core.Color.Blue
+		textColor := org.sgine.core.Color.Black
 		caret.color := org.sgine.core.Color.Black
 		clip.enabled := true
 		clip.x1 := -150.0

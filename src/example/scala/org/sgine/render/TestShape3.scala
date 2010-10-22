@@ -22,7 +22,16 @@ object TestShape3 {
 		val m = Mat3x4 translate(Vec3(0, 0, -1000.0))
 		val s = MutableShape()
 		val franklinFont = BitmapFont("Franklin")
-		franklinFont(s, "Now is the time for all good men to come to the aid of their country.", true, 400.0, textAlignment = HorizontalAlignment.Right)
+		
+		val text = "Now is the time for all good men to come to the aid of their country."
+		val tb = new TextBuilder()
+		tb.text = text
+		tb.kern = true
+		tb.wrapWidth = 400.0
+		tb.textAlignment = HorizontalAlignment.Right
+		franklinFont.generate(tb)
+		tb(s)
+//		franklinFont(s, "Now is the time for all good men to come to the aid of their country.", true, 400.0, textAlignment = HorizontalAlignment.Right)
 		val fps = FPS(1.0)
 		
 		r.renderable := RenderList(MatrixState(m), () => franklinFont.texture.bind(), s, fps)

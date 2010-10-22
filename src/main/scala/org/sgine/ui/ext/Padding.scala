@@ -24,4 +24,6 @@ class Padding(override val parent: Component) extends PropertyContainer {
 		this.bottom := bottom
 		this.right := right
 	}
+	
+	override def toString() = "Padding(top: " + top() + ", left: " + left() + ", bottom: " + bottom() + ", right: " + right() + ")"
 }

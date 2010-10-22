@@ -18,6 +18,7 @@ import org.sgine.render.font.FontManager
 import org.sgine.render.font.NoWrap
 import org.sgine.render.font.RenderedCharacter
 import org.sgine.render.font.RenderedLine
+import org.sgine.render.font.TextBuilder
 import org.sgine.render.font.WordWrap
 
 import org.sgine.scene.ext.FocusableNode
@@ -41,6 +42,7 @@ class Text extends ShapeComponent with FocusableNode {
 	val multiline = new AdvancedProperty[Boolean](false, this, dependency = style.multiline)
 	val maxLength = new AdvancedProperty[Int](0, this, dependency = style.maxLength)
 	
+	protected[ui] val textBuilder = new TextBuilder()
 	protected[ui] val lines = new AdvancedProperty[Seq[RenderedLine]](Nil, this)
 	protected[ui] val characters = new AdvancedProperty[Seq[RenderedCharacter]](Nil, this)
 	
@@ -136,23 +138,37 @@ class Text extends ShapeComponent with FocusableNode {
 			case true => WordWrap
 			case false => NoWrap
 		}
-		lines := font()(shape, text(), kern(), size.width(), wrapMethod, textAlignment())
+		
+		// Reset TextBuilder values
+		textBuilder.vertices.clear()
+		textBuilder.texcoords.clear()
+		textBuilder.lines.clear()
+		
+		textBuilder.text = text()
+		textBuilder.kern = kern()
+		textBuilder.wrapWidth = size.width()
+		textBuilder.wrapMethod = wrapMethod
+		textBuilder.textAlignment = textAlignment()
+		textBuilder.xOffset = padding.left()
+		font().generate(textBuilder)
+		lines := textBuilder.lines
+		textBuilder(shape)
 
 		if (clip.enabled()) {
 			org.sgine.render.shape.ShapeUtilities.clip(shape, clip.x1(), clip.y1(), clip.x2(), clip.y2())
 		}
 		
 		var chars: List[RenderedCharacter] = Nil
-		var minY = 0.0
-		var maxY = 0.0
 		for (l <- lines()) {
 			for (c <- l.characters) {
 				chars = c :: chars
-				minY = min(c.y - (l.font.lineHeight / 2.0), minY)
-				maxY = max(c.y + (l.font.lineHeight / 2.0), maxY)
 			}
 		}
-		size.height := abs(minY) + abs(maxY)
+		val height = textBuilder.lines.length match {
+			case 0 => font().lineHeight
+			case n => font().lineHeight * n
+		}
+		size.height := height + padding.bottom() + padding.top()
 		characters := chars.reverse
 		font() match {
 			case bf: BitmapFont => texture = bf.texture
