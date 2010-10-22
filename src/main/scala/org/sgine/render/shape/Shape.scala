@@ -7,6 +7,8 @@ import org.sgine.render.shape.renderer.ShapeRenderer
 import org.sgine.render.shape.renderer.lwjgl.LWJGLImmediateModeShapeRenderer
 import org.sgine.render.shape.renderer.lwjgl.LWJGLVBOShapeRenderer
 
+import scala.math._
+
 trait Shape extends Function0[Unit] {
 	protected lazy val renderer = createRenderer()
 	
@@ -17,6 +19,11 @@ trait Shape extends Function0[Unit] {
 	def color: ColorData
 	def texture: TextureData
 	def normal: NormalData
+	
+	def vertexLatest = vertex
+	def colorLatest = color
+	def textureLatest = texture
+	def normalLatest = normal
 	
 	def hasColor = color != null
 	def hasTexture = texture != null
@@ -65,6 +72,26 @@ trait Shape extends Function0[Unit] {
 		if (dataVertex != null) {
 			renderer.render(this)
 		}
+	}
+	
+	def size = {
+		var minX = 0.0
+		var maxX = 0.0
+		var minY = 0.0
+		var maxY = 0.0
+		var minZ = 0.0
+		var maxZ = 0.0
+		
+		for (v <- vertexLatest.data) {
+			minX = min(v.x, minX)
+			maxX = max(v.x, maxX)
+			minY = min(v.y, minY)
+			maxY = max(v.y, maxY)
+			minZ = min(v.z, minZ)
+			maxZ = max(v.z, maxZ)
+		}
+		
+		simplex3d.math.doublem.renamed.Vec3(maxX - minX, maxY - minY, maxZ - minZ)
 	}
 }
 

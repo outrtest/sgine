@@ -1,6 +1,8 @@
 package org.sgine.render.font
 
-class RenderedCharacter(val x: Double, val y: Double, val fontChar: FontChar, val char: Char, val line: RenderedLine) {
+class RenderedCharacter(val x: Double, val y: Double, val fontChar: FontChar, val char: Char, protected[font] var _line: RenderedLine) {
+	def line = _line
+	
 	override def toString() = "RenderedCharacter(" + x + ", " + y + ", " + fontChar + ")"
 }
 

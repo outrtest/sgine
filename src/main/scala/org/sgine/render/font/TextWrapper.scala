@@ -1,7 +1,7 @@
 package org.sgine.render.font
 
 trait TextWrapper {
-	def apply(text: String, wrapWidth: Double, font: Font, kern: Boolean): Seq[String]
+	def apply(text: String, wrapWidth: Double, font: Font, kern: Boolean): List[String]
 }
 
 object NoWrap extends TextWrapper {

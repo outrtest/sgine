@@ -7,6 +7,8 @@ import org.sgine.core._
 import org.sgine.render.shape.renderer._
 import org.sgine.render.shape.renderer.lwjgl._
 
+import scala.math._
+
 class MutableShape private() extends Shape {
 	var cull: Face = Face.None
 	var material: Material = Material.AmbientAndDiffuse
@@ -22,19 +24,19 @@ class MutableShape private() extends Shape {
 	def texture_=(data: TextureData) = apply(data)
 	def normal_=(data: NormalData) = apply(data)
 	
-	def vertexLatest = _updateVertex.get match {
+	override def vertexLatest = _updateVertex.get match {
 		case null => vertex
 		case v => v
 	}
-	def colorLatest = _updateColor.get match {
+	override def colorLatest = _updateColor.get match {
 		case null => color
 		case c => c
 	}
-	def textureLatest = _updateTexture.get match {
+	override def textureLatest = _updateTexture.get match {
 		case null => texture
 		case t => t
 	}
-	def normalLatest = _updateNormal.get match {
+	override def normalLatest = _updateNormal.get match {
 		case null => normal
 		case n => n
 	}
