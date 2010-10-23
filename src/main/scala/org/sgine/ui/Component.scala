@@ -47,6 +47,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	val visible = new AdvancedProperty[Boolean](true, this, filter = visibilityFilter, filterType = FilterType.Retrieve)
 	val renderer = new DelegateProperty(() => _renderer)
 	val lighting = new AdvancedProperty[Boolean](true, this)
+	val mouseState = new AdvancedProperty[Boolean](false, this)
 	
 	val location = new Location(this)
 	val rotation = new Rotation(this)

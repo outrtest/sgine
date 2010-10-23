@@ -56,6 +56,10 @@ class Selection(override val parent: Text) extends PropertyContainer {
 		end := Int.MaxValue
 	}
 	
+	def none() = {
+		begin := end()
+	}
+	
 	def apply(begin: Int, end: Int) = {
 		this.begin := begin
 		this.end := end

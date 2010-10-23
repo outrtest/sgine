@@ -64,7 +64,6 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	}
 	
 	private val renderItem = (n: Node) => {
-//		n.asInstanceOf[Renderable].render(renderer)
 		Renderable.render(renderer, n.asInstanceOf[Renderable])
 	}
 	
@@ -73,7 +72,6 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	}
 	
 	private var currentMouseEvent: MouseEvent = null
-	//private val storeVector3 = Vec3d(0)
 	private def mouseEvent(evt: MouseEvent) = {
 		currentMouseEvent = evt
 		currentHits = Nil
@@ -86,6 +84,10 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 				if (!hits.contains(n)) {		// MouseOver
 					val v = screenToModelCoords(move, n)
 					val e = MouseEvent(-2, false, 0, v.x, v.y, move.deltaX, move.deltaY, n)
+					n match {
+						case c: org.sgine.ui.Component => c.mouseState := true
+						case _ =>
+					}
 					Event.enqueue(e)
 				}
 			}
@@ -93,6 +95,10 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 				if (!currentHits.contains(n)) {	// MouseOut
 					val v = screenToModelCoords(move, n)
 					val e = MouseEvent(-3, false, 0, v.x, v.y, move.deltaX, move.deltaY, n)
+					n match {
+						case c: org.sgine.ui.Component => c.mouseState := false
+						case _ =>
+					}
 					Event.enqueue(e)
 				}
 			}

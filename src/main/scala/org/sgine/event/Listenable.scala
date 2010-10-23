@@ -67,6 +67,17 @@ trait Listenable {
 		}
 		event
 	}
+	
+	def onEvent[E <: Event](processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: E => Boolean = null)(action: => Unit)(implicit manifest: Manifest[E]) = {
+		val handler = EventHandler(new Function1[E, Unit] {
+			def apply(evt: E) = {
+				action
+			}
+		}, processingMode, recursion, filter)
+		listeners += handler
+		
+		handler
+	}
 }
 
 object Listenable {

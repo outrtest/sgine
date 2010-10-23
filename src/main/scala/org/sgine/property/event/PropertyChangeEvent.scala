@@ -24,6 +24,8 @@ class PropertyChangeEvent[T] protected() extends Event(null) with PathElementCha
 //	def cache = PropertyChangeEventCache
 	
 	def retarget(target: org.sgine.event.Listenable): Event = PropertyChangeEvent(target.asInstanceOf[ListenableProperty[T]], oldValue, newValue, adjusting)
+	
+	override def toString() = "PropertyChangeEvent(" + property + ": " + oldValue + " - " + newValue + ")"
 }
 
 object PropertyChangeEvent {

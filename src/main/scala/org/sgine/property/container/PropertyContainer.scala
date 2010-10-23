@@ -184,6 +184,8 @@ trait PropertyContainer extends Listenable with Property[Int] {
 			super.resolveElement(key)
 		}
 	}
+	
+	override def toString() = "PropertyContainer(" + getClass.getSimpleName + ")"
 }
 
 object PropertyContainer {

@@ -32,5 +32,5 @@ object Recursion extends Enumerated[Recursion] {
 	 */
 	case object All extends Recursion
 
-        Recursion(None, Parents, Children, All)
+    Recursion(None, Parents, Children, All)
 }
