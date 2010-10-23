@@ -118,7 +118,9 @@ class Text extends ShapeComponent with FocusableNode {
 						clip.x1,
 						clip.y1,
 						clip.x2,
-						clip.y2)
+						clip.y2,
+						clip.adjustX,
+						clip.adjustY)
 	
 	cull.dependency = style.cull
 	listeners += EventHandler(keyPress, ProcessingMode.Blocking)
@@ -150,6 +152,10 @@ class Text extends ShapeComponent with FocusableNode {
 		textBuilder.wrapMethod = wrapMethod
 		textBuilder.textAlignment = textAlignment()
 		textBuilder.xOffset = padding.left()
+		if (clip.enabled()) {
+			textBuilder.xOffset += clip.adjustX()
+			textBuilder.yOffset += clip.adjustY()
+		}
 		font().generate(textBuilder)
 		lines := textBuilder.lines
 		textBuilder(shape)
