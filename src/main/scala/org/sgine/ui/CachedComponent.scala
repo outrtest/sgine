@@ -29,13 +29,11 @@ trait CachedComponent extends Component with BoundingObject {
 	protected var texture: StreamingTexture = _
 	protected var image = new RenderImage()
 	
-	private var initialized = false
+	override def initComponent() = {
+		configureListeners()
+	}
 	
 	def drawComponent() = {
-		if (!initialized) {
-			configureListeners()
-			initialized = true
-		}
 		image()
 	}
 	

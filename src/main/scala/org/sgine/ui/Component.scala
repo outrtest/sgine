@@ -48,6 +48,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	val renderer = new DelegateProperty(() => _renderer)
 	val lighting = new AdvancedProperty[Boolean](true, this)
 	val mouseState = new AdvancedProperty[Boolean](false, this)
+	val initialized = new AdvancedProperty[Boolean](false, this)
 	
 	val location = new Location(this)
 	val rotation = new Rotation(this)
@@ -90,8 +91,6 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		color.useDependency = true
 	}
 	
-	private var firstRender = true
-	
 	private var _renderer: Renderer = _
 	
 	private def visibilityFilter(v: Boolean): Boolean = {
@@ -111,9 +110,10 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	
 	def render(renderer: Renderer) = {
 		_renderer = renderer
-		if (firstRender) {
-			firstRender = false
+		if (!initialized()) {
 			initComponent()
+			
+			initialized := true
 		}
 		
 		// Disable lighting if enabled
