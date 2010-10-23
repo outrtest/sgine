@@ -13,4 +13,7 @@ class Clip(override val parent: Component) extends PropertyContainer {
 	val y1 = new NumericProperty(0.0, this)
 	val x2 = new NumericProperty(0.0, this)
 	val y2 = new NumericProperty(0.0, this)
+	val adjustX = new NumericProperty(0.0, this)
+	val adjustY = new NumericProperty(0.0, this)
+	val adjustXAmount = new NumericProperty(50.0, this)
 }

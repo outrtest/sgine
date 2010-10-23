@@ -26,6 +26,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	val visible = new AdvancedProperty[Boolean](false, this, dependency = parent.style.caret.visible)
 	val position = new AdvancedProperty[Int](0, this, filter = filterPosition)
 	val width = new AdvancedProperty[Double](0.0, this, dependency = parent.style.caret.width)
+	val heightMultiplier = new AdvancedProperty[Double](0.4, this)
 	val color = new AdvancedProperty[Color](null, this, dependency = parent.style.caret.color)
 	val rate = new NumericProperty(0.0, this, null, parent.style.caret.rate)
 	val mouseEnabled = new AdvancedProperty[Boolean](false, this, dependency = parent.style.caret.mouseEnabled)
@@ -45,6 +46,53 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	
 	position.listeners += EventHandler(updatePosition, ProcessingMode.Blocking)
 	parent.lines.listeners += EventHandler(updatePosition, ProcessingMode.Blocking)
+	
+	def clipped = {
+		parent.clip.enabled() match {
+			case true if (caretX - caretWidth < parent.clip.x1()) => true
+			case true if (caretX + caretWidth > parent.clip.x2()) => true
+			case true if (caretY - caretHeight < parent.clip.y1()) => true
+			case true if (caretY + caretHeight > parent.clip.y2()) => true
+			case _ => false
+		}
+	}
+	
+	protected def adjustClipped() = {
+		// TODO: fix this mess
+//		if (caretX - caretWidth < parent.clip.x1()) {
+//			parent.clip.adjustX += parent.clip.adjustXAmount()
+//		}
+//		if (caretX + caretWidth > parent.clip.x2()) {
+//			parent.clip.adjustX -= parent.clip.adjustXAmount()
+//		}
+//		println("Clips: " + parent.clip.y1() + ", " + parent.clip.y2())
+//		val height = parent.font().lineHeight / 2.0
+//		if (caretY + height > parent.clip.y2()) {
+//			val adjust = (caretY + height) - parent.clip.y2()
+//			println("Adjustment: " + adjust + " - " + parent.font().lineHeight)
+//			parent.clip.adjustY += adjust
+//			println("Adjust: " + parent.clip.adjustY())
+//		}
+//		if (caretY - height < parent.clip.y1()) {
+//			val adjust = (caretY - height) - parent.clip.y1()
+//			println("Adjustment: " + adjust + " - " + parent.font().lineHeight)
+//			parent.clip.adjustY += adjust
+//			println("Adjust: " + parent.clip.adjustY())
+//		}
+		
+		val width = caretWidth * 5.0
+		if (caretX - width < parent.clip.x1()) {
+			parent.clip.adjustX += (parent.clip.x1() + width) - caretX
+		}
+		if (caretX + width > parent.clip.x2()) {
+			parent.clip.adjustX -= (caretX + width) - parent.clip.x2()
+		}
+//		if (caretY - height > parent.clip.y2()) {
+////			parent.clip.adjustY := parent.clip.adjustY() - ((caretY + height) - parent.clip.y1())
+//			println("out of range! " + parent.clip.y2() + ", " + height + ", " + caretY + ", " + parent.clip.y1())
+//			parent.clip.adjustY += (caretY)
+//		}
+	}
 	
 	def draw() = {
 		// Blink
@@ -132,19 +180,18 @@ class Caret(override val parent: Text) extends PropertyContainer {
 		}
 	}
 	
-	protected[ui] def positionChanged(evt: PropertyChangeEvent[_]) = {
+	protected[ui] def updateCaretPosition() = {
 		val position = this.position() match {
-			case -1 if (parent.editable()) => parent.selection.end()
+			case -1 => parent.selection.end()
 			case p => p
 		}
+		
 		position match {
-			case -1 => caretDisplay = false							// Selection
 			case p if (parent.characters().length == 0) => {		// No text
-				caretDisplay = true
 				caretX = 0.0
 				caretY = 0.0
 				caretWidth = this.width() / 2.0
-				caretHeight = parent.font().lineHeight / 2.5
+				caretHeight = parent.font().lineHeight * heightMultiplier()
 			}
 			case p if (p == parent.characters().length) => {		// End of line
 				val c = parent.characters().last
@@ -152,33 +199,41 @@ class Caret(override val parent: Text) extends PropertyContainer {
 					caretX = 0.0
 					caretY = c.y - c.line.font.lineHeight
 					caretWidth = this.width() / 2.0
-					caretHeight = c.line.font.lineHeight / 2.5
+					caretHeight = c.line.font.lineHeight * heightMultiplier()
 				} else {
 					caretX = c.x + (c.fontChar.xAdvance / 2.0)
 					caretY = c.y
 					caretWidth = this.width() / 2.0
-					caretHeight = c.line.font.lineHeight / 2.5
+					caretHeight = c.line.font.lineHeight * heightMultiplier()
 				}
 			}
 			case p => parent.char(p) match {						// Normal character (show in front of character)
 				case Some(c) => {
-					caretDisplay = true
 					updateCaret(c)
 					
 					// Reset blink so we see the movement
 					elapsed = 0.0
 					toggle = true
 				}
-				case None => caretDisplay = false
+				case None =>
 			}
 		}
+	}
+	
+	protected[ui] def positionChanged(evt: PropertyChangeEvent[_]) = {
+		caretDisplay = this.position() match {
+			case -1 if (!parent.editable()) => false
+			case _ => true
+		}
+		updateCaretPosition()
+		adjustClipped()
 	}
 	
 	protected[ui] def updateCaret(c: RenderedCharacter) = {
 		caretX = c.x - (c.fontChar.xAdvance / 2.0) + 0.5
 		caretY = c.y
 		caretWidth = this.width() / 2.0
-		caretHeight = c.line.font.lineHeight / 2.5
+		caretHeight = c.line.font.lineHeight * heightMultiplier()
 	}
 	
 	// Make sure the position isn't set to something unreasonable

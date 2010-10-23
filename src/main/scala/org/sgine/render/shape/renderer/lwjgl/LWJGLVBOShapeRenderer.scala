@@ -18,6 +18,7 @@ class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
 		if ((vbo != null) && (vbo.length != shape.vertex.length)) {
 			// Delete buffer if already existing since the size changed
 			vbo.delete()
+			LWJGLVBOShapeRenderer.current = 0		// Make sure we re-bind properly
 			vbo = null
 		}
 		if (shape.vertex != null) {
@@ -28,7 +29,9 @@ class LWJGLVBOShapeRenderer extends LWJGLShapeRenderer {
 		}
 	}
 	
-	override protected[shape] def renderInternal(shape: Shape) = if (vbo != null) vbo.draw()
+	override protected[shape] def renderInternal(shape: Shape) = if (vbo != null) {
+		vbo.draw()
+	}
 }
 
 object LWJGLVBOShapeRenderer {
@@ -38,7 +41,7 @@ object LWJGLVBOShapeRenderer {
 }
 
 class VBO(val length: Int) {
-	private var id: Int = glGenBuffers()
+	val id: Int = glGenBuffers()
 	private var shape: Shape = _
 	private var bb: ByteBuffer = _
 	private var fb: FloatBuffer = _

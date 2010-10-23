@@ -13,7 +13,7 @@ object TestText extends StandardDisplay with Debug {
 	def setup() = {
 		val text = new Text()
 		
-		text.clip.enabled := false
+		text.clip.enabled := true
 		text.clip.x1 := -250.0
 		text.clip.y1 := -150.0
 		text.clip.x2 := 250.0
@@ -26,7 +26,7 @@ object TestText extends StandardDisplay with Debug {
 		text.textAlignment := "left"
 		text.text := "Now is the time for all good men to come to the aid of their country.\n\nCharles E. Weller"
 		text.size.width := 600.0
-		text.rotation.y := 1.0
+//		text.rotation.y := 1.0
 		scene += text
 	}
 }
