@@ -1,0 +1,31 @@
+package org.sgine.util
+
+import scala.xml._
+
+object XMLUtil {
+	val printer = new PrettyPrinter(255, 2)
+	
+	implicit def t2ua(t: Tuple2[String, String]) = new UnprefixedAttribute(t._1, t._2, Null)
+	
+	implicit def node2eelem(n: Node) = EnhancedElem(n.asInstanceOf[Elem])
+	
+	def save(elem: Elem, file: java.io.File) = {
+		val s = printer.format(elem)
+		val w = new java.io.FileWriter(file)
+		try {
+			w.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n")
+			w.write(s)
+			w.flush()
+		} finally {
+			w.close()
+		}
+	}
+}
+
+case class EnhancedElem (e: Elem) {
+	def +(child: Node) = Elem(e.prefix, e.label, e.attributes, e.scope, e.child ++ child: _*)
+	
+	def \@(name: String) = (e \ ("@" + name)).text
+	
+	def \!(name: String) = (e \ name).head
+}
