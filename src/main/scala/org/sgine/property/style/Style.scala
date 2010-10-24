@@ -6,7 +6,7 @@ import org.sgine.property.Property
 import org.sgine.property.container.PropertyContainer
 
 trait Style {
-	def condition: (Stylized) => Boolean
+	def condition(stylized: Stylized): Boolean
 	
 	private var _properties: List[StyleProperty] = Nil
 	private var initialized = false
@@ -40,22 +40,30 @@ trait Style {
 		}
 	}
 	
+	def register(name: String, value: Any) = synchronized {
+		_properties = StyleProperty(name, value.asInstanceOf[AnyRef].getClass, () => value) :: _properties
+	}
+	
 	def properties = {
 		initialize()
 		_properties
 	}
 	
+	def findStylizedProperty(name: String) = properties.find(_.name == name)
+	
 	def apply(stylized: Stylized) = {
 		initialize()
 		
-		for (prop <- properties) {
-			stylized(prop.name) match {
-				case Some(p) => p match {
-					case sp: StylizedProperty[_] => changeProperty(prop, sp)
-					case _ => // Not a stylized property - ignore
+		// Cycle through all of the Stylized properties
+		for (p <- stylized.properties) p match {
+			case sp: StylizedProperty[_] => {
+				val name = stylized.name(sp)
+				findStylizedProperty(name) match {
+					case Some(prop) => changeProperty(prop, sp)		// Apply
+					case None => sp.changeStyle(null)				// Remove
 				}
-				case None => // No property by this name - ignore
 			}
+			case _ =>
 		}
 	}
 	
@@ -63,7 +71,8 @@ trait Style {
 		if (sp.isAssignable(prop.c)) {
 			sp.changeStyle(prop.f.asInstanceOf[Function0[T]])
 		} else {
-			// Not a type match - ignore
+			// Not a type match - remove
+			sp.changeStyle(null)
 		}
 	}
 }
@@ -72,8 +81,6 @@ case class StyleProperty(name: String, c: Class[_], f: () => Any)
 
 object Style {
 	protected val filterOut = List("condition", "properties", "apply")
-	
-	def named(name: String)(stylized: Stylized) = name == stylized.id()
 	
 	/**
 	 * Removes style details from this Stylized instance.
