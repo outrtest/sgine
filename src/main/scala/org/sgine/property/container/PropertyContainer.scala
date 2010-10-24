@@ -16,6 +16,11 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	
 	private var initialized = false
 	
+	def properties = {
+		initialize()
+		_properties
+	}
+	
 	def apply() = -1
 	
 	def apply(value: Int): Property[Int] = this
@@ -90,11 +95,6 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	def contains(name: String) = {
 		initialize()
 		aliases.contains(name)
-	}
-	
-	def properties = {
-		initialize()
-		_properties
 	}
 	
 	def addProperty(p: Property[_]): PropertyContainer = {
@@ -172,9 +172,13 @@ trait PropertyContainer extends Listenable with Property[Int] {
 					}
 					_properties.reverse
 					initialized = true
+					initializedProperties()
 				}
 			}
 		}
+	}
+	
+	protected def initializedProperties() = {
 	}
 	
 	abstract override def resolveElement(key: String) = {

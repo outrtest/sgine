@@ -3,10 +3,11 @@ package org.sgine.property
 import org.sgine.event._
 
 import org.sgine.property.container._
+import org.sgine.property.style.StylizedProperty
 
 import scala.reflect.Manifest
 
-class AdvancedProperty[T] private(override protected implicit val manifest: Manifest[T]) extends MutableProperty[T] with DependentProperty[T] with ListenableProperty[T] with NamedProperty[T] with BindingProperty[T] with AnimatingProperty[T] with FilteredProperty[T] {
+class AdvancedProperty[T] private(override protected implicit val manifest: Manifest[T]) extends MutableProperty[T] with DependentProperty[T] with ListenableProperty[T] with NamedProperty[T] with BindingProperty[T] with AnimatingProperty[T] with FilteredProperty[T] with StylizedProperty[T] {
 	protected var _name: String = _
 	protected var _filter: T => T = _
 	protected var _filterType: FilterType = _
