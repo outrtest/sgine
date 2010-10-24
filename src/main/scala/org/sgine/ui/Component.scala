@@ -42,7 +42,7 @@ import simplex3d.math._
 import simplex3d.math.doublem._
 import simplex3d.math.doublem.DoubleMath._
 
-trait Component extends PropertyContainer with Renderable with RenderUpdatable with MatrixNode with ColorNode with Stateful with BoundingObject with Stylized {
+trait Component extends PropertyContainer with Renderable with RenderUpdatable with MatrixNode with ColorNode with Stateful with BoundingObject {
 	val id = new AdvancedProperty[String](null, this)
 	val visible = new AdvancedProperty[Boolean](true, this, filter = visibilityFilter, filterType = FilterType.Retrieve)
 	val renderer = new DelegateProperty(() => _renderer)
@@ -58,8 +58,6 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	
 	private lazy val _predrawables = predrawables
 	private lazy val _postdrawables = postdrawables
-	
-	def style: ComponentStyle = Component.style
 	
 	bounding := BoundingBox(0.0, 0.0, 0.0)
 	
@@ -83,12 +81,6 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		location.actual.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 		rotation.actual.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 		scale.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
-		
-		// Init styles
-		alpha.dependency = style.alpha
-		alpha.useDependency = true
-		color.dependency = style.color
-		color.useDependency = true
 	}
 	
 	private var _renderer: Renderer = _
@@ -240,16 +232,4 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	}
 	
 	override def toString() = getClass.getSimpleName
-}
-
-object Component {
-	val style = new ComponentStyle {
-		val alpha = StyleProperty(1.0, this)
-		val color = StyleProperty(Color.White, this)
-	}
-}
-
-trait ComponentStyle extends Style {
-	val alpha: StyleProperty[Double]
-	val color: StyleProperty[Color]
 }

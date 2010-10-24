@@ -33,14 +33,14 @@ import scala.math._
 
 class Text extends ShapeComponent with FocusableNode {
 	val cull = _cull
-	val font = new AdvancedProperty[Font](null, this, dependency = style.font)
-	val text = new AdvancedProperty[String](null, this, filter = filterText, dependency = style.text)
-	val kern = new AdvancedProperty[Boolean](false, this, dependency = style.kern)
-	val textColor = new AdvancedProperty[Color](null, this, dependency = style.textColor)
-	val textAlignment = new AdvancedProperty[HorizontalAlignment](null, this, dependency = style.textAlignment)
-	val editable = new AdvancedProperty[Boolean](false, this, dependency = style.editable)
-	val multiline = new AdvancedProperty[Boolean](false, this, dependency = style.multiline)
-	val maxLength = new AdvancedProperty[Int](0, this, dependency = style.maxLength)
+	val font = new AdvancedProperty[Font](FontManager("Arial", 36.0), this)
+	val text = new AdvancedProperty[String]("", this, filter = filterText)
+	val kern = new AdvancedProperty[Boolean](true, this)
+	val textColor = new AdvancedProperty[Color](Color.White, this)
+	val textAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
+	val editable = new AdvancedProperty[Boolean](false, this)
+	val multiline = new AdvancedProperty[Boolean](false, this)
+	val maxLength = new AdvancedProperty[Int](-1, this)
 	
 	protected[ui] val textBuilder = new TextBuilder()
 	protected[ui] val lines = new AdvancedProperty[Seq[RenderedLine]](Nil, this)
@@ -48,8 +48,6 @@ class Text extends ShapeComponent with FocusableNode {
 	
 	val selection = new Selection(this)
 	val caret = new Caret(this)
-	
-	override def style: TextStyle = Text.style
 	
 	protected[ui] def char(index: Int) = characters() match {
 		case t if (t.length > index) => Some(t(index))
@@ -122,7 +120,6 @@ class Text extends ShapeComponent with FocusableNode {
 						clip.adjustX,
 						clip.adjustY)
 	
-	cull.dependency = style.cull
 	listeners += EventHandler(keyPress, ProcessingMode.Blocking)
 	listeners += EventHandler(mousePress, ProcessingMode.Blocking)
 	listeners += EventHandler(mouseMove, ProcessingMode.Blocking)
@@ -379,65 +376,5 @@ class Text extends ShapeComponent with FocusableNode {
 			selection.end := positionAtPoint(evt.x, evt.y)
 			pressed = false
 		}
-	}
-}
-
-object Text {
-	val style = new TextStyle {
-		val alpha = StyleProperty(0.0, this, Component.style.alpha)
-		val color = StyleProperty(null, this, Component.style.color)
-		val cull = StyleProperty[Face](Face.Back, this)
-		val font = StyleProperty(FontManager("Arial", 36.0), this)
-		val text = StyleProperty("", this)
-		val kern = StyleProperty(true, this)
-		val textColor = StyleProperty(Color.White, this)
-		val textAlignment = StyleProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
-		val editable = StyleProperty(false, this)
-		val multiline = StyleProperty(false, this)
-		val maxLength = StyleProperty(-1, this)
-		val caret = new CaretStyle {
-			val visible = StyleProperty(true, this)
-			val width = StyleProperty(1.0, this)
-			val color = StyleProperty(Color.White, this)
-			val rate = StyleProperty(0.5, this)
-			val mouseEnabled = StyleProperty(true, this)
-			val keyboardEnabled = StyleProperty(true, this)
-		}
-		val selection = new SelectionStyle {
-			val visible = StyleProperty(true, this)
-			val color = StyleProperty(Color.SelectBlue.set(alpha = 0.5), this)
-			val mouseEnabled = StyleProperty(true, this)
-			val keyboardEnabled = StyleProperty(true, this)
-		}
-	}
-}
-
-trait TextStyle extends ComponentStyle {
-	val cull: StyleProperty[Face]
-	val font: StyleProperty[Font]
-	val text: StyleProperty[String]
-	val kern: StyleProperty[Boolean]
-	val textColor: StyleProperty[Color]
-	val textAlignment: StyleProperty[HorizontalAlignment]
-	val editable: StyleProperty[Boolean]
-	val multiline: StyleProperty[Boolean]
-	val maxLength: StyleProperty[Int]
-	val caret: CaretStyle
-	val selection: SelectionStyle
-	
-	trait CaretStyle extends Style {
-		val visible: StyleProperty[Boolean]
-		val width: StyleProperty[Double]
-		val color: StyleProperty[Color]
-		val rate: StyleProperty[Double]
-		val mouseEnabled: StyleProperty[Boolean]
-		val keyboardEnabled: StyleProperty[Boolean]
-	}
-	
-	trait SelectionStyle extends Style {
-		val visible: StyleProperty[Boolean]
-		val color: StyleProperty[Color]
-		val mouseEnabled: StyleProperty[Boolean]
-		val keyboardEnabled: StyleProperty[Boolean]
 	}
 }
