@@ -33,6 +33,38 @@ trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
 		}
 	}
 	
+	/**
+	 * Determines if the value <code>v</code> is a valid value
+	 * that can be passed as a value to this generic property.
+	 * 
+	 * @param v
+	 * @return
+	 * 		true if the value is acceptable
+	 */
+	def isValue(v: Any) = {
+		if (manifest.erasure.isInstance(v)) {
+			true
+		} else {
+			false
+		}
+	}
+	
+	/**
+	 * Determines if the class passed is compatible with the
+	 * generic type of this property.
+	 * 
+	 * @param c
+	 * @return
+	 * 		true if the class is acceptable
+	 */
+	def isAssignable(c: Class[_]) = {
+		if (manifest.erasure.isAssignableFrom(c)) {
+			true
+		} else {
+			false
+		}
+	}
+	
 	def resolveElement(key: String) = {
 		if (key == "value") {
 			Some(apply())
