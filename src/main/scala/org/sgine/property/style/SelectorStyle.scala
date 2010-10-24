@@ -8,6 +8,10 @@ package org.sgine.property.style
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class SelectorStyle(groups: SelectorGroup*) extends Style {
+	def this(selectorStyle: String) = {
+		this(SelectorStyle.createGroups(selectorStyle): _*)
+	}
+	
 	def condition(stylized: Stylized) = groups.find(_.matches(stylized)) != None
 }
 
@@ -21,6 +25,10 @@ object SelectorStyle {
 	def lookupClass(alias: String) = map.get(alias)
 	
 	def apply(selectorStyle: String) = {
+		new SelectorStyle(createGroups(selectorStyle): _*)
+	}
+	
+	def createGroups(selectorStyle: String) = {
 		var groups: List[SelectorGroup] = Nil
 		var selectors: List[Selector] = Nil
 		
@@ -48,7 +56,7 @@ object SelectorStyle {
 			groups = SelectorGroup(selectors: _*) :: groups
 		}
 		
-		new SelectorStyle(groups: _*)
+		groups
 	}
 	
 	def createSelector(selector: String) = {
