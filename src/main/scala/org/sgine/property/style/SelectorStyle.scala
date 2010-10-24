@@ -19,6 +19,47 @@ object SelectorStyle {
 	}
 	
 	def lookupClass(alias: String) = map.get(alias)
+	
+	def apply(selectorStyle: String) = {
+		var groups: List[SelectorGroup] = Nil
+		var selectors: List[Selector] = Nil
+		
+		val b = new StringBuilder()
+		for (c <- selectorStyle) {
+			if (b.length > 0) {
+				if ((c == '#') || (c == '.') || (c == ' ') || (c == ',')) {
+					selectors = createSelector(b.toString.trim) :: selectors
+					b.clear()
+					
+					if (c == ',') {
+						groups = SelectorGroup(selectors: _*) :: groups
+						selectors = Nil
+					}
+				}
+			}
+			if (c != ' ') {
+				b.append(c)
+			}
+		}
+		if (b.length > 0) {
+			selectors = createSelector(b.toString.trim) :: selectors
+		}
+		if (selectors.length > 0) {
+			groups = SelectorGroup(selectors: _*) :: groups
+		}
+		
+		new SelectorStyle(groups: _*)
+	}
+	
+	def createSelector(selector: String) = {
+		if (selector.startsWith("#")) {
+			IdSelector(selector.substring(1))
+		} else if (selector.startsWith(".")) {
+			StyleNameSelector(selector.substring(1))
+		} else {
+			ClassSelector(selector)
+		}
+	}
 }
 
 case class SelectorGroup(seq: Selector*) {

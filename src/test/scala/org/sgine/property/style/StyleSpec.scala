@@ -106,9 +106,31 @@ class StyleSpec extends FlatSpec with ShouldMatchers {
 		TestStylized.s4() should equal(null)
 		TestStylized.s5() should equal(null)
 	}
+	
+	it should "use String-generated SelectorStyle to apply styles over three levels" in {
+		val theme = new Theme()
+		val style = SelectorStyle(".testMasterStyle#testParent TestStylized")
+		style.register("s5", "String-based!")
+		theme.register(style)
+		
+		Theme.current := theme
+		
+		TestStylized.s() should equal(null)
+		TestStylized.s2() should equal("Direct")
+		TestStylized.s3() should equal(null)
+		TestStylized.s4() should equal(null)
+		TestStylized.s5() should equal("String-based!")
+	}
+}
+
+object MasterStylized extends Stylized {
+	id := "testMaster"
+	style := "testMasterStyle"
 }
 
 object ParentStylized extends Stylized {
+	override val parent = MasterStylized
+	
 	id := "testParent"
 	style := "testParentStyle"
 }
