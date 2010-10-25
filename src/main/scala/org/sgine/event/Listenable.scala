@@ -1,5 +1,7 @@
 package org.sgine.event
 
+import java.util.concurrent.atomic.AtomicReference
+
 import org.sgine.core.ProcessingMode
 
 import org.sgine.util.Time
@@ -68,9 +70,32 @@ trait Listenable {
 		event
 	}
 	
-	def onEvent[E <: Event](processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: E => Boolean = null)(action: => Unit)(implicit manifest: Manifest[E]) = {
+	/**
+	 * Convenience method to easily listen for a specific event without having to create
+	 * a separate method to receive the event and an EventHandler to wrap it.
+	 * 
+	 * @param processingMode
+	 * 		Defaults to Normal
+	 * @param recursion
+	 * 		Defaults to None
+	 * @param filter
+	 * 		Defaults to null
+	 * @param container
+	 * 		If this value is provided the reference is set to the current event
+	 * 		being processed. Default value is null.
+	 * @param action
+	 * 		This is the action that should be taken upon event.
+	 * @param manifest
+	 * 		Implicit manifest.
+	 * @return
+	 * 		EventHandler generated and added
+	 */
+	def onEvent[E <: Event](processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: E => Boolean = null, container: AtomicReference[E] = null)(action: => Unit)(implicit manifest: Manifest[E]) = {
 		val handler = EventHandler(new Function1[E, Unit] {
 			def apply(evt: E) = {
+				if (container != null) {
+					container.set(evt)
+				}
 				action
 			}
 		}, processingMode, recursion, filter)
