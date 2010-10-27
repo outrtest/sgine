@@ -42,7 +42,8 @@ trait Debug extends Display {
 		debugContainer += fps
 		
 		grid.source := Resource("grid.png")
-		grid.location.z := 525.0
+		grid.location.z := 400.0
+		grid.scale(0.5)
 		grid.visible := false
 		debugContainer += grid
 		

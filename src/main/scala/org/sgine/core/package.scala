@@ -42,6 +42,12 @@ package object core {
 	
 	implicit def stringToResource(value: String) = Resource(value)
 	
+	implicit def stringToSizeMode(value: String) = value.toLowerCase match {
+		case "auto" => SizeMode.Auto
+		case "explicit" => SizeMode.Explicit
+		case _ => throw new RuntimeException("Cannot convert '" + value + "' to a SizeMode.")
+	}
+	
 	implicit def stringToVerticalAlignment(value: String) = value.toLowerCase match {
 		case "top" => VerticalAlignment.Top
 		case "middle" => VerticalAlignment.Middle

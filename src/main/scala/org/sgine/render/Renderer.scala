@@ -121,7 +121,10 @@ class Renderer extends PropertyContainer with Worker {
 			}
 		} catch {
 			// TODO: use default uncaught exception handler
-			case t: Throwable => t.printStackTrace()
+			case t: Throwable => {
+				t.printStackTrace()
+				System.exit(1)
+			}
 		} finally {
 			keepAlive = false
 			

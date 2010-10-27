@@ -27,6 +27,7 @@ import org.sgine.property.ImmutableProperty
 import org.sgine.property.PathProperty
 import org.sgine.property.container.PropertyContainer
 import org.sgine.property.state.Stateful
+import org.sgine.property.style.Stylized
 
 import org.sgine.render.Renderable
 import org.sgine.render.Renderer
@@ -42,8 +43,7 @@ import simplex3d.math._
 import simplex3d.math.doublem._
 import simplex3d.math.doublem.DoubleMath._
 
-trait Component extends PropertyContainer with Renderable with RenderUpdatable with MatrixNode with ColorNode with Stateful with BoundingObject {
-	val id = new AdvancedProperty[String](null, this)
+trait Component extends PropertyContainer with Renderable with RenderUpdatable with MatrixNode with ColorNode with Stateful with BoundingObject with Stylized {
 	val visible = new AdvancedProperty[Boolean](true, this, filter = visibilityFilter, filterType = FilterType.Retrieve)
 	val renderer = new DelegateProperty(() => _renderer)
 	val lighting = new AdvancedProperty[Boolean](true, this)

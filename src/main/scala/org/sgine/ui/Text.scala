@@ -49,6 +49,8 @@ class Text extends ShapeComponent with FocusableNode {
 	val selection = new Selection(this)
 	val caret = new Caret(this)
 	
+	private val dirty = new java.util.concurrent.atomic.AtomicBoolean()
+	
 	protected[ui] def char(index: Int) = characters() match {
 		case t if (t.length > index) => Some(t(index))
 		case _ => None
@@ -105,7 +107,7 @@ class Text extends ShapeComponent with FocusableNode {
 		}
 	}
 	
-	Listenable.listenTo(EventHandler(invalidateText, ProcessingMode.Blocking),
+	Listenable.listenTo(EventHandler(invalidateText, ProcessingMode.Normal),
 						font,
 						text,
 						size.width,
@@ -126,6 +128,10 @@ class Text extends ShapeComponent with FocusableNode {
 	listeners += EventHandler(mouseRelease, ProcessingMode.Blocking)
 	
 	override def drawComponent() = {
+		if (dirty.get) {
+			dirty.set(false)
+			validate()
+		}
 		selection.draw()
 		caret.draw()
 		multColor(textColor())
@@ -133,6 +139,15 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	
 	private def invalidateText(evt: PropertyChangeEvent[_]) = {
+		dirty.set(true)
+		
+		if (evt.property == text) {
+			caret.position(0, false)
+			caret.position.changed(false)
+		}
+	}
+	
+	private def validate() = {
 		val wrapMethod = multiline() match {
 			case true => WordWrap
 			case false => NoWrap
@@ -148,7 +163,11 @@ class Text extends ShapeComponent with FocusableNode {
 		textBuilder.wrapWidth = size.width()
 		textBuilder.wrapMethod = wrapMethod
 		textBuilder.textAlignment = textAlignment()
-		textBuilder.xOffset = padding.left()
+		textBuilder.xOffset = textAlignment() match {
+			case HorizontalAlignment.Left => padding.left()
+			case HorizontalAlignment.Right => padding.right()
+			case _ => 0.0
+		}
 		if (clip.enabled()) {
 			textBuilder.xOffset += clip.adjustX()
 			textBuilder.yOffset += clip.adjustY()
@@ -167,20 +186,21 @@ class Text extends ShapeComponent with FocusableNode {
 				chars = c :: chars
 			}
 		}
+		val measured = shape.size
 		val height = textBuilder.lines.length match {
 			case 0 => font().lineHeight
 			case n => font().lineHeight * n
 		}
-		size.height := height + padding.bottom() + padding.top()
+		if (size.width.mode() == SizeMode.Auto) {
+			size.width := measured.x + padding.left() + padding.right()
+		}
+		if (size.height.mode() == SizeMode.Auto) {
+			size.height := height + padding.bottom() + padding.top()
+		}
 		characters := chars.reverse
 		font() match {
 			case bf: BitmapFont => texture = bf.texture
 			case _ =>
-		}
-		
-		if (evt.property == text) {
-			caret.position(0, false)
-			caret.position.changed(false)
 		}
 	}
 	
