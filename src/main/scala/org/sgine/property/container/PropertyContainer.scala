@@ -1,5 +1,8 @@
 package org.sgine.property.container
 
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
+
 import scala.collection.immutable.HashMap
 import scala.reflect.ClassManifest
 
@@ -7,14 +10,21 @@ import org.sgine._
 import org.sgine.event._
 import org.sgine.property._
 
+import org.sgine.work.DefaultWorkManager
+import org.sgine.work.Updatable
+
 trait PropertyContainer extends Listenable with Property[Int] {
 	protected val manifest = ClassManifest.Int
 	
 	private val _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
 	private var aliases = new HashMap[String, Property[_]]()
-	private val staticPropertyFields = getStaticPropertyFields
 	
 	private var initialized = false
+	private var initializeStart = System.currentTimeMillis
+	
+	private lazy val reflected = reflectProperties(getClass, Nil)
+	
+	PropertyContainer.initialize(this)
 	
 	def properties = {
 		initialize()
@@ -98,7 +108,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	}
 	
 	def addProperty(p: Property[_]): PropertyContainer = {
-		if (!_properties.contains(p)) {			// No duplicates allowed
+		if (!_properties.contains(p)) {										// No duplicates allowed
 			_properties += p												// Add the property to the list
 
 			p match {														// Assign an alias if one already exists
@@ -129,7 +139,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	private def getStaticPropertyName(p: Property[_]): String = {
 		initialize()
 		
-		for (f <- staticPropertyFields) {
+		for (f <- reflected) {
 			if (f.get(this) == p) {
 				return f.getName
 			}
@@ -137,36 +147,46 @@ trait PropertyContainer extends Listenable with Property[Int] {
 		return null
 	}
 	
-	private def getStaticPropertyFields = {
-		var props: List[java.lang.reflect.Field] = Nil
-		for (f <- getClass.getDeclaredFields) {
-			if (classOf[Property[_]].isAssignableFrom(f.getType)) {
+	private def reflectProperties(c: Class[_], list: List[Field]): List[Field] = {
+		var l = list
+		
+		for (f <- c.getDeclaredFields) {
+			if ((classOf[Property[_]].isAssignableFrom(f.getType)) && (f.getName.indexOf("$") == -1)) {
 				f.setAccessible(true)
-				props = f :: props
+				l = f :: l
 			}
 		}
 		
-		props
+		if (c.getSuperclass != null) {
+			reflectProperties(c.getSuperclass, l)
+		} else {
+			l
+		}
 	}
 	
-	private def initialize() = {
+	final private def initialize() = {
 		if (!initialized) {
 			synchronized {
 				var properties: List[Property[_]] = Nil
-				var uninitialized = false
-				for (f <- staticPropertyFields) {
-					val p = f.get(this).asInstanceOf[Property[_]]
-					if (p == null) {
-						uninitialized = true
-					} else {
-						properties = p :: properties
-						if (!aliases.contains(f.getName)) {
-							aliases += f.getName -> p
+				var finished = true
+				
+				try {
+					for (f <- reflected) {
+						val property = f.get(this).asInstanceOf[Property[_]]
+						if (property != null) {
+							properties = property :: properties
+							if (!aliases.contains(f.getName)) {
+								aliases += f.getName -> property
+							}
+						} else {
+							finished = false
 						}
 					}
+				} catch {
+					case exc: java.lang.reflect.InvocationTargetException => // Ignore - not initialized
 				}
 				
-				if (!uninitialized) {
+				if (finished) {
 					for (p <- properties) {
 						addProperty(p)
 					}
@@ -192,8 +212,33 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	override def toString() = "PropertyContainer(" + getClass.getSimpleName + ")"
 }
 
-object PropertyContainer {
+object PropertyContainer extends Updatable {
+	private var uninitted: List[PropertyContainer] = Nil
+	
+	protected def initialize(pc: PropertyContainer) = synchronized {
+		uninitted = pc :: uninitted
+	}
+	
 	def apply(parent: Listenable) = new PropertyContainerImplementation(parent)
+	
+	override def update(time: Double) = {
+		super.update(time)
+		
+		if (uninitted.length > 0) {
+			val time = System.currentTimeMillis
+			for (pc <- uninitted) {
+				pc.initialize()
+				
+				if ((pc.initialized) || (time - pc.initializeStart > 5000)) {
+					synchronized {
+						uninitted = uninitted.filterNot(_ == pc)
+					}
+				}
+			}
+		}
+	}
+	
+	initUpdatable()
 }
 
 class PropertyContainerImplementation(override val parent: Listenable) extends PropertyContainer

@@ -119,10 +119,7 @@ case class ClassSelector(_className: String) extends Selector {
 			true		// Handle companion class naming
 		} else {
 			c.getSuperclass match {
-				case null => {
-					println("Unable to match: " + c.getSimpleName + " - " + className)
-					false
-				}
+				case null => false
 				case sc => isClassMatch(sc)
 			}
 		}

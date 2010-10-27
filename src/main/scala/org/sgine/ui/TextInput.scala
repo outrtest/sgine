@@ -1,8 +1,6 @@
 package org.sgine.ui
 
-import org.sgine.core.Face
-import org.sgine.core.HorizontalAlignment
-import org.sgine.core.Resource
+import org.sgine.core._
 
 import org.sgine.input.event.MouseOutEvent
 import org.sgine.input.event.MouseOverEvent
@@ -20,7 +18,8 @@ class TextInput extends Text with SkinnedComponent {
 	
 	protected def configureText() = {
 		// TODO: FIX STYLE SUPPORT AND PUT THIS IN THEMING
-		size.width := 300.0
+//		size.width := 300.0
+		size.width.mode := SizeMode.Explicit
 		multiline := false
 		editable := true
 		textAlignment := HorizontalAlignment.Left
@@ -57,13 +56,13 @@ class TextInput extends Text with SkinnedComponent {
 			if (focused()) {
 				states.deactivate("hoverSkin")
 				states.activate("focusSkin")
-				selection.all()
+//				selection.all()
 			} else {
 				states.deactivate("focusSkin")
 				if (mouseState()) {
 					states.activate("hoverSkin")
 				}
-				selection.none()
+//				selection.none()
 			}
 		}
 	}

@@ -9,6 +9,7 @@ trait Style {
 	def condition(stylized: Stylized): Boolean
 	
 	private var _properties: List[StyleProperty] = Nil
+	private var _styles: List[Style] = Nil
 	private var initialized = false
 	
 	private def initialize() = synchronized {
@@ -24,6 +25,10 @@ trait Style {
 					// Ignore methods that take arguments
 				} else if (!Modifier.isPublic(m.getModifiers)) {
 					// Only use public methods
+				} else if (classOf[Style].isAssignableFrom(m.getReturnType)) {
+					// Manage styles differently
+					val style = m.invoke(this).asInstanceOf[Style]
+					_styles = style :: _styles
 				} else {
 					val sp = if (classOf[Function0[_]].isAssignableFrom(m.getReturnType)) {
 						val f = m.invoke(this).asInstanceOf[Function0[_]]
@@ -51,7 +56,7 @@ trait Style {
 	
 	def findStylizedProperty(name: String) = properties.find(_.name == name)
 	
-	def apply(stylized: Stylized) = {
+	def apply(stylized: Stylized): Unit = {
 		initialize()
 		
 		// Cycle through all of the Stylized properties
@@ -59,8 +64,16 @@ trait Style {
 			case sp: StylizedProperty[_] => {
 				val name = stylized.name(sp)
 				findStylizedProperty(name) match {
-					case Some(prop) => changeProperty(prop, sp)		// Apply
+					case Some(prop) => {
+						changeProperty(prop, sp)		// Apply
+					}
 					case None => sp.changeStyle(null)				// Remove
+				}
+			}
+			case s: Stylized => {	// Apply child styles to stylized children
+				_styles.find(_.condition(s)) match {
+					case Some(style) => style(s) // Apply sub-style
+					case None => // Ignore
 				}
 			}
 			case _ =>

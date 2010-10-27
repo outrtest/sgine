@@ -9,13 +9,14 @@ import org.sgine.event._
 import org.sgine.property.NumericProperty
 import org.sgine.property.container.PropertyContainer
 import org.sgine.property.event.PropertyChangeEvent
+import org.sgine.property.style.Stylized
 
 import org.sgine.ui.Component
 
-class Size(override val parent: Component) extends PropertyContainer {
-	val width = new NumericProperty(0.0, this)
-	val height = new NumericProperty(0.0, this)
-	val depth = new NumericProperty(0.0, this)
+class Size(override val parent: Component) extends PropertyContainer with Stylized {
+	val width = new SizeNumericProperty(0.0, this)
+	val height = new SizeNumericProperty(0.0, this)
+	val depth = new SizeNumericProperty(0.0, this)
 	
 	private val handler = EventHandler(propertyChanged, ProcessingMode.Blocking)
 	width.listeners += handler

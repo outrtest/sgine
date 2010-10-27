@@ -1,13 +1,26 @@
 package org.sgine.ui.style
 
-import org.sgine.core.Color
-import org.sgine.core.Placement
-import org.sgine.core.Resource
+import org.sgine.core._
+
+import org.sgine.property.style._
 
 import org.sgine.render.font.FontManager
 
-object WindowsTheme {
-	def apply() = {
+object WindowsTheme extends Theme {
+	val textInput = new SelectorStyle("TextInput") {
+		val size = new SelectorStyle("Size") {
+			val width = 300.0
+		}
+		
+		override def apply(stylized: Stylized) = {
+			super.apply(stylized)
+			
+			println("Applying textinput to: " + stylized)
+		}
+	}
+	register(textInput)
+	
+	/*def apply() = {
 		Theme.button.normalSkin := Resource("scale9/windows/button/normal.png")
 		Theme.button.hoverSkin := Resource("scale9/windows/button/hover.png")
 		Theme.button.pressedSkin := Resource("scale9/windows/button/pressed.png")
@@ -24,5 +37,5 @@ object WindowsTheme {
 		
 		Theme.font := FontManager("Arial", 24.0)
 		Theme.textColor := Color.Black
-	}
+	}*/
 }

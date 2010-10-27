@@ -7,11 +7,14 @@ import org.sgine.event.Listenable
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeDelegate
+import org.sgine.property.style.Theme
 
 import org.sgine.render.scene.RenderableScene
 
 import org.sgine.scene.GeneralNodeContainer
 import org.sgine.scene.ext.ResolutionNode
+
+import org.sgine.ui.style.WindowsTheme
 
 import org.sgine.work.Updatable
 
@@ -47,10 +50,14 @@ trait StandardDisplay extends Listenable with Display {
 	
 	protected def initialize() = {
 		Updatable.useWorkManager = false
+		Theme.current := theme
+		
 		scene.setResolution(1024, 768)
 	}
 	
 	val settings = RenderSettings.Default
+	
+	val theme = WindowsTheme
 	
 	/**
 	 * Invoked to start the display. This is invoked with default arguments
