@@ -6,18 +6,44 @@ import org.sgine.property.style._
 
 import org.sgine.render.font.FontManager
 
+import org.sgine.ui.TextInput
+import org.sgine.ui.skin.Scale9Skin
+
 object WindowsTheme extends Theme {
 	val textInput = new SelectorStyle("TextInput") {
-		val size = new SelectorStyle("Size") {
-			val width = 300.0
-		}
+		val size_width = 300.0
+		val size_width_mode = SizeMode.Explicit
+		val multiline = false
+		val editable = true
+		val textAlignment = HorizontalAlignment.Left
+		val font = FontManager("Arial", 24.0)
+		val textColor = Color.Blue
+		val caret_color = Color.Black
+		val clip_enabled = true
+		val clip_x1 = -150.0
+		val clip_x2 = 150.0
+		val clip_y1 = -200.0
+		val clip_y2 = 200.0
+		val padding_top = 5.0
+		val padding_left = 5.0
+		val padding_bottom = 5.0
+		val padding_right = 5.0
 		
 		override def apply(stylized: Stylized) = {
 			super.apply(stylized)
 			
 			println("Applying textinput to: " + stylized)
+			// TODO: handle this better
+			stylized match {
+				case ti: TextInput => {
+					val scale9 = new Scale9Skin()
+					scale9(Resource("scale9/windows/textinput/normal.png"), 2.0, 2.0, 3.0, 3.0)
+					ti.skin := scale9
+				}
+			}
 		}
 	}
+//	textInput("size.width") = 300.0
 	register(textInput)
 	
 	/*def apply() = {

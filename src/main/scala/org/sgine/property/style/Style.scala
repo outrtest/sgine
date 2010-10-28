@@ -5,6 +5,8 @@ import java.lang.reflect.Modifier
 import org.sgine.property.Property
 import org.sgine.property.container.PropertyContainer
 
+import org.sgine.util.Reflection
+
 trait Style {
 	def condition(stylized: Stylized): Boolean
 	
@@ -30,12 +32,13 @@ trait Style {
 					val style = m.invoke(this).asInstanceOf[Style]
 					_styles = style :: _styles
 				} else {
+					val name = m.getName.replaceAll("_", ".")
 					val sp = if (classOf[Function0[_]].isAssignableFrom(m.getReturnType)) {
 						val f = m.invoke(this).asInstanceOf[Function0[_]]
-						StyleProperty(m.getName, f().asInstanceOf[AnyRef].getClass, f)
+						StyleProperty(name, Reflection.boxed(f().asInstanceOf[AnyRef].getClass), f)
 					} else {
 						val f = () => m.invoke(this)
-						StyleProperty(m.getName, m.getReturnType, f)
+						StyleProperty(name, Reflection.boxed(m.getReturnType), f)
 					}
 					_properties = sp :: _properties
 				}
@@ -46,8 +49,11 @@ trait Style {
 	}
 	
 	def register(name: String, value: Any) = synchronized {
+		println("registering: " + name + " - " + value.asInstanceOf[AnyRef].getClass + " - " + value)
 		_properties = StyleProperty(name, value.asInstanceOf[AnyRef].getClass, () => value) :: _properties
 	}
+	
+	def update(name: String, value: Any) = register(name, value)
 	
 	def properties = {
 		initialize()
@@ -58,7 +64,7 @@ trait Style {
 	
 	def apply(stylized: Stylized): Unit = {
 		initialize()
-		
+		/*
 		// Cycle through all of the Stylized properties
 		for (p <- stylized.properties) p match {
 			case sp: StylizedProperty[_] => {
@@ -77,6 +83,42 @@ trait Style {
 				}
 			}
 			case _ =>
+		}*/
+		
+		// Revert all styles to null first
+		for (p <- stylized.properties) p match {
+			case sp: StylizedProperty[_] => sp.changeStyle(null)
+			case _ =>
+		}
+		
+		// Apply styles
+		for (sp <- properties) {
+			org.sgine.path.OPath.resolve(stylized, sp.name) match {
+				case Some(result) => result match {
+					case stylizedProperty: StylizedProperty[_] => changeProperty(sp, stylizedProperty)
+					case _ => //println("NOT STYLIZED: " + result.asInstanceOf[AnyRef].getClass + " - " + sp.name)
+				}
+				case None => // Unable to resolve
+			}
+		}
+		
+		// Process child styles
+		for (childStyle <- _styles) {
+			findStylized(childStyle, stylized.properties.toList) match {
+				case Some(stylized) => childStyle(stylized)
+				case None => // Ignore
+			}
+		}
+	}
+	
+	private def findStylized(style: Style, list: List[Property[_]]): Option[Stylized] = {
+		if (list != Nil) {
+			list.head match {
+				case stylized: Stylized if (style.condition(stylized)) => Some(stylized)
+				case _ => findStylized(style, list.tail)
+			}
+		} else {
+			None
 		}
 	}
 	

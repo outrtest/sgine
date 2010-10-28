@@ -64,6 +64,8 @@ object SelectorStyle {
 			IdSelector(selector.substring(1))
 		} else if (selector.startsWith(".")) {
 			StyleNameSelector(selector.substring(1))
+		} else if (selector.startsWith("$")) {
+			PropertyNameSelector(selector.substring(1))
 		} else {
 			ClassSelector(selector)
 		}
@@ -129,5 +131,14 @@ case class ClassSelector(_className: String) extends Selector {
 case class StyleNameSelector(styleName: String) extends Selector {
 	def matches(stylized: Stylized) = {
 		stylized.style() == styleName
+	}
+}
+
+case class PropertyNameSelector(name: String) extends Selector {
+	def matches(stylized: Stylized) = {
+		stylized.parent match {
+			case pc: org.sgine.property.container.PropertyContainer => pc.name(stylized) == name
+			case _ => false
+		}
 	}
 }
