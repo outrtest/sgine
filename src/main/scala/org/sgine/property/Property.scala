@@ -58,7 +58,8 @@ trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
 	 * 		true if the class is acceptable
 	 */
 	def isAssignable(c: Class[_]) = {
-		if (manifest.erasure.isAssignableFrom(c)) {
+		val erasure = org.sgine.util.Reflection.boxed(manifest.erasure)
+		if (erasure.isAssignableFrom(c)) {
 			true
 		} else {
 			false

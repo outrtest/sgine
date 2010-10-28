@@ -107,6 +107,16 @@ class StyleSpec extends FlatSpec with ShouldMatchers {
 		TestStylized.s5() should equal(null)
 	}
 	
+	it should "use PropertyNameSelector to apply style" in {
+		Theme.current := TestTheme5
+		
+		TestStylized.s() should equal("PropertyNameSelector!")
+		TestStylized.s2() should equal("Direct")
+		TestStylized.s3() should equal(null)
+		TestStylized.s4() should equal(null)
+		TestStylized.s5() should equal(null)
+	}
+	
 	it should "use String-generated SelectorStyle to apply styles over three levels" in {
 		val theme = new Theme()
 		val style = SelectorStyle(".testMasterStyle#testParent TestStylized")
@@ -133,6 +143,8 @@ object ParentStylized extends Stylized {
 	
 	id := "testParent"
 	style := "testParentStyle"
+		
+	val child = TestStylized
 }
 
 object TestStylized extends Stylized {
@@ -189,6 +201,14 @@ object TestTheme4 extends Theme {
 	val groups = SelectorGroup(StyleNameSelector("testStyle"), StyleNameSelector("testParentStyle"))
 	val s1 = new SelectorStyle(groups) {
 		val s = "StyleNameSelector!"
+	}
+	register(s1)
+}
+
+object TestTheme5 extends Theme {
+	val groups = new SelectorGroup(PropertyNameSelector("child"))
+	val s1 = new SelectorStyle(groups) {
+		val s = "PropertyNameSelector!"
 	}
 	register(s1)
 }

@@ -19,14 +19,14 @@ class TextInput extends Text with SkinnedComponent {
 	protected def configureText() = {
 		// TODO: FIX STYLE SUPPORT AND PUT THIS IN THEMING
 //		size.width := 300.0
-		size.width.mode := SizeMode.Explicit
-		multiline := false
-		editable := true
-		textAlignment := HorizontalAlignment.Left
-		font := org.sgine.render.font.FontManager("Arial", 24.0)
-		val scale9 = new org.sgine.ui.skin.Scale9Skin()
-		scale9(Resource("scale9/windows/textinput/normal.png"), 2.0, 2.0, 3.0, 3.0)
-		skin := scale9
+//		size.width.mode := SizeMode.Explicit
+//		multiline := false
+//		editable := true
+//		textAlignment := HorizontalAlignment.Left
+//		font := org.sgine.render.font.FontManager("Arial", 24.0)
+//		val scale9 = new org.sgine.ui.skin.Scale9Skin()
+//		scale9(Resource("scale9/windows/textinput/normal.png"), 2.0, 2.0, 3.0, 3.0)
+//		skin := scale9
 		textColor := org.sgine.core.Color.Black
 		caret.color := org.sgine.core.Color.Black
 		clip.enabled := true
