@@ -23,27 +23,25 @@ object TestStates extends StandardDisplay with Debug {
 		component.location.x.animator = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
 		component.location.y.animator = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
 		
-		val state = new State("Test1")
-		state.add("rotation.z", Pi / 4.0)
-		state.add("location.x", 200.0)
-		state.add("location.y", -200.0)
-		component.states += state
+		val state = component.states.create("test1", "test1")
+		state("rotation.z") = Pi / 4.0
+		state("location.x") = 200.0
+		state("location.y") = -200.0
 		
-		val state2 = new State("Test2")
-		state2.add("source", Resource("sgine_256.png"))
-		component.states += state2
+		val state2 = component.states.create("test2", "test2")
+		state2("source") = Resource("sgine_256.png")
 		
 		scene += component
 		
 		while (true) {
 			Thread.sleep(1000)
-			component.states.activate("Test1")
+			component.states.activate("test1")
 			Thread.sleep(1000)
-			component.states.activate("Test2")
+			component.states.activate("test2")
 			Thread.sleep(1000)
-			component.states.deactivate("Test1")
+			component.states.deactivate("test1")
 			Thread.sleep(1000)
-			component.states.deactivate("Test2")
+			component.states.deactivate("test2")
 		}
 	}
 }

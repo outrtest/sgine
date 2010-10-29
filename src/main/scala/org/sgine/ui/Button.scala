@@ -30,49 +30,49 @@ class Button extends Text with SkinnedComponent {
 		textColor := org.sgine.core.Color.Black
 		padding(10.0, 25.0, 10.0, 25.0)
 		
-		val hoverState = new State("hoverSkin")
-		hoverState.add("skin().source", Resource("scale9/windows/button/hover.png"))
-		states += hoverState
-		
-		val focusState = new State("focusSkin")
-		focusState.add("skin().source", Resource("scale9/windows/button/pressed.png"))
-		states += focusState
-		
-		val pressedState = new State("pressedSkin")
-		pressedState.add("skin().source", Resource("scale9/windows/button/focused.png"))
-		states += pressedState
-		
-		onEvent[MouseOverEvent](org.sgine.core.ProcessingMode.Blocking) {
-			if (!focused()) {
-				states.activate("hoverSkin")
-			}
-		}
-		onEvent[MouseOutEvent](org.sgine.core.ProcessingMode.Blocking) {
-			states.deactivate("hoverSkin")
-		}
-		onEvent[MousePressEvent](org.sgine.core.ProcessingMode.Blocking) {
-			states.deactivate("hoverSkin")
-			states.deactivate("focusSkin")
-			states.activate("pressedSkin")
-		}
-		onEvent[MouseReleaseEvent](org.sgine.core.ProcessingMode.Blocking) {
-			states.deactivate("pressedSkin")
-			if (focused()) {
-				states.activate("focusSkin")
-			} else {
-				states.activate("hoverSkin")
-			}
-		}
-		focused.onEvent[PropertyChangeEvent[_]](org.sgine.core.ProcessingMode.Blocking) {
-			if (focused()) {
-				states.deactivate("hoverSkin")
-				states.activate("focusSkin")
-			} else {
-				states.deactivate("focusSkin")
-				if (mouseState()) {
-					states.activate("hoverSkin")
-				}
-			}
-		}
+//		val hoverState = new State("hoverSkin")
+//		hoverState.add("skin().source", Resource("scale9/windows/button/hover.png"))
+//		states += hoverState
+//		
+//		val focusState = new State("focusSkin")
+//		focusState.add("skin().source", Resource("scale9/windows/button/pressed.png"))
+//		states += focusState
+//		
+//		val pressedState = new State("pressedSkin")
+//		pressedState.add("skin().source", Resource("scale9/windows/button/focused.png"))
+//		states += pressedState
+//		
+//		onEvent[MouseOverEvent](org.sgine.core.ProcessingMode.Blocking) {
+//			if (!focused()) {
+//				states.activate("hoverSkin")
+//			}
+//		}
+//		onEvent[MouseOutEvent](org.sgine.core.ProcessingMode.Blocking) {
+//			states.deactivate("hoverSkin")
+//		}
+//		onEvent[MousePressEvent](org.sgine.core.ProcessingMode.Blocking) {
+//			states.deactivate("hoverSkin")
+//			states.deactivate("focusSkin")
+//			states.activate("pressedSkin")
+//		}
+//		onEvent[MouseReleaseEvent](org.sgine.core.ProcessingMode.Blocking) {
+//			states.deactivate("pressedSkin")
+//			if (focused()) {
+//				states.activate("focusSkin")
+//			} else {
+//				states.activate("hoverSkin")
+//			}
+//		}
+//		focused.onEvent[PropertyChangeEvent[_]](org.sgine.core.ProcessingMode.Blocking) {
+//			if (focused()) {
+//				states.deactivate("hoverSkin")
+//				states.activate("focusSkin")
+//			} else {
+//				states.deactivate("focusSkin")
+//				if (mouseState()) {
+//					states.activate("hoverSkin")
+//				}
+//			}
+//		}
 	}
 }
