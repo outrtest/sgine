@@ -42,7 +42,25 @@ trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
 	 * 		true if the value is acceptable
 	 */
 	def isValue(v: Any) = {
-		if (manifest.erasure.isInstance(v)) {
+		val erasure = org.sgine.util.Reflection.boxed(manifest.erasure)
+		if (erasure.isInstance(v)) {
+			true
+		} else {
+			false
+		}
+	}
+	
+	/**
+	 * Attempts to assign the passed value to this property if it
+	 * is assignable via erasure type.
+	 * 
+	 * @param v
+	 * @return
+	 * 		true if the value was assignable and was assigned
+	 */
+	def erasured(v: Any): Boolean = {
+		if (isValue(v)) {
+			value = v.asInstanceOf[T]
 			true
 		} else {
 			false

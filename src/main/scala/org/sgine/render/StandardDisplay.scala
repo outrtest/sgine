@@ -16,6 +16,7 @@ import org.sgine.scene.ext.ResolutionNode
 
 import org.sgine.ui.style.WindowsTheme
 
+import org.sgine.work.DefaultWorkManager
 import org.sgine.work.Updatable
 
 /**
@@ -88,6 +89,10 @@ trait StandardDisplay extends Listenable with Display {
 		
 		renderer.renderable := RenderableScene(scene)
 		
+		DefaultWorkManager += initAndSetup
+	}
+	
+	private val initAndSetup = () => {
 		init()
 		setup()
 	}

@@ -18,34 +18,34 @@ class TextInput extends Text with SkinnedComponent {
 	
 	protected def configureText() = {
 		// TODO: FIX STYLE SUPPORT AND PUT THIS IN THEMING
-		val hoverState = new State("hoverSkin")
-		hoverState.add("skin().source", Resource("scale9/windows/textinput/hover.png"))
-		states += hoverState
-		
-		val focusState = new State("focusSkin")
-		focusState.add("skin().source", Resource("scale9/windows/textinput/focused.png"))
-		states += focusState
-		
-		onEvent[MouseOverEvent](org.sgine.core.ProcessingMode.Blocking) {
-			if (!focused()) {
-				states.activate("hoverSkin")
-			}
-		}
-		onEvent[MouseOutEvent](org.sgine.core.ProcessingMode.Blocking) {
-			states.deactivate("hoverSkin")
-		}
-		focused.onEvent[PropertyChangeEvent[_]](org.sgine.core.ProcessingMode.Blocking) {
-			if (focused()) {
-				states.deactivate("hoverSkin")
-				states.activate("focusSkin")
-//				selection.all()
-			} else {
-				states.deactivate("focusSkin")
-				if (mouseState()) {
-					states.activate("hoverSkin")
-				}
-//				selection.none()
-			}
-		}
+//		val hoverState = new State("hoverSkin")
+//		hoverState.add("skin().source", Resource("scale9/windows/textinput/hover.png"))
+//		states += hoverState
+//		
+//		val focusState = new State("focusSkin")
+//		focusState.add("skin().source", Resource("scale9/windows/textinput/focused.png"))
+//		states += focusState
+//		
+//		onEvent[MouseOverEvent](org.sgine.core.ProcessingMode.Blocking) {
+//			if (!focused()) {
+//				states.activate("hoverSkin")
+//			}
+//		}
+//		onEvent[MouseOutEvent](org.sgine.core.ProcessingMode.Blocking) {
+//			states.deactivate("hoverSkin")
+//		}
+//		focused.onEvent[PropertyChangeEvent[_]](org.sgine.core.ProcessingMode.Blocking) {
+//			if (focused()) {
+//				states.deactivate("hoverSkin")
+//				states.activate("focusSkin")
+////				selection.all()
+//			} else {
+//				states.deactivate("focusSkin")
+//				if (mouseState()) {
+//					states.activate("hoverSkin")
+//				}
+////				selection.none()
+//			}
+//		}
 	}
 }
