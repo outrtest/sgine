@@ -62,6 +62,7 @@ trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
 		if (erasure.isAssignableFrom(c)) {
 			true
 		} else {
+			println("Not assignable: " + erasure + " - " + c)
 			false
 		}
 	}
