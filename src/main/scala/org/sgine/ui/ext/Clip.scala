@@ -6,8 +6,9 @@ import org.sgine.ui.Component
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty
+import org.sgine.property.style.Stylized
 
-class Clip(override val parent: Component) extends PropertyContainer {
+class Clip(override val parent: Component) extends Stylized {
 	val enabled = new AdvancedProperty[Boolean](false, this)
 	val x1 = new NumericProperty(0.0, this)
 	val y1 = new NumericProperty(0.0, this)
