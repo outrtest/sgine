@@ -35,10 +35,11 @@ trait Style {
 					val name = m.getName.replaceAll("_", ".")
 					val sp = if (classOf[Function0[_]].isAssignableFrom(m.getReturnType)) {
 						val f = m.invoke(this).asInstanceOf[Function0[_]]
-						StyleProperty(name, Reflection.boxed(f().asInstanceOf[AnyRef].getClass), f)
+						val wrap = !f.isInstanceOf[Property[_]]
+						StyleProperty(name, Reflection.boxed(f().asInstanceOf[AnyRef].getClass), f, wrap)
 					} else {
 						val f = () => m.invoke(this)
-						StyleProperty(name, Reflection.boxed(m.getReturnType), f)
+						StyleProperty(name, Reflection.boxed(m.getReturnType), f, false)
 					}
 					_properties = sp :: _properties
 				}
@@ -49,8 +50,7 @@ trait Style {
 	}
 	
 	def register(name: String, value: Any) = synchronized {
-		println("registering: " + name + " - " + value.asInstanceOf[AnyRef].getClass + " - " + value)
-		_properties = StyleProperty(name, value.asInstanceOf[AnyRef].getClass, () => value) :: _properties
+		_properties = StyleProperty(name, value.asInstanceOf[AnyRef].getClass, () => value, false) :: _properties
 	}
 	
 	def update(name: String, value: Any) = register(name, value)
@@ -64,42 +64,27 @@ trait Style {
 	
 	def apply(stylized: Stylized): Unit = {
 		initialize()
-		/*
-		// Cycle through all of the Stylized properties
-		for (p <- stylized.properties) p match {
-			case sp: StylizedProperty[_] => {
-				val name = stylized.name(sp)
-				findStylizedProperty(name) match {
-					case Some(prop) => {
-						changeProperty(prop, sp)		// Apply
-					}
-					case None => sp.changeStyle(null)				// Remove
-				}
-			}
-			case s: Stylized => {	// Apply child styles to stylized children
-				_styles.find(_.condition(s)) match {
-					case Some(style) => style(s) // Apply sub-style
-					case None => // Ignore
-				}
-			}
-			case _ =>
-		}*/
 		
-		// Revert all styles to null first
-		for (p <- stylized.properties) p match {
-			case sp: StylizedProperty[_] => sp.changeStyle(null)
-			case _ =>
-		}
+		var stylizedProperties = stylized.properties.toList
 		
 		// Apply styles
 		for (sp <- properties) {
 			org.sgine.path.OPath.resolve(stylized, sp.name) match {
 				case Some(result) => result match {
-					case stylizedProperty: StylizedProperty[_] => changeProperty(sp, stylizedProperty)
-					case _ => //println("NOT STYLIZED: " + result.asInstanceOf[AnyRef].getClass + " - " + sp.name)
+					case stylizedProperty: StylizedProperty[_] => {
+						changeProperty(sp, stylizedProperty)
+						stylizedProperties = stylizedProperties.filterNot(_ == stylizedProperty)
+					}
+					case _ => println("NOT STYLIZED: " + result.asInstanceOf[AnyRef].getClass + " - " + sp.name)
 				}
-				case None => // Unable to resolve
+				case None => println("Cannot resolve: " + sp.name) // Unable to resolve
 			}
+		}
+		
+		// Revert all styles to null that we didn't match
+		for (p <- stylizedProperties) p match {
+			case sp: StylizedProperty[_] => sp.changeStyle(null)
+			case _ =>
 		}
 		
 		// Process child styles
@@ -124,7 +109,15 @@ trait Style {
 	
 	private def changeProperty[T](prop: StyleProperty, sp: StylizedProperty[T]) = {
 		if (sp.isAssignable(prop.c)) {
-			sp.changeStyle(prop.f.asInstanceOf[Function0[T]])
+			val f = prop.f.asInstanceOf[Function0[T]]
+			val wrapped = prop.wrap match {
+				case true => {
+					val value = f()
+					() => value
+				}
+				case false => f
+			}
+			sp.changeStyle(wrapped)
 		} else {
 			// Not a type match - remove
 			sp.changeStyle(null)
@@ -132,7 +125,7 @@ trait Style {
 	}
 }
 
-case class StyleProperty(name: String, c: Class[_], f: () => Any)
+case class StyleProperty(name: String, c: Class[_], f: () => Any, wrap: Boolean)
 
 object Style {
 	protected val filterOut = List("condition", "properties", "apply")

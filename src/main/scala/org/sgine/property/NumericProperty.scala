@@ -16,6 +16,17 @@ import org.sgine.property.event.PropertyChangeEvent
 
 import org.sgine.work.Updatable
 
+class NumericProperty (value: Double = 0.0, parent: Listenable = null, name: String = null, dependency: Function0[Double] = null, filter: Double => Double = null, filterType: FilterType = FilterType.Modify, listener: EventHandler = null)(override protected implicit val manifest: Manifest[Double]) extends AdvancedProperty[Double](value, parent, name, dependency, filter, filterType, listener) {
+	def +=(value: Double) = {
+		apply(apply() + value)
+	}
+	
+	def -=(value: Double) = {
+		apply(apply() - value)
+	}
+}
+
+/*
 class NumericProperty(protected implicit val manifest: Manifest[Double]) extends Property[Double] with Listenable with Animatable[Double] {
 	private var _name: String = _
 	private var _dependency: Function0[Double] = _
@@ -223,4 +234,4 @@ class NumericProperty(protected implicit val manifest: Manifest[Double]) extends
 		case "parent" => Some(parent)
 		case _ => super.resolveElement(key)
 	}
-}
+}*/
