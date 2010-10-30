@@ -9,6 +9,7 @@ import org.sgine.work._
 import org.sgine.work.unit._
 
 abstract class Event(_listenable: Listenable) {
+	val cause = Event.current.get
 	def listenable = _listenable
 	
 	protected[event] var counter = new java.util.concurrent.atomic.AtomicInteger(0)			// Keep track of current listener count currently being invoked
@@ -50,28 +51,35 @@ abstract class Event(_listenable: Listenable) {
 }
 
 object Event {
+	val current = new ThreadLocal[Event]()
 	var workManager = DefaultWorkManager
 	
 	def enqueue(evt: Event, target: Listenable = null) = {
 		val listenable = if (target != null) target else evt.listenable
 		
-		// Pre-Process Event on Listenable
-		listenable.processEvent(evt)
-		
-		// Process Event on blocking handlers
-		if (evt.processBlocking) {
-			for (h <- listenable.listeners) {
-				if (isBlocking(h)) {
-					h.process(evt)
+		val previousCause = current.get()	// Store reference to previous event
+		current.set(evt)					// Set current to this
+		try {
+			// Pre-Process Event on Listenable
+			listenable.processEvent(evt)
+			
+			// Process Event on blocking handlers
+			if (evt.processBlocking) {
+				for (h <- listenable.listeners) {
+					if (isBlocking(h)) {
+						h.process(evt)
+					}
 				}
 			}
+			
+			// Walk up the hierarchy for Recursion.Parents
+			processParentRecursion(listenable.parent, evt)
+			
+			// Walk down the hierarchy for Recursion.Children
+			processChildrenRecursion(listenable, evt)
+		} finally {
+			current.set(previousCause)		// Revert current event back
 		}
-		
-		// Walk up the hierarchy for Recursion.Parents
-		processParentRecursion(listenable.parent, evt)
-		
-		// Walk down the hierarchy for Recursion.Children
-		processChildrenRecursion(listenable, evt)
 		
 		// Enqueue Normal-blocking event
 		if (evt.processNormal) workManager += NormalEventWorkUnit(evt, listenable)
@@ -158,7 +166,13 @@ case class AsynchronousWorkUnit(h: EventHandler, evt: Event) extends Function0[U
 	evt.counter.incrementAndGet
 	
 	def apply() = {
-		h.process(evt)
+		val previousCause = Event.current.get()
+		Event.current.set(evt)
+		try {
+			h.process(evt)
+		} finally {
+			Event.current.set(previousCause)
+		}
 		
 		if (evt.counter.decrementAndGet == 0) {
 			evt match {
@@ -176,10 +190,16 @@ case class NormalEventWorkUnit(evt: Event, listenable: Listenable) extends Block
 	evt.counter.incrementAndGet
 	
 	def apply() = {
-		for (h <- listenable.listeners) {
-			if (h.processingMode == ProcessingMode.Normal) {
-				h.process(evt)
+		val previousCause = Event.current.get()
+		Event.current.set(evt)
+		try {
+			for (h <- listenable.listeners) {
+				if (h.processingMode == ProcessingMode.Normal) {
+					h.process(evt)
+				}
 			}
+		} finally {
+			Event.current.set(previousCause)
 		}
 		
 		if (evt.counter.decrementAndGet == 0) {

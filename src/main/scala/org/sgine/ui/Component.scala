@@ -13,6 +13,8 @@ import org.sgine.event.EventHandler
 import org.sgine.event.Listenable
 import org.sgine.event.Recursion
 
+import org.sgine.input.event._
+
 import org.sgine.scene.ext.ColorNode
 import org.sgine.scene.ext.MatrixNode
 
@@ -49,12 +51,21 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	val lighting = new AdvancedProperty[Boolean](true, this)
 	val mouseState = new AdvancedProperty[Boolean](false, this)
 	val initialized = new AdvancedProperty[Boolean](false, this)
+	/**
+	 * Defines whether the camera is used to determine perspective of
+	 * this component or whether it is independent. Defaults to true.
+	 */
+	val useCamera = new AdvancedProperty[Boolean](true, this)
 	
 	val location = new Location(this)
 	val rotation = new Rotation(this)
 	val scale = new Scale(this)
 	val padding = new Padding(this)
 	val size = new Size(this)
+	
+	// Create states
+	val stateHover = states("hover")
+	val statePress = states("press")
 	
 	private lazy val _predrawables = predrawables
 	private lazy val _postdrawables = postdrawables
@@ -75,6 +86,11 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 						rotation.y,
 						rotation.z)
 						
+	listeners += EventHandler(mouseOver, ProcessingMode.Blocking)
+	listeners += EventHandler(mouseOut, ProcessingMode.Blocking)
+	listeners += EventHandler(mousePress, ProcessingMode.Blocking)
+	listeners += EventHandler(mouseRelease, ProcessingMode.Blocking)
+	
 	initializeInternal()
 	
 	private def initializeInternal() = {
@@ -114,7 +130,7 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 		}
 		
 		preRender()
-		_renderer.loadMatrix(worldMatrix())
+		_renderer.loadModelMatrix(worldMatrix(), useCamera())
 		
 		preColor()
 		_predrawables.foreach(draw)
@@ -229,6 +245,22 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 			}
 		}
 		rotation.actual(x, y, z)
+	}
+	
+	private def mouseOver(evt: MouseOverEvent) = {
+		stateHover.activate()
+	}
+	
+	private def mouseOut(evt: MouseOutEvent) = {
+		stateHover.deactivate()
+	}
+	
+	private def mousePress(evt: MousePressEvent) = {
+		statePress.activate()
+	}
+	
+	private def mouseRelease(evt: MouseReleaseEvent) = {
+		statePress.deactivate()
 	}
 	
 	override def toString() = getClass.getSimpleName

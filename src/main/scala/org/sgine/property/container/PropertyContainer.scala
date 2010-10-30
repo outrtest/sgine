@@ -35,7 +35,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	
 	def apply(value: Int): Property[Int] = this
 	
-	def apply(name: String): Option[Property[_]] = {
+	def property(name: String): Option[Property[_]] = {
 		initialize()
 		
 		for ((n, p) <- aliases) {
@@ -53,7 +53,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	}
 	
 	def apply[T](key: String, value: T, autoCommit: Boolean): Unit = {
-		apply(key) match {
+		property(key) match {
 			case Some(p) => {
 				val pt = p.asInstanceOf[Property[T]]
 				pt := value
@@ -203,7 +203,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	
 	abstract override def resolveElement(key: String) = {
 		if (contains(key)) {
-			this(key)
+			property(key)
 		} else {
 			super.resolveElement(key)
 		}

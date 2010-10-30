@@ -1,43 +1,36 @@
 package org.sgine.property.state
 
 import org.sgine.path.OPath
+import org.sgine.path.PathSupport
 
 import org.sgine.property.Property
+import org.sgine.property.container.PropertyContainer
 
-class StateManager private[state](val stateful: Stateful) {
-	private var groups: List[StateGroup] = Nil
+class StateManager private[state](val stateful: Stateful) extends PropertyContainer with PathSupport {
+	override val parent = stateful
+	
+	private var states = Map.empty[String, State]
 	
 	private var originals = Map.empty[String, Any]
 	private var active: List[State] = Nil
 	
-	def create(group: String, name: String) = {
-		groups.view.flatMap(_.states).find(_.name == name) match {
-			case Some(s) => throw new RuntimeException("Cannot create an already existing state: " + name)
+	private def create(name: String) = synchronized {
+		states.get(name) match {
+			case Some(s) => s
 			case None => {
-				val g = this.group(group)
-				val s = g.create(name)
+				val state = new State(this, name)
+				states += name -> state
 				
-				s
+				state
 			}
 		}
 	}
 	
 	def isActive(state: State) = active.indexOf(state) != -1
 	
-	def apply(name: String) = groups.view.flatMap(_.states).find(_.name == name).getOrElse(throw new NullPointerException("Cannot find state: " + name))
+	def apply(name: String) = states.getOrElse(name, create(name))
 	
-	def group(group: String): StateGroup = {
-		groups.find(_.name == group) match {
-			case Some(g) => g
-			case None => synchronized {
-				val g = new StateGroup(this, group)
-				groups = g :: groups
-				g
-			}
-		}
-	}
-	
-	
+	def option(name: String) = states.get(name)
 	
 	def activate(name: String): Unit = activate(apply(name))
 	
@@ -106,4 +99,6 @@ class StateManager private[state](val stateful: Stateful) {
 			None
 		}
 	}
+	
+	override def resolveElement(key: String) = Some(apply(key))
 }

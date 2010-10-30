@@ -11,6 +11,7 @@ class FPSLabel extends Label {
 	private var count = 0
 	private var framerate = 0
 	
+	useCamera := false
 	lighting := false
 	
 	override def drawComponent() = {

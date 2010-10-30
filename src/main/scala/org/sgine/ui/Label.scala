@@ -45,9 +45,9 @@ class Label extends Component {
 			height = font().lineHeight
 		}
 		
-		if ((width != size.width()) || (height != size.height())) {
-			size.width := width
-			size.height := height
+		if ((width != size.actual.width()) || (height != size.actual.height())) {
+			size.actual.width := width
+			size.actual.height := height
 		}
 	}
 	

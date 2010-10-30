@@ -2,6 +2,14 @@
 
 package org.sgine.render
 
+import org.sgine.core.ProcessingMode
+
+import org.sgine.event.EventHandler
+
+import org.sgine.property.event.PropertyChangeEvent
+
+import org.sgine.scene.ext.WorldMatrixNode
+
 import simplex3d.math.doublem.renamed._
 import simplex3d.math.doublem.DoubleMath._
 
@@ -15,6 +23,9 @@ class Camera(
 ) {
 	private val viewProjection = Mat4(0)
 	private val inverseViewProjection = Mat4(0)
+	
+	private var linked: WorldMatrixNode = _
+	private val handler = EventHandler(linkChanged, ProcessingMode.Blocking)
 
 	def update() {
 		viewProjection := projection*Mat4(view)
@@ -41,4 +52,20 @@ class Camera(
 			normalizedScreenCoords.z
 		)
 	}
+	
+	def set(matrix: Mat3x4) = view := inverse(matrix)
+	
+	def link(node: WorldMatrixNode) = {
+		if (linked != null) {		// Unlink existing
+			linked.worldMatrix.listeners -= handler
+		}
+		linked = node
+		if (linked != null) {		// Link new
+			linked.worldMatrix.listeners += handler
+		}
+	}
+	
+	private def linkChanged(evt: PropertyChangeEvent[Mat3x4]) = set(evt.newValue)
+	
+//	def lookAt(matrix: Mat3x4) = view := Mat3x4(inverse(lookAt(cameraTranslation - componentLocation, Vec3.UnitY)))
 }

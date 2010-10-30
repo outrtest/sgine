@@ -81,8 +81,8 @@ class Scale9Skin extends Skin {
 		if (isValid) {
 			// Avoid asynchronous changes while we're working
 			val texture = this.texture
-			val width = component.size.width()
-			val height = component.size.height()
+			val width = component.size.actual.width()
+			val height = component.size.actual.height()
 			val x1 = this.x1()
 			val y1 = this.y1()
 			val x2 = this.x2()
@@ -106,8 +106,8 @@ class Scale9Skin extends Skin {
 		x2() - x1() > 0.0 &&
 		y2() - y1() > 0.0 &&
 		component != null &&
-		component.size.width() > 0.0 &&
-		component.size.height() > 0.0
+		component.size.actual.width() > 0.0 &&
+		component.size.actual.height() > 0.0
 	}
 }
 

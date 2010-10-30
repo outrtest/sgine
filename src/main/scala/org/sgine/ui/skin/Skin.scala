@@ -32,7 +32,7 @@ trait Skin extends PropertyContainer {
 	protected[ui] def connect(component: SkinnedComponent) = {
 		this.component = component
 		
-		Listenable.listenTo(resizeHandler, component.size.width, component.size.height)
+		Listenable.listenTo(resizeHandler, component.size.actual.width, component.size.actual.height)
 		
 		resized()
 	}
@@ -45,8 +45,8 @@ trait Skin extends PropertyContainer {
 	protected[ui] def disconnect(component: SkinnedComponent) = {
 		this.component = null
 		
-		component.size.width.listeners -= resizeHandler
-		component.size.height.listeners -= resizeHandler
+		component.size.actual.width.listeners -= resizeHandler
+		component.size.actual.height.listeners -= resizeHandler
 	}
 	
 	/**

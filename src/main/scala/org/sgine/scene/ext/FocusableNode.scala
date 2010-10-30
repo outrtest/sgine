@@ -12,13 +12,16 @@ import org.sgine.input.event._
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.DelegateProperty
 import org.sgine.property.event.PropertyChangeEvent
+import org.sgine.property.state.Stateful
 
 import org.sgine.scene.Node
 
-trait FocusableNode extends Node {
+trait FocusableNode extends Node with Stateful {
 	val focused = new AdvancedProperty[Boolean](false, this)
 	val focusable = new AdvancedProperty[Boolean](true, this)
 	val mouseFocusable = new AdvancedProperty[Boolean](true, this)
+	
+	val stateFocused = states("focus")
 	
 	focused.listeners += EventHandler(focusChanged, ProcessingMode.Blocking)
 	
@@ -27,8 +30,10 @@ trait FocusableNode extends Node {
 	private def focusChanged(evt: PropertyChangeEvent[Boolean]) = {
 		if (evt.newValue) {
 			FocusableNode.focus(this)
+			stateFocused.activate()
 		} else {
 			FocusableNode.blur(this)
+			stateFocused.deactivate()
 		}
 	}
 	

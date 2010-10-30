@@ -16,6 +16,12 @@ import org.sgine.property.AdvancedProperty
 class ComponentInstance private() extends Component {
 	val instance = new AdvancedProperty[Component](null, this)
 	
+	def this(instance: Component) = {
+		this()
+		
+		this.instance := instance
+	}
+	
 	bounding.bindPath(OPath(this, "instance.bounding"))
 	
 	def drawComponent() = {
