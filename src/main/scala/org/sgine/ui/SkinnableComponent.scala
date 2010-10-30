@@ -39,15 +39,15 @@ trait SkinnableComponent extends CompositeComponent with FocusableNode {
 		
 		skin(normalResource, skinX1, skinY1, skinX2, skinY2)
 		
-		skin.size.width bind size.width
-		skin.size.height bind size.height
+		skin.size.width bind size.actual.width
+		skin.size.height bind size.actual.height
 		
 		updateState()
 	}
 	
 	protected def setSize(width: Double, height: Double) = {
-		size.width := width + padding.left() + padding.right()
-		size.height := height + padding.top() + padding.bottom()
+		size.actual.width := width + padding.left() + padding.right()
+		size.actual.height := height + padding.top() + padding.bottom()
 	}
 	
 	private def configureListeners() = {

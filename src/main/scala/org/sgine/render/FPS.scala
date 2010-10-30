@@ -28,7 +28,7 @@ class FPS private(frequency: Double, font: Font, matrix: Mat3x4d) extends Functi
 		}
 		
 		if (font != null) {
-			Renderer().loadMatrix(matrix)
+			Renderer().loadModelMatrix(matrix, false)
 			
 			font.drawString(accurate.toString, true)
 		}

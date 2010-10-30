@@ -10,6 +10,32 @@ import org.sgine.ui.TextInput
 import org.sgine.ui.skin.Scale9Skin
 
 object WindowsTheme extends Theme {
+	val button = new SelectorStyle("Button") {
+		val size_width_mode = SizeMode.Auto
+		val size_height_mode = SizeMode.Auto
+		val multiline = false
+		val editable = false
+		val textAlignment = HorizontalAlignment.Center
+		val selection_visible = false
+		val caret_visible = false
+		val font = FontManager("Arial", 24.0)
+		val textColor = Color.Black
+		val padding_top = 10.0
+		val padding_left = 25.0
+		val padding_bottom = 10.0
+		val padding_right = 25.0
+		
+		val skin = () => {
+			val scale9 = new Scale9Skin()
+			scale9(org.sgine.core.Resource("scale9/windows/button/normal.png"), 3.0, 3.0, 4.0, 5.0)
+			scale9
+		}
+		val states_focus = "skin().source" -> Resource("scale9/windows/button/focused.png")
+		val states_hover = "skin().source" -> Resource("scale9/windows/button/hover.png")
+		val states_press = "skin().source" -> Resource("scale9/windows/button/pressed.png")
+	}
+	register(button)
+	
 	val textInput = new SelectorStyle("TextInput") {
 		val size_width = 300.0
 		val size_width_mode = SizeMode.Explicit
@@ -34,28 +60,8 @@ object WindowsTheme extends Theme {
 			scale9(Resource("scale9/windows/textinput/normal.png"), 2.0, 2.0, 3.0, 3.0)
 			scale9
 		}
+		val states_focus = "skin().source" -> Resource("scale9/windows/textinput/focused.png")
+		val states_hover = "skin().source" -> Resource("scale9/windows/textinput/hover.png")
 	}
 	register(textInput)
-	
-	val button = new SelectorStyle("Button") {
-		val size_width_mode = SizeMode.Auto
-		val size_height_mode = SizeMode.Auto
-		val multiline = false
-		val editable = false
-		val textAlignment = HorizontalAlignment.Center
-		val selection_visible = false
-		val caret_visible = false
-		val font = FontManager("Arial", 24.0)
-		val textColor = Color.Black
-		val padding_top = 10.0
-		val padding_left = 25.0
-		val padding_bottom = 10.0
-		val padding_right = 25.0
-		
-		val skin = () => {
-			val scale9 = new Scale9Skin()
-			scale9(org.sgine.core.Resource("scale9/windows/button/normal.png"), 3.0, 3.0, 4.0, 5.0)
-			scale9
-		}
-	}
 }

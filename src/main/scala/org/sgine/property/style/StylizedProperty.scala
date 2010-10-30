@@ -74,7 +74,7 @@ trait StylizedProperty[T] extends Property[T] {
 	}
 	
 	private def styleChanged(evt: ChangeEvent[T]) = {
-		if (!modified) {
+		if (useStyle) {
 			this match {
 				case cp: ChangeableProperty[_] => cp.changed(false)
 				case _ =>

@@ -69,15 +69,22 @@ trait Style {
 		
 		// Apply styles
 		for (sp <- properties) {
+//			println("Applying: " + sp.name + " to " + stylized)
 			org.sgine.path.OPath.resolve(stylized, sp.name) match {
 				case Some(result) => result match {
 					case stylizedProperty: StylizedProperty[_] => {
 						changeProperty(sp, stylizedProperty)
 						stylizedProperties = stylizedProperties.filterNot(_ == stylizedProperty)
 					}
+					case state: org.sgine.property.state.State => {
+						sp.f() match {
+							case (path: String, value: Any) => state(path) = value
+							case _ => throw new RuntimeException("State-based stylization must reference Tuple2[String, Any].")
+						}
+					}
 					case _ => println("NOT STYLIZED: " + result.asInstanceOf[AnyRef].getClass + " - " + sp.name)
 				}
-				case None => println("Cannot resolve: " + sp.name) // Unable to resolve
+				case None => //println("Cannot resolve: " + sp.name) // Unable to resolve
 			}
 		}
 		

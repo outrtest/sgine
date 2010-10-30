@@ -107,10 +107,10 @@ class Text extends ShapeComponent with FocusableNode {
 		}
 	}
 	
-	Listenable.listenTo(EventHandler(invalidateText, ProcessingMode.Normal),
+	Listenable.listenTo(EventHandler(invalidateText, ProcessingMode.Blocking),
 						font,
 						text,
-						size.width,
+						size.actual.width,
 						kern,
 						textAlignment,
 						multiline,
@@ -160,7 +160,7 @@ class Text extends ShapeComponent with FocusableNode {
 		
 		textBuilder.text = text()
 		textBuilder.kern = kern()
-		textBuilder.wrapWidth = size.width()
+		textBuilder.wrapWidth = size.actual.width()
 		textBuilder.wrapMethod = wrapMethod
 		textBuilder.textAlignment = textAlignment()
 		textBuilder.xOffset = textAlignment() match {
@@ -192,10 +192,10 @@ class Text extends ShapeComponent with FocusableNode {
 			case n => font().lineHeight * n
 		}
 		if (size.width.mode() == SizeMode.Auto) {
-			size.width := measured.x + padding.left() + padding.right()
+			size.actual.width := measured.x + padding.left() + padding.right()
 		}
 		if (size.height.mode() == SizeMode.Auto) {
-			size.height := height + padding.bottom() + padding.top()
+			size.actual.height := height + padding.bottom() + padding.top()
 		}
 		characters := chars.reverse
 		font() match {

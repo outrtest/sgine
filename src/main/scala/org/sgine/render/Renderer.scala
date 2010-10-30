@@ -300,9 +300,8 @@ class Renderer extends PropertyContainer with Worker {
 		}
 	}
 	
-	// TODO: rename to loadModelMatrix
-	def loadMatrix(model: Mat3x4d) = {
-		val modelView = model concatenate camera.view
+	def loadModelMatrix(model: Mat3x4d, useCamera: Boolean) = {
+		val modelView = if (useCamera) model concatenate camera.view else model
 		matrixToBuffer(modelView, matrixStore)
 		matrixStore.flip()
 		glLoadMatrix(matrixStore)

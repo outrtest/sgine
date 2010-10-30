@@ -80,13 +80,13 @@ class Caret(override val parent: Text) extends PropertyContainer {
 //			println("Adjust: " + parent.clip.adjustY())
 //		}
 		
-		val width = caretWidth * 5.0
-		if (caretX - width < parent.clip.x1()) {
-			parent.clip.adjustX += (parent.clip.x1() + width) - caretX
-		}
-		if (caretX + width > parent.clip.x2()) {
-			parent.clip.adjustX -= (caretX + width) - parent.clip.x2()
-		}
+//		val width = caretWidth * 5.0
+//		if (caretX - width < parent.clip.x1()) {
+//			parent.clip.adjustX += (parent.clip.x1() + width) - caretX
+//		}
+//		if (caretX + width > parent.clip.x2()) {
+//			parent.clip.adjustX -= (caretX + width) - parent.clip.x2()
+//		}
 //		if (caretY - height > parent.clip.y2()) {
 ////			parent.clip.adjustY := parent.clip.adjustY() - ((caretY + height) - parent.clip.y1())
 //			println("out of range! " + parent.clip.y2() + ", " + height + ", " + caretY + ", " + parent.clip.y1())
