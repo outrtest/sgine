@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11._
 import org.sgine.core.Color
 
 import org.sgine.property.AdvancedProperty
+import org.sgine.property.NumericProperty
 import org.sgine.property.TransactionalProperty
 import org.sgine.property.container.PropertyContainer
 
@@ -23,9 +24,9 @@ class Light private[render](val index: Int, val renderer: Renderer) extends Prop
 	val spotDirection = new AdvancedProperty[Vec3d](Vec3d(0.0, 0.0, -1.0), this) with TransactionalProperty[Vec3d]
 	val spotExponent = new AdvancedProperty[Int](0, this) with TransactionalProperty[Int]
 	val spotCutoff = new AdvancedProperty[Int](180, this) with TransactionalProperty[Int]
-	val constantAttenuation = new AdvancedProperty[Double](1.0, this) with TransactionalProperty[Double]
-	val linearAttenuation = new AdvancedProperty[Double](0.0, this) with TransactionalProperty[Double]
-	val quadraticAttenuation = new AdvancedProperty[Double](0.0, this) with TransactionalProperty[Double]
+	val constantAttenuation = new NumericProperty(1.0, this) with TransactionalProperty[Double]
+	val linearAttenuation = new NumericProperty(0.0, this) with TransactionalProperty[Double]
+	val quadraticAttenuation = new NumericProperty(0.0, this) with TransactionalProperty[Double]
 	
 	def update() = {
 		if (enabled.uncommitted) {

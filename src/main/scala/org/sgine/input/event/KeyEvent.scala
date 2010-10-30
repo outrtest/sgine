@@ -31,7 +31,7 @@ class KeyPressEvent protected(key: Key,
 					appsDown: Boolean,
 					capsDown: Boolean,
 					repeat: Boolean,
-					listenable: Listenable) extends KeyEvent(key, KeyState.Pressed, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable) {
+					listenable: Listenable) extends KeyEvent(key, KeyState.Pressed, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable) with PressEvent {
 	def retarget(target: org.sgine.event.Listenable): Event = new KeyPressEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, target)
 }
 
@@ -45,7 +45,7 @@ class KeyReleaseEvent protected(key: Key,
 					appsDown: Boolean,
 					capsDown: Boolean,
 					repeat: Boolean,
-					listenable: Listenable) extends KeyEvent(key, KeyState.Released, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable) {
+					listenable: Listenable) extends KeyEvent(key, KeyState.Released, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, listenable) with ReleaseEvent {
 	def retarget(target: org.sgine.event.Listenable): Event = new KeyReleaseEvent(key, time, keyChar, controlDown, shiftDown, metaDown, menuDown, appsDown, capsDown, repeat, target)
 }
 

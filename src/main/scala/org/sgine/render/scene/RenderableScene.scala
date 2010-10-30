@@ -85,7 +85,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 					val v = screenToModelCoords(move, n)
 					val e = MouseEvent(-2, false, 0, v.x, v.y, move.deltaX, move.deltaY, n)
 					n match {
-						case c: org.sgine.ui.Component => c.mouseState := true
+						case c: org.sgine.ui.Component => c.mouseState.flag.set(Mouse.Over)
 						case _ =>
 					}
 					Event.enqueue(e)
@@ -96,7 +96,7 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 					val v = screenToModelCoords(move, n)
 					val e = MouseEvent(-3, false, 0, v.x, v.y, move.deltaX, move.deltaY, n)
 					n match {
-						case c: org.sgine.ui.Component => c.mouseState := false
+						case c: org.sgine.ui.Component => c.mouseState.flag.remove(Mouse.Over)
 						case _ =>
 					}
 					Event.enqueue(e)

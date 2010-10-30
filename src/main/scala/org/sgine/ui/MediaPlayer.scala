@@ -21,15 +21,17 @@ import org.sgine.event.EventHandler
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.event.PropertyChangeEvent
 
+import org.sgine.property.NumericProperty
+
 import org.sgine.render.RenderImage
 
 import scala.math._
 
 class MediaPlayer extends CachedComponent {
 	val source = new AdvancedProperty[Resource](null, this)
-	val fader = new AdvancedProperty[Double](0.0, this)
-	val volume = new AdvancedProperty[Double](1.0, this)
-	val balance = new AdvancedProperty[Double](0.0, this)
+	val fader = new NumericProperty(0.0, this)
+	val volume = new NumericProperty(1.0, this)
+	val balance = new NumericProperty(0.0, this)
 	val mute = new AdvancedProperty[Boolean](false, this)
 	val repeat = new AdvancedProperty[Boolean](false, this)
 	

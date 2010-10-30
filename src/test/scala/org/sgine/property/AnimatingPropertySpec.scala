@@ -10,13 +10,13 @@ import org.sgine.property.animate._
 import org.sgine.util.Time
 
 class AnimatingPropertySpec extends FlatSpec with ShouldMatchers {
-	val p1 = new AdvancedProperty[Double](0.0)
+	val p1 = new NumericProperty(0.0)
 	p1.animator = new LinearNumericAnimator(5.0)
 	
 	val p2 = new NumericProperty(0.0)
 	p2.animator = new LinearNumericAnimator(5.0)
 	
-	val p3 = new AdvancedProperty[Double](0.0)
+	val p3 = new NumericProperty(0.0)
 	p3.animator = new EasingNumericAnimator(Linear.easeIn, 2.0, true)
 	
 	val p4 = new NumericProperty(0.0)

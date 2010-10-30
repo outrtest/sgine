@@ -12,6 +12,14 @@ import org.sgine.work.Updatable
 import org.lwjgl.input.{Mouse => GLMouse}
 
 object Mouse extends Listenable {
+	val Move = 0
+	val Press = 1
+	val Release = -1
+	val Over = 2
+	val Out = -2
+	val Click = 4
+	val Wheel = 8
+	
 	def validate() = {
 		if (!GLMouse.isCreated) {
 			GLMouse.create()
