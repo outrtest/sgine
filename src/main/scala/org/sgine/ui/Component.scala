@@ -13,6 +13,7 @@ import org.sgine.event.EventHandler
 import org.sgine.event.Listenable
 import org.sgine.event.Recursion
 
+import org.sgine.input.Mouse
 import org.sgine.input.event._
 
 import org.sgine.scene.ext.ColorNode
@@ -26,6 +27,7 @@ import org.sgine.property.AdvancedProperty
 import org.sgine.property.DelegateProperty
 import org.sgine.property.FilterType
 import org.sgine.property.ImmutableProperty
+import org.sgine.property.IntegerProperty
 import org.sgine.property.PathProperty
 import org.sgine.property.container.PropertyContainer
 import org.sgine.property.state.Stateful
@@ -49,7 +51,11 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	val visible = new AdvancedProperty[Boolean](true, this, filter = visibilityFilter, filterType = FilterType.Retrieve)
 	val renderer = new DelegateProperty(() => _renderer)
 	val lighting = new AdvancedProperty[Boolean](true, this)
-	val mouseState = new AdvancedProperty[Boolean](false, this)
+	/**
+	 * Bitwise flags from Mouse for the current state of the Mouse on this
+	 * Component.
+	 */
+	val mouseState = new IntegerProperty(0, this)
 	val initialized = new AdvancedProperty[Boolean](false, this)
 	/**
 	 * Defines whether the camera is used to determine perspective of
@@ -66,6 +72,9 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	// Create states
 	val stateHover = states("hover")
 	val statePress = states("press")
+	
+	def isMouseOver = mouseState.flag.has(Mouse.Over)
+	def isMouseDown = mouseState.flag.has(Mouse.Press)
 	
 	private lazy val _predrawables = predrawables
 	private lazy val _postdrawables = postdrawables
@@ -256,11 +265,20 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	}
 	
 	private def mousePress(evt: MousePressEvent) = {
+		mouseState.flag.set(Mouse.Press)
 		statePress.activate()
 	}
 	
 	private def mouseRelease(evt: MouseReleaseEvent) = {
+		val fireClick = mouseState.flag.has(Mouse.Press)
+		
+		mouseState.flag.remove(Mouse.Press)
 		statePress.deactivate()
+		
+		if (fireClick) {
+			val click = new MouseClickEvent(evt.button, evt.x, evt.y, evt.deltaX, evt.deltaY, evt.listenable)
+			Event.enqueue(click)
+		}
 	}
 	
 	override def toString() = getClass.getSimpleName

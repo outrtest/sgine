@@ -193,9 +193,13 @@ class Text extends ShapeComponent with FocusableNode {
 		}
 		if (size.width.mode() == SizeMode.Auto) {
 			size.actual.width := measured.x + padding.left() + padding.right()
+		} else {
+			size.actual.width := size.width()
 		}
 		if (size.height.mode() == SizeMode.Auto) {
 			size.actual.height := height + padding.bottom() + padding.top()
+		} else {
+			size.actual.height := size.height()
 		}
 		characters := chars.reverse
 		font() match {

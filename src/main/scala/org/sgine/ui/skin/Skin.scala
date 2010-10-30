@@ -12,9 +12,9 @@ import org.sgine.ui.SkinnedComponent
 
 /**
  * Skin is a light-weight trait for use with
- * SkinnableComponent to draw a background skin
+ * SkinnedComponent to draw a background skin
  * on a Component. A Skin instance may be assigned
- * to one and only one SkinnableComponent.
+ * to one and only one SkinnedComponent.
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */

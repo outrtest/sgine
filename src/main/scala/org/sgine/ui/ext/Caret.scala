@@ -25,8 +25,8 @@ import scala.math._
 class Caret(override val parent: Text) extends PropertyContainer {
 	val visible = new AdvancedProperty[Boolean](true, this)
 	val position = new AdvancedProperty[Int](0, this, filter = filterPosition)
-	val width = new AdvancedProperty[Double](1.0, this)
-	val heightMultiplier = new AdvancedProperty[Double](0.4, this)
+	val width = new NumericProperty(1.0, this)
+	val heightMultiplier = new NumericProperty(0.4, this)
 	val color = new AdvancedProperty[Color](Color.White, this)
 	val rate = new NumericProperty(0.5, this, null)
 	val mouseEnabled = new AdvancedProperty[Boolean](true, this)

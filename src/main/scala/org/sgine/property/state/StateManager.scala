@@ -91,9 +91,13 @@ class StateManager private[state](val stateful: Stateful) extends PropertyContai
 			if (matches.length > 1) {		// Activate the next one back
 				Some(matches(1).items.find(_.path == path).get.value)
 			} else {						// Only one, go back to original
-				val original = originals(path)
-				originals -= path
-				Some(original)
+				originals.get(path) match {
+					case Some(original) => {
+						originals -= path
+						Some(original)
+					}
+					case None => None
+				}
 			}
 		} else {							// It's not currently active, no change necessary
 			None

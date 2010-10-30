@@ -6,13 +6,6 @@ import org.sgine.event.Listenable
 import org.sgine.input.Mouse
 
 object MouseEvent {
-	val Press = 1
-	val Release = 2
-	val Move = 3
-	val Wheel = 4
-	val Over = 5
-	val Out = 6
-	
 	def apply(button: Int, state: Boolean, wheel: Int, x: Double, y: Double, dx: Double, dy: Double, listenable: Listenable = Mouse): MouseEvent = {
 		if (button == -1) {		// Not a button event
 			if (wheel != 0) {	// Wheel
@@ -57,12 +50,12 @@ class MousePressEvent(button: Int,
 					  y: Double,
 					  deltaX: Double,
 					  deltaY: Double,
-					  listenable: Listenable = Mouse) extends MouseButtonEvent(MouseEvent.Press, button, true, x, y, deltaX, deltaY, listenable) {
+					  listenable: Listenable = Mouse) extends MouseButtonEvent(Mouse.Press, button, true, x, y, deltaX, deltaY, listenable) with PressEvent {
 	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(button, true, 0, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
 	
-	override def toString() = "Pressed: " + button + " (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
+	override def toString() = "MousePressed: " + button + " (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
 }
 
 class MouseReleaseEvent(button: Int,
@@ -70,31 +63,44 @@ class MouseReleaseEvent(button: Int,
 						y: Double,
 						deltaX: Double,
 						deltaY: Double,
-						listenable: Listenable = Mouse) extends MouseButtonEvent(MouseEvent.Release, button, false, x, y, deltaX, deltaY, listenable) {
+						listenable: Listenable = Mouse) extends MouseButtonEvent(Mouse.Release, button, false, x, y, deltaX, deltaY, listenable) with ReleaseEvent {
 	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(button, false, 0, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
 	
-	override def toString() = "Released: " + button + " (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
+	override def toString() = "MouseReleased: " + button + " (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
+}
+
+class MouseClickEvent(button: Int,
+					  x: Double,
+					  y: Double,
+					  deltaX: Double,
+					  deltaY: Double,
+					  listenable: Listenable = Mouse) extends MouseButtonEvent(Mouse.Click, button, false, x, y, deltaX, deltaY, listenable) {
+	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(button, false, 0, x, y, deltaX, deltaY, target)
+	
+	def retarget(target: Listenable) = retarget(target, x, y)
+	
+	override def toString() = "MouseClicked: " + button + " (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
 }
 
 class MouseMoveEvent(x: Double,
 					 y: Double,
 					 deltaX: Double,
 					 deltaY: Double,
-					 listenable: Listenable = Mouse) extends MouseEvent(MouseEvent.Move, x, y, deltaX, deltaY, listenable) {
+					 listenable: Listenable = Mouse) extends MouseEvent(Mouse.Move, x, y, deltaX, deltaY, listenable) {
 	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(-1, false, 0, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
 	
-	override def toString() = "Moved: (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
+	override def toString() = "MouseMoved: (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
 }
 
 class MouseOverEvent(x: Double,
 					 y: Double,
 					 deltaX: Double,
 					 deltaY: Double,
-					 listenable: Listenable = Mouse) extends MouseEvent(MouseEvent.Over, x, y, deltaX, deltaY, listenable) {
+					 listenable: Listenable = Mouse) extends MouseEvent(Mouse.Over, x, y, deltaX, deltaY, listenable) {
 	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(-2, false, 0, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
@@ -106,7 +112,7 @@ class MouseOutEvent(x: Double,
 					 y: Double,
 					 deltaX: Double,
 					 deltaY: Double,
-					 listenable: Listenable = Mouse) extends MouseEvent(MouseEvent.Out, x, y, deltaX, deltaY, listenable) {
+					 listenable: Listenable = Mouse) extends MouseEvent(Mouse.Out, x, y, deltaX, deltaY, listenable) {
 	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(-3, false, 0, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
@@ -119,10 +125,10 @@ class MouseWheelEvent(x: Double,
 					  val wheel: Int,
 					  deltaX: Double,
 					  deltaY: Double,
-					  listenable: Listenable = Mouse) extends MouseEvent(MouseEvent.Wheel, x, y, deltaX, deltaY, listenable) {
+					  listenable: Listenable = Mouse) extends MouseEvent(Mouse.Wheel, x, y, deltaX, deltaY, listenable) {
 	def retarget(target: org.sgine.event.Listenable, x: Double, y: Double): Event = MouseEvent(-1, false, -1, x, y, deltaX, deltaY, target)
 	
 	def retarget(target: Listenable) = retarget(target, x, y)
 	
-	override def toString() = "Wheel: " + wheel + " (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
+	override def toString() = "MouseWheel: " + wheel + " (" + x + "x" + y + ") Delta: (" + deltaX + "x" + deltaY + ")"
 }

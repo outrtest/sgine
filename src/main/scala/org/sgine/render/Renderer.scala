@@ -24,6 +24,7 @@ import org.sgine.log._
 import org.sgine.math.mutable._
 
 import org.sgine.property.AdvancedProperty
+import org.sgine.property.NumericProperty
 import org.sgine.property.TransactionalProperty
 
 import org.sgine.property.container.PropertyContainer
@@ -87,7 +88,7 @@ class Renderer extends PropertyContainer with Worker {
 	
 	val screenWidth = new AdvancedProperty[Int](0, this)
 	val screenHeight = new AdvancedProperty[Int](0, this)
-	val aspectRatio = new AdvancedProperty[Double](0.0, this)
+	val aspectRatio = new NumericProperty(0.0, this)
 	aspectRatio.bind(screenWidth, (i: Int) => Some(screenWidth().toDouble / screenHeight().toDouble))
 	aspectRatio.bind(screenHeight, (i: Int) => Some(screenWidth().toDouble / screenHeight().toDouble))
 	
