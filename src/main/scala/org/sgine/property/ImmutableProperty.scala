@@ -10,7 +10,7 @@ import scala.reflect.Manifest
  * 
  * @author Matt Hicks
  */
-class ImmutableProperty[T](value:T)(protected implicit val manifest: Manifest[T]) extends Property[T] {
+class ImmutableProperty[T](value:T)(implicit val manifest: Manifest[T]) extends Property[T] {
 	def apply():T = {
 		value;
 	}

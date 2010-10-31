@@ -9,7 +9,7 @@ import scala.reflect.Manifest
  * 
  * @author Matt Hicks
  */
-class MutableProperty[T](protected implicit val manifest: Manifest[T]) extends Property[T] {
+class MutableProperty[T](implicit val manifest: Manifest[T]) extends Property[T] {
 	def this(initialValue: T)(implicit manifest: Manifest[T]) = {
 		this()
 		apply(initialValue)

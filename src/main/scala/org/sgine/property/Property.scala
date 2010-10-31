@@ -11,7 +11,7 @@ import scala.reflect.Manifest
  * @author Matt Hicks
  */
 trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
-	protected implicit val manifest: Manifest[T]
+	implicit val manifest: Manifest[T]
 	
 	protected var _defaultValue: T = _
 	def defaultValue = _defaultValue

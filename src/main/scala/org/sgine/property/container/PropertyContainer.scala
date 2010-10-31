@@ -14,7 +14,7 @@ import org.sgine.work.DefaultWorkManager
 import org.sgine.work.Updatable
 
 trait PropertyContainer extends Listenable with Property[Int] {
-	protected val manifest = ClassManifest.Int
+	val manifest = ClassManifest.Int
 	
 	private val _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
 	private var aliases = new HashMap[String, Property[_]]()
