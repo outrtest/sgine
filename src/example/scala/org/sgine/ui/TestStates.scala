@@ -24,6 +24,8 @@ object TestStates extends StandardDisplay with Debug {
 		component.location.y.animator = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
 		component.location.z.animator = new EasingNumericAnimator(Elastic.easeInOut, 1.0)
 		
+		component.size.actual.width.animator = new EasingNumericAnimator(Quintic.easeOut, 0.5)
+		
 		val state = component.states("test1")
 		state("rotation.z") = Pi / 4.0
 		state("location.x") = 200.0

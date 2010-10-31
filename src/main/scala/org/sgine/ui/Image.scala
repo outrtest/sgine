@@ -11,6 +11,7 @@ import org.sgine.core.Resource
 
 import org.sgine.event.Event
 import org.sgine.event.EventHandler
+import org.sgine.event.Listenable
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.ListenableProperty
@@ -55,6 +56,8 @@ class Image extends Component {
 	
 	private def configureListeners() = {
 		source.listeners += EventHandler(sourceChanged, ProcessingMode.Blocking)
+		
+		Listenable.listenTo(EventHandler(sizeChanged, ProcessingMode.Blocking), size.actual.width, size.actual.height)
 	}
 	
 	private def sourceChanged(evt: PropertyChangeEvent[Resource]) = {
@@ -62,13 +65,23 @@ class Image extends Component {
 		quad.texture := t
 		quad.width := t.width
 		quad.height := t.height
+		size.measured.width := t.width
+		size.measured.height := t.height
 		
-		if ((size.measured.width() != quad.width()) || (size.measured.height() != quad.height())) {
-			size.measured.width := quad.width()
-			size.measured.height := quad.height()
-		}
+//		quad.width := t.width
+//		quad.height := t.height
+//		
+//		if ((size.measured.width() != quad.width()) || (size.measured.height() != quad.height())) {
+//			size.measured.width := quad.width()
+//			size.measured.height := quad.height()
+//		}
 		
 		imageDirty.set(true)
+	}
+	
+	private def sizeChanged(evt: PropertyChangeEvent[_]) = {
+		quad.displayWidth := size.actual.width()
+		quad.displayHeight := size.actual.height()
 	}
 	
 	override def toString() = "Image(source = " + source() + ")"

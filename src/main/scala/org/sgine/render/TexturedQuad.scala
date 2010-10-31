@@ -8,6 +8,7 @@ import org.sgine.core.Face
 import org.sgine.core.ProcessingMode
 
 import org.sgine.event.EventHandler
+import org.sgine.event.Listenable
 
 import org.sgine.property.AdvancedProperty
 import org.sgine.property.NumericProperty
@@ -23,14 +24,14 @@ class TexturedQuad extends Function0[Unit] {
 	val y = new NumericProperty(0.0)
 	val width = new NumericProperty(0.0)
 	val height = new NumericProperty(0.0)
+	val displayWidth = new NumericProperty(0.0)
+	val displayHeight = new NumericProperty(0.0)
 	val cull = new AdvancedProperty[Face](Face.Back)
 	
 	private val shape = MutableShape()
 	private val dirty = new AtomicBoolean(false)
 	
-	private val changeHandler = EventHandler(propChanged, ProcessingMode.Blocking)
-	width.listeners += changeHandler
-	height.listeners += changeHandler
+	Listenable.listenTo(EventHandler(propChanged, ProcessingMode.Blocking), x, y, width, height, displayWidth, displayHeight)
 	cull.listeners += EventHandler(cullChanged, ProcessingMode.Blocking)
 	
 	def this(texture: Texture) = {
@@ -65,8 +66,8 @@ class TexturedQuad extends Function0[Unit] {
 					}
 				}
 				
-				val w = width() / 2.0
-				val h = height() / 2.0
+				val w = displayWidth() / 2.0
+				val h = displayHeight() / 2.0
 				shape.vertex = VertexData(List(Vec3(-w, -h, 0.0),
 									 Vec3(w, -h, 0.0),
 									 Vec3(w, h, 0.0),
