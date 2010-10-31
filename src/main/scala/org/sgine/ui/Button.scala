@@ -12,11 +12,21 @@ import org.sgine.input.event._
 import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.property.state._
 
-class Button extends Text with SkinnedComponent {
+class Button extends TextComponent with SkinnedComponent {
+	val text = _text
+	val textAlignment = _textAlignment
+	val textColor = _textColor
+	val font = _font
+	
+	_multiline := false
+	_editable := false
+	_selection.visible := false
+	_caret.visible := false
+	
 	def this(text: String) = {
 		this()
 		
-		this.text := text
+		_text := text
 	}
 	
 	listeners += EventHandler(mouseClicked, ProcessingMode.Blocking)

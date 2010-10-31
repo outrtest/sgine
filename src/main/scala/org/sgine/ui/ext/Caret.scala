@@ -18,11 +18,11 @@ import org.sgine.render.font.RenderedCharacter
 
 import org.sgine.scene.ext.FocusableNode
 
-import org.sgine.ui.Text
+import org.sgine.ui.TextComponent
 
 import scala.math._
 
-class Caret(override val parent: Text) extends PropertyContainer {
+class Caret(override val parent: TextComponent) extends PropertyContainer {
 	val visible = new AdvancedProperty[Boolean](true, this)
 	val position = new AdvancedProperty[Int](0, this, filter = filterPosition)
 	val width = new NumericProperty(1.0, this)
@@ -41,7 +41,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	protected[ui] var elapsed = 0.0
 	protected[ui] var toggle = true
 	
-	Listenable.listenTo(EventHandler(updatePosition, ProcessingMode.Blocking), position, parent.selection.begin, parent.selection.end)
+	Listenable.listenTo(EventHandler(updatePosition, ProcessingMode.Blocking), position, parent._selection.begin, parent._selection.end)
 	private val positionChangeType = new java.util.concurrent.atomic.AtomicInteger(0)		// 0 = no change, 1 = position, 2 = selection
 	
 	position.listeners += EventHandler(updatePosition, ProcessingMode.Blocking)
@@ -96,7 +96,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	
 	def draw() = {
 		// Blink
-		if (parent.editable()) {
+		if (parent._editable()) {
 			elapsed += Renderer().time
 			if (elapsed >= rate()) {
 				elapsed = 0.0
@@ -110,12 +110,12 @@ class Caret(override val parent: Text) extends PropertyContainer {
 		// Update selection and position
 		positionChangeType.get match {
 			case 1 if (position() != -1) => {
-				parent.selection.begin := position()
-				parent.selection.end := position()
+				parent._selection.begin := position()
+				parent._selection.end := position()
 				positionChanged(null)
 			}
-			case 2 => if (parent.selection.begin() == parent.selection.end()) {
-				position := parent.selection.begin()
+			case 2 => if (parent._selection.begin() == parent._selection.end()) {
+				position := parent._selection.begin()
 				positionChanged(null)
 			} else {
 				position := -1
@@ -182,7 +182,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	
 	protected[ui] def updateCaretPosition() = {
 		val position = this.position() match {
-			case -1 => parent.selection.end()
+			case -1 => parent._selection.end()
 			case p => p
 		}
 		
@@ -191,7 +191,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 				caretX = 0.0
 				caretY = 0.0
 				caretWidth = this.width() / 2.0
-				caretHeight = parent.font().lineHeight * heightMultiplier()
+				caretHeight = parent._font().lineHeight * heightMultiplier()
 			}
 			case p if (p == parent.characters().length) => {		// End of line
 				val c = parent.characters().last
@@ -222,7 +222,7 @@ class Caret(override val parent: Text) extends PropertyContainer {
 	
 	protected[ui] def positionChanged(evt: PropertyChangeEvent[_]) = {
 		caretDisplay = this.position() match {
-			case -1 if (!parent.editable()) => false
+			case -1 if (!parent._editable()) => false
 			case _ => true
 		}
 		updateCaretPosition()
