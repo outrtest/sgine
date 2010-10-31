@@ -63,9 +63,9 @@ class Image extends Component {
 		quad.width := t.width
 		quad.height := t.height
 		
-		if ((size.width() != quad.width()) || (size.height() != quad.height())) {
-			size.width := quad.width()
-			size.height := quad.height()
+		if ((size.measured.width() != quad.width()) || (size.measured.height() != quad.height())) {
+			size.measured.width := quad.width()
+			size.measured.height := quad.height()
 		}
 		
 		imageDirty.set(true)

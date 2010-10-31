@@ -26,6 +26,9 @@ class AbstractContainer extends AbstractNodeContainer with Component with Updata
 	private val revalidateLayout = new AtomicBoolean(true)
 	
 	private val boundingFilter = (evt: PropertyChangeEvent[_]) => evt.newValue.isInstanceOf[Bounding]
+	_layout.onEvent[PropertyChangeEvent[_]](ProcessingMode.Blocking) {
+		invalidateLayout()
+	}
 	
 	listeners += EventHandler(boundingChanged, ProcessingMode.Blocking, Recursion.Children, filter = boundingFilter)
 	listeners += EventHandler(childrenChanged)
