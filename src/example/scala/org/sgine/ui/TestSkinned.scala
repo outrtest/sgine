@@ -1,6 +1,6 @@
 package org.sgine.ui
 
-import org.sgine.core.Resource
+import org.sgine.core._
 
 import org.sgine.property.animate.LinearNumericAnimator
 
@@ -18,6 +18,8 @@ object TestSkinned extends StandardDisplay with Debug {
 	def setup() = {
 		val skinned = SkinnedComponent()
 		skinned.size(500.0, 500.0)
+		skinned.size.width.mode := "explicit"
+		skinned.size.height.mode := "explicit"
 		
 		val scale9 = new Scale9Skin()
 		scale9(Resource("scale9test.png"), 50.0, 50.0, 450.0, 450.0)

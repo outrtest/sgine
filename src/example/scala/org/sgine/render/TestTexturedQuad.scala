@@ -11,11 +11,13 @@ object TestTexturedQuad {
 		
 		val matrix = Mat3x4.translate(Vec3(0, 0, -800.0))
 		
-		val texture = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("resource/puppies.jpg")))
+		val texture = TextureUtil(ImageIO.read(getClass.getClassLoader.getResource("puppies.jpg")))
 		val quad = new TexturedQuad()
 		quad.texture := texture
 		quad.width := texture.width
 		quad.height := texture.height
+		quad.displayWidth := texture.width
+		quad.displayHeight := texture.height
 		
 		val fps = FPS(1.0)
 		
