@@ -9,6 +9,7 @@ object TestButton extends StandardDisplay {
 	def setup() = {
 		val component = new Button()
 		component.text := "Test Button"
+		component.focused := true
 		scene += component
 	}
 }

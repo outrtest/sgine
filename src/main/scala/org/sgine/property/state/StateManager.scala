@@ -1,5 +1,7 @@
 package org.sgine.property.state
 
+import org.sgine.log._
+
 import org.sgine.path.OPath
 import org.sgine.path.PathSupport
 
@@ -12,7 +14,7 @@ class StateManager private[state](val stateful: Stateful) extends PropertyContai
 	private var states = Map.empty[String, State]
 	
 	private var originals = Map.empty[String, Any]
-	private var active: List[State] = Nil
+	protected[state] var active: List[State] = Nil
 	
 	private def create(name: String) = synchronized {
 		states.get(name) match {
@@ -48,12 +50,14 @@ class StateManager private[state](val stateful: Stateful) extends PropertyContai
 			case Some(o) => o match {
 				case p: Property[_] => {
 					registerOriginal(item.path, p())		// Have a value to return to
-					p.erasured(item.value)					// Assign the value to the property
+					if (!p.erasured(item.value)) {			// Assign the value to the property
+						fine("Cannot assign value: " + item.value + " to " + p.manifest.erasure)
+					}
 				}
 				case _ => throw new RuntimeException("Unsupported end-point: " + o.asInstanceOf[AnyRef].getClass.getName)
 				
 			}
-			case None => // Unable to resolve
+			case None => fine("Cannot resolve: " + item.path + " with value: " + item.value) // Unable to resolve
 		}
 	}
 	

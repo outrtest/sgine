@@ -7,7 +7,7 @@ class State private[state](val manager: StateManager, val name: String) {
 	
 	def update(path: String, value: Any) = synchronized {
 		items = items.filterNot(_.path == path)		// Remove existing path if found
-		val item = StateItem(path, value)
+		val item = StateItem(this, path, value)
 		items = item :: items						// Add new StateItem
 		
 		if (active) {								// Apply item if already active
@@ -24,4 +24,4 @@ class State private[state](val manager: StateManager, val name: String) {
 	def hasPath(path: String) = items.find(_.path == path) != None
 }
 
-case class StateItem(path: String, value: Any)
+case class StateItem(state: State, path: String, value: Any)

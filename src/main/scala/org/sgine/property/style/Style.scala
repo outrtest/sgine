@@ -2,6 +2,8 @@ package org.sgine.property.style
 
 import java.lang.reflect.Modifier
 
+import org.sgine.log._
+
 import org.sgine.property.Property
 import org.sgine.property.container.PropertyContainer
 
@@ -68,6 +70,7 @@ trait Style {
 		var stylizedProperties = stylized.properties.toList
 		
 		// Apply styles
+		var states = false
 		for (sp <- properties) {
 //			println("Applying: " + sp.name + " to " + stylized)
 			org.sgine.path.OPath.resolve(stylized, sp.name) match {
@@ -77,12 +80,13 @@ trait Style {
 						stylizedProperties = stylizedProperties.filterNot(_ == stylizedProperty)
 					}
 					case state: org.sgine.property.state.State => {
+						states = true
 						sp.f() match {
 							case (path: String, value: Any) => state(path) = value
 							case _ => throw new RuntimeException("State-based stylization must reference Tuple2[String, Any].")
 						}
 					}
-					case _ => println("NOT STYLIZED: " + result.asInstanceOf[AnyRef].getClass + " - " + sp.name)
+					case _ => warn("NOT STYLIZED: " + result.asInstanceOf[AnyRef].getClass + " - " + sp.name)
 				}
 				case None => //println("Cannot resolve: " + sp.name) // Unable to resolve
 			}
@@ -99,6 +103,13 @@ trait Style {
 			findStylized(childStyle, stylized.properties.toList) match {
 				case Some(stylized) => childStyle(stylized)
 				case None => // Ignore
+			}
+		}
+		
+		if (states) {
+			stylized match {
+				case stateful: org.sgine.property.state.Stateful => stateful.updateState()
+				case _ =>
 			}
 		}
 	}
