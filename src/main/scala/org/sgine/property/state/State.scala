@@ -7,7 +7,12 @@ class State private[state](val manager: StateManager, val name: String) {
 	
 	def update(path: String, value: Any) = synchronized {
 		items = items.filterNot(_.path == path)		// Remove existing path if found
-		items = StateItem(path, value) :: items		// Add new StateItem
+		val item = StateItem(path, value)
+		items = item :: items						// Add new StateItem
+		
+		if (active) {								// Apply item if already active
+			manager.activateItem(item)
+		}
 	}
 	
 	def activate() = manager.activate(this)

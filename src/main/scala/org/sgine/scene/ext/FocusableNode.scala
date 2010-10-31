@@ -38,7 +38,7 @@ trait FocusableNode extends Node with Stateful {
 	}
 	
 	private def mousePressed(evt: MousePressEvent) = {
-		if (mouseFocusable()) {
+		if ((focusable()) && (mouseFocusable())) {
 			focused := true
 		}
 	}

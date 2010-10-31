@@ -13,7 +13,7 @@ import org.sgine.log._
 import org.sgine.scene.Node
 
 import org.sgine.ui.Component
-import org.sgine.ui.Container
+import org.sgine.ui.AbstractContainer
 
 class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val itemWidth: Double, val itemHeight: Double) extends Layout {
 	val width = (columns * itemWidth) + ((columns - 1) * spacing)
@@ -21,7 +21,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	
 	private var items: List[GridItem] = Nil
 	
-	def apply(container: Container) = {
+	def apply(container: AbstractContainer) = {
 		synchronized {
 			// Make sure everything is configured
 			if (container.children.size != items.size) {

@@ -1,9 +1,9 @@
 package org.sgine.ui
 
-class InstanceManager extends Container {
+class InstanceManager extends AbstractContainer {
 	private var map = Map.empty[String, Instances]
 	
-	layout := null
+	_layout := null
 	visible := false
 	
 	def register(name: String, c: Component) = {

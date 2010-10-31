@@ -2,6 +2,7 @@ package org.sgine.ui
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import org.sgine.bounding.Bounding
 import org.sgine.bounding.BoundingObject
 import org.sgine.bounding.mutable.BoundingBox
 
@@ -12,19 +13,21 @@ import org.sgine.event._
 import org.sgine.property._
 import org.sgine.property.event.PropertyChangeEvent
 
-import org.sgine.scene.GeneralNodeContainer
+import org.sgine.scene.AbstractNodeContainer
 import org.sgine.scene.event.NodeContainerEvent
 
 import org.sgine.ui.layout._
 
 import org.sgine.work.Updatable
 
-class Container extends GeneralNodeContainer with Component with Updatable with OffsetComponent {
-	val layout = new AdvancedProperty[(Container) => Unit](Layout.default, this)
+class AbstractContainer extends AbstractNodeContainer with Component with Updatable with OffsetComponent {
+	protected[ui] val _layout = new AdvancedProperty[(AbstractContainer) => Unit](Layout.default, this)
 	
 	private val revalidateLayout = new AtomicBoolean(true)
 	
-	bounding.listeners += EventHandler(boundingChanged, ProcessingMode.Blocking, Recursion.Children)
+	private val boundingFilter = (evt: PropertyChangeEvent[_]) => evt.newValue.isInstanceOf[Bounding]
+	
+	listeners += EventHandler(boundingChanged, ProcessingMode.Blocking, Recursion.Children, filter = boundingFilter)
 	listeners += EventHandler(childrenChanged)
 	
 	def invalidateLayout() = {
@@ -33,9 +36,7 @@ class Container extends GeneralNodeContainer with Component with Updatable with 
 		initUpdatable()
 	}
 	
-	private def boundingChanged(evt: PropertyChangeEvent[_]) = {
-		invalidateLayout()
-	}
+	private def boundingChanged(evt: PropertyChangeEvent[Bounding]) = invalidateLayout()
 	
 	private def childrenChanged(evt: NodeContainerEvent) = {
 		invalidateLayout()
@@ -45,17 +46,11 @@ class Container extends GeneralNodeContainer with Component with Updatable with 
 		super.update(time)
 		
 		if (revalidateLayout.compareAndSet(true, false)) {
-			layout.option match {
+			_layout.option match {
 				case Some(l) => l(this)
 				case None => revalidateBounds()
 			}
 		}
-	}
-	
-	override protected def updateLocalMatrix(): Unit = {
-		
-		
-		super.updateLocalMatrix()
 	}
 	
 	private def revalidateBounds() = {

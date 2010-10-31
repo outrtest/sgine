@@ -37,19 +37,23 @@ class StateManager private[state](val stateful: Stateful) extends PropertyContai
 	def activate(state: State): Unit = synchronized {
 		if (!state.active) {
 			for (item <- state.items) {
-				OPath.resolve(stateful, item.path) match {
-					case Some(o) => o match {
-						case p: Property[_] => {
-							registerOriginal(item.path, p())		// Have a value to return to
-							p.erasured(item.value)					// Assign the value to the property
-						}
-						case _ => throw new RuntimeException("Unsupported end-point: " + o.asInstanceOf[AnyRef].getClass.getName)
-						
-					}
-					case None => // Unable to resolve
-				}
+				activateItem(item)
 			}
 			active = state :: active
+		}
+	}
+	
+	protected[state] def activateItem(item: StateItem) = {
+		OPath.resolve(stateful, item.path) match {
+			case Some(o) => o match {
+				case p: Property[_] => {
+					registerOriginal(item.path, p())		// Have a value to return to
+					p.erasured(item.value)					// Assign the value to the property
+				}
+				case _ => throw new RuntimeException("Unsupported end-point: " + o.asInstanceOf[AnyRef].getClass.getName)
+				
+			}
+			case None => // Unable to resolve
 		}
 	}
 	

@@ -190,16 +190,8 @@ class TextComponent extends ShapeComponent with FocusableNode {
 			case 0 => _font().lineHeight
 			case n => _font().lineHeight * n
 		}
-		if (size.width.mode() == SizeMode.Auto) {
-			size.actual.width := measured.x + padding.left() + padding.right()
-		} else {
-			size.actual.width := size.width()
-		}
-		if (size.height.mode() == SizeMode.Auto) {
-			size.actual.height := height + padding.bottom() + padding.top()
-		} else {
-			size.actual.height := size.height()
-		}
+		size.measured.width := measured.x + padding.left() + padding.right()
+		size.measured.height := height + padding.bottom() + padding.top()
 		characters := chars.reverse
 		_font() match {
 			case bf: BitmapFont => texture = bf.texture
