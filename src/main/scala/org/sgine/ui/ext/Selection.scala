@@ -16,11 +16,11 @@ import org.sgine.render.Texture
 import org.sgine.render.font.RenderedCharacter
 import org.sgine.render.font.RenderedLine
 
-import org.sgine.ui.Text
+import org.sgine.ui.TextComponent
 
 import scala.math._
 
-class Selection(override val parent: Text) extends PropertyContainer {
+class Selection(override val parent: TextComponent) extends PropertyContainer {
 	val visible = new AdvancedProperty[Boolean](true, this)
 	val begin = new AdvancedProperty[Int](0, this, filter = filterSelection)
 	val end = new AdvancedProperty[Int](0, this, filter = filterSelection)
@@ -66,36 +66,36 @@ class Selection(override val parent: Text) extends PropertyContainer {
 	}
 	
 	def backspace() = {
-		val p = parent.caret.position()
+		val p = parent._caret.position()
 		if (p != -1) {
 			if (p > 0) {
 				val (changed, inserted) = parent.textWithout(p - 1, p - 1)
-				parent.text := changed
-				parent.caret.position(p - 1, false)
-				parent.caret.position.changed(false)
+				parent._text := changed
+				parent._caret.position(p - 1, false)
+				parent._caret.position.changed(false)
 			}
 		} else {
 			val l = left
 			val (changed, inserted) = parent.textWithout(left, right - 1)
-			parent.text := changed
-			parent.caret.position(l, false)
-			parent.caret.position.changed(false)
+			parent._text := changed
+			parent._caret.position(l, false)
+			parent._caret.position.changed(false)
 		}
 	}
 	
 	def delete() = {
-		val p = parent.caret.position()
+		val p = parent._caret.position()
 		if (p != -1) {
 			val (changed, inserted) = parent.textWithout(p, p)
-			parent.text := changed
-			parent.caret.position(p, false)
-			parent.caret.position.changed(false)
+			parent._text := changed
+			parent._caret.position(p, false)
+			parent._caret.position.changed(false)
 		} else {
 			val l = left
 			val (changed, inserted) = parent.textWithout(left, right - 1)
-			parent.text := changed
-			parent.caret.position(l, false)
-			parent.caret.position.changed(false)
+			parent._text := changed
+			parent._caret.position(l, false)
+			parent._caret.position.changed(false)
 		}
 	}
 	
@@ -124,18 +124,18 @@ class Selection(override val parent: Text) extends PropertyContainer {
 	}
 	
 	def insert(value: String) = {
-		val p = parent.caret.position()
+		val p = parent._caret.position()
 		if (p != -1) {
 			val (changed, inserted) = parent.textInsert(p, value)
-			parent.text := changed
-			parent.caret.position(p + inserted.length, false)
-			parent.caret.position.changed(false)
+			parent._text := changed
+			parent._caret.position(p + inserted.length, false)
+			parent._caret.position.changed(false)
 		} else {
 			val l = left
 			val (changed, inserted) = parent.textWithout(left, right - 1, value)
-			parent.text := changed
-			parent.caret.position(l + inserted.length, false)
-			parent.caret.position.changed(false)
+			parent._text := changed
+			parent._caret.position(l + inserted.length, false)
+			parent._caret.position.changed(false)
 		}
 	}
 	
@@ -158,11 +158,11 @@ class Selection(override val parent: Text) extends PropertyContainer {
 					lines = generateLines(start, end, Nil).reverse
 					
 					// Reset blink for editable caret
-					parent.caret.elapsed = 0.0
-					parent.caret.toggle = true
+					parent._caret.elapsed = 0.0
+					parent._caret.toggle = true
 					
 					// Update caret position
-					parent.caret.positionChanged(null)
+					parent._caret.positionChanged(null)
 					
 					// Update System Selection
 					val selectionClipboard = Toolkit.getDefaultToolkit.getSystemSelection

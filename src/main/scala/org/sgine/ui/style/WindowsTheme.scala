@@ -13,11 +13,7 @@ object WindowsTheme extends Theme {
 	val button = new SelectorStyle("Button") {
 		val size_width_mode = SizeMode.Auto
 		val size_height_mode = SizeMode.Auto
-		val multiline = false
-		val editable = false
 		val textAlignment = HorizontalAlignment.Center
-		val selection_visible = false
-		val caret_visible = false
 		val font = FontManager("Arial", 24.0)
 		val textColor = Color.Black
 		val padding_top = 10.0
@@ -39,7 +35,6 @@ object WindowsTheme extends Theme {
 	val textInput = new SelectorStyle("TextInput") {
 		val size_width = 300.0
 		val size_width_mode = SizeMode.Explicit
-		val multiline = false
 		val editable = true
 		val textAlignment = HorizontalAlignment.Left
 		val font = FontManager("Arial", 24.0)

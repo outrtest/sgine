@@ -15,7 +15,16 @@ import org.sgine.property.state._
 
 import org.sgine.ui.style._
 
-class TextInput extends Text with SkinnedComponent {
+class TextInput extends TextComponent with SkinnedComponent {
+	val text = _text
+	val editable = _editable
+	val textAlignment = _textAlignment
+	val font = _font
+	val textColor = _textColor
+	val caret = _caret
+	
+	_multiline := false
+	
 	listeners += EventHandler(keyTyped, ProcessingMode.Blocking, filter = keyActionFilter _)
 	
 	private def keyTyped(evt: KeyTypeEvent) = {

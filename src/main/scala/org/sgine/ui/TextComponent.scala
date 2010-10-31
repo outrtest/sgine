@@ -31,23 +31,22 @@ import org.lwjgl.opengl.GL11._
 
 import scala.math._
 
-class Text extends ShapeComponent with FocusableNode {
-	val cull = _cull
-	val font = new AdvancedProperty[Font](FontManager("Arial", 36.0), this)
-	val text = new AdvancedProperty[String]("", this, filter = filterText)
-	val kern = new AdvancedProperty[Boolean](true, this)
-	val textColor = new AdvancedProperty[Color](Color.White, this)
-	val textAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
-	val editable = new AdvancedProperty[Boolean](false, this)
-	val multiline = new AdvancedProperty[Boolean](false, this)
-	val maxLength = new AdvancedProperty[Int](-1, this)
+class TextComponent extends ShapeComponent with FocusableNode {
+	protected[ui] val _font = new AdvancedProperty[Font](FontManager("Arial", 36.0), this)
+	protected[ui] val _text = new AdvancedProperty[String]("", this, filter = filterText)
+	protected[ui] val _kern = new AdvancedProperty[Boolean](true, this)
+	protected[ui] val _textColor = new AdvancedProperty[Color](Color.White, this)
+	protected[ui] val _textAlignment = new AdvancedProperty[HorizontalAlignment](HorizontalAlignment.Center, this)
+	protected[ui] val _editable = new AdvancedProperty[Boolean](false, this)
+	protected[ui] val _multiline = new AdvancedProperty[Boolean](false, this)
+	protected[ui] val _maxLength = new AdvancedProperty[Int](-1, this)
 	
 	protected[ui] val textBuilder = new TextBuilder()
 	protected[ui] val lines = new AdvancedProperty[Seq[RenderedLine]](Nil, this)
 	protected[ui] val characters = new AdvancedProperty[Seq[RenderedCharacter]](Nil, this)
 	
-	val selection = new Selection(this)
-	val caret = new Caret(this)
+	protected[ui] val _selection = new Selection(this)
+	protected[ui] val _caret = new Caret(this)
 	
 	private val dirty = new java.util.concurrent.atomic.AtomicBoolean()
 	
@@ -57,8 +56,8 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	protected[ui] def textWithout(start: Int, end: Int, replacement: String = null) = {
 		val length = end - start + 1
-		val value = if ((maxLength() != -1) && (replacement != null) && (this.text().length - length + replacement.length > maxLength())) {
-			val clipLength = min(replacement.length, maxLength() - this.text().length + length)
+		val value = if ((_maxLength() != -1) && (replacement != null) && (_text().length - length + replacement.length > _maxLength())) {
+			val clipLength = min(replacement.length, _maxLength() - _text().length + length)
 			replacement.substring(0, clipLength)
 		} else {
 			replacement
@@ -79,8 +78,8 @@ class Text extends ShapeComponent with FocusableNode {
 		b.toString -> value
 	}
 	protected[ui] def textInsert(position: Int, text: String) = {
-		val value = if ((maxLength() != -1) && (this.text().length + text.length > maxLength())) {
-			text.substring(0, maxLength() - this.text().length)
+		val value = if ((_maxLength() != -1) && (_text().length + text.length > _maxLength())) {
+			text.substring(0, _maxLength() - _text().length)
 		} else {
 			text
 		}
@@ -100,20 +99,20 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	
 	private def filterText(text: String) = {
-		if ((maxLength() != -1) && (text.length > maxLength())) {
-			text.substring(0, maxLength())
+		if ((_maxLength() != -1) && (text.length > _maxLength())) {
+			text.substring(0, _maxLength())
 		} else {
 			text
 		}
 	}
 	
 	Listenable.listenTo(EventHandler(invalidateText, ProcessingMode.Blocking),
-						font,
-						text,
+						_font,
+						_text,
 						size.actual.width,
-						kern,
-						textAlignment,
-						multiline,
+						_kern,
+						_textAlignment,
+						_multiline,
 						clip.enabled,
 						clip.x1,
 						clip.y1,
@@ -132,23 +131,23 @@ class Text extends ShapeComponent with FocusableNode {
 			dirty.set(false)
 			validate()
 		}
-		selection.draw()
-		caret.draw()
-		multColor(textColor())
+		_selection.draw()
+		_caret.draw()
+		multColor(_textColor())
 		super.drawComponent()
 	}
 	
 	private def invalidateText(evt: PropertyChangeEvent[_]) = {
 		dirty.set(true)
 		
-		if (evt.property == text) {
-			caret.position(0, false)
-			caret.position.changed(false)
+		if (evt.property == _text) {
+			_caret.position(0, false)
+			_caret.position.changed(false)
 		}
 	}
 	
 	private def validate() = {
-		val wrapMethod = multiline() match {
+		val wrapMethod = _multiline() match {
 			case true => WordWrap
 			case false => NoWrap
 		}
@@ -158,12 +157,12 @@ class Text extends ShapeComponent with FocusableNode {
 		textBuilder.texcoords.clear()
 		textBuilder.lines.clear()
 		
-		textBuilder.text = text()
-		textBuilder.kern = kern()
+		textBuilder.text = _text()
+		textBuilder.kern = _kern()
 		textBuilder.wrapWidth = size.actual.width()
 		textBuilder.wrapMethod = wrapMethod
-		textBuilder.textAlignment = textAlignment()
-		textBuilder.xOffset = textAlignment() match {
+		textBuilder.textAlignment = _textAlignment()
+		textBuilder.xOffset = _textAlignment() match {
 			case HorizontalAlignment.Left => padding.left()
 			case HorizontalAlignment.Right => padding.right()
 			case _ => 0.0
@@ -172,7 +171,7 @@ class Text extends ShapeComponent with FocusableNode {
 			textBuilder.xOffset += clip.adjustX()
 			textBuilder.yOffset += clip.adjustY()
 		}
-		font().generate(textBuilder)
+		_font().generate(textBuilder)
 		lines := textBuilder.lines
 		textBuilder(shape)
 
@@ -188,8 +187,8 @@ class Text extends ShapeComponent with FocusableNode {
 		}
 		val measured = shape.size
 		val height = textBuilder.lines.length match {
-			case 0 => font().lineHeight
-			case n => font().lineHeight * n
+			case 0 => _font().lineHeight
+			case n => _font().lineHeight * n
 		}
 		if (size.width.mode() == SizeMode.Auto) {
 			size.actual.width := measured.x + padding.left() + padding.right()
@@ -202,7 +201,7 @@ class Text extends ShapeComponent with FocusableNode {
 			size.actual.height := size.height()
 		}
 		characters := chars.reverse
-		font() match {
+		_font() match {
 			case bf: BitmapFont => texture = bf.texture
 			case _ =>
 		}
@@ -212,11 +211,11 @@ class Text extends ShapeComponent with FocusableNode {
 		evt.key.toUpperCase match {
 			// Interaction / Selection
 			case Key.Left => if (evt.shiftDown) {
-				if (selection.keyboardEnabled()) selection.end := selection.end() - 1
+				if (_selection.keyboardEnabled()) _selection.end := _selection.end() - 1
 			} else {
-				if (caret.keyboardEnabled()) {
-					caret.position := (caret.position() match {
-						case -1 => selection.left
+				if (_caret.keyboardEnabled()) {
+					_caret.position := (_caret.position() match {
+						case -1 => _selection.left
 						case p => p - 1 match {
 							case -1 => 0
 							case p => p
@@ -225,85 +224,85 @@ class Text extends ShapeComponent with FocusableNode {
 				}
 			}
 			case Key.Right => if (evt.shiftDown) {
-				if (selection.keyboardEnabled()) selection.end := selection.end() + 1
+				if (_selection.keyboardEnabled()) _selection.end := _selection.end() + 1
 			} else {
-				if (caret.keyboardEnabled()) {
-					caret.position := (caret.position() match {
-						case -1 => selection.right
+				if (_caret.keyboardEnabled()) {
+					_caret.position := (_caret.position() match {
+						case -1 => _selection.right
 						case p => p + 1
 					})
 				}
 			}
 			case Key.Up => if (evt.shiftDown) {
-				if (selection.keyboardEnabled()) {
-					val x = caret.caretX
-					val y = caret.caretY + font().lineHeight
+				if (_selection.keyboardEnabled()) {
+					val x = _caret.caretX
+					val y = _caret.caretY + _font().lineHeight
 					val p = positionAtPoint(x, y)
-					if (selection.end() == p) {
-						selection.end := 0
+					if (_selection.end() == p) {
+						_selection.end := 0
 					} else {
-						selection.end := p
+						_selection.end := p
 					}
 				}
 			} else {
-				if (caret.keyboardEnabled()) {
-					val x = caret.caretX
-					val y = caret.caretY + font().lineHeight
+				if (_caret.keyboardEnabled()) {
+					val x = _caret.caretX
+					val y = _caret.caretY + _font().lineHeight
 					val p = positionAtPoint(x, y)
-					if (caret.position() == p) {
-						caret.position := 0
+					if (_caret.position() == p) {
+						_caret.position := 0
 					} else {
-						caret.position := p
+						_caret.position := p
 					}
 				}
 			}
 			case Key.Down => if (evt.shiftDown) {
-				if (selection.keyboardEnabled()) {
-					val x = caret.caretX
-					val y = caret.caretY - font().lineHeight
+				if (_selection.keyboardEnabled()) {
+					val x = _caret.caretX
+					val y = _caret.caretY - _font().lineHeight
 					val p = positionAtPoint(x, y)
-					if (selection.end() == p) {
-						selection.end := Int.MaxValue
+					if (_selection.end() == p) {
+						_selection.end := Int.MaxValue
 					} else {
-						selection.end := p
+						_selection.end := p
 					}
 				}
 			} else {
-				if (caret.keyboardEnabled()) {
-					val x = caret.caretX
-					val y = caret.caretY - font().lineHeight
+				if (_caret.keyboardEnabled()) {
+					val x = _caret.caretX
+					val y = _caret.caretY - _font().lineHeight
 					val p = positionAtPoint(x, y)
-					if (caret.position() == p) {
-						caret.position := Int.MaxValue
+					if (_caret.position() == p) {
+						_caret.position := Int.MaxValue
 					} else {
-						caret.position := p
+						_caret.position := p
 					}
 				}
 			}
 			case Key.Home => if (evt.shiftDown) {
-				if (selection.keyboardEnabled()) selection.end := homePosition
+				if (_selection.keyboardEnabled()) _selection.end := homePosition
 			} else {
-				if (caret.keyboardEnabled()) caret.position := homePosition
+				if (_caret.keyboardEnabled()) _caret.position := homePosition
 			}
 			case Key.End => if (evt.shiftDown) {
-				if (selection.keyboardEnabled()) selection.end := endPosition
+				if (_selection.keyboardEnabled()) _selection.end := endPosition
 			} else {
-				if (caret.keyboardEnabled()) caret.position := endPosition
+				if (_caret.keyboardEnabled()) _caret.position := endPosition
 			}
-			case Key.A if (evt.controlDown) => selection.all()
-			case Key.C if (evt.controlDown) => selection.copy()
+			case Key.A if (evt.controlDown) => _selection.all()
+			case Key.C if (evt.controlDown) => _selection.copy()
 			// Modification
-			case Key.Backspace => if (editable()) selection.backspace()
-			case Key.Delete => if (editable()) selection.delete()
-			case Key.V if (evt.controlDown) => if (editable()) selection.paste()
-			case Key.X if (evt.controlDown) => if (editable()) selection.cut()
-			case Key.Enter if (!multiline()) => // TODO: throw ActionEvent
+			case Key.Backspace => if (_editable()) _selection.backspace()
+			case Key.Delete => if (_editable()) _selection.delete()
+			case Key.V if (evt.controlDown) => if (_editable()) _selection.paste()
+			case Key.X if (evt.controlDown) => if (_editable()) _selection.cut()
+			case Key.Enter if (!_multiline()) => // TODO: throw ActionEvent
 			case k if (!k.hasChar) => 										// Ignore non-characters
 			case _ if (evt.controlDown) =>									// Ignore control-char
 			case _ => {														// Insert text
-				if (editable()) {
-					if ((maxLength() == -1) || (text().length < maxLength())) {
-						selection.insert(evt.keyChar.toString)
+				if (_editable()) {
+					if ((_maxLength() == -1) || (_text().length < _maxLength())) {
+						_selection.insert(evt.keyChar.toString)
 					}
 				}
 			}
@@ -311,7 +310,7 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	
 	def homePosition = {
-		val p = selection.end()
+		val p = _selection.end()
 		val homeCharacter = char(p) match {
 			case Some(c) => c.line.characters.head
 			case None => if (p > 0) {
@@ -329,7 +328,7 @@ class Text extends ShapeComponent with FocusableNode {
 	}
 	
 	def endPosition = {
-		val p = selection.end()
+		val p = _selection.end()
 		val endCharacter = char(p) match {
 			case Some(c) => c.line.characters.last
 			case None => if (p > 0) {
@@ -383,21 +382,21 @@ class Text extends ShapeComponent with FocusableNode {
 	
 	private var pressed = false
 	private def mousePress(evt: MousePressEvent) = {
-		if ((evt.button == 0) && (caret.mouseEnabled())) {
-			caret.position := positionAtPoint(evt.x, evt.y)
-			if (selection.mouseEnabled()) pressed = true
+		if ((evt.button == 0) && (_caret.mouseEnabled())) {
+			_caret.position := positionAtPoint(evt.x, evt.y)
+			if (_selection.mouseEnabled()) pressed = true
 		}
 	}
 	
 	private def mouseMove(evt: MouseMoveEvent) = {
 		if (pressed) {		// TODO: dragging functionality would be useful?
-			selection.end := positionAtPoint(evt.x, evt.y)
+			_selection.end := positionAtPoint(evt.x, evt.y)
 		}
 	}
 	
 	private def mouseRelease(evt: MouseReleaseEvent) = {
 		if (pressed) {
-			selection.end := positionAtPoint(evt.x, evt.y)
+			_selection.end := positionAtPoint(evt.x, evt.y)
 			pressed = false
 		}
 	}
