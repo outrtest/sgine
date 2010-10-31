@@ -55,6 +55,8 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 		for (n <- container.children) n match {
 			case c: Component => {
 				if (direction == Direction.Vertical) {
+					c.location.x.align := HorizontalAlignment.Center
+					c.location.x := 0.0
 					c.location.y.align := (if (reverse) VerticalAlignment.Bottom else VerticalAlignment.Top)
 					c.location.y := position
 					
@@ -68,6 +70,8 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 				} else {
 					c.location.x.align := (if (reverse) HorizontalAlignment.Right else HorizontalAlignment.Left)
 					c.location.x := position
+					c.location.y.align := VerticalAlignment.Middle
+					c.location.y := 0.0
 					
 					if (reverse) {
 						position -= c.bounding().width
@@ -84,7 +88,7 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 		// Update for padding
 		width += container.padding.left() + container.padding.right()
 		height += container.padding.top() + container.padding.bottom()
-
+		
 		// Set the size on the container
 		container.size.measured(width, height, depth)
 	}
