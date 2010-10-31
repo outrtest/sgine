@@ -12,21 +12,33 @@ import org.sgine.input.event._
 import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.property.state._
 
-class Button extends TextComponent with SkinnedComponent {
-	val text = _text
-	val textAlignment = _textAlignment
-	val textColor = _textColor
-	val font = _font
+import org.sgine.scene.ext.FocusableNode
+
+import org.sgine.ui.layout.BoxLayout
+
+class Button extends AbstractContainer with SkinnedComponent with FocusableNode {
+	private val textComponent = new TextComponent()
 	
-	_multiline := false
-	_editable := false
-	_selection.visible := false
-	_caret.visible := false
+	val text = textComponent._text
+	val textAlignment = textComponent._textAlignment
+	val textColor = textComponent._textColor
+	val font = textComponent._font
+	
+	textComponent.size.width.mode := SizeMode.Auto
+	textComponent.size.height.mode := SizeMode.Auto
+	textComponent._multiline := false
+	textComponent._editable := false
+	textComponent._selection.visible := false
+	textComponent._caret.visible := false
+	textComponent.focusable := false
+	
+	_layout := BoxLayout()
+	this += textComponent
 	
 	def this(text: String) = {
 		this()
 		
-		_text := text
+		this.text := text
 	}
 	
 	listeners += EventHandler(mouseClicked, ProcessingMode.Blocking)

@@ -10,12 +10,12 @@ import org.sgine.core.VerticalAlignment
 import org.sgine.event.Event
 
 import org.sgine.ui.Component
-import org.sgine.ui.Container
+import org.sgine.ui.AbstractContainer
 
 import scala.math._
 
 class BoxLayout private(val direction: Direction, val spacing: Double, val reverse: Boolean = false) extends Layout {
-	def apply(container: Container) = {
+	def apply(container: AbstractContainer) = {
 		// Determine size for offset
 		var items = 0
 		var width = 0.0
@@ -81,8 +81,12 @@ class BoxLayout private(val direction: Direction, val spacing: Double, val rever
 			case _ =>
 		}
 		
+		// Update for padding
+		width += container.padding.left() + container.padding.right()
+		height += container.padding.top() + container.padding.bottom()
+
 		// Set the size on the container
-		container.size(width, height, depth)
+		container.size.measured(width, height, depth)
 	}
 }
 

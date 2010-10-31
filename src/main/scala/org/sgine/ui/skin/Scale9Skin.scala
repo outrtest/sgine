@@ -75,7 +75,10 @@ class Scale9Skin extends Skin {
 	
 	private def invalidateEvent(evt: PropertyChangeEvent[_]) = invalidate()
 	
-	private def resourceChanged(evt: PropertyChangeEvent[_]) = texture = TextureManager(source())
+	private def resourceChanged(evt: PropertyChangeEvent[_]) = {
+		texture = TextureManager(source())
+		invalidate()
+	}
 	
 	private def updateShape() = {
 		if (isValid) {

@@ -11,8 +11,8 @@ import org.sgine.ui.skin.Scale9Skin
 
 object WindowsTheme extends Theme {
 	val button = new SelectorStyle("Button") {
-		val size_width_mode = SizeMode.Auto
-		val size_height_mode = SizeMode.Auto
+//		val size_width_mode = SizeMode.Auto
+//		val size_height_mode = SizeMode.Auto
 		val textAlignment = HorizontalAlignment.Center
 		val font = FontManager("Arial", 24.0)
 		val textColor = Color.Black

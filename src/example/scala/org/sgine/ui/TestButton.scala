@@ -5,7 +5,7 @@ import org.sgine.core._
 import org.sgine.render.Debug
 import org.sgine.render.StandardDisplay
 
-object TestButton extends StandardDisplay with Debug {
+object TestButton extends StandardDisplay {
 	def setup() = {
 		val component = new Button()
 		component.text := "Test Button"
