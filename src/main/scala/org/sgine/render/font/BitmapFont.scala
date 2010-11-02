@@ -80,22 +80,22 @@ class BitmapFont private[font](texture: Texture) extends TextureMap[Int, BitmapF
 	
 	@scala.annotation.tailrec
 	private def generateLines(lines: List[String], yOffset: Double, builder: TextBuilder): Unit = {
-		val line = lines.head
-		val lineWidth = measureWidth(line, builder.kern)
-		var xOffset = builder.textAlignment match {
-			case HorizontalAlignment.Left => builder.wrapWidth / -2.0
-			case HorizontalAlignment.Right => (builder.wrapWidth / 2.0) - lineWidth
-			case _ => lineWidth / -2.0
-		}
-		
-		xOffset += builder.xOffset
-		
-		val chars = new ArrayBuffer[RenderedCharacter]
-		val rl = RenderedLine(line, chars, this)
-		generateChars(line, xOffset, yOffset, null, rl, chars, builder)
-		builder.lines += rl									// Add RenderedLine
-		
-		if (lines.tail != Nil) {
+		if (lines != Nil) {
+			val line = lines.head
+			val lineWidth = measureWidth(line, builder.kern)
+			var xOffset = builder.textAlignment match {
+				case HorizontalAlignment.Left => builder.wrapWidth / -2.0
+				case HorizontalAlignment.Right => (builder.wrapWidth / 2.0) - lineWidth
+				case _ => lineWidth / -2.0
+			}
+			
+			xOffset += builder.xOffset
+			
+			val chars = new ArrayBuffer[RenderedCharacter]
+			val rl = RenderedLine(line, chars, this)
+			generateChars(line, xOffset, yOffset, null, rl, chars, builder)
+			builder.lines += rl									// Add RenderedLine
+			
 			generateLines(lines.tail, yOffset - lineHeight, builder)
 		}
 	}

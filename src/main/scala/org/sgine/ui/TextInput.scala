@@ -26,6 +26,7 @@ class TextInput extends TextComponent with SkinnedComponent {
 	_multiline := false
 	
 	listeners += EventHandler(keyTyped, ProcessingMode.Blocking, filter = keyActionFilter _)
+	focused.listeners += EventHandler(focusChanged, ProcessingMode.Blocking)
 	
 	private def keyTyped(evt: KeyTypeEvent) = {
 		val action = ActionEvent(this, "submit")
@@ -35,5 +36,15 @@ class TextInput extends TextComponent with SkinnedComponent {
 	private def keyActionFilter(evt: KeyEvent) = evt.key match {
 		case Key.Enter if (!evt.repeat) => true
 		case _ => false
+	}
+	
+	private def focusChanged(evt: PropertyChangeEvent[Boolean]) = {
+		if (evt.newValue) {
+			if (evt.cause.isInstanceOf[KeyEvent]) {
+				_selection.all()
+			}
+		} else {
+			_selection.none()
+		}
 	}
 }

@@ -43,6 +43,7 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 		queue.clear()
 		NodeQuery.query(query, node, add)
 		sort()
+		// TODO: add frustum culling via filter method?
 	}
 	
 	def sort() = {
