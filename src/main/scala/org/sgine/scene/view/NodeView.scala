@@ -17,9 +17,22 @@ import scala.collection.mutable.ArrayBuffer
  * A view to some Nodes that match a query in a NodeContainer.
  */
 class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
-	private var queue = new ArrayBuffer[Node]
+	private var queue = new ArrayBuffer[Node] {
+		def localArray = array
+	}
 	
-	var sortFunction: (Node, Node) => Boolean = _
+	private var comparator: java.util.Comparator[AnyRef] = _
+	
+	def sortFunction_=(f: (Node, Node) => Int) = {
+		comparator = new java.util.Comparator[AnyRef] {
+			def compare(o1: AnyRef, o2: AnyRef) = f(o1.asInstanceOf[Node], o2.asInstanceOf[Node])
+		}
+		_sortFunction = f
+	}
+	
+	def sortFunction = _sortFunction
+	
+	private var _sortFunction: (Node, Node) => Int = _
 	
 	def iterator = queue.iterator
 	
@@ -33,8 +46,11 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 	}
 	
 	def sort() = {
-		if (sortFunction != null) {
-			org.sgine.util.Sort.bubbleSort(queue, sortFunction)
+//		if (sortFunction != null) {
+//			org.sgine.util.Sort.bubbleSort(queue, sortFunction)
+//		}
+		if (queue.length > 0) {
+			java.util.Arrays.sort(queue.localArray, 0, queue.length, comparator)
 		}
 	}
 	
