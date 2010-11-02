@@ -32,6 +32,7 @@ import simplex3d.math.doublem.DoubleMath._
 class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) extends Renderable {
 	val renderableView = NodeView(scene, RenderableQuery, false)
 	renderableView.sortFunction = RenderSort
+	// TODO: add frustum culling via filter method
 	val updatableView = NodeView(scene, RenderUpdatableQuery, false)
 	updatableView.sortFunction = RenderSort
 	val fps = FPS()
@@ -56,9 +57,11 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 		if (!initted) init()
 
 		// TODO: handle sorting function
+		updatableView.filter()
 		updatableView.sort()
 		updatableView.foreach(updateItem)
-		renderableView.sort()					// TODO: is this the most efficient way to handle this?
+		renderableView.filter()
+		renderableView.sort()					// TODO: should I sort every render?
 		renderableView.foreach(renderItem)
 		if (showFPS) fps()
 	}

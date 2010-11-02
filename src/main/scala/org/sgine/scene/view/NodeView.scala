@@ -20,8 +20,10 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 	private var queue = new ArrayBuffer[Node] {
 		def localArray = array
 	}
+	private var excluded = new ArrayBuffer[Node]
 	
 	private var comparator: java.util.Comparator[AnyRef] = _
+	private var _sortFunction: (Node, Node) => Int = _
 	
 	def sortFunction_=(f: (Node, Node) => Int) = {
 		comparator = new java.util.Comparator[AnyRef] {
@@ -32,7 +34,10 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 	
 	def sortFunction = _sortFunction
 	
-	private var _sortFunction: (Node, Node) => Int = _
+	/**
+	 * Returns true if the Node should be filtered out. Defaults to null.
+	 */
+	var filterFunction: (Node) => Boolean = _
 	
 	def iterator = queue.iterator
 	
@@ -42,8 +47,34 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 	private def refresh() = {
 		queue.clear()
 		NodeQuery.query(query, node, add)
+		filter()
 		sort()
-		// TODO: add frustum culling via filter method?
+	}
+	
+	def filter() = {
+		if (filterFunction != null) {
+			// Check to see if any excluded should be brought back into the fold
+			if (excluded.length > 0) {
+				for (index <- 0 until excluded.length reverse) {		// Go in reverse since we're working on indexes
+					val ex = excluded(index)
+					if (!filterFunction(ex)) {		// Should not be filtered
+						excluded.remove(index)
+						queue += ex
+					}
+				}
+			}
+			
+			// Filter out the unwanted
+			if (queue.length > 0) {
+				for (index <- 0 until queue.length reverse) {			// Go in reverse since we're working on indexes
+					val in = queue(index)
+					if (filterFunction(in)) {		// Should be filtered
+						queue.remove(index)
+						excluded += in
+					}
+				}
+			}
+		}
 	}
 	
 	def sort() = {
