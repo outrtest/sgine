@@ -52,6 +52,13 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	val renderer = new DelegateProperty(() => _renderer)
 	val lighting = new AdvancedProperty[Boolean](true, this)
 	/**
+	 * This property is used to determine whether the Component should be
+	 * included when the parent Container is laying out Components. If false
+	 * this Component will be ignored and can manage its own layout within
+	 * the Container. Defaults to true.
+	 */
+	val includeInLayout = new AdvancedProperty[Boolean](true, this)
+	/**
 	 * Bitwise flags from Mouse for the current state of the Mouse on this
 	 * Component.
 	 */

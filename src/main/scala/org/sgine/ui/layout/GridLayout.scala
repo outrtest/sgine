@@ -26,16 +26,19 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 			// Make sure everything is configured
 			if (container.children.size != items.size) {
 				// Add missing
-				for (n <- container.children) {
-					if (get(n) == None) {
-						nextAvailable match {
-							case Some((row, column)) => {
-								info("Node not already in layout, specifying: " + n + " at " + row + "x" + column)
-								apply(n, row, column)
+				for (n <- container.children) n match {
+					case c: Component if (c.includeInLayout()) => {
+						if (get(n) == None) {
+							nextAvailable match {
+								case Some((row, column)) => {
+									info("Node not already in layout, specifying: " + n + " at " + row + "x" + column)
+									apply(n, row, column)
+								}
+								case None => warn("No more room found in GridLayout")
 							}
-							case None => warn("No more room found in GridLayout")
 						}
 					}
+					case _ => // Ignore
 				}
 				// Remove no longer used
 				for (item <- items) {
