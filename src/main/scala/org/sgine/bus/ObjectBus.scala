@@ -57,4 +57,13 @@ object ObjectBus {
 			}
 		}
 	}
+	
+	/**
+	 * Creates an anonymous ObjectBus that cannot be referenced
+	 * by name.
+	 * 
+	 * @return
+	 * 		new ObjectBus
+	 */
+	def apply() = new ObjectBus(null, null)
 }

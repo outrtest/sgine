@@ -66,17 +66,17 @@ object Event {
 			// Process Event on blocking handlers
 			if (evt.processBlocking) {
 				for (h <- listenable.listeners) {
-					if (isBlocking(h)) {
+					if (h.processingMode == ProcessingMode.Blocking) {
 						h.process(evt)
 					}
 				}
 			}
 			
 			// Walk up the hierarchy for Recursion.Parents
-			processParentRecursion(listenable.parent, evt)
+			processParentRecursion(listenable.parent, evt, ProcessingMode.Blocking)
 			
 			// Walk down the hierarchy for Recursion.Children
-			processChildrenRecursion(listenable, evt)
+			processChildrenRecursion(listenable, evt, ProcessingMode.Blocking)
 		} finally {
 			current.set(previousCause)		// Revert current event back
 		}
@@ -94,27 +94,27 @@ object Event {
 		}
 	}
 	
-	private val isBlocking = (h: EventHandler) => h.processingMode == ProcessingMode.Blocking
-	
 	private val isAsynchronous = (h: EventHandler) => h.processingMode == ProcessingMode.Asynchronous
 	
-	private def processParentRecursion(l: Listenable, evt: Event): Unit = {
+	@scala.annotation.tailrec
+	protected[event] def processParentRecursion(l: Listenable, evt: Event, processingMode: ProcessingMode): Unit = {
 		if ((evt.recursionParents) && (l != null)) {
 			l.processChildEvent(evt)
 			
 			for (h <- l.listeners) {
 				if (parentRecursion(h)) {
-					if (isBlocking(h)) {
+					if (h.processingMode == processingMode) {
 						h.process(evt)
 					}
 				}
 			}
 			
-			processParentRecursion(l.parent, evt)
+			processParentRecursion(l.parent, evt, processingMode)
 		}
 	}
-	
-	private def processChildrenRecursion(l: AnyRef, evt: Event): Unit = {
+
+	// TODO: optimize for tail recursion
+	protected[event] def processChildrenRecursion(l: AnyRef, evt: Event, processingMode: ProcessingMode): Unit = {
 		if (evt.recursionChildren) {
 			l match {
 				case i: Iterable[_] => {
@@ -123,7 +123,7 @@ object Event {
 							lc.processParentEvent(evt)
 							for (h <- lc.listeners) {
 								if (childrenRecursion(h)) {
-									if (isBlocking(h)) {
+									if (h.processingMode == processingMode) {
 										h.process(evt)
 									}
 								}
@@ -132,7 +132,7 @@ object Event {
 						case _ =>
 					}
 					for (child <- i) child match {
-						case c: Iterable[_] => processChildrenRecursion(c, evt)
+						case c: Iterable[_] => processChildrenRecursion(c, evt, processingMode)
 						case _ =>
 					}
 				}
@@ -198,6 +198,12 @@ case class NormalEventWorkUnit(evt: Event, listenable: Listenable) extends Block
 					h.process(evt)
 				}
 			}
+			
+			// Walk up the hierarchy for Recursion.Parents
+			Event.processParentRecursion(listenable.parent, evt, ProcessingMode.Normal)
+			
+			// Walk down the hierarchy for Recursion.Children
+			Event.processChildrenRecursion(listenable, evt, ProcessingMode.Normal)
 		} finally {
 			Event.current.set(previousCause)
 		}
