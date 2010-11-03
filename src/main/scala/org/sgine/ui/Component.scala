@@ -102,6 +102,12 @@ trait Component extends PropertyContainer with Renderable with RenderUpdatable w
 	
 	initializeInternal()
 	
+	override def parent_=(parent: NodeContainer) = {
+		super.parent_=(parent)
+		
+		updateStyle()			// Make sure the style gets updated
+	}
+	
 	private def initializeInternal() = {
 		location.actual.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)
 		rotation.actual.listeners += EventHandler(invalidateMatrix, processingMode = ProcessingMode.Blocking, recursion = Recursion.Children)

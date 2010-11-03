@@ -22,7 +22,10 @@ class ComponentInstance private() extends Component {
 		this.instance := instance
 	}
 	
-	bounding.bindPath(OPath(this, "instance.bounding"))
+	bounding.bindPath(OPath(this, "instance().bounding"))
+	size.measured.width.bindPath(OPath(this, "instance().size.measured.width"))
+	size.measured.height.bindPath(OPath(this, "instance().size.measured.height"))
+	size.measured.depth.bindPath(OPath(this, "instance().size.measured.depth"))
 	
 	def drawComponent() = {
 		instance() match {
