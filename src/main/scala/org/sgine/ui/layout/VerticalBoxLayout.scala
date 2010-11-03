@@ -18,7 +18,7 @@ class VerticalBoxLayout private(val spacing: Double,
 		var height = 0.0
 		var depth = 0.0
 		for (n <- container.children) n match {
-			case c: Component => {
+			case c: Component if (c.includeInLayout()) => {
 				items += 1
 				width = max(width, c.size.actual.width() + offset)
 				if (items > 0) {		// Add spacing
@@ -36,7 +36,7 @@ class VerticalBoxLayout private(val spacing: Double,
 			position = -position
 		}
 		for (n <- container.children) n match {
-			case c: Component => {
+			case c: Component if (c.includeInLayout()) => {
 				c.location.x.align := alignment
 				c.location.x := offset
 				c.location.y.align := (if (reverse) VerticalAlignment.Bottom else VerticalAlignment.Top)
