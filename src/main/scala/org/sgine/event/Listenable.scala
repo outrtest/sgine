@@ -2,12 +2,23 @@ package org.sgine.event
 
 import java.util.concurrent.atomic.AtomicReference
 
+import org.sgine.bus.ObjectBus
+
 import org.sgine.core.ProcessingMode
 
 import org.sgine.util.Time
 
 import scala.reflect.Manifest
 
+/**
+ * Listenable must be mixed into any class that fires events.
+ * Simply mixing in this trait gives complete support for events
+ * in the class. For hierarchical propagation the <code>parent</code>
+ * method should be overrided to reference the parent Listenable
+ * associated with this class.
+ * 
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
 trait Listenable {
 	def parent: Listenable = null
 	
@@ -97,6 +108,35 @@ trait Listenable {
 					container.set(evt)
 				}
 				action
+			}
+		}, processingMode, recursion, filter)
+		listeners += handler
+		
+		handler
+	}
+	
+	/**
+	 * Convenience method to easily propagate events through an ObjectBus. This
+	 * method takes an ObjectBus and details about how processing should occur
+	 * and returns the associated EventHandler for later removal.
+	 * 
+	 * @param objectBus
+	 * 			The ObjectBus that events should be passed to.
+	 * @param processingMode
+	 * 			Defaults to Normal
+	 * @param recursion
+	 * 			Defaults to None
+	 * @param filter
+	 * 			Defaults to null
+	 * @param manifest
+	 * 			Implicit manifest
+	 * @return
+	 * 		EventHandler generated and added
+	 */
+	def bus[E <: Event](objectBus: ObjectBus, processingMode: ProcessingMode = ProcessingMode.Normal, recursion: Recursion = Recursion.None, filter: E => Boolean = null)(implicit manifest: Manifest[E]) = {
+		val handler = EventHandler(new Function1[E, Unit] {
+			def apply(evt: E) = {
+				objectBus.process(evt)
 			}
 		}, processingMode, recursion, filter)
 		listeners += handler
