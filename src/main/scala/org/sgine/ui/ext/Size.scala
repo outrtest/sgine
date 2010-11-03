@@ -95,6 +95,8 @@ class MeasuredSize(override val parent: Size) extends PropertyContainer with Sty
 			parent.actual.depth := depth()
 		}
 	}
+	
+	override def toString() = "MeasuredSize(" + width() + ", " + height() + ", " + depth() + ")"
 }
 
 class ActualSize(override val parent: Size) extends PropertyContainer with Stylized {
@@ -130,4 +132,6 @@ class ActualSize(override val parent: Size) extends PropertyContainer with Styli
 			case _ => component.bounding := MutableBoundingBox(width(), height(), depth())
 		}
 	}
+	
+	override def toString() = "ActualSize(" + width() + ", " + height() + ", " + depth() + ")"
 }
