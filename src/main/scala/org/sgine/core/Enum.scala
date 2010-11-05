@@ -2,6 +2,7 @@ package org.sgine.core
 
 class Enum {
 	lazy val name: String = generateName()
+	lazy val parent = generateParent()
 	lazy val ordinal = generateOrdinal()
 	lazy val enumeratedClass = generateEnumeratedClass()
 	lazy val parentName = generateParentName()
@@ -19,10 +20,11 @@ class Enum {
 	
 	private def generateParentName() = enumeratedClass.getSimpleName.substring(0, enumeratedClass.getSimpleName.length - 1) 
 	
+	private def generateParent() = enumeratedClass.getField("MODULE$").get().asInstanceOf[Enumerated[_]]
+	
 	private def generateOrdinal() = {
 		val indexOf = enumeratedClass.getMethod("indexOf", classOf[String])
-		val instance = enumeratedClass.getField("MODULE$").get()
-		val result = indexOf.invoke(instance, name)
+		val result = indexOf.invoke(parent, name)
 		
 		result.asInstanceOf[Int]
 	}

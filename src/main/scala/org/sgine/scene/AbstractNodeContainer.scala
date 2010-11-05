@@ -11,7 +11,7 @@ import org.sgine.scene.event._
 /**
  * NodeContainer backed up by a thread-safe collection.
  */
-class AbstractNodeContainer extends NodeContainer {
+trait AbstractNodeContainer extends NodeContainer {
 	val children = new scala.collection.mutable.ArrayBuffer[Node]()
 
   protected def +=(node: Node) = {

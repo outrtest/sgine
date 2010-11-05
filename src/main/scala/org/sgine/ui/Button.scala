@@ -57,6 +57,9 @@ class Button extends AbstractContainer with SkinnedComponent with FocusableNode 
 	
 	Listenable.listenTo(EventHandler(changeLayout, ProcessingMode.Blocking), iconSpacing, iconPlacement)
 	
+	def drawComponent() = {
+	}
+	
 	private def mouseClicked(evt: MouseClickEvent) = {
 		val action = ActionEvent(this, "click")
 		Event.enqueue(action)

@@ -21,14 +21,14 @@ object TestCamera extends StandardDisplay with Debug {
 		box.source := Resource("sgine_256.png")
 		scene += box
 		
-		val c1 = new ComponentInstance(box)
+		val c1 = new ComponentInstanceImpl(box)
 		c1.location.x := -250.0
 		c1.scale(0.2)
 		c1.color := Color.Green
 		c1.alpha := 0.5
 		scene += c1
 		
-		val c2 = new ComponentInstance(box)
+		val c2 = new ComponentInstanceImpl(box)
 		c2.location.x := 250.0
 		c2.scale(0.2)
 		c2.color := Color.Blue

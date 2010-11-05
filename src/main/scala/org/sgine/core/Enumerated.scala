@@ -22,5 +22,9 @@ trait Enumerated[E <: Enum] extends Traversable[E] {
 	  case None => -1
   }
   
+  def next(current: E) = apply(if (current.ordinal == size - 1) 0 else current.ordinal + 1)
+  
+  def previous(current: E) = apply(if (current.ordinal == 0) size - 1 else current.ordinal - 1)
+  
   def random = values(new scala.util.Random().nextInt(values.length))
 }

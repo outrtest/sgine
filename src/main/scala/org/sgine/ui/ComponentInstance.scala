@@ -13,14 +13,8 @@ import org.sgine.property.AdvancedProperty
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class ComponentInstance private() extends Component {
+trait ComponentInstance extends Component {
 	val instance = new AdvancedProperty[Component](null, this)
-	
-	protected def this(instance: Component) = {
-		this()
-		
-		this.instance := instance
-	}
 	
 	bounding.bindPath(OPath(this, "instance().bounding"))
 	size.measured.width.bindPath(OPath(this, "instance().size.measured.width"))
@@ -35,9 +29,17 @@ class ComponentInstance private() extends Component {
 	}
 }
 
+class ComponentInstanceImpl extends ComponentInstance {
+	def this(original: Component) = {
+		this()
+		
+		instance := original
+	}
+}
+
 object ComponentInstance {
 	def apply(instance: Component = null) = {
-		val c = new ComponentInstance()
+		val c = new ComponentInstanceImpl
 		if (instance != null) {
 			c.instance := instance
 		}
