@@ -5,28 +5,29 @@ class InstanceManager extends AbstractContainer {
 	
 	_layout := null
 	visible := false
-	
-	def register(name: String, c: Component) = {
+
+	def register(name: String, c: Component, creator: Component => Component = InstanceManager.defaultCreator) = {
 		// Add it to the scene
-//		c.visible := false
 		this += c
 		
 		// Make it available in the map
 		synchronized {
-			map += name -> new Instances(c)
+			map += name -> new Instances(c, creator)
 		}
 	}
+	
+	def instance(name: String) = map(name)
 	
 	def request(name: String) = map(name).request()
 	
 	def release(name: String, instance: ComponentInstance) = map(name).release(instance)
 	
-	class Instances(original: Component) {
+	class Instances(val original: Component, val creator: Component => Component) {
 		private var queue = new java.util.concurrent.ConcurrentLinkedQueue[ComponentInstance]
 		
 		def request() = {
 			queue.poll match {
-				case null => ComponentInstance(original)
+				case null => creator(original)
 				case instance => instance
 			}
 		}
@@ -35,4 +36,8 @@ class InstanceManager extends AbstractContainer {
 			queue.add(instance)
 		}
 	}
+}
+
+object InstanceManager {
+	val defaultCreator = (original: Component) => ComponentInstance(original)
 }
