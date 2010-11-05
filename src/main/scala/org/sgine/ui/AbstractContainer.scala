@@ -20,7 +20,7 @@ import org.sgine.ui.layout._
 
 import org.sgine.work.Updatable
 
-class AbstractContainer extends AbstractNodeContainer with Component with Updatable with OffsetComponent {
+trait AbstractContainer extends AbstractNodeContainer with Component with Updatable with OffsetComponent {
 	protected[ui] val _layout = new AdvancedProperty[(AbstractContainer) => Unit](Layout.default, this)
 	
 	private val revalidateLayout = new AtomicBoolean(true)
@@ -78,8 +78,5 @@ class AbstractContainer extends AbstractNodeContainer with Component with Updata
 //			}
 //			case _ =>
 //		}
-	}
-	
-	def drawComponent() = {
 	}
 }

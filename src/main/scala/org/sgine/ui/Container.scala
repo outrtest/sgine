@@ -8,4 +8,7 @@ class Container extends AbstractContainer {
 	override def +=(node: Node) = super.+=(node)
 	
 	override def -=(node: Node) = super.-=(node)
+	
+	def drawComponent() = {
+	}
 }

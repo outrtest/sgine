@@ -15,7 +15,7 @@ import org.sgine.scene.Node
 import org.sgine.ui.Component
 import org.sgine.ui.AbstractContainer
 
-class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val itemWidth: Double, val itemHeight: Double) extends Layout {
+class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val itemWidth: Double, val itemHeight: Double, val allowMultiple: Boolean) extends Layout {
 	val width = (columns * itemWidth) + ((columns - 1) * spacing)
 	val height = (rows * itemHeight) + ((rows - 1) * spacing)
 	
@@ -57,10 +57,14 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 		}
 	}
 	
-	def apply(row: Int, column: Int) = items.find(item => item.row == row && item.column == column) match {
+	def apply(row: Int, column: Int, f: Node => Boolean = acceptAll) = items.find(item => item.row == row && item.column == column && f(item.n)) match {
 		case Some(i) => i.n
-		case None => None
+		case None => null
 	}
+	
+	def nodes(row: Int, column: Int, f: Node => Boolean = acceptAll) = for (item <- items; if ((item.row == row) && (item.column == column) && (f(item.n)))) yield item.n 
+	
+	private val acceptAll = (n: Node) => true
 	
 	def apply(n: Node, row: Int, column: Int) = {
 		synchronized {
@@ -122,7 +126,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 private case class GridItem(n: Node, var row: Int, var column: Int)
 
 object GridLayout {
-	def apply(rows: Int, columns: Int, spacing: Int, itemWidth: Double, itemHeight: Double) = {
-		new GridLayout(rows, columns, spacing, itemWidth, itemHeight)
+	def apply(rows: Int, columns: Int, spacing: Int, itemWidth: Double, itemHeight: Double, allowMultiple: Boolean = false) = {
+		new GridLayout(rows, columns, spacing, itemWidth, itemHeight, allowMultiple)
 	}
 }

@@ -5,6 +5,9 @@ class InstanceManager extends AbstractContainer {
 	
 	_layout := null
 	visible := false
+	
+	def drawComponent() = {
+	}
 
 	def register(name: String, c: Component, creator: Component => Component = InstanceManager.defaultCreator) = {
 		// Add it to the scene
