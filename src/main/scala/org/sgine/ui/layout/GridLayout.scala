@@ -31,7 +31,7 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 						if (get(n) == None) {
 							nextAvailable match {
 								case Some((row, column)) => {
-									info("Node not already in layout, specifying: " + n + " at " + row + "x" + column)
+									finest("Node not already in layout, specifying: " + n + " at " + row + "x" + column)
 									apply(n, row, column)
 								}
 								case None => warn("No more room found in GridLayout")
@@ -100,12 +100,12 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	}
 	
 	private def layout(item: GridItem) = {
-		val offsetX = (item.column * (itemWidth + spacing)) - (width / 2.0)
-		val offsetY = (-item.row * (itemHeight + spacing)) - (height / -2.0)
+		val offsetX = (item.column * (itemWidth + spacing)) - (width / 2.0) + (itemWidth / 2.0)
+		val offsetY = (-item.row * (itemHeight + spacing)) - (height / -2.0) - (itemHeight / 2.0)
 		item.n match {
 			case c: Component => {
-				c.location.x.align := HorizontalAlignment.Left
-				c.location.y.align := VerticalAlignment.Top
+				c.location.x.align := HorizontalAlignment.Center
+				c.location.y.align := VerticalAlignment.Middle
 				c.location(offsetX, offsetY)
 			}
 		}
