@@ -5,7 +5,7 @@ import org.sgine.core.Enumerated
 
 import org.lwjgl.opengl.GL11._
 
-sealed class ShapeMode(val value: Int) extends Enum
+sealed abstract class ShapeMode(val value: Int) extends Enum
 
 object ShapeMode extends Enumerated[ShapeMode] {
 	case object Quads extends ShapeMode(GL_QUADS)
