@@ -1,13 +1,7 @@
 package org.sgine.core
 
-sealed class Compass extends Enum {
-	def opposite = {
-		if (ordinal > 1) {
-			Compass(ordinal - 2)
-		} else {
-			Compass(ordinal + 2)
-		}
-	}
+sealed trait Compass extends Enum {
+	def opposite = Compass(if (ordinal > 1) ordinal - 2 else ordinal + 2)
 }
 
 object Compass extends Enumerated[Compass] {

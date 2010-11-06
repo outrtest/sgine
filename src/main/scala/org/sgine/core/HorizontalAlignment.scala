@@ -1,6 +1,6 @@
 package org.sgine.core
 
-sealed class HorizontalAlignment extends Enum
+sealed trait HorizontalAlignment extends Enum
 
 object HorizontalAlignment extends Enumerated[HorizontalAlignment] {
    case object Left extends HorizontalAlignment

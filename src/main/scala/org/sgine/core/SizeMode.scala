@@ -1,6 +1,6 @@
 package org.sgine.core
 
-sealed class SizeMode extends Enum
+sealed trait SizeMode extends Enum
 
 object SizeMode extends Enumerated[SizeMode] {
 	case object Auto extends SizeMode
