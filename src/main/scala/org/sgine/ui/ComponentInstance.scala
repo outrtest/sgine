@@ -2,6 +2,8 @@ package org.sgine.ui
 
 import org.sgine.bounding.BoundingObject
 
+import org.sgine.core._
+
 import org.sgine.path.OPath
 
 import org.sgine.property.AdvancedProperty
@@ -15,6 +17,7 @@ import org.sgine.property.AdvancedProperty
  */
 trait ComponentInstance extends Component {
 	val instance = new AdvancedProperty[Component](null, this)
+	val instanceColor = new AdvancedProperty[Color](Color.White, this)
 	
 	bounding.bindPath(OPath(this, "instance().bounding"))
 	size.measured.width.bindPath(OPath(this, "instance().size.measured.width"))
@@ -22,6 +25,7 @@ trait ComponentInstance extends Component {
 	size.measured.depth.bindPath(OPath(this, "instance().size.measured.depth"))
 	
 	def drawComponent() = {
+		multColor(instanceColor())
 		instance() match {
 			case null =>
 			case c => c.drawComponent()

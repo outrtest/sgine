@@ -21,40 +21,38 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	
 	private var items: List[GridItem] = Nil
 	
-	def apply(container: AbstractContainer) = {
-		synchronized {
-			// Make sure everything is configured
-			if (container.children.size != items.size) {
-				// Add missing
-				for (n <- container.children) n match {
-					case c: Component if (c.includeInLayout()) => {
-						if (get(n) == None) {
-							nextAvailable match {
-								case Some((row, column)) => {
-									finest("Node not already in layout, specifying: " + n + " at " + row + "x" + column)
-									apply(n, row, column)
-								}
-								case None => warn("No more room found in GridLayout")
+	def apply(container: AbstractContainer) = synchronized {
+		// Make sure everything is configured
+		if (container.children.size != items.size) {
+			// Add missing
+			for (n <- container.children) n match {
+				case c: Component if (c.includeInLayout()) => {
+					if (get(n) == None) {
+						nextAvailable match {
+							case Some((row, column)) => {
+								finest("Node not already in layout, specifying: " + n + " at " + row + "x" + column)
+								apply(n, row, column)
 							}
+							case None => throw new RuntimeException("No more room found in GridLayout")
 						}
 					}
-					case _ => // Ignore
 				}
-				// Remove no longer used
-				for (item <- items) {
-					if (container.children.indexOf(item.n) == -1) {
-						items = items filterNot (i => item == i)
-					}
-				}
+				case _ => // Ignore
 			}
-			
-			// Lay out each item
+			// Remove no longer used
 			for (item <- items) {
-				layout(item)
+				if (container.children.indexOf(item.n) == -1) {
+					items = items filterNot (i => item == i)
+				}
 			}
-			
-			container.size(width, height)
 		}
+		
+		// Lay out each item
+		for (item <- items) {
+			layout(item)
+		}
+		
+		container.size(width, height)
 	}
 	
 	def apply(row: Int, column: Int, f: Node => Boolean = acceptAll) = items.find(item => item.row == row && item.column == column && f(item.n)) match {
@@ -66,24 +64,22 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 	
 	private val acceptAll = (n: Node) => true
 	
-	def apply(n: Node, row: Int, column: Int) = {
-		synchronized {
-			if (row >= rows) throw new IndexOutOfBoundsException("Specified row exceeds row count. Specified: " + row + ", Max: " + rows)
-			if (column >= columns) throw new IndexOutOfBoundsException("Specified column exceeds column count. Specified: " + column + ", Max: " + columns)
-			
-			val item = getInternal(n) match {
-				case Some(i) => i
-				case None => {
-					val i = GridItem(n, row, column)
-					items = i :: items
-					i
-				}
+	def apply(n: Node, row: Int, column: Int) = synchronized {
+		if (row >= rows) throw new IndexOutOfBoundsException("Specified row exceeds row count. Specified: " + row + ", Max: " + rows)
+		if (column >= columns) throw new IndexOutOfBoundsException("Specified column exceeds column count. Specified: " + column + ", Max: " + columns)
+		
+		val item = getInternal(n) match {
+			case Some(i) => i
+			case None => {
+				val i = GridItem(n, row, column)
+				items = i :: items
+				i
 			}
-			item.row = row
-			item.column = column
-			
-			layout(item)
 		}
+		item.row = row
+		item.column = column
+		
+		layout(item)
 	}
 	
 	def nextAvailable = (0 until rows * columns) find(value => {
