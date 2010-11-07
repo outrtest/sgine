@@ -23,6 +23,6 @@ object TestLabel {
 		component.text := "Hello World! Arial"
 		scene += component
 		
-		r.renderable := RenderableScene(scene)
+		r.renderable := RenderableScene(scene, r)
 	}
 }

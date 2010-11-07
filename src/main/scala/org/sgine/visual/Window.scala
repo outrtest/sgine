@@ -68,7 +68,7 @@ class Window private(_renderer: Renderer) extends PropertyContainer with Listena
 	
 	def reload() = {
 		// Register NodeView for Shapes
-		_shapesView := NodeView(scene(), ShapeQuery, false)
+		_shapesView := NodeView(scene(), ShapeQuery, ProcessingMode.Blocking, null)
 	}
 	
 	def start(awtContainer: java.awt.Container = new AWTFrame(this), updateTimer: Timer = new RealtimeTimer) = {

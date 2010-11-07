@@ -2,6 +2,8 @@ package org.sgine.render
 
 import org.lwjgl.opengl.GL11._
 
+import org.sgine.core._
+
 import org.sgine.event.Event
 
 import org.sgine.property.AdvancedProperty
@@ -14,7 +16,7 @@ import org.sgine.scene.view.NodeView
 
 trait CacheableRenderable extends Renderable {
 	private val revalidateCache = new MutableProperty[Boolean](true)
-	private val nodeView = NodeView(this, RenderableQuery, false)
+	private val nodeView = NodeView(this, RenderableQuery, ProcessingMode.Blocking, null)
 	
 	private var listId: Int = _
 	

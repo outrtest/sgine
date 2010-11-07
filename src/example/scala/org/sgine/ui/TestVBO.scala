@@ -45,7 +45,7 @@ object TestVBO {
 			}
 		}
 		
-		r.renderable := RenderableScene(scene)
+		r.renderable := RenderableScene(scene, r)
 	}
 	
 	private def createTriangleBuffer() = {
