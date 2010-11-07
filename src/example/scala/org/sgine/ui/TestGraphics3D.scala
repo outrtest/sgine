@@ -28,7 +28,7 @@ object TestGraphics3D {
 		
 		scene += new TestGraphics3D()
 		
-		r.renderable := RenderableScene(scene)
+		r.renderable := RenderableScene(scene, r)
 	}
 }
 

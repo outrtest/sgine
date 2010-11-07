@@ -34,7 +34,7 @@ object TestMousePicking {
 		scene += component
 		
 		// Add our scene to the renderer
-		r.renderable := RenderableScene(scene, false)
+		r.renderable := RenderableScene(scene, r, false)
 		
 		// Add a listener to listen to all mouse events to the picture
 		component.listeners += EventHandler(mouseEvent)

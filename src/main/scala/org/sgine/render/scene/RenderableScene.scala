@@ -29,16 +29,13 @@ import simplex3d.math._
 import simplex3d.math.doublem._
 import simplex3d.math.doublem.DoubleMath._
 
-class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) extends Renderable {
-	val renderableView = NodeView(scene, RenderableQuery, false)
-	renderableView.sortFunction = RenderSort
+class RenderableScene private(val scene: NodeContainer, val renderer: Renderer, val showFPS: Boolean) extends Renderable {
+	val renderableView = NodeView(scene, RenderableQuery, ProcessingMode.Blocking, renderer, RenderSort)
 	// TODO: add frustum culling via filter method
-	val updatableView = NodeView(scene, RenderUpdatableQuery, false)
-	updatableView.sortFunction = RenderSort
+	val updatableView = NodeView(scene, RenderUpdatableQuery, ProcessingMode.Blocking, renderer, RenderSort)
 	val fps = FPS()
 	
 	private var initted = false
-	private var renderer: Renderer = _
 	
 	private var _hits: List[Node] = Nil
 	private var currentHits: List[Node] = Nil
@@ -52,8 +49,6 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 	}
 	
 	def render(renderer: Renderer) = {
-		this.renderer = renderer
-		
 		if (!initted) init()
 
 		// TODO: handle sorting function
@@ -156,5 +151,5 @@ class RenderableScene private(val scene: NodeContainer, val showFPS: Boolean) ex
 }
 
 object RenderableScene {
-	def apply(scene: NodeContainer, showFPS: Boolean = false) = new RenderableScene(scene, showFPS)
+	def apply(scene: NodeContainer, renderer: Renderer, showFPS: Boolean = false) = new RenderableScene(scene, renderer, showFPS)
 }

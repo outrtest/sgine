@@ -11,33 +11,36 @@ import org.sgine.scene.event._
 import org.sgine.scene.query._
 import org.sgine.scene.view.event._
 
+import org.sgine.work.Worker
+
 import scala.collection.mutable.ArrayBuffer
 
 /**
  * A view to some Nodes that match a query in a NodeContainer.
  */
-class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Iterable[Node] with Listenable {
+class NodeView private (node: Node, query: Function1[Node, Boolean], sortFunction: (Node, Node) => Int, filterFunction: (Node) => Boolean) extends Iterable[Node] with Listenable {
 	private var queue = new ArrayBuffer[Node] {
 		def localArray = array
 	}
 	private var excluded = new ArrayBuffer[Node]
 	
-	private var comparator: java.util.Comparator[AnyRef] = _
-	private var _sortFunction: (Node, Node) => Int = _
-	
-	def sortFunction_=(f: (Node, Node) => Int) = {
-		comparator = new java.util.Comparator[AnyRef] {
-			def compare(o1: AnyRef, o2: AnyRef) = f(o1.asInstanceOf[Node], o2.asInstanceOf[Node])
+	private val comparator = if (sortFunction != null) {
+		new java.util.Comparator[AnyRef] {
+			def compare(o1: AnyRef, o2: AnyRef) = sortFunction(o1.asInstanceOf[Node], o2.asInstanceOf[Node])
 		}
-		_sortFunction = f
+	} else {
+		null
 	}
 	
-	def sortFunction = _sortFunction
+	private val add = (n: Node) => if (!queue.contains(n)) {
+		queue += n
+		Event.enqueue(NodeAddedEvent(this, n))
+	}
 	
-	/**
-	 * Returns true if the Node should be filtered out. Defaults to null.
-	 */
-	var filterFunction: (Node) => Boolean = _
+	private val remove = (n: Node) => if (queue.contains(n)) {
+		queue -= n
+		Event.enqueue(NodeRemovedEvent(this, n))
+	}
 	
 	def iterator = queue.iterator
 	
@@ -46,6 +49,7 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 	 */
 	private def refresh() = {
 		queue.clear()
+		excluded.clear()
 		NodeQuery.query(query, node, add)
 		filter()
 		sort()
@@ -77,13 +81,8 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 		}
 	}
 	
-	def sort() = {
-//		if (sortFunction != null) {
-//			org.sgine.util.Sort.bubbleSort(queue, sortFunction)
-//		}
-		if (queue.length > 0) {
-			java.util.Arrays.sort(queue.localArray, 0, queue.length, comparator)
-		}
+	def sort() = if ((comparator != null) && (queue.length > 0)) {
+		java.util.Arrays.sort(queue.localArray, 0, queue.length, comparator)
 	}
 	
 	private def containerEvent(evt: NodeContainerEvent) = {
@@ -93,39 +92,14 @@ class NodeView private (node: Node, query: Function1[Node, Boolean]) extends Ite
 			NodeQuery.query(query, evt.child, remove)
 		}
 	}
-	
-	private def add(n: Node) = {
-		synchronized {
-			if (!queue.contains(n)) {
-//				queue = n :: queue
-				queue += n
-				
-				Event.enqueue(NodeAddedEvent(this, n))
-			}
-		}
-	}
-	
-	private def remove(n: Node) = {
-		synchronized {
-			if (queue.contains(n)) {
-//				queue = queue.filterNot(_ == n)
-				queue -= n
-				
-				Event.enqueue(NodeRemovedEvent(this, n))
-			}
-		}
-	}
 }
 
 object NodeView {
-	def apply(node: Node, query: Node => Boolean, asynchronous: Boolean): NodeView = {
-		val v = new NodeView(node, query)
-		v.refresh()
-		val h = node.listeners += v.containerEvent _
-		h.recursion = Recursion.Children
-		if (!asynchronous) {
-			h.processingMode = ProcessingMode.Blocking
-		}
+	def apply(node: Node, query: Node => Boolean, processingMode: ProcessingMode, worker: Worker, sortFunction: (Node, Node) => Int = null, filterFunction: (Node) => Boolean = null): NodeView = {
+		val v = new NodeView(node, query, sortFunction, filterFunction)
+		v.refresh()		// Refresh the view contents
+		// Listen for events
+		node.listeners += EventHandler(v.containerEvent, processingMode, Recursion.Children, worker = worker)
 		v
 	}
 }

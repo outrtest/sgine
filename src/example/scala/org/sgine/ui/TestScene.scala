@@ -39,6 +39,6 @@ object TestScene {
 		component.location.z := 100.0
 		container3 += component
 		
-		r.renderable := RenderableScene(scene)
+		r.renderable := RenderableScene(scene, r)
 	}
 }

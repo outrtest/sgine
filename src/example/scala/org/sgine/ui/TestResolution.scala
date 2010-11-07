@@ -34,6 +34,6 @@ object TestResolution {
 		c640.alpha := 0.5
 		r640 += c640
 		
-		r.renderable := RenderableScene(scene)
+		r.renderable := RenderableScene(scene, r)
 	}
 }

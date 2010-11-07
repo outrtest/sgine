@@ -87,7 +87,7 @@ trait StandardDisplay extends Listenable with Display {
 			error("Unsupported WindowMode: " + mode)
 		}
 		
-		renderer.renderable := RenderableScene(scene)
+		renderer.renderable := RenderableScene(scene, renderer)
 		
 		DefaultWorkManager += initAndSetup
 	}
