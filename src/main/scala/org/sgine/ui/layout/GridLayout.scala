@@ -104,8 +104,8 @@ class GridLayout private(val rows: Int, val columns: Int, val spacing: Int, val 
 		val offsetY = (-item.row * (itemHeight + spacing)) - (height / -2.0) - (itemHeight / 2.0)
 		item.n match {
 			case c: Component => {
-				c.location.x.align := HorizontalAlignment.Center
-				c.location.y.align := VerticalAlignment.Middle
+//				c.location.x.align := HorizontalAlignment.Center
+//				c.location.y.align := VerticalAlignment.Middle
 				c.location(offsetX, offsetY)
 			}
 		}

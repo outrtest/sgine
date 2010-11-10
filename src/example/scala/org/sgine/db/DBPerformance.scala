@@ -11,21 +11,21 @@ import org.sgine.property.AdvancedProperty
 object DBPerformance {
 	def main(args: Array[String]): Unit = {
 		val file = new File("example.db")
-		file.delete()
+//		file.delete()
 		
 		val db = DB.open(file)
 		val transaction = db.transaction()
 		
-		transaction.store(new TestEnums(1, "left", "top"))
-		transaction.store(new TestEnums(2, "center", "top"))
-		transaction.store(new TestEnums(3, "right", "top"))
-		transaction.store(new TestEnums(4, "left", "middle"))
-		transaction.store(new TestEnums(5, "center", "middle"))
-		transaction.store(new TestEnums(6, "right", "middle"))
-		transaction.store(new TestEnums(7, "left", "bottom"))
-		transaction.store(new TestEnums(8, "center", "bottom"))
-		transaction.store(new TestEnums(9, "right", "bottom"))
-		transaction.commit()
+//		transaction.store(new TestEnums(1, "left", "top"))
+//		transaction.store(new TestEnums(2, "center", "top"))
+//		transaction.store(new TestEnums(3, "right", "top"))
+//		transaction.store(new TestEnums(4, "left", "middle"))
+//		transaction.store(new TestEnums(5, "center", "middle"))
+//		transaction.store(new TestEnums(6, "right", "middle"))
+//		transaction.store(new TestEnums(7, "left", "bottom"))
+//		transaction.store(new TestEnums(8, "center", "bottom"))
+//		transaction.store(new TestEnums(9, "right", "bottom"))
+//		transaction.commit()
 		
 		def test(id: Int, halign: HorizontalAlignment, valign: VerticalAlignment) = {
 			val option = transaction.find((te: TestEnums) => te.id() == id)

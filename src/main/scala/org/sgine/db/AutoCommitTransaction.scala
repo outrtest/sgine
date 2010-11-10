@@ -12,7 +12,7 @@ class AutoCommitTransaction(transaction: Transaction) extends Transaction {
 	
 	def query[T](clazz: Class[T]) = transaction.query(clazz)
 	
-	def query[T](predicate: T => Boolean)(implicit manifest: Manifest[T]) = transaction.query(predicate)
+	def query[T](predicate: T => Boolean, sortFunction: (T, T) => Int = null)(implicit manifest: Manifest[T]) = transaction.query(predicate, sortFunction)
 	
 	def delete[T](obj: T)(implicit manifest: Manifest[T]) = {
 		transaction.delete(obj)
