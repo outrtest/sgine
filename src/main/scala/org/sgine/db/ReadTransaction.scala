@@ -7,10 +7,10 @@ trait ReadTransaction {
 	
 	def query[T](clazz: Class[T]): Iterator[T]
 	
-	def query[T](predicate: T => Boolean)(implicit manifest: Manifest[T]): Iterator[T]
+	def query[T](predicate: T => Boolean, sortFunction: (T, T) => Int = null)(implicit manifest: Manifest[T]): Iterator[T]
 	
-	def find[T](predicate: T => Boolean)(implicit manifest: Manifest[T]) = {
-		val i = query(predicate)
+	def find[T](predicate: T => Boolean, sortFunction: (T, T) => Int = null)(implicit manifest: Manifest[T]) = {
+		val i = query(predicate, sortFunction)
 		if (i.hasNext) {
 			Some(i.next)
 		} else {
