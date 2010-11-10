@@ -83,7 +83,7 @@ class DBSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "properly retrieve an instance of TestProperties" in {
-		val tp = transaction.find(classOf[TestProperties])
+		val tp = transaction.find[TestProperties]()
 		tp should not equal(None)
 		tp.get.name() should equal("One")
 	}
@@ -117,10 +117,14 @@ class DBSpec extends FlatSpec with ShouldMatchers {
 		test(7, "left", "bottom")
 		test(8, "center", "bottom")
 		test(9, "right", "bottom")
+	}
+	
+	it should "query out all persisted enums in reverse sequence" in {
+		val sortLast = (first: TestEnums, second: TestEnums) => second.id() - first.id()
+		val results = transaction.query[TestEnums](null, sortLast).toList
 		
-		for (h <- transaction.query((ha: HorizontalAlignment) => true)) {
-			println(h)
-		}
+		results.head.id() should equal(9)
+		results.last.id() should equal(1)
 	}
 	
 	it should "close the transaction" in {
@@ -156,4 +160,6 @@ class TestEnums {
 		this.halign := halign
 		this.valign := valign
 	}
+	
+	override def toString() = id() + " - " + halign() + ", " + valign()
 }

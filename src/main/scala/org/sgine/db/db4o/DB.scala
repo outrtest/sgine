@@ -28,11 +28,9 @@ class DB(server: ObjectServer) extends org.sgine.db.DB {
 class Transaction(val db: DB, container: ObjectContainer) extends org.sgine.db.Transaction {
 	def store[T](obj: T)(implicit manifest: Manifest[T]) = container.store(obj)
 	
-	def query[T](clazz: Class[T]) = new RichObjectSet(container.query(clazz))
-	
-	def query[T](predicate: T => Boolean, sortFunction: (T, T) => Int = null)(implicit manifest: Manifest[T]) = {
+	def query[T](predicate: T => Boolean = null, sortFunction: (T, T) => Int = null)(implicit manifest: Manifest[T]) = {
 		val p = new Predicate[T](manifest.erasure.asInstanceOf[Class[T]]) {
-			def `match`(entry: T) = predicate(entry)
+			def `match`(entry: T) = if (predicate != null) predicate(entry) else true
 		}
 		
 		new RichObjectSet(if (sortFunction != null) container.query(p, new RichQueryComparator(sortFunction)) else container.query(p))
