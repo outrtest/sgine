@@ -8,7 +8,7 @@ trait ReadTransaction {
 	def query[T](predicate: T => Boolean = null, sortFunction: (T, T) => Int = null)(implicit manifest: Manifest[T]): Iterator[T]
 	
 	def find[T](predicate: T => Boolean = null, sortFunction: (T, T) => Int = null)(implicit manifest: Manifest[T]) = {
-		val i = query(predicate, sortFunction)
+		val i = query[T](predicate, sortFunction)
 		if (i.hasNext) {
 			Some(i.next)
 		} else {
