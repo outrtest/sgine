@@ -20,4 +20,15 @@ class Location(override val parent: Component) extends PropertyContainer {
 		this.y := y
 		this.z := z
 	}
+	
+	def set(x: Double, y: Double) = {
+		this.x.set(x)
+		this.y.set(y)
+	}
+	
+	def set(x: Double, y: Double, z: Double) = {
+		this.x.set(x)
+		this.y.set(y)
+		this.z.set(z)
+	}
 }
