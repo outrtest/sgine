@@ -14,8 +14,10 @@ trait PropertyAnimator[T] extends Function3[T, T, Double, T] with Updatable {
 	def apply(property: Animatable[T], target: T) = {
 		initUpdatable()
 		
-		_property = property
-		_target = target
+		if (target != property()) {		// Only start animation if value is different from current
+			_property = property
+			_target = target
+		}
 	}
 	
 	def disable() = {
