@@ -4,7 +4,7 @@ import org.sgine.work.WorkManager
 
 import scala.reflect.Manifest
 
-class ObjectBus protected(val name: String, val workManager: WorkManager) {
+class ObjectBus protected(val name: String) {
 	private var nodes: List[ObjectNode[_]] = Nil
 	
 	def +=(node: ObjectNode[_]) = {
@@ -22,18 +22,14 @@ class ObjectBus protected(val name: String, val workManager: WorkManager) {
 	}
 	
 	def process[T](message: T)(implicit manifest: Manifest[T]) = {
-		if (workManager != null) {
-			workManager += (() => processMessage(message, nodes))
-		} else {
-			processMessage(message, nodes)
-		}
+		processMessage(message, nodes)
 	}
 	
 	@scala.annotation.tailrec
 	private def processMessage[T](message: T, nodes: List[ObjectNode[_]])(implicit manifest: Manifest[T]): Unit = {
 		if (nodes != Nil) {
 			val node = nodes.head
-			if (node(message) != Routing.Stop) {
+			if (node.receive(message) != Routing.Stop) {
 				processMessage(message, nodes.tail)
 			}
 		}
@@ -45,12 +41,12 @@ class ObjectBus protected(val name: String, val workManager: WorkManager) {
 object ObjectBus {
 	private var map = Map.empty[String, ObjectBus]
 	
-	def apply(name: String, workManager: WorkManager = null) = {
+	def apply(name: String) = {
 		synchronized {
 			map.get(name) match {
 				case Some(ob) => ob
 				case None => {
-					val ob = new ObjectBus(name, workManager)
+					val ob = new ObjectBus(name)
 					map += name -> ob
 					ob
 				}
@@ -65,5 +61,5 @@ object ObjectBus {
 	 * @return
 	 * 		new ObjectBus
 	 */
-	def apply() = new ObjectBus(null, null)
+	def apply() = new ObjectBus(null)
 }
