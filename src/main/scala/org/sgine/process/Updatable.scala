@@ -92,8 +92,10 @@ object Updatable {
 				val delay = round(waitTime * 1000.0)
 				if (delay > 0) {
 					synchronized {
-//						wait(delay)
-						wait(10)
+						println("\tUpdatable Delay: " + delay)
+						wait(delay)
+						println("\t\tUpdatable Delay Finished!")
+//						wait(10)
 					}
 				}
 			}
