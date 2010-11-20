@@ -11,12 +11,13 @@ import org.sgine.util.FunctionRunnable
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class ThreadProcessor extends Processor {
-	private val thread = createThread()
+	private lazy val thread = createThread()
 	private val ref = new AtomicReference[() => Unit]
 	private var keepAlive = true
 	
 	def accept(f: () => Unit) = if (keepAlive && ref.compareAndSet(null, f)) {
 		synchronized {
+			thread
 			notifyAll()
 			true
 		}
