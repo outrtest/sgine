@@ -25,6 +25,7 @@ trait Updatable {
 		}
 		Updatable.synchronized {
 			println("invokeUpdate - notifyAll")
+			Updatable.changed.set(true)
 			Updatable.notifyAll()
 		}
 	}
@@ -41,6 +42,7 @@ object Updatable {
 	@volatile private var currentTime = 0.0
 	private val thread = createThread()
 	private var updatables: List[WeakReference[Updatable]] = Nil
+	private val changed = new java.util.concurrent.atomic.AtomicBoolean(false)
 	
 	def apply(rate: Double = 0.01, count: Int = -1)(f: => Unit) = {
 		val u = new UpdatableImpl(rate, count) {
@@ -89,10 +91,12 @@ object Updatable {
 						Process(u.invokeUpdate, ProcessHandling.Enqueue)
 					}
 				}
-				
-				val delay = round(waitTime * 1000.0)
-				if (delay > 0) {
-					synchronized {
+			}
+			
+			val delay = round(waitTime * 1000.0)
+			if (delay > 0) {
+				synchronized {
+					if (!changed.compareAndSet(true, false)) {
 						println("\tUpdatable Delay: " + delay)
 						wait(delay)
 						println("\t\tUpdatable Delay Finished!")
