@@ -11,10 +11,18 @@ trait Updatable {
 	
 	def elapsed = _elapsed
 	def rate: Double
+	def count: Int
+	
+	private var keepAlive = true
+	@volatile private var updated = 0
 	
 	private val invokeUpdate = () => {
 		update(Updatable.currentTime)
+		updated += 1
 		_elapsed = 0.0
+		if (count > 0 && updated >= count) {		// Updated the number of times desired
+			shutdown()
+		}
 		Updatable.synchronized {
 			Updatable.notifyAll()
 		}
@@ -22,17 +30,19 @@ trait Updatable {
 	def update(time: Double): Unit
 	
 	def start() = Updatable.add(this)
+	
+	protected def shutdown() = keepAlive = false
 }
 
-abstract class UpdatableImpl(val rate: Double) extends Updatable
+abstract class UpdatableImpl(val rate: Double, val count: Int) extends Updatable
 
 object Updatable {
 	@volatile private var currentTime = 0.0
 	private val thread = createThread()
 	private var updatables: List[WeakReference[Updatable]] = Nil
 	
-	def apply(rate: Double = 0.01)(f: => Unit) = {
-		val u = new UpdatableImpl(rate) {
+	def apply(rate: Double = 0.01, count: Int = -1)(f: => Unit) = {
+		val u = new UpdatableImpl(rate, count) {
 			def update(time: Double) = {
 				f
 			}
@@ -62,7 +72,7 @@ object Updatable {
 			var waitTime = 10.0
 			for (ref <- updatables) {
 				val u = ref.get
-				if (u == null) {
+				if ((u == null) || (!u.keepAlive)) {
 					// Remove de-referenced Updatable
 					synchronized {
 						updatables = updatables.filterNot(_ == ref)
