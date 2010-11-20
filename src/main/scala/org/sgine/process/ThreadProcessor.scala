@@ -12,10 +12,10 @@ import org.sgine.util.FunctionRunnable
  */
 class ThreadProcessor extends Processor {
 	private val thread = createThread()
-	private val ref = new AtomicReference[() => Any]
+	private val ref = new AtomicReference[() => Unit]
 	private var keepAlive = true
 	
-	def accept(f: () => Any) = if (keepAlive && ref.compareAndSet(null, f)) {
+	def accept(f: () => Unit) = if (keepAlive && ref.compareAndSet(null, f)) {
 		synchronized {
 			notifyAll()
 			true
@@ -46,15 +46,20 @@ class ThreadProcessor extends Processor {
 	
 	private def run() = {
 		while (keepAlive) {
-			var f: () => Any = null
-			synchronized {
-				f = ref.getAndSet(null)
-				if (f == null) {
-					wait()
+			val f = synchronized {
+				ref.get match {
+					case null => {
+						wait()
+						null
+					}
+					case f => f
 				}
 			}
 			if (f != null) {
+				// Invoke function
 				f()
+				// Poll from the queue
+				ref.set(Process.poll())
 			}
 		}
 	}

@@ -11,11 +11,11 @@ import scala.reflect.Manifest
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Processor extends ObjectNode[() => Any] {
-	implicit val manifest = Manifest.classType[() => Any](classOf[() => Any])
+trait Processor extends ObjectNode[() => Unit] {
+	implicit val manifest = Manifest.classType[() => Unit](classOf[() => Unit])
 	val priority = ObjectNode.NormalPriority
 	
-	def apply(message: () => Any) = {
+	def apply(message: () => Unit) = {
 		if (accept(message)) {
 			Routing.Stop
 		} else {
@@ -34,5 +34,5 @@ trait Processor extends ObjectNode[() => Any] {
 	 * @return
 	 * 		true if able to process immediately
 	 */
-	def accept(f: () => Any): Boolean
+	def accept(f: () => Unit): Boolean
 }

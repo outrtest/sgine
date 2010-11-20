@@ -6,6 +6,8 @@ import org.sgine.bus.Routing
 
 import scala.math._
 
+import scala.collection.mutable.SynchronizedQueue
+
 import scala.reflect.Manifest
 
 /**
@@ -22,23 +24,32 @@ object Process {
 	
 	private val bus = ObjectBus()
 	private var processors: List[Processor] = Nil
+	private val queue = new SynchronizedQueue[() => Unit]
 	
+	private[process] def poll() = synchronized {
+		queue.dequeueFirst(selectFirst).getOrElse(null)
+	}
+	
+	private val selectFirst = (f: () => Unit) => true
+		
 	initProcessors()
 	
-	def attempt(f: => Any): Boolean = apply(() => f, ProcessHandling.Attempt)
+	def update(rate: Double = 0.01)(f: => Unit) = Updatable(rate)(f)
 	
-	def asynchronous(f: => Any): Boolean = apply(() => f, ProcessHandling.Enqueue)
+	def attempt(f: => Unit): Boolean = apply(() => f, ProcessHandling.Attempt)
 	
-	def start(f: => Any): Boolean = apply(() => f, ProcessHandling.Wait)
+	def asynchronous(f: => Unit): Boolean = apply(() => f, ProcessHandling.Enqueue)
 	
-	def apply(f: () => Any,
+	def start(f: => Unit): Boolean = apply(() => f, ProcessHandling.Wait)
+	
+	def apply(f: () => Unit,
 			  handling: ProcessHandling = DefaultHandling): Boolean = if (bus.process(f)) {
-	 	true
+		true
 	} else if (handling == ProcessHandling.Wait) {
 		Thread.sleep(10)
 		apply(f, handling)
 	} else if (handling == ProcessHandling.Enqueue) {
-		// TODO: enqueue
+		queue.enqueue(f)
 		true
 	} else {
 		false

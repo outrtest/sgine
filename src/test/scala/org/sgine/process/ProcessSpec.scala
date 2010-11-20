@@ -27,11 +27,42 @@ class ProcessSpec extends FlatSpec with ShouldMatchers {
 		val count = new java.util.concurrent.atomic.AtomicInteger(0)
 		for (i <- 0 until taskCount) {
 			start {
-				Thread.sleep(50)
+				Thread.sleep(200)
 				count.addAndGet(1)
 			}
 		}
-		println("Count: " + count.get)
+		count.get should not equal(taskCount)
+		Time.waitFor(10.0) {
+			count.get == taskCount
+		}
+		count.get should equal(taskCount)
+	}
+	
+	it should "process many tasks asynchronously attempting" in {
+		val taskCount = 30
+		val count = new java.util.concurrent.atomic.AtomicInteger(0)
+		for (i <- 0 until taskCount) {
+			attempt {
+				Thread.sleep(200)
+				count.addAndGet(1)
+			}
+		}
+		count.get should not equal(taskCount)
+		Time.waitFor(10.0) {
+			count.get == idealThreadCount
+		}
+		count.get should equal(idealThreadCount)
+	}
+	
+	it should "process many tasks asynchronously enqueuing overflow" in {
+		val taskCount = 30
+		val count = new java.util.concurrent.atomic.AtomicInteger(0)
+		for (i <- 0 until taskCount) {
+			asynchronous {
+				Thread.sleep(200)
+				count.addAndGet(1)
+			}
+		}
 		count.get should not equal(taskCount)
 		Time.waitFor(10.0) {
 			count.get == taskCount
