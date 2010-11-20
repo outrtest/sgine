@@ -4,12 +4,11 @@ import org.scalatest.FlatSpec
 
 import org.scalatest.matchers.ShouldMatchers
 
-import org.sgine.process.Process._
-
 import org.sgine.util.Time
 
 class ProcessSpec extends FlatSpec with ShouldMatchers {
 	"Process" should "process a single function asynchronously" in {
+		info("CPU Count: " + Process.cpuCount + ", Ideal: " + Process.idealThreadCount)
 		var modified = false
 		asynchronous {
 			Thread.sleep(10)
@@ -23,7 +22,7 @@ class ProcessSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "process many tasks asynchronously waiting for processing availability" in {
-		val taskCount = 30
+		val taskCount = 60
 		val count = new java.util.concurrent.atomic.AtomicInteger(0)
 		for (i <- 0 until taskCount) {
 			start {
@@ -39,7 +38,7 @@ class ProcessSpec extends FlatSpec with ShouldMatchers {
 	}
 	
 	it should "process many tasks asynchronously attempting" in {
-		val taskCount = 30
+		val taskCount = 60
 		val count = new java.util.concurrent.atomic.AtomicInteger(0)
 		for (i <- 0 until taskCount) {
 			attempt {
@@ -49,13 +48,13 @@ class ProcessSpec extends FlatSpec with ShouldMatchers {
 		}
 		count.get should not equal(taskCount)
 		Time.waitFor(10.0) {
-			count.get == idealThreadCount
+			count.get == Process.idealThreadCount
 		}
-		count.get should equal(idealThreadCount)
+		count.get should equal(Process.idealThreadCount)
 	}
 	
 	it should "process many tasks asynchronously enqueuing overflow" in {
-		val taskCount = 30
+		val taskCount = 60
 		val count = new java.util.concurrent.atomic.AtomicInteger(0)
 		for (i <- 0 until taskCount) {
 			asynchronous {

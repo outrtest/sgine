@@ -20,7 +20,7 @@ object Process {
 	private val DefaultHandling = ProcessHandling.Enqueue
 	
 	val cpuCount = Runtime.getRuntime.availableProcessors
-	val idealThreadCount = max(cpuCount * 2, 4)
+	val idealThreadCount = cpuCount * 4
 	
 	private val bus = ObjectBus()
 	private var processors: List[Processor] = Nil
@@ -33,14 +33,6 @@ object Process {
 	private val selectFirst = (f: () => Unit) => true
 		
 	initProcessors()
-	
-	def update(rate: Double = 0.01)(f: => Unit) = Updatable(rate)(f)
-	
-	def attempt(f: => Unit): Boolean = apply(() => f, ProcessHandling.Attempt)
-	
-	def asynchronous(f: => Unit): Boolean = apply(() => f, ProcessHandling.Enqueue)
-	
-	def start(f: => Unit): Boolean = apply(() => f, ProcessHandling.Wait)
 	
 	def apply(f: () => Unit,
 			  handling: ProcessHandling = DefaultHandling): Boolean = if (bus.process(f)) {
