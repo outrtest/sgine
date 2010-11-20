@@ -46,13 +46,15 @@ class ThreadProcessor extends Processor {
 	
 	private def run() = {
 		while (keepAlive) {
+			var f: () => Any = null
 			synchronized {
-				val f = ref.getAndSet(null)
-				if (f != null) {
-					f()
-				} else {
+				f = ref.getAndSet(null)
+				if (f == null) {
 					wait()
 				}
+			}
+			if (f != null) {
+				f()
 			}
 		}
 	}

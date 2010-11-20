@@ -27,6 +27,7 @@ object ObjectNode {
 	val NormalPriority = 1.0
 	val LowPriority = 0.5
 	val LowestPriority = 0.0
+	val FallThrough = Double.MinValue
 	
 	def apply[T](f: Function1[T, Routing], priority: Double = NormalPriority)(implicit manifest: Manifest[T]) = new FunctionalObjectNode[T](f, priority)
 }
