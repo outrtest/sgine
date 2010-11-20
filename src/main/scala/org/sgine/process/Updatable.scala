@@ -24,6 +24,7 @@ trait Updatable {
 			shutdown()
 		}
 		Updatable.synchronized {
+			println("invokeUpdate - notifyAll")
 			Updatable.notifyAll()
 		}
 	}
