@@ -24,7 +24,6 @@ trait Updatable {
 			shutdown()
 		}
 		Updatable.synchronized {
-			println("invokeUpdate - notifyAll")
 			Updatable.changed.set(true)
 			Updatable.notifyAll()
 		}
@@ -97,10 +96,7 @@ object Updatable {
 			if (delay > 0) {
 				synchronized {
 					if (!changed.compareAndSet(true, false)) {
-						println("\tUpdatable Delay: " + delay)
 						wait(delay)
-						println("\t\tUpdatable Delay Finished!")
-//						wait(10)
 					}
 				}
 			}
