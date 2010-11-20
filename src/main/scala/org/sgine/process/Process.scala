@@ -1,8 +1,12 @@
 package org.sgine.process
 
 import org.sgine.bus.ObjectBus
+import org.sgine.bus.ObjectNode
+import org.sgine.bus.Routing
 
 import scala.math._
+
+import scala.reflect.Manifest
 
 /**
  * Process is an threading helper class to provide asynchronous
@@ -11,6 +15,8 @@ import scala.math._
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object Process {
+	private val DefaultHandling = ProcessHandling.Enqueue
+	
 	val cpuCount = Runtime.getRuntime.availableProcessors
 	val idealThreadCount = max(cpuCount * 2, 4)
 	
@@ -19,13 +25,27 @@ object Process {
 	
 	initProcessors()
 	
-	def asynchronous(f: => Any) = apply(() => f)
+	def attempt(f: => Any): Boolean = apply(() => f, ProcessHandling.Attempt)
 	
-	def apply(f: () => Any) = bus.process(f)
+	def asynchronous(f: => Any): Boolean = apply(() => f, ProcessHandling.Enqueue)
 	
-	// Initializes ThreadProcessors to double the number
-	// of cpuCount.
+	def start(f: => Any): Boolean = apply(() => f, ProcessHandling.Wait)
+	
+	def apply(f: () => Any,
+			  handling: ProcessHandling = DefaultHandling): Boolean = if (bus.process(f)) {
+	 	true
+	} else if (handling == ProcessHandling.Wait) {
+		Thread.sleep(10)
+		apply(f, handling)
+	} else if (handling == ProcessHandling.Enqueue) {
+		// TODO: enqueue
+		true
+	} else {
+		false
+	}
+	
 	private def initProcessors() = {
+		// Initializes the processors
 		for (i <- 0 until idealThreadCount) addProcessor(new ThreadProcessor())
 	}
 	

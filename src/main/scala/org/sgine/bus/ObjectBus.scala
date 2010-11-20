@@ -26,12 +26,16 @@ class ObjectBus protected(val name: String) {
 	}
 	
 	@scala.annotation.tailrec
-	private def processMessage[T](message: T, nodes: List[ObjectNode[_]])(implicit manifest: Manifest[T]): Unit = {
+	private def processMessage[T](message: T, nodes: List[ObjectNode[_]])(implicit manifest: Manifest[T]): Boolean = {
 		if (nodes != Nil) {
 			val node = nodes.head
 			if (node.receive(message) != Routing.Stop) {
 				processMessage(message, nodes.tail)
+			} else {
+				true
 			}
+		} else {
+			false
 		}
 	}
 	
