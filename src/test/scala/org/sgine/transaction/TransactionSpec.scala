@@ -15,6 +15,8 @@ import org.sgine.property.event.PropertyChangeEvent
 import org.sgine.util.Time
 
 class TransactionSpec extends FlatSpec with ShouldMatchers {
+	val pool = java.util.concurrent.Executors.newFixedThreadPool(1)
+	
 	val p1 = new NumericProperty(0.0)
 	val p2 = new NumericProperty(0.0)
 	val p3 = new NumericProperty(0.0)
@@ -100,25 +102,17 @@ class TransactionSpec extends FlatSpec with ShouldMatchers {
 		p3.uncommitted should equal(false)
 	}
 	
+	it should "shutdown pool" in {
+		pool.shutdown()
+	}
+	
 	private def propertyChanged(evt: PropertyChangeEvent[Double]) = {
 		changed = true
 	}
 	
-	private def getThreaded(p: NumericProperty) = {
-		var value = 0.0
-		var finished = false
-		val t = new Thread() {
-			override def run() = {
-				value = p()
-				finished = true
-			}
-		}
-		t.start()
-		Time.waitFor(5.0) {
-			finished
-		}
-		value
-	}
+	private def getThreaded(p: NumericProperty) = pool.submit(new java.util.concurrent.Callable[Double]() {
+		def call() = p()
+	}).get
 	
 	class TestException extends RuntimeException
 }
