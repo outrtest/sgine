@@ -27,16 +27,98 @@ class TransactionSpec extends FlatSpec with ShouldMatchers {
 		transaction {
 			p1 := 1.0
 			changed should not equal(true)
+			p1() should equal(1.0)
+			getThreaded(p1) should equal(0.0)
 			p2 := 2.0
 			changed should not equal(true)
+			p2() should equal(2.0)
+			getThreaded(p2) should equal(0.0)
 			p3 := 3.0
 			changed should not equal(true)
+			p3() should equal(3.0)
+			getThreaded(p3) should equal(0.0)
 		}
 		changed should equal(true)
 	}
 	
+	it should "allow committing of individual values" in {
+		changed = false
+		
+		transaction {
+			p2 := 5.0
+			p2() should equal(5.0)
+			getThreaded(p2) should equal(2.0)
+			changed should not equal(true)
+			p2.uncommitted should equal(true)
+			
+			p2.commit()
+			p2() should equal(5.0)
+			getThreaded(p2) should equal(5.0)
+			changed should equal(true)
+			p2.uncommitted should equal(false)
+		}
+	}
+	
+	it should "support reverting of properties" in {
+		changed = false
+		
+		transaction {
+			p2 := 8.0
+			p2() should equal(8.0)
+			getThreaded(p2) should equal(5.0)
+			changed should equal(false)
+			p2.uncommitted should equal(true)
+			
+			p2.revert()
+			p2() should equal(5.0)
+			getThreaded(p2) should equal(5.0)
+			changed should not equal(true)
+			p2.uncommitted should equal(false)
+		}
+	}
+	
+	it should "auto rollback upon exception" in {
+		changed = false
+		
+		try {
+			transaction {
+				p3 := 6.0
+				p3() should equal(6.0)
+				getThreaded(p3) should equal(3.0)
+				changed should equal(false)
+				p3.uncommitted should equal(true)
+				
+				throw new TestException
+			}
+		} catch {
+			case exc: TestException => // Ignore
+		}
+		
+		p3() should equal(3.0)
+		getThreaded(p3) should equal(3.0)
+		changed should equal(false)
+		p3.uncommitted should equal(false)
+	}
+	
 	private def propertyChanged(evt: PropertyChangeEvent[Double]) = {
-		println("PROPERTY CHANGED!")
 		changed = true
 	}
+	
+	private def getThreaded(p: NumericProperty) = {
+		var value = 0.0
+		var finished = false
+		val t = new Thread() {
+			override def run() = {
+				value = p()
+				finished = true
+			}
+		}
+		t.start()
+		Time.waitFor(5.0) {
+			finished
+		}
+		value
+	}
+	
+	class TestException extends RuntimeException
 }

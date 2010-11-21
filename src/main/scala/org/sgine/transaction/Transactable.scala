@@ -27,7 +27,9 @@ trait Transactable[T] {
 	 * @return
 	 * 		Option[T]
 	 */
-	protected def transactionGet() = Transaction.get(this)
+	protected def transactionGet() = Transaction.get(this).asInstanceOf[Option[T]]
+	
+	protected def transactionRevert() = Transaction.revert(this)
 	
 	/**
 	 * Called at the beginning of a transaction commit.
@@ -48,6 +50,8 @@ trait Transactable[T] {
 	 * Called at the end end of a transaction commit.
 	 */
 	protected def transactionFinished(): Unit
+	
+	def uncommitted = transactionGet() != None
 	
 	private def transactionCommitConversion(value: Any) = transactionCommit(value.asInstanceOf[T])
 	private def transactionRollbackConversion(value: Any) = transactionRollback(value.asInstanceOf[T])

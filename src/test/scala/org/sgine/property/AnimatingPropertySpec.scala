@@ -26,13 +26,13 @@ class AnimatingPropertySpec extends FlatSpec with ShouldMatchers {
 		p1() should equal(0.0)
 	}
 	
-	it should "move less than 6.0 in one second" in {
+	it should "move less than 7.0 in one second" in {
 		p1 := 10.0
 		p1() should be < (10.0)
 		Time.waitFor(1.0) {
-			p1() > 6.0
+			p1() > 7.0
 		}
-		p1() should be < 6.0
+		p1() should be < 7.0
 	}
 	
 	it should "move to 10.0 in two seconds" in {
