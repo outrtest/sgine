@@ -17,4 +17,17 @@ class UpdatableSpec extends FlatSpec with ShouldMatchers {
 		}
 		count.get should equal(5)
 	}
+	
+	it should "invokeLater" in {
+		var invoked = false
+		invokeLater(2.0) {
+			invoked = true
+		}
+		Thread.sleep(1000)
+		invoked should equal(false)
+		Time.waitFor(2.0) {
+			invoked
+		}
+		invoked should equal(true)
+	}
 }

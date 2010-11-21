@@ -12,9 +12,9 @@ package object process {
 			f
 			shutdown()
 		}
-	}
+	}.start()
 	
-	def invokeLater(calendar: Calendar)(f: => Unit): Unit = {
+	def invokeScheduled(calendar: Calendar)(f: => Unit): Unit = {
 		val now = Calendar.getInstance
 		val distance = (now.getTimeInMillis - calendar.getTimeInMillis) / 1000.0
 		invokeLater(distance)(f)

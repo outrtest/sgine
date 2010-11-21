@@ -55,6 +55,7 @@ object Updatable {
 	
 	private def add(updatable: Updatable) = synchronized {
 		updatables = new WeakReference(updatable) :: updatables
+		changed.set(true)
 		notifyAll()
 	}
 	
