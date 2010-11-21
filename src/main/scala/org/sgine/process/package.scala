@@ -2,17 +2,19 @@ package org.sgine
 
 import java.util.Calendar
 
+import org.sgine.process.updatable._
+
 package object process {
-	def update(rate: Double = 0.01, count: Int = -1)(f: => Unit) = Updatable(rate, count)(f)
+	def update(rate: Double = 0.01, count: Int = -1)(f: => Unit) = {
+		val r = rate
+		val c = count
+		new FunctionUpdatable(() => f) with TimedUpdatable with CountedUpdatable {
+			def rate = r
+			def count = c
+		}.start()
+	}
 	
-	def invokeLater(distance: Double)(f: => Unit) = new Updatable {
-		val rate = distance
-		val count = -1
-		def update(time: Double) = {
-			f
-			shutdown()
-		}
-	}.start()
+	def invokeLater(distance: Double)(f: => Unit) = update(distance, 1)(f)
 	
 	def invokeScheduled(calendar: Calendar)(f: => Unit): Unit = {
 		val now = Calendar.getInstance
