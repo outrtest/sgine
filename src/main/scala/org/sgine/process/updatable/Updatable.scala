@@ -56,7 +56,9 @@ trait Updatable {
 	private val invokeUpdate = () => {
 		readyState.set(false)
 		try {
-			update(0.0)		// TODO: time
+			Updatable.current.set(this)
+			update(elapsed)
+			Updatable.current.set(null)
 			updated()
 		} finally {
 			elapsed = 0.0
@@ -123,6 +125,12 @@ trait Updatable {
 }
 
 object Updatable {
+	val current = new ThreadLocal[Updatable]
+	def elapsed = current.get match {
+		case null => throw new RuntimeException("Must be invoked within an update method.")
+		case u => u.elapsed
+	}
+	
 	@volatile var precision: Precision = Precision.Default
 	@volatile var maxWait = 10.0
 	
