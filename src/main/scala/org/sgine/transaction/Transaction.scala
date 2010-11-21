@@ -38,6 +38,24 @@ object Transaction {
 		case null => None
 		case t => t.get(transactable)
 	}
+	
+	protected[transaction] def revert(transactable: Transactable[_]) = current.get match {
+		case null => false
+		case t => t.revert(transactable); true
+	}
+	
+	/**
+	 * True if there is an uncommitted value for this Transactable in the
+	 * current thread.
+	 * 
+	 * @param transactable
+	 * @return
+	 * 		true if uncommitted
+	 */
+	def transaction(transactable: Transactable[_]) = current.get match {
+		case null => false
+		case t => t.map.contains(transactable)
+	}
 }
 
 private class Transaction {
@@ -46,6 +64,8 @@ private class Transaction {
 	def get(transactable: Transactable[_]) = map.get(transactable)
 	
 	def set(transactable: Transactable[_], value: Any) = map += transactable -> value
+	
+	def revert(transactable: Transactable[_]) = map -= transactable
 	
 	def commit() = {
 		map.foreach(Transactable.started)

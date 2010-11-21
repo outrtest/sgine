@@ -1,59 +1,42 @@
 package org.sgine.property
 
 import org.sgine.event._
-import event._
 
-trait TransactionalProperty[T] extends ListenableProperty[T] {
-	private var firstChanged: Boolean = _
-	private var _originalValue: T = _
-	private var _uncommitted = false
+import org.sgine.transaction._
+
+trait TransactionalProperty[T] extends ListenableProperty[T] with ChangeableProperty[T] with Transactable[T] {
+	abstract override def apply() = transactionGet() match {
+		case Some(v) => v
+		case None => super.apply()
+	}
 	
 	abstract override def apply(value: T): Property[T] = {
-		val p = super.apply(value)
-		
-		if (!firstChanged) {
-			firstChanged = true
-			_originalValue = value
-		} else {
-			_uncommitted = originalValue != value
+		if (!transactionSet(value)) {
+			super.apply(value)
 		}
-		
-		p
+		this
 	}
 	
-	def originalValue = _originalValue
-	
-	def uncommitted = _uncommitted
-	
-	def setUncommitted() = _uncommitted = true
-	
-	def commit() = {
-		if (uncommitted) {
-			val e = PropertyTransactionEvent(this, _originalValue, apply(), true)
-			
-			_originalValue = apply()
-			_uncommitted = false
-			
-			Event.enqueue(e)
-			
-			true
-		} else {
-			false
-		}
+	def commit() = transactionGet() match {
+		case Some(value) => super.apply(value); revert(); true
+		case None => false
 	}
 	
-	def revert() = {
-		if (uncommitted) {
-			val e = PropertyTransactionEvent(this, apply(), _originalValue, false)
-			
-			super.apply(_originalValue)
-			_uncommitted = false
-			
-			Event.enqueue(e)
-			
-			true
-		} else {
-			false
-		}
+	def originalValue = super.apply()
+	
+	def revert() = transactionRevert()
+	
+	protected def transactionStarted() = {
+	}
+	
+	protected def transactionCommit(value: T) = {
+		apply(value, false)		// Apply the value to the Property without invoking listeners
+	}
+	
+	protected def transactionRollback(value: T) = {
+	}
+	
+	protected def transactionFinished() = {
+		changed()				// Invoke listeners
 	}
 }
