@@ -29,33 +29,35 @@ object Transaction {
 	
 	def running = current.get != null
 	
-	protected[transaction] def changed(transactable: Transactable) = current.get match {
+	protected[transaction] def set(transactable: Transactable[_], value: Any) = current.get match {
 		case null => false
-		case t => t.changed(transactable)
+		case t => t.set(transactable, value); true
+	}
+	
+	protected[transaction] def get(transactable: Transactable[_]) = current.get match {
+		case null => None
+		case t => t.get(transactable)
 	}
 }
 
 private class Transaction {
-	private var transactables: List[Transactable] = Nil
+	private var map = Map.empty[Transactable[_], Any]
 	
-	private val transactionStarted = (transactable: Transactable) => transactable.transactionStarted()
-	private val transactionCommit = (transactable: Transactable) => transactable.transactionCommit()
-	private val transactionRollback = (transactable: Transactable) => transactable.transactionRollback()
-	private val transactionFinished = (transactable: Transactable) => transactable.transactionFinished()
+	def get(transactable: Transactable[_]) = map.get(transactable)
 	
-	def changed(transactable: Transactable) = transactables = transactable :: transactables
+	def set(transactable: Transactable[_], value: Any) = map += transactable -> value
 	
 	def commit() = {
-		transactables.foreach(transactionStarted)
-		transactables.foreach(transactionRollback)
-		transactables.foreach(transactionFinished)
+		map.foreach(Transactable.started)
+		map.foreach(Transactable.commit)
+		map.foreach(Transactable.finished)
 		
-		transactables = Nil
+		map = Map.empty
 	}
 	
 	def rollback() = {
-		transactables.foreach(transactionRollback)
+		map.foreach(Transactable.rollback)
 		
-		transactables = Nil
+		map = Map.empty
 	}
 }
