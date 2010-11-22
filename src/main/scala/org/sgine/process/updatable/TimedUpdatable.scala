@@ -18,7 +18,7 @@ trait TimedUpdatable extends Updatable {
 	def start(): Unit = ready = false
 	
 	// Overriding internal isReady to use timing
-	override protected def isReady = estimatedReady() == 0.0 || super.isReady()
+	override protected def ready = estimatedReady() == 0.0 || super.ready
 	
 	override protected def estimatedReady() = max(rate - lastUpdated, 0.0)
 }

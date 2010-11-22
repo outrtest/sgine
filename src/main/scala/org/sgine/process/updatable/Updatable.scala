@@ -86,8 +86,6 @@ trait Updatable {
 		}
 	}
 	
-	protected def ready = readyState.get
-	
 	/**
 	 * Retrieves the ready state of this Updatable. Under normal
 	 * circumstances this simply refers to the internal ready state
@@ -96,7 +94,7 @@ trait Updatable {
 	 * @return
 	 * 		true if ready to update
 	 */
-	protected def isReady() = readyState.get
+	protected def ready = readyState.get
 	
 	/**
 	 * The estimated amount of time in seconds until the next
@@ -174,7 +172,7 @@ object Updatable {
 							// Already updating
 							case u if (u.updating) =>
 							// Update in another thread
-							case u if (u.isReady) => {
+							case u if (u.ready) => {
 								u._updating = true
 								Process(u.invokeUpdate, ProcessHandling.Enqueue)
 							}

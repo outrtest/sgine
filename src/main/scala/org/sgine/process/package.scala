@@ -27,4 +27,10 @@ package object process {
 	def asynchronous(f: => Unit): Boolean = Process(() => f, ProcessHandling.Enqueue)
 	
 	def start(f: => Unit): Boolean = Process(() => f, ProcessHandling.Wait)
+	
+	def executor[T](f: (T) => Unit) = {
+		new PublicExecutor[T] {
+			protected def execute(value: T) = f(value)
+		}
+	}
 }
