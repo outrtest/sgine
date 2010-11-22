@@ -68,4 +68,16 @@ class ProcessSpec extends FlatSpec with ShouldMatchers {
 		}
 		count.get should equal(taskCount)
 	}
+	
+	it should "process something using future" in {
+		val f = future[String] {
+			Thread.sleep(1000)
+			
+			"Future works!"
+		}
+		Thread.sleep(100)
+		f.isDone should equal(false)
+		
+		f.get(2.0) should equal("Future works!")
+	}
 }

@@ -4,6 +4,8 @@ import java.util.Calendar
 
 import org.sgine.process.updatable._
 
+import org.sgine.util.FutureFunction
+
 package object process {
 	def update(rate: Double = 0.01, count: Int = -1)(f: => Unit) = {
 		val r = rate
@@ -25,6 +27,12 @@ package object process {
 	def attempt(f: => Unit): Boolean = Process(() => f, ProcessHandling.Attempt)
 	
 	def asynchronous(f: => Unit): Boolean = Process(() => f, ProcessHandling.Enqueue)
+	
+	def future[T](f: => T) = {
+		val func = FutureFunction(f)
+		Process(func, ProcessHandling.Enqueue)
+		func
+	}
 	
 	def start(f: => Unit): Boolean = Process(() => f, ProcessHandling.Wait)
 	
