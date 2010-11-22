@@ -25,9 +25,9 @@ class UpdatableSpec extends FlatSpec with ShouldMatchers {
 		invokeLater(1.0) {
 			invoked = true
 		}
-		Thread.sleep(500)
-		invoked should equal(false)
-		Time.waitFor(0.6) {
+		Thread.sleep(200)
+		invoked should not equal(true)
+		Time.waitFor(2.0) {
 			invoked
 		}
 		invoked should equal(true)
