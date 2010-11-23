@@ -5,8 +5,8 @@ trait CountedUpdatable extends Updatable {
 	
 	def count: Int
 	
-	abstract override protected def updated() = {
-		super.updated()
+	abstract override protected def afterUpdated() = {
+		super.afterUpdated()
 		
 		updateCount += 1
 		if (count != -1 && updateCount >= count) die()
