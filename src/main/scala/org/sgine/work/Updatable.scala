@@ -125,7 +125,7 @@ object Updatable extends Function0[Unit] {
 		}
 	}
 	
-	private def remove(u: Updatable) = {
+	def remove(u: Updatable) = {
 		synchronized {
 			array.find(wr => wr.get == u) match {
 				case Some(r) => array -= r

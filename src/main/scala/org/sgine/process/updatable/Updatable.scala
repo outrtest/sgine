@@ -49,7 +49,7 @@ trait Updatable {
 	 * inject functionality after an update is finished by
 	 * doing an abstract override.
 	 */
-	protected def updated() = {
+	protected def afterUpdated() = {
 	}
 	
 	// Called by companion when updating
@@ -59,7 +59,7 @@ trait Updatable {
 			Updatable.current.set(this)
 			update(elapsed)
 			Updatable.current.set(null)
-			updated()
+			afterUpdated()
 		} finally {
 			elapsed = 0.0
 			_updating = false
