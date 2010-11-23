@@ -9,19 +9,19 @@ import scala.math.abs
  */
 class EasingColorAnimator (var easing: Easing.EasingFunction, var multiplier: Double, var dynamic: Boolean = true) extends PropertyAnimator[Color] {
 	private var _target: Color = _
-	private var start: Color = _
+	private var startValue: Color = _
 	private var timeToTarget: Double = _
 	private var timeElapsed: Double = _
 
 	def apply(current: Color, target: Color, elapsed: Double): Color = {
 		if (_target != target) {		// Target changed
 			_target = target
-			start = current
+			startValue = current
 			timeElapsed = 0.0
 			if (dynamic) {
 				timeToTarget = multiplier
 			} else {
-				timeToTarget = (multiplier * difference(start, target))
+				timeToTarget = (multiplier * difference(startValue, target))
 			}
 		} else {
 			timeElapsed += elapsed
@@ -30,10 +30,10 @@ class EasingColorAnimator (var easing: Easing.EasingFunction, var multiplier: Do
 		if (timeElapsed >= timeToTarget) {
 			target
 		} else {
-	      val r = easing(timeElapsed, start.red, target.red - start.red, timeToTarget)
-	      val g = easing(timeElapsed, start.green, target.green- start.green, timeToTarget)
-	      val b = easing(timeElapsed, start.blue, target.blue - start.blue, timeToTarget)
-	      val a = easing(timeElapsed, start.alpha, target.alpha - start.alpha, timeToTarget)
+	      val r = easing(timeElapsed, startValue.red, target.red - startValue.red, timeToTarget)
+	      val g = easing(timeElapsed, startValue.green, target.green- startValue.green, timeToTarget)
+	      val b = easing(timeElapsed, startValue.blue, target.blue - startValue.blue, timeToTarget)
+	      val a = easing(timeElapsed, startValue.alpha, target.alpha - startValue.alpha, timeToTarget)
 	
 	      Color(r, g, b, a)
 		}

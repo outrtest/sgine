@@ -16,6 +16,17 @@ class SgineProject(info: ProjectInfo) extends DefaultProject(info) {
 		args => runTask(Some(args(0)), runClasspath).dependsOn(testCompile)
 	} completeWith(mainSources.getRelativePaths.toSeq.map(_.replace("/", ".").replace(".scala", "")))
 	
+	lazy val runExampleVerbose = createRunExampleVerbose()
+	
+	private def createRunExampleVerbose() = {
+		verbose = true
+		task {
+			args => runTask(Some(args(0)), runClasspath).dependsOn(testCompile)
+		} completeWith(mainSources.getRelativePaths.toSeq.map(_.replace("/", ".").replace(".scala", "")))
+	}
+	
+	private var verbose = false
+	
 	override def fork = Some(new ForkScalaRun {
 		val (os, separator) = System.getProperty("os.name").split(" ")(0).toLowerCase match {
             case "linux" => "linux" -> ":"
@@ -25,7 +36,13 @@ class SgineProject(info: ProjectInfo) extends DefaultProject(info) {
             case x => x -> ":"
         }
         
-        override def runJVMOptions = super.runJVMOptions ++ Seq("-Djava.library.path=" + System.getProperty("java.library.path") + separator + ("lib" / "native" / os))
+        override def runJVMOptions = {
+        	var options = super.runJVMOptions ++ Seq("-Djava.library.path=" + System.getProperty("java.library.path") + separator + ("lib" / "native" / os))
+        	if (verbose) {
+        		options = options ++ Seq("-verbose:gc")
+        	}
+        	options
+        }
         
         override def scalaJars = Seq(buildLibraryJar.asFile, buildCompilerJar.asFile)
 	})
