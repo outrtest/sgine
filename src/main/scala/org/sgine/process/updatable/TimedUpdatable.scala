@@ -10,15 +10,20 @@ import scala.math._
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait TimedUpdatable extends Updatable {
-	def rate: Double
+	@volatile private var started = false
+	
+	protected def rate: Double
 	
 	/**
 	 * Should be invoked to start this TimedUpdatable.
 	 */
-	def start(): Unit = ready = false
+	def start(): Unit = if (!started) {
+		started = true
+		ready = false
+	}
 	
 	// Overriding internal isReady to use timing
 	override protected def ready = estimatedReady() == 0.0 || super.ready
 	
-	override protected def estimatedReady() = max(rate - lastUpdated, 0.0)
+	override protected def estimatedReady() = max(rate - elapsed, 0.0)
 }

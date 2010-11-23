@@ -6,19 +6,19 @@ import scala.math._
 
 class EasingNumericAnimator(var easing: EasingFunction, var multiplier: Double, var dynamic: Boolean = true) extends PropertyAnimator[Double] {
 	private var _target: Double = _
-	private var start: Double = _
+	private var startValue: Double = _
 	private var timeToTarget: Double = _
 	private var timeElapsed: Double = _
 	
 	def apply(current: Double, target: Double, elapsed: Double): Double = {
 		if (_target != target) {		// Target changed
 			_target = target
-			start = current
+			startValue = current
 			timeElapsed = 0.0
 			if (dynamic) {
 				timeToTarget = multiplier
 			} else {
-				timeToTarget = (multiplier * abs(start - target)) / 100.0
+				timeToTarget = (multiplier * abs(startValue - target)) / 100.0
 			}
 		} else {
 			timeElapsed += elapsed
@@ -27,7 +27,7 @@ class EasingNumericAnimator(var easing: EasingFunction, var multiplier: Double, 
 		if (timeElapsed >= timeToTarget) {
 			target
 		} else {
-			easing(timeElapsed, start, target - start, timeToTarget)
+			easing(timeElapsed, startValue, target - startValue, timeToTarget)
 		}
 	}
 }

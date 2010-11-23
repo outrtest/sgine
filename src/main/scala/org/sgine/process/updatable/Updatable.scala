@@ -13,7 +13,8 @@ import org.sgine.util.FunctionRunnable
 import scala.math._
 
 trait Updatable {
-	@volatile private var elapsed = 0.0
+	@volatile private var lastUpdate = 0.0
+	@volatile protected var elapsed = 0.0
 	@volatile private var _updating = false
 	private lazy val readyState = createReadyState()
 	
@@ -32,7 +33,7 @@ trait Updatable {
 	 * @return
 	 * 		time in seconds since last update
 	 */
-	protected def lastUpdated = elapsed
+	protected def lastUpdated = lastUpdate
 	
 	/**
 	 * Invoked when this Updatable is updated. This method
@@ -57,11 +58,10 @@ trait Updatable {
 		readyState.set(false)
 		try {
 			Updatable.current.set(this)
-			update(elapsed)
+			update(lastUpdated)
 			Updatable.current.set(null)
 			afterUpdated()
 		} finally {
-			elapsed = 0.0
 			_updating = false
 		}
 		
@@ -165,7 +165,10 @@ object Updatable {
 			var waitTime = maxWait
 			for (ref <- updatables) {
 				ref.get match {
-					case null => removeRef(ref)		// Lost reference
+					case null => {
+						println("LOST REF!")
+						removeRef(ref)		// Lost reference
+					}
 					case u => {
 						u.elapsed += time		// Update elapsed time
 						u match {
@@ -174,6 +177,8 @@ object Updatable {
 							// Update in another thread
 							case u if (u.ready) => {
 								u._updating = true
+								u.lastUpdate = u.elapsed
+								u.elapsed = 0.0
 								Process(u.invokeUpdate, ProcessHandling.Enqueue)
 							}
 							// Determine next availability
@@ -186,12 +191,16 @@ object Updatable {
 			// Wait
 			val delay = round(waitTime * 1000.0)
 			if (delay > 0) {
-				synchronized {
-					if (!changed.compareAndSet(true, false)) {
-						wait(delay)
-					}
-				}
+//				synchronized {
+//					if (!changed.compareAndSet(true, false)) {
+//						wait(delay)
+//					}
+//				}
+				Thread.`yield`()
+//				Thread.sleep(1)
 			}
+			
+			last = current
 			
 			// Update local precision
 			precision = this.precision

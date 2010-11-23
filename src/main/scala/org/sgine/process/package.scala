@@ -10,10 +10,13 @@ package object process {
 	def update(rate: Double = 0.01, count: Int = -1)(f: => Unit) = {
 		val r = rate
 		val c = count
-		new FunctionUpdatable(() => f) with TimedUpdatable with CountedUpdatable {
+		val u = new FunctionUpdatable(() => f) with TimedUpdatable with CountedUpdatable {
 			def rate = r
 			def count = c
-		}.start()
+		}
+		u.start()
+		
+		u
 	}
 	
 	def invokeLater(distance: Double)(f: => Unit) = update(distance, 1)(f)
