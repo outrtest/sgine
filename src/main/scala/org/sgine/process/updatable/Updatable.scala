@@ -1,7 +1,5 @@
 package org.sgine.process.updatable
 
-import java.lang.ref.WeakReference
-
 import java.util.concurrent.atomic.AtomicBoolean
 
 import org.sgine.core._
@@ -9,10 +7,13 @@ import org.sgine.core._
 import org.sgine.process._
 
 import org.sgine.util.FunctionRunnable
+import org.sgine.util.Reference
+import org.sgine.util.ReferenceType
 
 import scala.math._
 
 trait Updatable {
+	protected val refType: ReferenceType = ReferenceType.Weak
 	@volatile private var lastUpdate = 0.0
 	@volatile protected var elapsed = 0.0
 	@volatile private var _updating = false
@@ -116,7 +117,7 @@ trait Updatable {
 	
 	// Invoked on first ready
 	private def createReadyState() = {
-		Updatable.add(this)		// Add this Updatable
+		Updatable.add(refType.create(this))		// Add this Updatable
 		
 		new AtomicBoolean()		// Return new atomic boolean
 	}
@@ -134,18 +135,18 @@ object Updatable {
 	
 	private val thread = createThread()
 	// TODO: support hard references
-	private var updatables: List[WeakReference[Updatable]] = Nil
+	private var updatables: List[Reference[Updatable]] = Nil
 	private val changed = new java.util.concurrent.atomic.AtomicBoolean(false)
 	
 	// Add the Updatable to the list as weak reference
-	private def add(updatable: Updatable) = synchronized {
-		updatables = new WeakReference(updatable) :: updatables
+	private def add(ref: Reference[Updatable]) = synchronized {
+		updatables = ref :: updatables
 		changed.set(true)
 		notifyAll()
 	}
 	
 	private def remove(updatable: Updatable) = synchronized {
-		updatables = updatables.filterNot(_.get == updatable)
+		updatables = updatables.filterNot(_() == updatable)
 	}
 	
 	// Creates the internal thread to monitor updatables
@@ -184,11 +185,11 @@ object Updatable {
 	}
 	
 	@scala.annotation.tailrec
-	private def process(time: Double, waitTime: Double, updatables: List[WeakReference[Updatable]]): Double = {
+	private def process(time: Double, waitTime: Double, updatables: List[Reference[Updatable]]): Double = {
 		if (updatables.length > 0) {
 			val ref = updatables.head
 			var wt = waitTime
-			ref.get match {
+			ref() match {
 				case null => {
 					removeRef(ref)		// Lost reference
 				}
@@ -216,7 +217,7 @@ object Updatable {
 		}
 	}
 	
-	private def removeRef(ref: WeakReference[Updatable]) = synchronized {
+	private def removeRef(ref: Reference[Updatable]) = synchronized {
 		updatables = updatables.filterNot(_ == ref)
 	}
 }

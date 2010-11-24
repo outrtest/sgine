@@ -11,6 +11,8 @@ package object process {
 		val r = rate
 		val c = count
 		val u = new FunctionUpdatable(() => f) with TimedUpdatable with CountedUpdatable {
+			override protected val refType = org.sgine.util.ReferenceType.Hard
+			
 			def rate = r
 			def count = c
 		}
