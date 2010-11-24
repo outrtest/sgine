@@ -162,48 +162,57 @@ object Updatable {
 		while (true) {		// Don't worry, it's a daemon thread
 			val current = precision.time
 			val time = (current - last) / precision.conversion
-			var waitTime = maxWait
-			for (ref <- updatables) {
-				ref.get match {
-					case null => {
-						println("LOST REF!")
-						removeRef(ref)		// Lost reference
-					}
-					case u => {
-						u.elapsed += time		// Update elapsed time
-						u match {
-							// Already updating
-							case u if (u.updating) =>
-							// Update in another thread
-							case u if (u.ready) => {
-								u._updating = true
-								u.lastUpdate = u.elapsed
-								u.elapsed = 0.0
-								Process(u.invokeUpdate, ProcessHandling.Enqueue)
-							}
-							// Determine next availability
-							case u => waitTime = min(waitTime, u.estimatedReady)
-						}
-					}
-				}
-			}
+			
+			// Process all updatables
+			val waitTime = process(time, maxWait, updatables)
 			
 			// Wait
 			val delay = round(waitTime * 1000.0)
 			if (delay > 0) {
-//				synchronized {
-//					if (!changed.compareAndSet(true, false)) {
-//						wait(delay)
-//					}
-//				}
-				Thread.`yield`()
-//				Thread.sleep(1)
+				synchronized {
+					if (!changed.compareAndSet(true, false)) {
+						wait(delay)
+					}
+				}
 			}
 			
 			last = current
 			
 			// Update local precision
 			precision = this.precision
+		}
+	}
+	
+	@scala.annotation.tailrec
+	private def process(time: Double, waitTime: Double, updatables: List[WeakReference[Updatable]]): Double = {
+		if (updatables.length > 0) {
+			val ref = updatables.head
+			var wt = waitTime
+			ref.get match {
+				case null => {
+					removeRef(ref)		// Lost reference
+				}
+				case u => {
+					u.elapsed += time		// Update elapsed time
+					u match {
+						// Already updating
+						case u if (u.updating) =>
+						// Update in another thread
+						case u if (u.ready) => {
+							u._updating = true
+							u.lastUpdate = u.elapsed
+							u.elapsed = 0.0
+							Process(u.invokeUpdate, ProcessHandling.Enqueue)
+						}
+						// Determine next availability
+						case u => wt = min(waitTime, u.estimatedReady)
+					}
+				}
+			}
+			
+			process(time, wt, updatables.tail)
+		} else {
+			waitTime
 		}
 	}
 	

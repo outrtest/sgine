@@ -27,6 +27,8 @@ class SgineProject(info: ProjectInfo) extends DefaultProject(info) {
 	
 	private var verbose = false
 	
+	override def compileOptions = super.compileOptions ++ Seq(Deprecation, Unchecked, Optimize)
+	
 	override def fork = Some(new ForkScalaRun {
 		val (os, separator) = System.getProperty("os.name").split(" ")(0).toLowerCase match {
             case "linux" => "linux" -> ":"
@@ -37,7 +39,13 @@ class SgineProject(info: ProjectInfo) extends DefaultProject(info) {
         }
         
         override def runJVMOptions = {
-        	var options = super.runJVMOptions ++ Seq("-Djava.library.path=" + System.getProperty("java.library.path") + separator + ("lib" / "native" / os))
+        	var options = super.runJVMOptions ++ Seq("-server",
+        											 "-Djava.library.path=" + System.getProperty("java.library.path") + separator + ("lib" / "native" / os),
+        											 "-XX:+ExplicitGCInvokesConcurrent",
+        											 "-XX:+UseConcMarkSweepGC",
+        											 "-XX:+DoEscapeAnalysis",
+        											 "-XX:+UseCompressedOops"
+        											 )
         	if (verbose) {
         		options = options ++ Seq("-verbose:gc")
         	}

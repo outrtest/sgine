@@ -5,21 +5,23 @@ object Transaction {
 	
 	private def initiate() = {
 		if (!running) {
-			current.set(new Transaction)
+			val t = new Transaction
+			current.set(t)
+			t
 		} else {
 			throw new RuntimeException("Transaction already running!")
 		}
 	}
 	
 	def apply(f: => Unit) = {
-		initiate()
+		val t = initiate()
 		try {
 			f
 			
-			current.get.commit()
+			t.commit()
 		} catch {
 			case exc => {
-				current.get.rollback()
+				t.rollback()
 				throw exc
 			}
 		} finally {
