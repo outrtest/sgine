@@ -7,18 +7,14 @@ import scala.reflect.Manifest
 class ObjectBus protected(val name: String) {
 	private var nodes: List[ObjectNode[_]] = Nil
 	
-	def +=(node: ObjectNode[_]) = {
+	def +=(node: ObjectNode[_]) = synchronized {
 		if (node == null) throw new NullPointerException("Null ObjectNodes not allowed.")
-		synchronized {
-			nodes = node :: nodes
-			nodes = nodes.sortWith(prioritySort)
-		}
+		nodes = node :: nodes
+		nodes = nodes.sortWith(prioritySort)
 	}
 	
-	def -=(node: ObjectNode[_]) = {
-		synchronized {
-			nodes = nodes.filterNot(n => n == node)
-		}
+	def -=(node: ObjectNode[_]) = synchronized {
+		nodes = nodes.filterNot(n => n == node)
 	}
 	
 	def process[T](message: T)(implicit manifest: Manifest[T]) = {
@@ -45,16 +41,19 @@ class ObjectBus protected(val name: String) {
 object ObjectBus {
 	private var map = Map.empty[String, ObjectBus]
 	
-	def apply(name: String) = {
-		synchronized {
-			map.get(name) match {
-				case Some(ob) => ob
-				case None => {
-					val ob = new ObjectBus(name)
-					map += name -> ob
-					ob
-				}
+	def apply(name: String) = map.getOrElse(name, null) match {
+		case null => getOrCreate(name)
+		case ob => ob
+	}
+	
+	private def getOrCreate(name: String) = synchronized {
+		map.getOrElse(name, null) match {
+			case null => {
+				val ob = new ObjectBus(name)
+				map += name -> ob
+				ob
 			}
+			case ob => ob
 		}
 	}
 	
