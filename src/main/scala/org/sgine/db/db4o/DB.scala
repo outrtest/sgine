@@ -36,7 +36,11 @@ class Transaction(val db: DB, container: ObjectContainer) extends org.sgine.db.T
 		new RichObjectSet(if (sortFunction != null) container.query(p, new RichQueryComparator(sortFunction)) else container.query(p))
 	}
 	
-	def delete[T](obj: T)(implicit manifest: Manifest[T]) = container.delete(obj)
+	def delete[T](obj: T)(implicit manifest: Manifest[T]) = {
+		val stored = container.ext.isStored(obj)
+		if (stored) container.delete(obj)
+		stored
+	}
 	
 	def commit() = container.commit()
 	
