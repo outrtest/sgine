@@ -7,7 +7,7 @@ trait WriteTransaction {
 	
 	def store[T](obj: T)(implicit manifest: Manifest[T]): Unit
 	
-	def delete[T](obj: T)(implicit manifest: Manifest[T]): Unit
+	def delete[T](obj: T)(implicit manifest: Manifest[T]): Boolean
 	
 	def commit(): Unit
 	
