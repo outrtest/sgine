@@ -2,6 +2,8 @@ package org.sgine.util
 
 import java.util.Calendar
 
+import org.sgine.core._
+
 import scala.math._
 
 /**
@@ -19,6 +21,12 @@ object Time {
 	val Week = 7.0 * Day
 	val Month = 30.0 * Day
 	val Year = 12.0 * Month
+	
+	def elapsed(f: => Unit): Double = {
+		val time = System.nanoTime
+		f
+		(System.nanoTime - time) / Precision.Nanoseconds.conversion
+	}
 	
 	def elapsed(time: Long): String = elapsed(time.toDouble / 1000.0)
 	
