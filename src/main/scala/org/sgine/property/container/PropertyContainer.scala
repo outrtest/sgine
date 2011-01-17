@@ -14,14 +14,19 @@ import org.sgine.work.DefaultWorkManager
 import org.sgine.work.Updatable
 
 trait PropertyContainer extends Listenable with Property[Int] {
+  @transient
 	val manifest = ClassManifest.Int
-	
+
+  @transient
 	private val _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
 	private var aliases = new HashMap[String, Property[_]]()
-	
+
+  @transient
 	private var initialized = false
+  @transient
 	private var initializeStart = System.currentTimeMillis
-	
+
+  @transient
 	private lazy val reflected = reflectProperties(getClass, Nil)
 	
 	PropertyContainer.initialize(this)
