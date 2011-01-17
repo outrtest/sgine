@@ -55,7 +55,7 @@ object Log {
 	val All = 0
 	val None = Int.MaxValue
 	
-	var dateFormat = "%1$tb %1$td %1$tH:%1$tM:%1$tS"
+	var dateFormat = "%1$tb %1$td %1$tH:%1$tM:%1$tS:%1$tL"
 	var application: String = null
 	private var loggers: List[Logger] = Nil
 	var level: Int = LogLevel.Info.value

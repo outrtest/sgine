@@ -2,6 +2,7 @@ package org.sgine.event
 
 import scala.reflect.Manifest
 
+@serializable
 final class EventProcessor(listenable: Listenable) extends Iterable[EventHandler] {
 	private var handlers: List[EventHandler] = Nil
 	
