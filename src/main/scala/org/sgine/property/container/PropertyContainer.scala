@@ -14,20 +14,15 @@ import org.sgine.work.DefaultWorkManager
 import org.sgine.work.Updatable
 
 trait PropertyContainer extends Listenable with Property[Int] {
-  @transient
 	val manifest = ClassManifest.Int
 
-  @transient
 	private val _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
 	private var aliases = new HashMap[String, Property[_]]()
 
-  @transient
 	private var initialized = false
-  @transient
-	private var initializeStart = System.currentTimeMillis
+	private val initializeStart = System.currentTimeMillis
 
-  @transient
-	private lazy val reflected = reflectProperties(getClass, Nil)
+  private def reflected = reflectProperties(getClass, Nil)
 	
 	PropertyContainer.initialize(this)
 	
@@ -143,13 +138,8 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	
 	private def getStaticPropertyName(p: Property[_]): String = {
 		initialize()
-		
-		for (f <- reflected) {
-			if (f.get(this) == p) {
-				return f.getName
-			}
-		}
-		return null
+
+    aliases.find(t => t._2 == p).map(_._1).getOrElse(null)
 	}
 	
 	private def reflectProperties(c: Class[_], list: List[Field]): List[Field] = {
