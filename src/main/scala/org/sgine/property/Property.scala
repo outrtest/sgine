@@ -10,6 +10,7 @@ import scala.reflect.Manifest
  * 
  * @author Matt Hicks
  */
+@serializable
 trait Property[T] extends (() => T) with (T => Property[T]) with PathSupport {
 	implicit val manifest: Manifest[T]
 	
