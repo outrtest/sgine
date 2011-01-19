@@ -3,7 +3,6 @@ package org.sgine.property.container
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
-import scala.collection.immutable.HashMap
 import scala.reflect.ClassManifest
 
 import org.sgine._
@@ -17,7 +16,7 @@ trait PropertyContainer extends Listenable with Property[Int] {
 	val manifest = ClassManifest.Int
 
 	private val _properties = new scala.collection.mutable.ArrayBuffer[Property[_]]()
-	private var aliases = new HashMap[String, Property[_]]()
+	private var aliases = Map.empty[String, Property[_]]
 
 	private var initialized = false
 	private val initializeStart = System.currentTimeMillis
