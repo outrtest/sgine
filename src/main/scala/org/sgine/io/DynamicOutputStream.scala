@@ -47,7 +47,7 @@ class DynamicOutputStream(out: OutputStream) {
 
   private def writeObject(value: AnyRef) = {
     // Write the header
-    output.write(ValueType.Object)
+    output.writeInt(ValueType.Object)
 
     // Write the object
     directWriteObject(value)

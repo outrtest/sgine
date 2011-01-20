@@ -8,12 +8,13 @@ import java.io.{FileOutputStream, File, DataInputStream, InputStream}
  * Date: 1/19/11
  * Time: 3:15 PM
  */
-class DynamicInputStream(in: InputStream, directory: File) {
+class DynamicInputStream(in: InputStream, directory: File, classLoader: ClassLoader = Thread.currentThread.getContextClassLoader) {
    private val input = new DataInputStream(in)
 
   def read[T]() = {
     // Read the header
-    input.readInt() match {
+    val valueType = input.readInt()
+    valueType match {
       case ValueType.Null => null
       case ValueType.File => readFile().asInstanceOf[T]
       case ValueType.Object => readObject().asInstanceOf[T]
@@ -47,6 +48,6 @@ class DynamicInputStream(in: InputStream, directory: File) {
     // Restore the object
     val data = new Array[Byte](length)
     input.readFully(data)
-    fromBytes(data)
+    fromBytes(data, classLoader)
   }
 }
