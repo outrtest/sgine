@@ -1,13 +1,11 @@
-package org.sgine.util
+package org.sgine
 
-import java.io.InputStream
-import java.io.OutputStream
+import java.io._
 
 import scala.math._
 
-@deprecated("use 'org.sgine.io.stream' instead")
-object IO {
-	@scala.annotation.tailrec
+package object io {
+  @scala.annotation.tailrec
 	def stream(input: InputStream, output: OutputStream, buf: Array[Byte] = new Array[Byte](4096), length: Int = -1, written: Int = 0): Unit = {
 		val to = if (length == -1) {
 			buf.length
@@ -23,4 +21,19 @@ object IO {
 			}
 		}
 	}
+
+  def toBytes(value: AnyRef) = {
+    val bos = new ByteArrayOutputStream()
+    val oos = new ObjectOutputStream(bos)
+    oos.writeObject(value)
+    oos.flush()
+    bos.close()
+    bos.toByteArray()
+  }
+
+  def fromBytes(data: Array[Byte]) = {
+    val bis = new ByteArrayInputStream(data)
+    val ois = new ObjectInputStream(bis)
+    ois.readObject()
+  }
 }
