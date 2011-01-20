@@ -31,9 +31,13 @@ package object io {
     bos.toByteArray()
   }
 
-  def fromBytes(data: Array[Byte]) = {
+  def fromBytes(data: Array[Byte], classLoader: ClassLoader) = {
     val bis = new ByteArrayInputStream(data)
-    val ois = new ObjectInputStream(bis)
+    val ois = new ObjectInputStream(bis) {
+      override def resolveClass(desc: ObjectStreamClass) = {
+        Class.forName(desc.getName, false, classLoader)
+      }
+    }
     ois.readObject()
   }
 }
