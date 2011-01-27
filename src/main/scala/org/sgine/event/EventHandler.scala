@@ -15,6 +15,7 @@ import scala.reflect.Manifest
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
+@serializable
 class EventHandler private (val listener: Event => Unit) {
 	/**
 	 * ProcessingMode defines the way events will be processed
