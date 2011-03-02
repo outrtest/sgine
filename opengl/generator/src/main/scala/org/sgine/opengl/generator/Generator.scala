@@ -46,6 +46,7 @@ object Generator {
 
   def convertClass(c: Class[_]) = c.getName match {
     case "int" => "Int"
+    case "float" => "Float"
     case s => throw new RuntimeException("Cannot convert class: " + s)
   }
 }
