@@ -20,6 +20,8 @@ case class CombinedMethods(name: String, left: List[Method], right: List[Method]
   generateMethods()
 
   private def generateMethods(): Unit = {
+    findBufferData()
+    findBufferSubData()
     findPerfect()
 
     if (methods.length == 0) {
@@ -31,6 +33,56 @@ case class CombinedMethods(name: String, left: List[Method], right: List[Method]
       System.exit(0)
     } else {
       println("Matches found for: " + name + " - " + methods.length + ", Left over: " + workLeft.length + ", " + workRight.length)
+      for (m <- methods) {
+        println(m.left.code)
+        println(m.right.code)
+      }
+    }
+  }
+
+  private def findBufferData() = {      // TODO: verify this is correct
+    if (name == "glBufferData") {
+      val androidMethod = """|	def glBufferData(arg0: Int, arg1: Int, arg2: java.nio.Buffer, arg3: Int): Unit = {
+                             |		instance.glBufferData(arg0, arg1, arg2, arg3)
+                             |	}""".stripMargin
+      val lwjglMethod = """|	def glBufferData(arg0: Int, arg1: Int, arg2: java.nio.Buffer, arg3: Int): Unit = {
+                           |		arg2 match {
+                           |			case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferData(arg0, b, arg3)
+                           |			case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferData(arg0, b, arg3)
+                           |			case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferData(arg0, b, arg3)
+                           |			case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferData(arg0, b, arg3)
+                           |			case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferData(arg0, b, arg3)
+                           |			case _ => org.lwjgl.opengl.GL15.glBufferData(arg0, arg1, arg3)
+                           |		}
+                           |	}""".stripMargin
+      val leftSig = MethodSignature(androidMethod, workLeft: _*)
+      val rightSig = MethodSignature(lwjglMethod, workRight: _*)
+      _methods = CombinedMethod(name, left.head.getParameterTypes, left.head.getReturnType, leftSig, rightSig) :: _methods
+      workLeft = Nil
+      workRight = Nil
+    }
+  }
+
+  private def findBufferSubData() = {      // TODO: verify this is correct
+    if (name == "glBufferSubData") {
+      val androidMethod = """|	def glBufferSubData(arg0: Int, arg1: Int, arg2: Int, arg3: java.nio.Buffer): Unit = {
+                             |		instance.glBufferData(arg0, arg1, arg2, arg3)
+                             |	}""".stripMargin
+      val lwjglMethod = """|	def glBufferData(arg0: Int, arg1: Int, arg2: Int, arg3: java.nio.Buffer): Unit = {
+                           |		arg3 match {
+                           |			case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferSubData(arg0, arg1, b)
+                           |			case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferSubData(arg0, arg1, b)
+                           |			case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferSubData(arg0, arg1, b)
+                           |			case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferSubData(arg0, arg1, b)
+                           |			case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferSubData(arg0, arg1, b)
+                           |			case _ => throw new RuntimeException("Unknown buffer type: " + arg3)
+                           |		}
+                           |	}""".stripMargin
+      val leftSig = MethodSignature(androidMethod, workLeft: _*)
+      val rightSig = MethodSignature(lwjglMethod, workRight: _*)
+      _methods = CombinedMethod(name, left.head.getParameterTypes, left.head.getReturnType, leftSig, rightSig) :: _methods
+      workLeft = Nil
+      workRight = Nil
     }
   }
 
@@ -60,7 +112,7 @@ case class CombinedMethods(name: String, left: List[Method], right: List[Method]
       b.append(Generator.convertClass(arg))
     }
     b.append("): ")
-    b.append(method.getReturnType.getName)
+    b.append(Generator.convertClass(method.getReturnType))
     b.append(" = {\r\n")
     b.append("\t\t")
     if (Modifier.isStatic(method.getModifiers)) {
@@ -81,8 +133,6 @@ case class CombinedMethods(name: String, left: List[Method], right: List[Method]
     b.append(")")
     b.append("\r\n")
     b.append("\t}\r\n")
-
-    println(b)
 
     b.toString
   }
