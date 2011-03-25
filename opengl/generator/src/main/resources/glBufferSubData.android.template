@@ -1,0 +1,3 @@
+	def glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit = {
+		instance.glBufferData(target, offset, size, data)
+	}

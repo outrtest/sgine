@@ -1,0 +1,10 @@
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		arg2 match {
+			case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+			case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+			case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+			case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+			case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+			case _ => org.lwjgl.opengl.GL15.glBufferData(target, size, usage)
+		}
+	}

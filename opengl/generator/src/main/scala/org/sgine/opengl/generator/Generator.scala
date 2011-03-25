@@ -45,6 +45,8 @@ object Generator {
   }
 
   def convertClass(c: Class[_]) = c.getName match {
+    case "boolean" => "Boolean"
+    case "byte" => "Byte"
     case "int" => "Int"
     case "float" => "Float"
     case "void" => "Unit"
