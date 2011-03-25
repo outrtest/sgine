@@ -17,5 +17,6 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
 
   class OpenGLGeneratorProject(info: ProjectInfo) extends DefaultProject(info) {
     lazy val lwjgl = "org.lwjgl" % "lwjgl" % "2.7.1"
+    lazy val paranamer  = "com.thoughtworks.paranamer" % "paranamer" % "2.2.1"
   }
 }

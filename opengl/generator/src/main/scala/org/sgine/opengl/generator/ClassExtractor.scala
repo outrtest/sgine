@@ -24,7 +24,11 @@ class ClassExtractor(static: Boolean) {
 
   def fields(name: String) = _fields.find(_.getName == name)
 
-  def methods(name: String) = _methods.filter(_.getName.startsWith(name))
+  def methods(name: String) = _methods.filter {
+    method => {
+      method.getName.startsWith(name) && (method.getName.length - name.length) <= 2
+    }
+  }
 
   def methodNames() = _methods.foldLeft[List[String]](Nil)((list, method) => if (list.contains(method.getName)) list else method.getName :: list)
 
