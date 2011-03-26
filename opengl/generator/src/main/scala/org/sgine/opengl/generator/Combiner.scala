@@ -44,7 +44,7 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
       if (leftMatches.length == 0 || rightMatches.length == 0) {
         combineMethods(methodNames.tail, combined)
       } else {
-        val cm = CombinedMethods(name, leftMatches, rightMatches)
+        val cm = new CombinedMethods(name, leftMatches, rightMatches)
         combineMethods(methodNames.tail, cm :: combined)
       }
     } else {

@@ -13,12 +13,17 @@ class AndroidDocReflection(className: String) {
   def methodArgs(name: String): List[String] = {
     val h4 = (xml \\ "h4").find(n => (n \ "span").length >= 3 && (n \ "span")(1).text == name)
     val args = h4.map(h4 => processArgs((h4 \ "span")(2).text)).get
-    args.map(text => text.substring(text.indexOf(' ') + 1)).toList
+    args.map(text => text.substring(text.indexOf(' ') + 1)).map(updateArg).toList
   }
 
   private def processArgs(s: String) = {
     val argString = s.substring(1, s.length - 1)
     argString.split(", ")
+  }
+
+  private val updateArg = (arg: String) => arg match {
+    case "type" => "`type`"
+    case s => s
   }
 
   private def cleanup(s: String) = {

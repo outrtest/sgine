@@ -25,6 +25,8 @@ class GLCreator(combiner: Combiner) {
   private def create() = {
     b.clear()
 
+    val methods = combiner.methods.flatMap(cm => cm.methods)
+
     this % "package org.sgine.opengl"
     nl()
     docStart(0)
@@ -36,13 +38,20 @@ class GLCreator(combiner: Combiner) {
     docEnd(0)
     this % "trait GL {"
     first = true
-    combiner.methods.foreach(writeMethods)
+    methods.foreach(writeMethod(_, true))
     this % "}"
     nl()
     this % "object GL extends GL {"
+    tab(1)
+    this % "private val local = new ThreadLocal[GL]"
+    tab(1)
+    this % "def instance = local.get"
+    tab(1)
+    this % "def instance_=(gl: GL) = local.set(gl)"
+    nl()
     first = true
     combiner.fields.foreach(writeField)
-    combiner.methods.foreach(writeMethodsWrapper)
+    methods.foreach(writeMethodWrapper)
     this + "}"
 
     b.toString
@@ -108,7 +117,7 @@ class GLCreator(combiner: Combiner) {
     this % field.value.toString
   }
 
-  private def writeMethods(method: CombinedMethods) = {
+  private def writeMethod(method: CombinedMethod, isAbstract: Boolean) = {
     if (first) {
       first = false
     } else {
@@ -120,17 +129,40 @@ class GLCreator(combiner: Combiner) {
     this + "def "
     this + method.name
     this + "("
-    this + "): Unit"
-    nl()
+    var firstArg = true
+    for ((argName, argType) <- method.argNames.zip(method.args)) {
+      if (firstArg) {
+        firstArg = false
+      } else {
+        this + ", "
+      }
+      this + argName
+      this + ": "
+      this + Generator.convertClass(argType)
+    }
+    this + "): "
+    this + Generator.convertClass(method.returnType)
+    if (isAbstract) {
+      nl()
+    } else {
+      this + " = {"
+      nl()
+    }
   }
 
-  private def writeMethodsWrapper(method: CombinedMethods) = {
-    nl()
-    tab()
-    this + "def "
+  private def writeMethodWrapper(method: CombinedMethod) = {
+    writeMethod(method, false)
+    tab(2)
+    this + "instance."
     this + method.name
     this + "("
-    this + "): Unit = {"
+    for ((argName, index) <- method.argNames.zipWithIndex) {
+      if (index > 0) {
+        this + ", "
+      }
+      this + argName
+    }
+    this + ")"
     nl()
     tab()
     this + "}"

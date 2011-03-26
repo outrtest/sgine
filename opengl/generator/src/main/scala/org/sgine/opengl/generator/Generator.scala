@@ -60,6 +60,6 @@ object Generator {
     case "float" => "Float"
     case "void" => "Unit"
     case "java.lang.String" => "String"
-    case s => throw new RuntimeException("Cannot convert class: " + s)
+    case s => s
   }
 }
