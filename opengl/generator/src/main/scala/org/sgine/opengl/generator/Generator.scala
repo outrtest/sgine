@@ -1,8 +1,8 @@
 package org.sgine.opengl.generator
 
-import java.io.File
 import org.lwjgl.opengl._
 import javax.microedition.khronos.opengles.GL10
+import java.io.{FileWriter, File}
 
 /**
  * 
@@ -41,6 +41,15 @@ object Generator {
     println("Combined: " + combiner.methods.length)
 
     val tc = new GLCreator(combiner)
+    val glDirectory = new File("opengl/src/main/scala/org/sgine/opengl/")
+    glDirectory.mkdirs()
+    val glScala = new File(glDirectory, "GL.scala")
+    val fw = new FileWriter(glScala)
+    try {
+      fw.write(tc.string)
+    } finally {
+      fw.close()
+    }
 //    println(tc.string)
   }
 
@@ -50,6 +59,7 @@ object Generator {
     case "int" => "Int"
     case "float" => "Float"
     case "void" => "Unit"
+    case "java.lang.String" => "String"
     case s => throw new RuntimeException("Cannot convert class: " + s)
   }
 }

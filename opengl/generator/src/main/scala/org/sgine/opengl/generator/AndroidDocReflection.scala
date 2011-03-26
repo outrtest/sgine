@@ -6,7 +6,7 @@ import xml.{Node, Elem, XML}
 
 class AndroidDocReflection(className: String) {
   val url = "http://developer.android.com/reference/" + className.replaceAll("[.]", "/") + ".html"
-  val source = Source.fromURL(new URL(url))
+  val source = Source.fromURL(new URL(url), "UTF-8")
   val string = cleanup(source.mkString)
   val xml = XML.loadString(string)
 
