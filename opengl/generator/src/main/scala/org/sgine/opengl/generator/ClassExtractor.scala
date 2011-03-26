@@ -53,7 +53,7 @@ class ClassExtractor(static: Boolean) {
   private def populateFields(fields: List[Field]): Unit = {
     if (fields.length > 0) {
       val f = fields.head
-      if (isStatic(f.getModifiers) && isPublic(f.getModifiers)) {
+      if (isStatic(f.getModifiers) && isPublic(f.getModifiers) && (_fields.find(field => field.getName == f.getName) == None)) {
         _fields = f :: _fields
       }
 

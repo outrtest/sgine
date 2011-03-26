@@ -42,7 +42,8 @@ class GLCreator(combiner: Combiner) {
     this % "object GL extends GL {"
     first = true
     combiner.fields.foreach(writeField)
-    this % "}"
+    combiner.methods.foreach(writeMethodsWrapper)
+    this + "}"
 
     b.toString
   }
@@ -120,6 +121,19 @@ class GLCreator(combiner: Combiner) {
     this + method.name
     this + "("
     this + "): Unit"
+    nl()
+  }
+
+  private def writeMethodsWrapper(method: CombinedMethods) = {
+    nl()
+    tab()
+    this + "def "
+    this + method.name
+    this + "("
+    this + "): Unit = {"
+    nl()
+    tab()
+    this + "}"
     nl()
   }
 }

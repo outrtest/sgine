@@ -1,0 +1,5 @@
+    def glColorPointer(size: Int, type: Int, stride: Int, buffer: java.nio.Buffer) = buffer match {
+        case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, type, b)
+        case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, type, b)
+        case _ => throw new RuntimeException("Unknown buffer type: " + buffer)
+    }

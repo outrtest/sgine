@@ -24,23 +24,22 @@ case class CombinedMethods(name: String, left: List[Method], right: List[Method]
 
   private def generateMethods(): Unit = {
     findTemplate()
-//    findBufferData()
-//    findBufferSubData()
     findPerfect()
 
+    println(name + " - Methods: " + methods.length + ", Left: " + left.length + " (" + workLeft.length + "), Right: " + right.length + " (" + workRight.length + ")")
     if (methods.length == 0) {
-      println(name + ": Unable to find match: " + left.length + " - " + right.length)
-      println("\tLeft:")
-      left.foreach(m => println("\t\t" + m + " - " + adr(m.getDeclaringClass).methodArgs(m.getName)))
-      println("\tRight:")
-      right.foreach(m => println("\t\t" + m))
-      System.exit(0)
+//      println(name + ": Unable to find match: " + left.length + " - " + right.length)
+//      println("\tLeft:")
+//      left.foreach(m => println("\t\t" + m + " - " + adr(m.getDeclaringClass).methodArgs(m.getName)))
+//      println("\tRight:")
+//      right.foreach(m => println("\t\t" + m))
+//      System.exit(0)
     } else {
-      println("Matches found for: " + name + " - " + methods.length + ", Left over: " + workLeft.length + ", " + workRight.length)
-      for (m <- methods) {
-        println(m.left.code)
-        println(m.right.code)
-      }
+//      println("Matches found for: " + name + " - " + methods.length + ", Left over: " + workLeft.length + ", " + workRight.length)
+//      for (m <- methods) {
+//        println(m.left.code)
+//        println(m.right.code)
+//      }
     }
   }
 
@@ -50,28 +49,28 @@ case class CombinedMethods(name: String, left: List[Method], right: List[Method]
       val lwjglMethod = template(name + ".lwjgl.template")
       val leftSig = MethodSignature(androidMethod, workLeft: _*)
       val rightSig = MethodSignature(lwjglMethod, workRight: _*)
+      val argNames = if (left.head.getParameterTypes.length > 0) {
+        adr(left.head.getDeclaringClass).methodArgs(left.head.getName)
+      } else {
+        Nil
+      }
 
-      _methods = CombinedMethod(name, left.head.getParameterTypes, left.head.getReturnType, leftSig, rightSig) :: _methods
+      _methods = CombinedMethod(name, left.head.getParameterTypes, argNames, left.head.getReturnType, leftSig, rightSig) :: _methods
       workLeft = Nil
       workRight = Nil
     }
   }
 
-  private def adr(c: Class[_]) = androidDocReflection.get(c) match {
-    case Some(ad) => ad
-    case None => {
-      val ad = new AndroidDocReflection(c.getName)
-      androidDocReflection += c -> ad
-      ad
-    }
-  }
-
   private def findPerfect() = {
     for (l <- workLeft; r <- workRight; if (l.getName == r.getName); if (parametersMatch(l, r))) {
-      val argNames = adr(l.getDeclaringClass).methodArgs(l.getName)
+      val argNames = if (l.getParameterTypes.length > 0) {
+        adr(l.getDeclaringClass).methodArgs(l.getName)
+      } else {
+        Nil
+      }
       val left = MethodSignature(createPerfectMethod(l, argNames), l)
       val right = MethodSignature(createPerfectMethod(r, argNames), r)
-      _methods = CombinedMethod(name, l.getParameterTypes, l.getReturnType, left, right) :: _methods
+      _methods = CombinedMethod(name, l.getParameterTypes, argNames, l.getReturnType, left, right) :: _methods
       workLeft = workLeft.filterNot(_ == l)
       workRight = workRight.filterNot(_ == r)
     }
@@ -133,8 +132,16 @@ case class CombinedMethods(name: String, left: List[Method], right: List[Method]
   private def hasTemplate(name: String) = getClass.getClassLoader.getResource(name + ".android.template") != null
 
   private def template(name: String) = Source.fromURL(getClass.getClassLoader.getResource(name)).mkString
+
+  private def adr(c: Class[_]) = androidDocReflection.get(c) match {
+    case Some(ad) => ad
+    case None => {
+      val ad = new AndroidDocReflection(c.getName)
+      androidDocReflection += c -> ad
+      ad
+    }
+  }
 }
 
-case class CombinedMethod(name: String, args: Array[Class[_]], returnType: Class[_], left: MethodSignature, right: MethodSignature)
 
-case class MethodSignature(code: String, methods: Method*)
+
