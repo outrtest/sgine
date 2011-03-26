@@ -11,7 +11,7 @@ import com.thoughtworks.paranamer.BytecodeReadingParanamer
  * Date: 2/8/11
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class CombinedMethods(name: String, left: List[Method], right: List[Method]) {
+class CombinedMethods(val name: String, left: List[Method], right: List[Method]) {
   private var androidDocReflection = Map.empty[Class[_], AndroidDocReflection]
 
   private var _methods: List[CombinedMethod] = Nil
