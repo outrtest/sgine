@@ -43,7 +43,7 @@ object Generator {
     val tc = new GLCreator(combiner)
 
     // Create GL trait and companion
-    val glDirectory = new File("opengl/src/main/scala/org/sgine/opengl/")
+    val glDirectory = new File("opengl/api/src/main/scala/org/sgine/opengl/")
     glDirectory.mkdirs()
     val glScala = new File(glDirectory, "GL.scala")
     var fw = new FileWriter(glScala)
