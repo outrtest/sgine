@@ -65,11 +65,18 @@ class ClassExtractor(static: Boolean) {
   private def populateMethods(methods: List[Method]): Unit = {
     if (methods.length > 0) {
       val m = methods.head
-      if (isStatic(m.getModifiers) == static && isPublic(m.getModifiers)) {
+      if (isStatic(m.getModifiers) == static && isPublic(m.getModifiers) && validMethod(m)) {
         _methods = m :: _methods
       }
 
       populateMethods(methods.tail)
     }
+  }
+
+  private def validMethod(m: Method) = m.toString match {
+    case "public abstract void javax.microedition.khronos.opengles.GL11.glClipPlanef(int,float[],int)" => false
+    case "public abstract void javax.microedition.khronos.opengles.GL11.glClipPlanex(int,int[],int)" => false
+    case "public abstract void javax.microedition.khronos.opengles.GL11.glClipPlanex(int,java.nio.IntBuffer)" => false
+    case _ => true
   }
 }
