@@ -58,7 +58,7 @@ trait GL {
 
 	/**
 	 */
-	def glClipPlane(plane: Int, equation: java.nio.IntBuffer): Unit
+	def glClipPlane(plane: Int, equation: java.nio.FloatBuffer): Unit
 
 	/**
 	 */
@@ -3036,7 +3036,7 @@ object GL extends GL {
 
 	/**
 	 */
-	def glClipPlane(plane: Int, equation: java.nio.IntBuffer): Unit = {
+	def glClipPlane(plane: Int, equation: java.nio.FloatBuffer): Unit = {
 		instance.glClipPlane(plane, equation)
 	}
 

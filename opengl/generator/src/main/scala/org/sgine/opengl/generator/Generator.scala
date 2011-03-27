@@ -41,16 +41,39 @@ object Generator {
     println("Combined: " + combiner.methods.length)
 
     val tc = new GLCreator(combiner)
+
+    // Create GL trait and companion
     val glDirectory = new File("opengl/src/main/scala/org/sgine/opengl/")
     glDirectory.mkdirs()
     val glScala = new File(glDirectory, "GL.scala")
-    val fw = new FileWriter(glScala)
+    var fw = new FileWriter(glScala)
     try {
-      fw.write(tc.string)
+      fw.write(tc.glString)
     } finally {
       fw.close()
     }
-//    println(tc.string)
+
+    // Create Android
+    val androidDirectory = new File("opengl/android/src/main/scala/org/sgine/opengl/android/")
+    androidDirectory.mkdirs()
+    val androidScala = new File(androidDirectory, "GL.scala")
+    fw = new FileWriter(androidScala)
+    try {
+      fw.write(tc.androidString)
+    } finally {
+      fw.close()
+    }
+
+    // Create LWJGL
+    val lwjglDirectory = new File("opengl/lwjgl/src/main/scala/org/sgine/opengl/lwjgl/")
+    lwjglDirectory.mkdirs()
+    val lwjglScala = new File(lwjglDirectory, "GL.scala")
+    fw = new FileWriter(lwjglScala)
+    try {
+      fw.write(tc.lwjglString)
+    } finally {
+      fw.close()
+    }
   }
 
   def convertClass(c: Class[_]) = c.getName match {

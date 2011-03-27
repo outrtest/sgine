@@ -113,7 +113,7 @@ class CombinedMethods(val name: String, left: List[Method], right: List[Method])
     }
     b.append(")")
     b.append("\r\n")
-    b.append("\t}\r\n")
+    b.append("\t}")
 
     b.toString
   }
