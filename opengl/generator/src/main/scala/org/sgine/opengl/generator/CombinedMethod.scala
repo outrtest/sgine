@@ -3,7 +3,6 @@ package org.sgine.opengl.generator
 import annotation.tailrec
 import io.Source
 import java.lang.reflect.{Modifier, Method}
-import com.thoughtworks.paranamer.BytecodeReadingParanamer
 
 /**
  * 

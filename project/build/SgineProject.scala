@@ -6,7 +6,9 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   val lwjglRepo = "LWJGL Repository" at "http://adterrasperaspera.com/lwjgl/"
   val lwjglVersion = "2.7.1"
 
+  lazy val concurrent = project("concurrent", "concurrent", core)
   lazy val core = project("core", "core", new CoreProject(_))
+  lazy val event = project("event", "event", core)
   lazy val opengl = project("opengl", "opengl", new OpenGLProject(_), core)
   lazy val render = project("render", "render", core, opengl)
 
