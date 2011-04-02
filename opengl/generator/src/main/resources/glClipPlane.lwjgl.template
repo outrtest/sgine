@@ -1,0 +1,3 @@
+  def glClipPlane(plane: Int, equation: java.nio.FloatBuffer): Unit = {
+    org.lwjgl.opengl.GL11.glClipPlane(plane, org.sgine.opengl.GLUtil.toDoubleBuffer(equation))
+  }

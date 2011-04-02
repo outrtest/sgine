@@ -1,0 +1,3 @@
+  def glCompressedTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, imageSize: Int, data: java.nio.Buffer): Unit = {
+    instance.glCompressedTexImage2D(target, level, internalFormat, width, height, border, imageSize, data)
+  }
