@@ -1,0 +1,153 @@
+package org.sgine.event
+
+import org.scalatest.FlatSpec
+import org.scalatest.matchers.ShouldMatchers
+
+import org.sgine.core.ProcessingMode
+
+import org.sgine.log._
+
+import org.sgine.util.Time
+
+import java.util.concurrent._
+
+class BasicEventSpec extends FlatSpec with ShouldMatchers {
+	val listenable = new SimpleListenable()
+	var handler1: EventHandler = _
+	var handler2: EventHandler = _
+	var handler3: EventHandler = _
+	var listenerIncrement1: Int = 0
+	var listenerIncrement2: Int = 0
+	var listenerIncrement3: Int = 0
+	var listenerIncrement4: Int = 0
+	
+	"EventProcessor" should "be empty" in {
+		listenable.listeners.size should equal (0)
+	}
+	
+	it should "have one listener" in {
+		handler1 = listenable.listeners += EventListener(simpleListener1, EventTypeFilter(classOf[SimpleEvent1]))
+		listenable.listeners.size should equal (1)
+	}
+	
+	it should "have two listeners" in {
+		handler2 = listenable.listeners += EventListener(simpleListener2, EventTypeFilter(classOf[SimpleEvent2]))
+		listenable.listeners.size should equal (2)
+	}
+	
+	it should "have three listeners" in {
+		handler3 = listenable.listeners += EventListener(simpleListener3, EventTypeFilter(classOf[SimpleEvent3]))
+		listenable.listeners.size should equal (3)
+	}
+	
+	it should "allow changing of ProcessingMode" in {
+		handler1.processingMode = ProcessingMode.Blocking
+		handler3.processingMode = ProcessingMode.Asynchronous
+	}
+	
+	it should "register the event occurrence in Blocking mode" in {
+		listenerIncrement1 should equal (0)
+		Event.enqueue(new SimpleEvent1(listenable))
+		listenerIncrement1 should equal (1)
+	}
+	
+	it should "register sub-classed events for filtered type" in {
+		listenerIncrement1 should equal (1)
+		Event.enqueue(new SimpleEvent4(listenable))
+		listenerIncrement1 should equal (2)
+	}
+	
+	it should "register the event occurrence in Normal mode" in {
+		Event.enqueue(new SimpleEvent2(listenable))
+		listenerIncrement2 should equal (0)
+		Time.waitFor(Time.Second * 5) {
+			listenerIncrement2 == 1
+		} should equal(true)
+		listenerIncrement2 should equal (1)
+	}
+	
+	it should "register the event occurrence in Asynchronous mode" in {
+		Event.enqueue(new SimpleEvent3(listenable))
+		listenerIncrement3 should equal (0)
+		Time.waitFor(Time.Second * 5) {
+			listenerIncrement3 == 1
+		} should equal(true)
+		listenerIncrement3 should equal (1)
+	}
+	
+	"EventListener" should "let through events for its generic type" in {
+		val eh = listenable.listeners += exclusiveListener1 _
+		eh.processingMode = ProcessingMode.Blocking
+		listenable.listeners.size should equal (4)
+		listenerIncrement4 should equal (0)
+		Event.enqueue(new ExclusiveEvent1(listenable))
+		listenerIncrement4 should equal (1)
+		Event.enqueue(new SimpleEvent1(listenable))
+		listenerIncrement4 should equal (1)
+	}
+	
+	"ProcessingMode" should "be different" in {
+		ProcessingMode.Blocking should not equal (ProcessingMode.Asynchronous)
+		ProcessingMode.Asynchronous should not equal (ProcessingMode.Normal)
+		ProcessingMode.Normal should not equal (ProcessingMode.Blocking)
+	}
+	
+	"Listenable.waitForEvent" should "return null" in {
+		val thread = new Thread() {
+			override def run() = {
+				Thread.sleep(100)
+				Event.enqueue(new SimpleEvent1(listenable))
+			}
+		}
+		thread.start()
+		val evt = listenable.waitForEvent[SimpleEvent2](Time.Second * 2.0, ProcessingMode.Blocking)
+		evt should equal(null)
+	}
+	
+	it should "return SimpleEvent3" in {
+		val evt1 = new SimpleEvent1(listenable)
+		val evt2 = new SimpleEvent2(listenable)
+		val evt3 = new SimpleEvent3(listenable)
+		val evt4 = new SimpleEvent4(listenable)
+		val thread = new Thread() {
+			override def run() = {
+				Thread.sleep(100)
+				Event.enqueue(evt1)
+				Event.enqueue(evt2)
+				Event.enqueue(evt3)
+				Event.enqueue(evt4)
+			}
+		}
+		thread.start()
+		val evt = listenable.waitForEvent[SimpleEvent3](Time.Second * 2.0, ProcessingMode.Blocking)
+		evt should equal(evt3)
+	}
+	
+	def simpleListener1(evt: Event) = {
+		log("listener1")
+		listenerIncrement1 += 1
+	}
+	
+	def simpleListener2(evt: Event) = {
+		log("listener2")
+		listenerIncrement2 += 1
+	}
+	
+	def simpleListener3(evt: Event) = {
+		log("listener3")
+		listenerIncrement3 += 1
+	}
+	
+	def exclusiveListener1(evt: ExclusiveEvent1) = {
+		log("listener4")
+		listenerIncrement4 += 1
+	}
+}
+
+class SimpleListenable extends Listenable
+
+class SimpleEvent1(listenable: Listenable) extends BasicEvent(listenable)
+class SimpleEvent2(listenable: Listenable) extends BasicEvent(listenable)
+class SimpleEvent3(listenable: Listenable) extends BasicEvent(listenable)
+class SimpleEvent4(listenable: Listenable) extends SimpleEvent1(listenable)
+class ExclusiveEvent1(listenable: Listenable) extends BasicEvent(listenable)
