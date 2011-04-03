@@ -41,6 +41,11 @@ package org.sgine.property
 class BasicMutableProperty[T](implicit val manifest: Manifest[T]) extends MutableProperty[T] {
   @volatile private var v: T = _
 
+  def this(value: T)(implicit manifest: Manifest[T]) = {
+    this()
+    apply(value)
+  }
+
   def apply() = v
 
   def apply(value: T) = v = value
