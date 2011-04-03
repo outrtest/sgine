@@ -30,13 +30,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.opengl
+package org.sgine.property
 
-import org.sgine.property.BasicMutableProperty
+/**
+ * BasicMutableProperty stores the property value as a field and allows modification. This class is fully thread-safe to
+ * allow concurrent modification and access.
+ *
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
+class BasicMutableProperty[T](implicit val manifest: Manifest[T]) extends MutableProperty[T] {
+  @volatile private var v: T = _
 
-trait GLController {
-  /**
-   * Specifies whether vertical sync should be activated on this GL context.
-   */
-  val verticalSync = new BasicMutableProperty[Boolean](true)
+  def apply() = v
+
+  def apply(value: T) = v = value
 }

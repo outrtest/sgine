@@ -30,13 +30,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.opengl
+package org.sgine.property
 
-import org.sgine.property.BasicMutableProperty
-
-trait GLController {
-  /**
-   * Specifies whether vertical sync should be activated on this GL context.
-   */
-  val verticalSync = new BasicMutableProperty[Boolean](true)
+/**
+ * BasicProperty stores the value at construction time and is immutable.
+ *
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
+class BasicProperty[T](private val v: T)(implicit val manifest: Manifest[T]) extends Property[T] {
+  def apply() = v
 }
