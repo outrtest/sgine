@@ -35,6 +35,7 @@ package org.sgine.opengl.generator
 import org.lwjgl.opengl._
 import javax.microedition.khronos.opengles.GL10
 import java.io.{FileWriter, File}
+import com.googlecode.reflective.doc.DocumentationReflection
 
 /**
  * 
@@ -43,6 +44,9 @@ import java.io.{FileWriter, File}
  */
 object OpenGLGenerator {
   def main(args: Array[String]): Unit = {
+    // Run in offline mode
+    DocumentationReflection.remoteSources = false
+
     val apiBase = new File("opengl/api/src/main/scala/org/sgine/opengl/")
     val androidBase = new File("opengl/android/src/main/scala/org/sgine/opengl/android/")
     val lwjglBase = new File("opengl/lwjgl/src/main/scala/org/sgine/opengl/lwjgl/")
