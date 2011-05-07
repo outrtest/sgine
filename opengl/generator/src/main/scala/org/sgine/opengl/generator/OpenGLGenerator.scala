@@ -35,7 +35,9 @@ package org.sgine.opengl.generator
 import org.lwjgl.opengl._
 import javax.microedition.khronos.opengles.GL10
 import java.io.{FileWriter, File}
+import com.googlecode.reflective._
 import com.googlecode.reflective.doc.DocumentationReflection
+import java.lang.reflect.Method
 
 /**
  * 
@@ -43,6 +45,9 @@ import com.googlecode.reflective.doc.DocumentationReflection
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object OpenGLGenerator {
+  val showNoMappings = false
+  val debugMethodName = "glVertexPointer"
+
   def main(args: Array[String]): Unit = {
     // Run in offline mode
     DocumentationReflection.remoteSources = false
@@ -85,7 +90,32 @@ object OpenGLGenerator {
       val i = map.getOrElse(m.matcher, 0) + 1
       map += (m.matcher -> i)
     }
-    map.foreach(t => println(t._1 + ": " + t._2))
+    map.foreach(t => println("  " + t._1 + ": " + t._2))
+
+    // Debug info
+    val printMethod = (s: String) => {
+      val printJavaMethod = (m: Method) => {
+        val em = method2EnhancedMethod(m)
+        print("      " + em)
+        if (combiner.usesMethod(m)) {
+          print(" *** USED")
+        }
+        println()
+      }
+      println("  " + s)
+      println("    Android:")
+      androidExtractor.methods(s).foreach(printJavaMethod)
+      println("    LWJGL:")
+      lwjglExtractor.methods(s).foreach(printJavaMethod)
+    }
+    if (showNoMappings) {
+      println("No Mappings: " + combiner.noMappings.length)
+      combiner.noMappings.foreach(printMethod)
+    }
+    if (debugMethodName != null) {
+      println("Debug Method: " + debugMethodName)
+      printMethod(debugMethodName)
+    }
 
     // Generate classes
     val creator = new ClassCreator(combiner)

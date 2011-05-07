@@ -48,4 +48,6 @@ case class MethodDescriptor(name: String,
   def androidBody = androidMethodCreator.createMethod
 
   def lwjglBody = lwjglMethodCreator.createMethod
+
+  lazy val methods = androidMethodCreator.methods ::: lwjglMethodCreator.methods
 }

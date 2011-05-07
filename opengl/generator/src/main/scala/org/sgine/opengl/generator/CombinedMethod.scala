@@ -36,6 +36,8 @@ import java.lang.reflect.Method
 
 import ClassCreator._
 
+import com.googlecode.reflective.EnhancedClass._
+
 /**
  * 
  *

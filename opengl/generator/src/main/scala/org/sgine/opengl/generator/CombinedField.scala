@@ -34,6 +34,8 @@ package org.sgine.opengl.generator
 
 import java.lang.reflect.Field
 
+import com.googlecode.reflective.EnhancedClass._
+
 /**
  * 
  *
@@ -47,7 +49,7 @@ case class CombinedField(name: String, fieldType: Class[_], value: Any, leftOrig
     b.append("\tval ")
     b.append(name)
     b.append(": ")
-    b.append(ClassCreator.convertClass(fieldType))
+    b.append(convertClass(fieldType))
     b.append(" = ")
     b.append(value)
     b.toString()

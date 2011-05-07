@@ -40,7 +40,7 @@ import java.lang.reflect.{Modifier, Method}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait MethodCreator {
-  def methods: Seq[Method]
+  def methods: List[Method]
   def createMethod: String
 }
 

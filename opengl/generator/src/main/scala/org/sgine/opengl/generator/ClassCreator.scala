@@ -102,18 +102,6 @@ class ClassCreator(combiner: Combiner) {
 }
 
 object ClassCreator {
-  def convertClass(c: Class[_]) = c.getName match {
-    case "boolean" => "Boolean"
-    case "byte" => "Byte"
-    case "int" => "Int"
-    case "float" => "Float"
-    case "double" => "Double"
-    case "void" => "Unit"
-    case "java.lang.String" => "String"
-    case "[I" => "Array[Int]"
-    case s => s
-  }
-
   def toDoc(s: String) = {
     "\t/**\r\n\t * " + s.replaceAll("\r\n", "\r\n\t * ") + "\r\n\t */\r\n"
   }

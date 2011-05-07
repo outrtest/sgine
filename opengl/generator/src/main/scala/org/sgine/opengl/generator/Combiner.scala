@@ -47,9 +47,12 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
   var unusedAndroid: List[Method] = Nil
   var unusedLWJGL: List[Method] = Nil
   var noMatches: List[String] = Nil
+  var noMappings: List[String] = Nil
 
   val fields = combineFields(e1.fields, Nil)
   val methods = combineMethods(methodNames)
+
+  def usesMethod(m: Method) = methods.flatMap(cm => cm.descriptor.methods).contains(m)
 
   @tailrec
   private def combineFields(fields: List[Field], combined: List[CombinedField]): List[CombinedField] = {
@@ -79,6 +82,9 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
       val combinedMethods = generateCombined(methodName)
       if (combinedMethods.isEmpty) {
         noMatches = methodName :: noMatches
+        if (e1Methods.length > 0 && e2Methods.length > 0) {
+          noMappings = methodName :: noMappings
+        }
       }
       combineMethods(methodNames.tail, combinedMethods ::: combined)
     } else {
