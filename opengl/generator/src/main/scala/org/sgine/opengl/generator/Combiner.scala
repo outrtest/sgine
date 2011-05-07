@@ -33,6 +33,7 @@
 package org.sgine.opengl.generator
 
 import annotation.tailrec
+import arg.VariableArgument
 import java.lang.reflect.{Method, Field}
 
 import com.googlecode.reflective._
@@ -91,8 +92,8 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
     e1Methods = e1.methods(name)
     e2Methods = e2.methods(name)
 
-    val isPerfect = isPerfectMatch(_: String, _: Method, _: Method, false)
-    val isAlmostPerfect = isPerfectMatch(_: String, _: Method, _: Method, true)
+    val isPerfect = MethodMatcher.isPerfectMatch(_: String, _: Method, _: Method, false)
+    val isAlmostPerfect = MethodMatcher.isPerfectMatch(_: String, _: Method, _: Method, true)
     val matchers = List(isPerfect, isAlmostPerfect)
     val combined = runMatchers(name, matchers, Nil)
 
@@ -114,8 +115,8 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
       for (m1 <- e1Methods) {
         firstMatch(name, m1, matcher, e2Methods) match {
           case Some(cm) => {
-            e1Methods = e1Methods.filterNot(m => cm.androidMethods.contains(m))
-            e2Methods = e2Methods.filterNot(m => cm.lwjglMethods.contains(m))
+            e1Methods = e1Methods.filterNot(m => cm.descriptor.androidMethodCreator.methods.contains(m))
+            e2Methods = e2Methods.filterNot(m => cm.descriptor.lwjglMethodCreator.methods.contains(m))
             cms = cm :: cms
           }
           case None => // No match
@@ -137,63 +138,5 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
         case None => firstMatch(name, m1, matcher, methods.tail)
       }
     }
-  }
-
-  private def isPerfectMatch(name: String, m1: Method, m2: Method, almost: Boolean) = {
-    if ((m1.getName == m2.getName || almost) && parametersMatch(m1, m2) && m1.getReturnType == m2.getReturnType) {
-      val argNames = m1.args.map(a => a.name)
-      val body = new StringBuilder
-      body.append("$methodName(")
-      body.append(argNames.map(arg => ClassCreator.fix(arg)).mkString(", "))
-      body.append(')')
-      val android = "instance." + body.toString.replaceAll("[$]methodName", m1.getName)
-      val lwjgl = m2.getDeclaringClass.getName + "." + body.toString.replaceAll("[$]methodName", m2.getName)
-      val descriptor = MethodDescriptor(m1.getName, argNames.zip(m1.getParameterTypes), m1.getReturnType, android, lwjgl)
-      Some(CombinedMethod(m1.getName, List(m1), List(m2), descriptor, (if (almost) "Almost " else "") + "Perfect"))
-    } else {
-      None
-    }
-  }
-
-  private def isArgMatch(name: String, m1: Method, m2: Method) = {
-    if (m1.getParameterTypes.length == m2.getParameterTypes.length && m1.args.zip(m2.args).forall((t) => t._1.name == t._2.name)) {
-      println("ARG MATCH FOUND: " + m1 + " - " + m2)
-      None
-    } else {
-      None
-    }
-  }
-
-  private def parametersMatch(left: Method, right: Method) = {
-    if (left.getParameterTypes.length == right.getParameterTypes.length) {
-      left.getParameterTypes.zip(right.getParameterTypes).find(isBadMatch) match {
-        case Some(b) => false
-        case None => true
-      }
-    } else {
-      false
-    }
-  }
-
-  private def isBadMatch(t: (Class[_], Class[_])) = {
-    if (t._1 != t._2) {
-      if (isNumeric(t._1) && isNumeric(t._2)) {
-        false
-      } else {
-        true
-      }
-    } else {
-      false
-    }
-  }
-
-  private def isNumeric(c: Class[_]) = c.getName match {
-    case "byte" => true
-    case "short" => true
-    case "int" => true
-    case "long" => true
-    case "float" => true
-    case "double" => true
-    case n => false
   }
 }

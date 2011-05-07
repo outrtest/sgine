@@ -32,7 +32,6 @@
 
 package org.sgine.opengl.generator
 
-import arg.Argument
 import java.lang.reflect.{Modifier, Method}
 
 /**
@@ -40,12 +39,18 @@ import java.lang.reflect.{Modifier, Method}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class MethodDescriptor(name: String,
-                            args: List[(String, Class[_])],
-                            returnType: Class[_],
-                            androidMethodCreator: MethodCreator,
-                            lwjglMethodCreator: MethodCreator) {
-  def androidBody = androidMethodCreator.createMethod
-
-  def lwjglBody = lwjglMethodCreator.createMethod
+trait MethodCreator {
+  def methods: Seq[Method]
+  def createMethod: String
 }
+
+
+
+
+
+
+
+
+
+
+

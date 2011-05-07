@@ -41,7 +41,7 @@ import ClassCreator._
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class CombinedMethod(methodName: String, androidMethods: List[Method], lwjglMethods: List[Method], descriptor: MethodDescriptor, matcher: String) {
+case class CombinedMethod(methodName: String, descriptor: MethodDescriptor, matcher: String) {
   def generateAbstract() = {
     val b = new StringBuilder()
     // TODO: populate scaladoc
