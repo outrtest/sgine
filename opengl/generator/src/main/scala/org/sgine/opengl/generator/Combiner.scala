@@ -98,9 +98,10 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
     e1Methods = e1.methods(name)
     e2Methods = e2.methods(name)
 
-    val isPerfect = MethodMatcher.isPerfectMatch(_: String, _: Method, _: Method, false)
-    val isAlmostPerfect = MethodMatcher.isPerfectMatch(_: String, _: Method, _: Method, true)
-    val matchers = List(isPerfect, isAlmostPerfect)
+    val isPerfect = MethodMatcher.perfectMatch(_: String, _: Method, _: Method, _: List[Method], _: List[Method], false)
+    val isAlmostPerfect = MethodMatcher.perfectMatch(_: String, _: Method, _: Method, _: List[Method], _: List[Method], true)
+    // MethodMatcher.signaturePointerMatch _
+    val matchers = List(isPerfect, isAlmostPerfect, MethodMatcher.smartMatch _)
     val combined = runMatchers(name, matchers, Nil)
 
     unusedAndroid = e1Methods ::: unusedAndroid
@@ -109,7 +110,7 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
     combined
   }
 
-  type MatchTest = (String, Method, Method) => Option[CombinedMethod]
+  type MatchTest = (String, Method, Method, List[Method], List[Method]) => Option[CombinedMethod]
 
   @tailrec
   private def runMatchers(name: String, matchers: List[MatchTest], combined: List[CombinedMethod]): List[CombinedMethod] = {
@@ -139,7 +140,7 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
       None
     } else {
       val m2 = methods.head
-      matcher(name, m1, m2) match {
+      matcher(name, m1, m2, e1Methods, e2Methods) match {
         case Some(cm) => Some(cm)
         case None => firstMatch(name, m1, matcher, methods.tail)
       }

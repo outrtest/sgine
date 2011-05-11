@@ -32,7 +32,7 @@
 
 package org.sgine.opengl
 
-import java.nio.{FloatBuffer, DoubleBuffer}
+import java.nio.{Buffer, FloatBuffer, DoubleBuffer}
 
 /**
  * 
@@ -41,7 +41,11 @@ import java.nio.{FloatBuffer, DoubleBuffer}
  * Date: 3/26/11
  */
 object GLUtil {
-  def toDoubleBuffer(buffer: FloatBuffer): DoubleBuffer = {
+  def toFloatBuffer(buffer: Buffer): FloatBuffer = {
+    throw new RuntimeException("Not implemented!")
+  }
+
+  def toDoubleBuffer(buffer: Buffer): DoubleBuffer = {
     throw new RuntimeException("Not implemented!")
   }
 }

@@ -40,21 +40,4 @@ import java.lang.reflect.{Modifier, Method}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class DynamicMethodCreator(method: Method, arguments: Seq[Argument]) extends MethodCreator {
-  lazy val methods = List(method)
-
-  def createMethod = {
-    val b = new StringBuilder
-    if (Modifier.isStatic(method.getModifiers)) {
-      b.append(method.getDeclaringClass.getName)
-      b.append('.')
-    } else {
-      b.append("instance.")
-    }
-    b.append(method.getName)
-    b.append('(')
-    b.append(arguments.map(arg => arg.string).mkString(", "))
-    b.append(")")
-    b.toString
-  }
-}
+case class StaticMethodCreator(methods: List[Method], createMethod: String) extends MethodCreator

@@ -44,6 +44,16 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glViewport(x, y, width, height)
 	}
 
+	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		pointer match {
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
+			case _ => error("Failed conversion!")
+		}
+	}
+
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
 		org.lwjgl.opengl.GL11.glVertexPointer(size, `type`, stride, offset)
 	}
@@ -54,6 +64,17 @@ object GL extends org.sgine.opengl.GL {
 
 	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
 		org.lwjgl.opengl.GL11.glTranslatef(x, y, z)
+	}
+
+	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		pixels match {
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
+			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
+			case _ => error("Failed conversion!")
+		}
 	}
 
 	def glTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
@@ -80,6 +101,17 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glTexParameteri(target, pname, param)
 	}
 
+	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		pixels match {
+			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
+			case _ => error("Failed conversion!")
+		}
+	}
+
 	def glTexEnvfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glTexEnv(target, pname, params)
 	}
@@ -94,6 +126,16 @@ object GL extends org.sgine.opengl.GL {
 
 	def glTexEnvi(target: Int, pname: Int, param: Int): Unit = {
 		org.lwjgl.opengl.GL11.glTexEnvi(target, pname, param)
+	}
+
+	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		pointer match {
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexCoordPointer(size, stride, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexCoordPointer(size, stride, conversion)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexCoordPointer(size, stride, conversion)
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexCoordPointer(size, stride, conversion)
+			case _ => error("Failed conversion!")
+		}
 	}
 
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
@@ -136,6 +178,17 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glRotatef(angle, x, y, z)
 	}
 
+	def glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		pixels match {
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glReadPixels(x, y, width, height, format, `type`, conversion)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glReadPixels(x, y, width, height, format, `type`, conversion)
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glReadPixels(x, y, width, height, format, `type`, conversion)
+			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glReadPixels(x, y, width, height, format, `type`, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glReadPixels(x, y, width, height, format, `type`, conversion)
+			case _ => error("Failed conversion!")
+		}
+	}
+
 	def glPushMatrix(): Unit = {
 		org.lwjgl.opengl.GL11.glPushMatrix()
 	}
@@ -174,6 +227,16 @@ object GL extends org.sgine.opengl.GL {
 
 	def glOrthox(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
 		org.lwjgl.opengl.GL11.glOrtho(left, right, bottom, top, zNear, zFar)
+	}
+
+	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		pointer match {
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glNormalPointer(stride, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glNormalPointer(stride, conversion)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glNormalPointer(stride, conversion)
+			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glNormalPointer(stride, conversion)
+			case _ => error("Failed conversion!")
+		}
 	}
 
 	def glNormalPointer(`type`: Int, stride: Int, offset: Int): Unit = {
@@ -364,6 +427,15 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glEnable(cap)
 	}
 
+	def glDrawElements(mode: Int, count: Int, `type`: Int, indices: java.nio.Buffer): Unit = {
+		indices match {
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glDrawElements(mode, conversion)
+			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glDrawElements(mode, conversion)
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glDrawElements(mode, conversion)
+			case _ => error("Failed conversion!")
+		}
+	}
+
 	def glDrawElements(mode: Int, count: Int, `type`: Int, offset: Int): Unit = {
 		org.lwjgl.opengl.GL11.glDrawElements(mode, count, `type`, offset)
 	}
@@ -408,6 +480,14 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border)
 	}
 
+	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		pointer match {
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, stride, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, stride, conversion)
+			case _ => error("Failed conversion!")
+		}
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
 		org.lwjgl.opengl.GL11.glColorPointer(size, `type`, stride, offset)
 	}
@@ -446,6 +526,28 @@ object GL extends org.sgine.opengl.GL {
 
 	def glClear(mask: Int): Unit = {
 		org.lwjgl.opengl.GL11.glClear(mask)
+	}
+
+	def glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit = {
+		data match {
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, conversion)
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, conversion)
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, conversion)
+			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, conversion)
+			case _ => error("Failed conversion!")
+		}
+	}
+
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		data match {
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferData(target, conversion, usage)
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferData(target, conversion, usage)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferData(target, conversion, usage)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferData(target, conversion, usage)
+			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferData(target, conversion, usage)
+			case _ => error("Failed conversion!")
+		}
 	}
 
 	def glBlendFunc(sfactor: Int, dfactor: Int): Unit = {

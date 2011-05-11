@@ -32,6 +32,8 @@
 
 package org.sgine.opengl.generator.arg
 
+import java.nio.{Buffer, FloatBuffer, DoubleBuffer}
+
 /*
  * Copyright (c) 2011 Sgine
  * All rights reserved.
@@ -69,7 +71,21 @@ package org.sgine.opengl.generator.arg
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class ConversionArgument(variable: String, from: Class[_], to: Class[_]) extends Argument {
-  // TODO: provide several conversions
-  def string = throw new RuntimeException("NOT IMPLEMENTED!")
+class ConversionArgument private(variable: String, f: (String) => String) extends Argument {
+  def string = f(variable)
+}
+
+object ConversionArgument {
+  private val b2FB = (s: String) => "org.sgine.opengl.GLUtil.toFloatBuffer(" + s + ")"
+  private val b2DB = (s: String) => "org.sgine.opengl.GLUtil.toDoubleBuffer(" + s + ")"
+
+  var map = Map.empty[(Class[_], Class[_]), (String) => ConversionArgument]
+
+  map += (classOf[Buffer] -> classOf[DoubleBuffer]) -> ((s: String) => new ConversionArgument(s, b2FB))
+  map += (classOf[Buffer] -> classOf[DoubleBuffer]) -> ((s: String) => new ConversionArgument(s, b2DB))
+
+  // TODO: support superclass matching as well
+  def has(c1: Class[_], c2: Class[_]) = map.contains(c1 -> c2)
+
+  def apply(argName: String, c1: Class[_], c2: Class[_]) = map(c1 -> c2)(argName)
 }

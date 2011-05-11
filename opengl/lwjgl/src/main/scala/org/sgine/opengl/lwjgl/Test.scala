@@ -96,8 +96,8 @@ class Test extends GLDisplay {
     glLoadIdentity()
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
 
-//    glVertexPointer(3, GL_FLOAT, 0, vertexBuffer)
-//    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, indexBuffer)
+    glVertexPointer(3, GL_FLOAT, 0, vertexBuffer)
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, indexBuffer)
     println("RENDER!")
   }
 

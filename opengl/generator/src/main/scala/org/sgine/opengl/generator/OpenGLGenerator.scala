@@ -46,7 +46,7 @@ import java.lang.reflect.Method
  */
 object OpenGLGenerator {
   val showNoMappings = false
-  val debugMethodName = "glVertexPointer"
+  val debugMethodName = "glClipPlane"
 
   def main(args: Array[String]): Unit = {
     // Run in offline mode

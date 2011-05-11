@@ -42,11 +42,15 @@ package org.sgine.opengl
 trait GL {
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit
 
+	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
+
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit
 
 	def glTranslatex(x: Int, y: Int, z: Int): Unit
 
 	def glTranslatef(x: Float, y: Float, z: Float): Unit
+
+	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
 
 	def glTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
@@ -60,6 +64,8 @@ trait GL {
 
 	def glTexParameteri(target: Int, pname: Int, param: Int): Unit
 
+	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
+
 	def glTexEnvfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
 	def glTexEnvxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
@@ -67,6 +73,8 @@ trait GL {
 	def glTexEnvf(target: Int, pname: Int, param: Float): Unit
 
 	def glTexEnvi(target: Int, pname: Int, param: Int): Unit
+
+	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit
 
@@ -88,6 +96,8 @@ trait GL {
 
 	def glRotatef(angle: Float, x: Float, y: Float, z: Float): Unit
 
+	def glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
+
 	def glPushMatrix(): Unit
 
 	def glPopMatrix(): Unit
@@ -107,6 +117,8 @@ trait GL {
 	def glPixelStorei(pname: Int, param: Int): Unit
 
 	def glOrthox(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit
+
+	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
 	def glNormalPointer(`type`: Int, stride: Int, offset: Int): Unit
 
@@ -202,6 +214,8 @@ trait GL {
 
 	def glEnable(cap: Int): Unit
 
+	def glDrawElements(mode: Int, count: Int, `type`: Int, indices: java.nio.Buffer): Unit
+
 	def glDrawElements(mode: Int, count: Int, `type`: Int, offset: Int): Unit
 
 	def glDrawArrays(mode: Int, first: Int, count: Int): Unit
@@ -224,6 +238,8 @@ trait GL {
 
 	def glCopyTexImage2D(target: Int, level: Int, internalformat: Int, x: Int, y: Int, width: Int, height: Int, border: Int): Unit
 
+	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit
 
 	def glColorMask(red: Boolean, green: Boolean, blue: Boolean, alpha: Boolean): Unit
@@ -243,6 +259,10 @@ trait GL {
 	def glClearColor(red: Float, green: Float, blue: Float, alpha: Float): Unit
 
 	def glClear(mask: Int): Unit
+
+	def glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit
+
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit
 
 	def glBlendFunc(sfactor: Int, dfactor: Int): Unit
 
@@ -2944,6 +2964,10 @@ object GL extends GL {
 		instance.glViewport(x, y, width, height)
 	}
 
+	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glVertexPointer(size, `type`, stride, pointer)
+	}
+
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
 		instance.glVertexPointer(size, `type`, stride, offset)
 	}
@@ -2954,6 +2978,10 @@ object GL extends GL {
 
 	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
 		instance.glTranslatef(x, y, z)
+	}
+
+	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)
 	}
 
 	def glTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
@@ -2980,6 +3008,10 @@ object GL extends GL {
 		instance.glTexParameteri(target, pname, param)
 	}
 
+	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, pixels)
+	}
+
 	def glTexEnvfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glTexEnvfv(target, pname, params)
 	}
@@ -2994,6 +3026,10 @@ object GL extends GL {
 
 	def glTexEnvi(target: Int, pname: Int, param: Int): Unit = {
 		instance.glTexEnvi(target, pname, param)
+	}
+
+	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glTexCoordPointer(size, `type`, stride, pointer)
 	}
 
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
@@ -3036,6 +3072,10 @@ object GL extends GL {
 		instance.glRotatef(angle, x, y, z)
 	}
 
+	def glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glReadPixels(x, y, width, height, format, `type`, pixels)
+	}
+
 	def glPushMatrix(): Unit = {
 		instance.glPushMatrix()
 	}
@@ -3074,6 +3114,10 @@ object GL extends GL {
 
 	def glOrthox(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
 		instance.glOrthox(left, right, bottom, top, zNear, zFar)
+	}
+
+	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glNormalPointer(`type`, stride, pointer)
 	}
 
 	def glNormalPointer(`type`: Int, stride: Int, offset: Int): Unit = {
@@ -3264,6 +3308,10 @@ object GL extends GL {
 		instance.glEnable(cap)
 	}
 
+	def glDrawElements(mode: Int, count: Int, `type`: Int, indices: java.nio.Buffer): Unit = {
+		instance.glDrawElements(mode, count, `type`, indices)
+	}
+
 	def glDrawElements(mode: Int, count: Int, `type`: Int, offset: Int): Unit = {
 		instance.glDrawElements(mode, count, `type`, offset)
 	}
@@ -3308,6 +3356,10 @@ object GL extends GL {
 		instance.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border)
 	}
 
+	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glColorPointer(size, `type`, stride, pointer)
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
 		instance.glColorPointer(size, `type`, stride, offset)
 	}
@@ -3346,6 +3398,14 @@ object GL extends GL {
 
 	def glClear(mask: Int): Unit = {
 		instance.glClear(mask)
+	}
+
+	def glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit = {
+		instance.glBufferSubData(target, offset, size, data)
+	}
+
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		instance.glBufferData(target, size, data, usage)
 	}
 
 	def glBlendFunc(sfactor: Int, dfactor: Int): Unit = {

@@ -44,6 +44,10 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glViewport(x, y, width, height)
 	}
 
+	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glVertexPointer(size, `type`, stride, pointer)
+	}
+
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
 		instance.glVertexPointer(size, `type`, stride, offset)
 	}
@@ -54,6 +58,10 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 
 	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
 		instance.glTranslatef(x, y, z)
+	}
+
+	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)
 	}
 
 	def glTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
@@ -80,6 +88,10 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glTexParameteri(target, pname, param)
 	}
 
+	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, pixels)
+	}
+
 	def glTexEnvfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glTexEnvfv(target, pname, params)
 	}
@@ -94,6 +106,10 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 
 	def glTexEnvi(target: Int, pname: Int, param: Int): Unit = {
 		instance.glTexEnvi(target, pname, param)
+	}
+
+	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glTexCoordPointer(size, `type`, stride, pointer)
 	}
 
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
@@ -136,6 +152,10 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glRotatef(angle, x, y, z)
 	}
 
+	def glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glReadPixels(x, y, width, height, format, `type`, pixels)
+	}
+
 	def glPushMatrix(): Unit = {
 		instance.glPushMatrix()
 	}
@@ -174,6 +194,10 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 
 	def glOrthox(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
 		instance.glOrthox(left, right, bottom, top, zNear, zFar)
+	}
+
+	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glNormalPointer(`type`, stride, pointer)
 	}
 
 	def glNormalPointer(`type`: Int, stride: Int, offset: Int): Unit = {
@@ -364,6 +388,10 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glEnable(cap)
 	}
 
+	def glDrawElements(mode: Int, count: Int, `type`: Int, indices: java.nio.Buffer): Unit = {
+		instance.glDrawElements(mode, count, `type`, indices)
+	}
+
 	def glDrawElements(mode: Int, count: Int, `type`: Int, offset: Int): Unit = {
 		instance.glDrawElements(mode, count, `type`, offset)
 	}
@@ -408,6 +436,10 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border)
 	}
 
+	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glColorPointer(size, `type`, stride, pointer)
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
 		instance.glColorPointer(size, `type`, stride, offset)
 	}
@@ -446,6 +478,14 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 
 	def glClear(mask: Int): Unit = {
 		instance.glClear(mask)
+	}
+
+	def glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit = {
+		instance.glBufferSubData(target, offset, size, data)
+	}
+
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		instance.glBufferData(target, size, data, usage)
 	}
 
 	def glBlendFunc(sfactor: Int, dfactor: Int): Unit = {
