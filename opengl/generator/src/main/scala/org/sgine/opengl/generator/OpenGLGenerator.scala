@@ -46,7 +46,7 @@ import java.lang.reflect.Method
  */
 object OpenGLGenerator {
   val showNoMappings = false
-  val debugMethodName = "glClipPlane"
+  val debugMethodName = "glFrustum"
 
   def main(args: Array[String]): Unit = {
     // Run in offline mode
@@ -98,7 +98,7 @@ object OpenGLGenerator {
         val em = method2EnhancedMethod(m)
         print("      " + em)
         if (combiner.usesMethod(m)) {
-          print(" *** USED")
+          print(" *** USED: " + combiner.methodMatcher(m))
         }
         println()
       }

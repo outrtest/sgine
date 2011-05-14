@@ -46,10 +46,10 @@ object GL extends org.sgine.opengl.GL {
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		pointer match {
-			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
 			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
-			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
 			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
+			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, conversion)
 			case _ => error("Failed conversion!")
 		}
 	}
@@ -58,39 +58,31 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glVertexPointer(size, `type`, stride, offset)
 	}
 
-	def glTranslatex(x: Int, y: Int, z: Int): Unit = {
-		org.lwjgl.opengl.GL11.glTranslated(x, y, z)
-	}
-
 	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
 		org.lwjgl.opengl.GL11.glTranslatef(x, y, z)
 	}
 
 	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
 		pixels match {
-			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
 			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
-			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
-			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
 			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, conversion)
 			case _ => error("Failed conversion!")
 		}
 	}
 
-	def glTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glTexParameter(target, pname, params)
 	}
 
-	def glTexParameteriv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		org.lwjgl.opengl.GL30.glTexParameterI(target, pname, params)
-	}
-
-	def glTexParameterx(target: Int, pname: Int, param: Int): Unit = {
-		org.lwjgl.opengl.GL30.glTexParameterIi(target, pname, param)
-	}
-
-	def glTexParameterxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL30.glTexParameterIu(target, pname, params)
+	}
+
+	def glTexParameter(target: Int, pname: Int, param: Int): Unit = {
+		org.lwjgl.opengl.GL30.glTexParameterIi(target, pname, param)
 	}
 
 	def glTexParameterf(target: Int, pname: Int, param: Float): Unit = {
@@ -103,20 +95,20 @@ object GL extends org.sgine.opengl.GL {
 
 	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
 		pixels match {
-			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
-			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
-			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
 			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
+			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
+			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
 			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, conversion)
 			case _ => error("Failed conversion!")
 		}
 	}
 
-	def glTexEnvfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glTexEnv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glTexEnv(target, pname, params)
 	}
 
-	def glTexEnvxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glTexEnv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glTexEnv(target, pname, params)
 	}
 
@@ -162,10 +154,6 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glScissor(x, y, width, height)
 	}
 
-	def glScalex(x: Int, y: Int, z: Int): Unit = {
-		org.lwjgl.opengl.GL11.glScaled(x, y, z)
-	}
-
 	def glScalef(x: Float, y: Float, z: Float): Unit = {
 		org.lwjgl.opengl.GL11.glScalef(x, y, z)
 	}
@@ -205,15 +193,15 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glPointSize(size)
 	}
 
-	def glPointParameterfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glPointParameter(pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL14.glPointParameter(pname, params)
 	}
 
-	def glPointParameterx(pname: Int, param: Int): Unit = {
+	def glPointParameter(pname: Int, param: Int): Unit = {
 		org.lwjgl.opengl.GL14.glPointParameteri(pname, param)
 	}
 
-	def glPointParameterxv(pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glPointParameter(pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL14.glPointParameter(pname, params)
 	}
 
@@ -225,7 +213,7 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glPixelStorei(pname, param)
 	}
 
-	def glOrthox(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
+	def glOrtho(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
 		org.lwjgl.opengl.GL11.glOrtho(left, right, bottom, top, zNear, zFar)
 	}
 
@@ -243,7 +231,7 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glNormalPointer(`type`, stride, offset)
 	}
 
-	def glNormal3x(nx: Int, ny: Int, nz: Int): Unit = {
+	def glNormal(nx: Int, ny: Int, nz: Int): Unit = {
 		org.lwjgl.opengl.GL11.glNormal3i(nx, ny, nz)
 	}
 
@@ -251,15 +239,11 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glNormal3f(nx, ny, nz)
 	}
 
-	def glMultiTexCoord4x(target: Int, s: Int, t: Int, r: Int, q: Int): Unit = {
-		org.lwjgl.opengl.GL13.glMultiTexCoord4d(target, s, t, r, q)
-	}
-
 	def glMultiTexCoord4f(target: Int, s: Float, t: Float, r: Float, q: Float): Unit = {
 		org.lwjgl.opengl.GL13.glMultiTexCoord4f(target, s, t, r, q)
 	}
 
-	def glMultMatrixf(m: java.nio.FloatBuffer): Unit = {
+	def glMultMatrix(m: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glMultMatrix(m)
 	}
 
@@ -267,15 +251,15 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glMatrixMode(mode)
 	}
 
-	def glMaterialfv(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glMaterial(face, pname, params)
 	}
 
-	def glMaterialx(face: Int, pname: Int, param: Int): Unit = {
+	def glMaterial(face: Int, pname: Int, param: Int): Unit = {
 		org.lwjgl.opengl.GL11.glMateriali(face, pname, param)
 	}
 
-	def glMaterialxv(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glMaterial(face, pname, params)
 	}
 
@@ -287,7 +271,7 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glLogicOp(opcode)
 	}
 
-	def glLoadMatrixf(m: java.nio.FloatBuffer): Unit = {
+	def glLoadMatrix(m: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glLoadMatrix(m)
 	}
 
@@ -299,15 +283,15 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glLineWidth(width)
 	}
 
-	def glLightModelfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glLightModel(pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glLightModel(pname, params)
 	}
 
-	def glLightModelx(pname: Int, param: Int): Unit = {
+	def glLightModel(pname: Int, param: Int): Unit = {
 		org.lwjgl.opengl.GL11.glLightModeli(pname, param)
 	}
 
-	def glLightModelxv(pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glLightModel(pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glLightModel(pname, params)
 	}
 
@@ -315,15 +299,15 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glLightModelf(pname, param)
 	}
 
-	def glLightfv(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glLight(light, pname, params)
 	}
 
-	def glLightx(light: Int, pname: Int, param: Int): Unit = {
+	def glLight(light: Int, pname: Int, param: Int): Unit = {
 		org.lwjgl.opengl.GL11.glLighti(light, pname, param)
 	}
 
-	def glLightxv(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glLight(light, pname, params)
 	}
 
@@ -347,19 +331,15 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glHint(target, mode)
 	}
 
-	def glGetTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glGetTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glGetTexParameter(target, pname, params)
 	}
 
-	def glGetTexParameteriv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		org.lwjgl.opengl.GL30.glGetTexParameterI(target, pname, params)
-	}
-
-	def glGetTexParameterxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glGetTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL30.glGetTexParameterIu(target, pname, params)
 	}
 
-	def glGetTexEnvxv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glGetTexEnv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glGetTexEnv(env, pname, params)
 	}
 
@@ -367,19 +347,19 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glGetString(name)
 	}
 
-	def glGetMaterialfv(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glGetMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glGetMaterial(face, pname, params)
 	}
 
-	def glGetMaterialxv(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glGetMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glGetMaterial(face, pname, params)
 	}
 
-	def glGetLightfv(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glGetLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glGetLight(light, pname, params)
 	}
 
-	def glGetLightxv(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glGetLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glGetLight(light, pname, params)
 	}
 
@@ -387,7 +367,7 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glGetError()
 	}
 
-	def glFrustumx(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
+	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
 		org.lwjgl.opengl.GL11.glFrustum(left, right, bottom, top, zNear, zFar)
 	}
 
@@ -395,15 +375,15 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glFrontFace(mode)
 	}
 
-	def glFogfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glFog(pname: Int, params: java.nio.FloatBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glFog(pname, params)
 	}
 
-	def glFogx(pname: Int, param: Int): Unit = {
+	def glFog(pname: Int, param: Int): Unit = {
 		org.lwjgl.opengl.GL11.glFogi(pname, param)
 	}
 
-	def glFogxv(pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glFog(pname: Int, params: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL11.glFog(pname, params)
 	}
 
@@ -429,8 +409,8 @@ object GL extends org.sgine.opengl.GL {
 
 	def glDrawElements(mode: Int, count: Int, `type`: Int, indices: java.nio.Buffer): Unit = {
 		indices match {
-			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glDrawElements(mode, conversion)
 			case conversion: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glDrawElements(mode, conversion)
+			case conversion: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glDrawElements(mode, conversion)
 			case conversion: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glDrawElements(mode, conversion)
 			case _ => error("Failed conversion!")
 		}
@@ -450,10 +430,6 @@ object GL extends org.sgine.opengl.GL {
 
 	def glDisable(cap: Int): Unit = {
 		org.lwjgl.opengl.GL11.glDisable(cap)
-	}
-
-	def glDepthRangex(zNear: Int, zFar: Int): Unit = {
-		org.lwjgl.opengl.GL11.glDepthRange(zNear, zFar)
 	}
 
 	def glDepthRangef(zNear: Float, zFar: Float): Unit = {
@@ -482,8 +458,8 @@ object GL extends org.sgine.opengl.GL {
 
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		pointer match {
-			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, stride, conversion)
 			case conversion: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, stride, conversion)
+			case conversion: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, stride, conversion)
 			case _ => error("Failed conversion!")
 		}
 	}
@@ -496,10 +472,6 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glColorMask(red, green, blue, alpha)
 	}
 
-	def glColor4x(red: Int, green: Int, blue: Int, alpha: Int): Unit = {
-		org.lwjgl.opengl.GL11.glColor4d(red, green, blue, alpha)
-	}
-
 	def glColor4f(red: Float, green: Float, blue: Float, alpha: Float): Unit = {
 		org.lwjgl.opengl.GL11.glColor4f(red, green, blue, alpha)
 	}
@@ -510,10 +482,6 @@ object GL extends org.sgine.opengl.GL {
 
 	def glClearStencil(s: Int): Unit = {
 		org.lwjgl.opengl.GL11.glClearStencil(s)
-	}
-
-	def glClearDepthx(depth: Int): Unit = {
-		org.lwjgl.opengl.GL11.glClearDepth(depth)
 	}
 
 	def glClearDepthf(depth: Float): Unit = {
