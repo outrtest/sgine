@@ -66,45 +66,19 @@ object MethodMatcher {
 //      }
       val androidMethodCreator = DynamicMethodCreator(m1, args)
       val lwjglMethodCreator = DynamicMethodCreator(m2, args)
-      val descriptor = MethodDescriptor(m1.getName, argNames.zip(m1.getParameterTypes), m1.getReturnType, androidMethodCreator, lwjglMethodCreator)
-      val matcher = if (almost) "Almost Perfect" else "Perfect"
-      Some(CombinedMethod(m1.getName, descriptor, matcher))
-    } else {
-      None
-    }
-  }
-
-  def argMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method]) = {
-    if (m1.getParameterTypes.length == m2.getParameterTypes.length && m1.args.zip(m2.args).forall((t) => t._1.name == t._2.name)) {
-      println("ARG MATCH FOUND: " + m1 + " - " + m2)
-      None
-    } else {
-      None
-    }
-  }
-
-  /*def signaturePointerMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method]) = {
-    val androidSignature = "size: Int, type: Int, stride: Int, pointer: java.nio.Buffer"
-    val lwjglSignature = "size: Int, stride: Int, pointer: java.nio.FloatBuffer"
-    val lwjglRegex = "size: Int, stride: Int, pointer: java[.]nio[.].*Buffer"
-    // TODO: support DoubleBuffer, IntBuffer, and ShortBuffer
-    if (argsString(m1) == androidSignature && argsString(m2) == lwjglSignature) {
-      val args = List("size" -> classOf[Int], "stride" -> classOf[Int], "pointer" -> classOf[java.nio.Buffer])
-      val amc = DynamicMethodCreator(m1, List(VariableArgument("size"), ExplicitArgument("0"), VariableArgument("pointer")))
-      val lmc = DynamicMethodCreator(m2, List(VariableArgument("size"), ExplicitArgument("0"), ConversionArgument("pointer", classOf[java.nio.Buffer], classOf[java.nio.FloatBuffer])))
-      val lwjglMethods = m2s.collect {
-        case m if (argsString(m).matches(lwjglRegex)) => m
+      val argTypes = m1.getParameterTypes.zip(m2.getParameterTypes).map(argMapper _)
+      val methodName = if (m1.getName != m2.getName) {
+        name
+      } else {
+        m1.getName
       }
-//      val lmc2 = new MethodCreator {
-//
-//      }
-      println("METHOD MATCHES (" + name + "): " + lwjglMethods.length + " of " + m2s.length)
-      val descriptor = MethodDescriptor(m1.getName, args, m1.getReturnType, amc, lmc)
-      Some(CombinedMethod(m1.getName, descriptor, "Signature"))
+      val descriptor = MethodDescriptor(methodName, argNames.zip(argTypes), m1.getReturnType, androidMethodCreator, lwjglMethodCreator)
+      val matcher = if (almost) "Almost Perfect" else "Perfect"
+      Some(CombinedMethod(methodName, descriptor, matcher))
     } else {
       None
     }
-  }*/
+  }
 
   def smartMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method]) = {
     val me1 = method2EnhancedMethod(m1)
@@ -122,10 +96,12 @@ object MethodMatcher {
         me1.arg(ma2.name) match {
           case Some(ma1) => {
             if (debug) println("    Argument Match: " + ma1)
-            val v = if (!isBadMatch(ma1.`type`.clazz, ma2.`type`.clazz)) {
+            val c1 = ma1.`type`.clazz
+            val c2 = ma2.`type`.clazz
+            val v = if (!isBadMatch((c1, c2)) || (isNumeric(c1) && (isNumeric(c2)))) {
               VariableArgument(ma1.name)
             } else {
-              if (conversion != null) throw new RuntimeException("More than one conversion found!")
+              if (conversion != null) throw new RuntimeException("More than one conversion found! " + me1 + " / " + me2)
               conversion = ma2
               VariableArgument("conversion")
             }
@@ -199,7 +175,7 @@ object MethodMatcher {
 
   private def isBadMatch(t: (Class[_], Class[_])) = {
     if (t._1 != t._2) {
-      if (isNumeric(t._1) && isNumeric(t._2)) {
+      if (isCompatible(t._1, t._2)) {
         false
         // TODO re-enable when ConversionArgument is supported in perfectMatch
 //      } else if (ConversionArgument.has(t._1, t._2)) {
@@ -220,5 +196,32 @@ object MethodMatcher {
     case "float" => true
     case "double" => true
     case n => false
+  }
+
+  private def isCompatible(c1: Class[_], c2: Class[_]) = {
+    def matches(m1: Class[_], m2: Class[_]) = (c1 == m1 && c2 == m2) || (c1 == m2 && c2 == m1)
+    
+    matches(classOf[Float], classOf[Double]) ||
+    matches(classOf[Int], classOf[Long])
+  }
+
+  private def argMapper(t: Tuple2[Class[_], Class[_]]) = {
+    val (c1, c2) = t
+
+    def matches(m1: Class[_], m2: Class[_]) = (c1 == m1 && c2 == m2) || (c1 == m2 && c2 == m1)
+
+    val i = classOf[Int]
+    val l = classOf[Long]
+    val f = classOf[Float]
+    val d = classOf[Double]
+    if (c1 == c2) {
+      c1
+    } else if (matches(f, d)) {
+      f
+    } else if (matches(i, l)) {
+      i
+    } else {
+      throw new RuntimeException("Unhandled types: " + c1 + " / " + c2)
+    }
   }
 }

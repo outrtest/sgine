@@ -46,16 +46,25 @@ class Test extends GLDisplay {
   private var vertexBuffer: FloatBuffer = _
 
   def create() = {
-    glClearDepthf(1.0f)
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
-    glEnable(GL_BLEND)
+    println("CREATE!")
+
+    glShadeModel(GL_SMOOTH)
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+//    glClearDepthf(1.0f)
     glEnable(GL_DEPTH_TEST)
     glDepthFunc(GL_LEQUAL)
-    glEnable(GL_POLYGON_OFFSET_FILL)
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
-    glEnable(GL_TEXTURE_2D)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-    glEnableClientState(GL_VERTEX_ARRAY)
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+
+//    glClearDepthf(1.0f)
+//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+//    glEnable(GL_BLEND)
+//    glEnable(GL_DEPTH_TEST)
+//    glDepthFunc(GL_LEQUAL)
+//    glEnable(GL_POLYGON_OFFSET_FILL)
+//    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
+//    glEnable(GL_TEXTURE_2D)
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+//    glEnableClientState(GL_VERTEX_ARRAY)
 
     val vbb = ByteBuffer.allocateDirect(3 * 3 * 4)
     vbb.order(ByteOrder.nativeOrder())
@@ -67,10 +76,19 @@ class Test extends GLDisplay {
     indexBuffer = ibb.asShortBuffer()
 
     val coords = Array(
-        -0.5f, -0.5f, 0f, // (x1, y1, z1)
-        0.5f, -0.5f, 0f, // (x2, y2, z2)
-        0f, 0.5f, 0f // (x3, y3, z3)
+        0.0f, 1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f
+//        -0.5f, -0.5f, 0f, // (x1, y1, z1)
+//        0.5f, -0.5f, 0f, // (x2, y2, z2)
+//        0f, 0.5f, 0f // (x3, y3, z3)
     )
+
+//    GL_QUADS
+//    -1.0f, 1.0f, 0.0f
+//    1.0f, 1.0f, 0.0f
+//    1.0f, -1.0f, 0.0f
+//    -1.0f, -1.0f, 0.0f
 
     vertexBuffer.put(coords)
     indexBuffer.put(3.toShort)
@@ -80,28 +98,55 @@ class Test extends GLDisplay {
   }
 
   def pause() = {
+    println("PAUSE!")
   }
 
   def resume() = {
+    println("RESUME!")
   }
 
   def resize(width: Int, height: Int) = {
+    println("RESIZE!")
+    glViewport(0, 0, width, height)
+
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+
+	// Calculate The Aspect Ratio Of The Window
+//	gluPerspective(45.0f,(GLfloat)width/(GLfloat)height,0.1f,100.0f);
+
+    val h = 1024.0f / 768.0f
+//              gluPerspective(45.0f, h, 100.0f, 20000.0f)
+    glFrustum(-1.0f / h, 1.0f * h, -1.0f, 1.0f, 1.0f, 100.0f)
+    
+    glMatrixMode(GL_MODELVIEW);						// Select The Modelview Matrix
+    glLoadIdentity();
   }
 
   def update() = {
+//    println("UPDATE!")
   }
 
   def render() = {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
+    glTranslatef(-1.5f, 0.0f, -6.0f)
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
 
     glVertexPointer(3, GL_FLOAT, 0, vertexBuffer)
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, indexBuffer)
-    println("RENDER!")
+    
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+//    glLoadIdentity()
+//    glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
+//
+//    glVertexPointer(3, GL_FLOAT, 0, vertexBuffer)
+//    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, indexBuffer)
+//    println("RENDER!")
   }
 
   def dispose() = {
+    println("DISPOSE!")
   }
 }
 

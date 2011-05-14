@@ -54,6 +54,8 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
 
   def usesMethod(m: Method) = methods.flatMap(cm => cm.descriptor.methods).contains(m)
 
+  def methodMatcher(m: Method) = methods.find(cm => cm.descriptor.methods.contains(m)).get.matcher
+
   @tailrec
   private def combineFields(fields: List[Field], combined: List[CombinedField]): List[CombinedField] = {
     if (fields.length > 0) {

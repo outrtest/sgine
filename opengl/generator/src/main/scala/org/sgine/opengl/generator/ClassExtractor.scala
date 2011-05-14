@@ -97,11 +97,17 @@ class ClassExtractor(static: Boolean) {
   private def populateMethods(methods: List[Method]): Unit = {
     if (methods.length > 0) {
       val m = methods.head
-      if (isStatic(m.getModifiers) == static && isPublic(m.getModifiers)) {
+      if (isStatic(m.getModifiers) == static && isPublic(m.getModifiers) && isValidMethod(m)) {
         _methods = m :: _methods
       }
 
       populateMethods(methods.tail)
     }
+  }
+
+  private def isValidMethod(m: Method) = m.getName match {
+    case "glGetTexParameterxv" => false
+    case "glTexParameterxv" => false
+    case _ => true
   }
 }

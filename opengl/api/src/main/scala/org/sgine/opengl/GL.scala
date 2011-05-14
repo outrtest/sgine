@@ -46,19 +46,15 @@ trait GL {
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit
 
-	def glTranslatex(x: Int, y: Int, z: Int): Unit
-
 	def glTranslatef(x: Float, y: Float, z: Float): Unit
 
 	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
 
-	def glTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
+	def glTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glTexParameteriv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
-	def glTexParameterx(target: Int, pname: Int, param: Int): Unit
-
-	def glTexParameterxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glTexParameter(target: Int, pname: Int, param: Int): Unit
 
 	def glTexParameterf(target: Int, pname: Int, param: Float): Unit
 
@@ -66,9 +62,9 @@ trait GL {
 
 	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
 
-	def glTexEnvfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
+	def glTexEnv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glTexEnvxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glTexEnv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glTexEnvf(target: Int, pname: Int, param: Float): Unit
 
@@ -88,8 +84,6 @@ trait GL {
 
 	def glScissor(x: Int, y: Int, width: Int, height: Int): Unit
 
-	def glScalex(x: Int, y: Int, z: Int): Unit
-
 	def glScalef(x: Float, y: Float, z: Float): Unit
 
 	def glSampleCoverage(value: Float, invert: Boolean): Unit
@@ -106,63 +100,61 @@ trait GL {
 
 	def glPointSize(size: Float): Unit
 
-	def glPointParameterfv(pname: Int, params: java.nio.FloatBuffer): Unit
+	def glPointParameter(pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glPointParameterx(pname: Int, param: Int): Unit
+	def glPointParameter(pname: Int, param: Int): Unit
 
-	def glPointParameterxv(pname: Int, params: java.nio.IntBuffer): Unit
+	def glPointParameter(pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glPointParameterf(pname: Int, param: Float): Unit
 
 	def glPixelStorei(pname: Int, param: Int): Unit
 
-	def glOrthox(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit
+	def glOrtho(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit
 
 	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
 	def glNormalPointer(`type`: Int, stride: Int, offset: Int): Unit
 
-	def glNormal3x(nx: Int, ny: Int, nz: Int): Unit
+	def glNormal(nx: Int, ny: Int, nz: Int): Unit
 
 	def glNormal3f(nx: Float, ny: Float, nz: Float): Unit
 
-	def glMultiTexCoord4x(target: Int, s: Int, t: Int, r: Int, q: Int): Unit
-
 	def glMultiTexCoord4f(target: Int, s: Float, t: Float, r: Float, q: Float): Unit
 
-	def glMultMatrixf(m: java.nio.FloatBuffer): Unit
+	def glMultMatrix(m: java.nio.FloatBuffer): Unit
 
 	def glMatrixMode(mode: Int): Unit
 
-	def glMaterialfv(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit
+	def glMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glMaterialx(face: Int, pname: Int, param: Int): Unit
+	def glMaterial(face: Int, pname: Int, param: Int): Unit
 
-	def glMaterialxv(face: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glMaterialf(face: Int, pname: Int, param: Float): Unit
 
 	def glLogicOp(opcode: Int): Unit
 
-	def glLoadMatrixf(m: java.nio.FloatBuffer): Unit
+	def glLoadMatrix(m: java.nio.FloatBuffer): Unit
 
 	def glLoadIdentity(): Unit
 
 	def glLineWidth(width: Float): Unit
 
-	def glLightModelfv(pname: Int, params: java.nio.FloatBuffer): Unit
+	def glLightModel(pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glLightModelx(pname: Int, param: Int): Unit
+	def glLightModel(pname: Int, param: Int): Unit
 
-	def glLightModelxv(pname: Int, params: java.nio.IntBuffer): Unit
+	def glLightModel(pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glLightModelf(pname: Int, param: Float): Unit
 
-	def glLightfv(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit
+	def glLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glLightx(light: Int, pname: Int, param: Int): Unit
+	def glLight(light: Int, pname: Int, param: Int): Unit
 
-	def glLightxv(light: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glLightf(light: Int, pname: Int, param: Float): Unit
 
@@ -174,35 +166,33 @@ trait GL {
 
 	def glHint(target: Int, mode: Int): Unit
 
-	def glGetTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
+	def glGetTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glGetTexParameteriv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glGetTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
-	def glGetTexParameterxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
-
-	def glGetTexEnvxv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glGetTexEnv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glGetString(name: Int): String
 
-	def glGetMaterialfv(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit
+	def glGetMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glGetMaterialxv(face: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glGetMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
-	def glGetLightfv(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit
+	def glGetLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glGetLightxv(light: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glGetLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glGetError(): Int
 
-	def glFrustumx(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit
+	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit
 
 	def glFrontFace(mode: Int): Unit
 
-	def glFogfv(pname: Int, params: java.nio.FloatBuffer): Unit
+	def glFog(pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glFogx(pname: Int, param: Int): Unit
+	def glFog(pname: Int, param: Int): Unit
 
-	def glFogxv(pname: Int, params: java.nio.IntBuffer): Unit
+	def glFog(pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glFogf(pname: Int, param: Float): Unit
 
@@ -224,8 +214,6 @@ trait GL {
 
 	def glDisable(cap: Int): Unit
 
-	def glDepthRangex(zNear: Int, zFar: Int): Unit
-
 	def glDepthRangef(zNear: Float, zFar: Float): Unit
 
 	def glDepthMask(flag: Boolean): Unit
@@ -244,15 +232,11 @@ trait GL {
 
 	def glColorMask(red: Boolean, green: Boolean, blue: Boolean, alpha: Boolean): Unit
 
-	def glColor4x(red: Int, green: Int, blue: Int, alpha: Int): Unit
-
 	def glColor4f(red: Float, green: Float, blue: Float, alpha: Float): Unit
 
 	def glClientActiveTexture(texture: Int): Unit
 
 	def glClearStencil(s: Int): Unit
-
-	def glClearDepthx(depth: Int): Unit
 
 	def glClearDepthf(depth: Float): Unit
 
@@ -2972,10 +2956,6 @@ object GL extends GL {
 		instance.glVertexPointer(size, `type`, stride, offset)
 	}
 
-	def glTranslatex(x: Int, y: Int, z: Int): Unit = {
-		instance.glTranslatex(x, y, z)
-	}
-
 	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
 		instance.glTranslatef(x, y, z)
 	}
@@ -2984,20 +2964,16 @@ object GL extends GL {
 		instance.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)
 	}
 
-	def glTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glTexParameterfv(target, pname, params)
+	def glTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glTexParameter(target, pname, params)
 	}
 
-	def glTexParameteriv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glTexParameteriv(target, pname, params)
+	def glTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glTexParameter(target, pname, params)
 	}
 
-	def glTexParameterx(target: Int, pname: Int, param: Int): Unit = {
-		instance.glTexParameterx(target, pname, param)
-	}
-
-	def glTexParameterxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glTexParameterxv(target, pname, params)
+	def glTexParameter(target: Int, pname: Int, param: Int): Unit = {
+		instance.glTexParameter(target, pname, param)
 	}
 
 	def glTexParameterf(target: Int, pname: Int, param: Float): Unit = {
@@ -3012,12 +2988,12 @@ object GL extends GL {
 		instance.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, pixels)
 	}
 
-	def glTexEnvfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glTexEnvfv(target, pname, params)
+	def glTexEnv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glTexEnv(target, pname, params)
 	}
 
-	def glTexEnvxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glTexEnvxv(target, pname, params)
+	def glTexEnv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glTexEnv(target, pname, params)
 	}
 
 	def glTexEnvf(target: Int, pname: Int, param: Float): Unit = {
@@ -3056,10 +3032,6 @@ object GL extends GL {
 		instance.glScissor(x, y, width, height)
 	}
 
-	def glScalex(x: Int, y: Int, z: Int): Unit = {
-		instance.glScalex(x, y, z)
-	}
-
 	def glScalef(x: Float, y: Float, z: Float): Unit = {
 		instance.glScalef(x, y, z)
 	}
@@ -3092,16 +3064,16 @@ object GL extends GL {
 		instance.glPointSize(size)
 	}
 
-	def glPointParameterfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glPointParameterfv(pname, params)
+	def glPointParameter(pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glPointParameter(pname, params)
 	}
 
-	def glPointParameterx(pname: Int, param: Int): Unit = {
-		instance.glPointParameterx(pname, param)
+	def glPointParameter(pname: Int, param: Int): Unit = {
+		instance.glPointParameter(pname, param)
 	}
 
-	def glPointParameterxv(pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glPointParameterxv(pname, params)
+	def glPointParameter(pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glPointParameter(pname, params)
 	}
 
 	def glPointParameterf(pname: Int, param: Float): Unit = {
@@ -3112,8 +3084,8 @@ object GL extends GL {
 		instance.glPixelStorei(pname, param)
 	}
 
-	def glOrthox(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
-		instance.glOrthox(left, right, bottom, top, zNear, zFar)
+	def glOrtho(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
+		instance.glOrtho(left, right, bottom, top, zNear, zFar)
 	}
 
 	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
@@ -3124,40 +3096,36 @@ object GL extends GL {
 		instance.glNormalPointer(`type`, stride, offset)
 	}
 
-	def glNormal3x(nx: Int, ny: Int, nz: Int): Unit = {
-		instance.glNormal3x(nx, ny, nz)
+	def glNormal(nx: Int, ny: Int, nz: Int): Unit = {
+		instance.glNormal(nx, ny, nz)
 	}
 
 	def glNormal3f(nx: Float, ny: Float, nz: Float): Unit = {
 		instance.glNormal3f(nx, ny, nz)
 	}
 
-	def glMultiTexCoord4x(target: Int, s: Int, t: Int, r: Int, q: Int): Unit = {
-		instance.glMultiTexCoord4x(target, s, t, r, q)
-	}
-
 	def glMultiTexCoord4f(target: Int, s: Float, t: Float, r: Float, q: Float): Unit = {
 		instance.glMultiTexCoord4f(target, s, t, r, q)
 	}
 
-	def glMultMatrixf(m: java.nio.FloatBuffer): Unit = {
-		instance.glMultMatrixf(m)
+	def glMultMatrix(m: java.nio.FloatBuffer): Unit = {
+		instance.glMultMatrix(m)
 	}
 
 	def glMatrixMode(mode: Int): Unit = {
 		instance.glMatrixMode(mode)
 	}
 
-	def glMaterialfv(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glMaterialfv(face, pname, params)
+	def glMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glMaterial(face, pname, params)
 	}
 
-	def glMaterialx(face: Int, pname: Int, param: Int): Unit = {
-		instance.glMaterialx(face, pname, param)
+	def glMaterial(face: Int, pname: Int, param: Int): Unit = {
+		instance.glMaterial(face, pname, param)
 	}
 
-	def glMaterialxv(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glMaterialxv(face, pname, params)
+	def glMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glMaterial(face, pname, params)
 	}
 
 	def glMaterialf(face: Int, pname: Int, param: Float): Unit = {
@@ -3168,8 +3136,8 @@ object GL extends GL {
 		instance.glLogicOp(opcode)
 	}
 
-	def glLoadMatrixf(m: java.nio.FloatBuffer): Unit = {
-		instance.glLoadMatrixf(m)
+	def glLoadMatrix(m: java.nio.FloatBuffer): Unit = {
+		instance.glLoadMatrix(m)
 	}
 
 	def glLoadIdentity(): Unit = {
@@ -3180,32 +3148,32 @@ object GL extends GL {
 		instance.glLineWidth(width)
 	}
 
-	def glLightModelfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glLightModelfv(pname, params)
+	def glLightModel(pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glLightModel(pname, params)
 	}
 
-	def glLightModelx(pname: Int, param: Int): Unit = {
-		instance.glLightModelx(pname, param)
+	def glLightModel(pname: Int, param: Int): Unit = {
+		instance.glLightModel(pname, param)
 	}
 
-	def glLightModelxv(pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glLightModelxv(pname, params)
+	def glLightModel(pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glLightModel(pname, params)
 	}
 
 	def glLightModelf(pname: Int, param: Float): Unit = {
 		instance.glLightModelf(pname, param)
 	}
 
-	def glLightfv(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glLightfv(light, pname, params)
+	def glLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glLight(light, pname, params)
 	}
 
-	def glLightx(light: Int, pname: Int, param: Int): Unit = {
-		instance.glLightx(light, pname, param)
+	def glLight(light: Int, pname: Int, param: Int): Unit = {
+		instance.glLight(light, pname, param)
 	}
 
-	def glLightxv(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glLightxv(light, pname, params)
+	def glLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glLight(light, pname, params)
 	}
 
 	def glLightf(light: Int, pname: Int, param: Float): Unit = {
@@ -3228,64 +3196,60 @@ object GL extends GL {
 		instance.glHint(target, mode)
 	}
 
-	def glGetTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glGetTexParameterfv(target, pname, params)
+	def glGetTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glGetTexParameter(target, pname, params)
 	}
 
-	def glGetTexParameteriv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetTexParameteriv(target, pname, params)
+	def glGetTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetTexParameter(target, pname, params)
 	}
 
-	def glGetTexParameterxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetTexParameterxv(target, pname, params)
-	}
-
-	def glGetTexEnvxv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetTexEnvxv(env, pname, params)
+	def glGetTexEnv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetTexEnv(env, pname, params)
 	}
 
 	def glGetString(name: Int): String = {
 		instance.glGetString(name)
 	}
 
-	def glGetMaterialfv(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glGetMaterialfv(face, pname, params)
+	def glGetMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glGetMaterial(face, pname, params)
 	}
 
-	def glGetMaterialxv(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetMaterialxv(face, pname, params)
+	def glGetMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetMaterial(face, pname, params)
 	}
 
-	def glGetLightfv(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glGetLightfv(light, pname, params)
+	def glGetLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glGetLight(light, pname, params)
 	}
 
-	def glGetLightxv(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetLightxv(light, pname, params)
+	def glGetLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetLight(light, pname, params)
 	}
 
 	def glGetError(): Int = {
 		instance.glGetError()
 	}
 
-	def glFrustumx(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
-		instance.glFrustumx(left, right, bottom, top, zNear, zFar)
+	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
+		instance.glFrustum(left, right, bottom, top, zNear, zFar)
 	}
 
 	def glFrontFace(mode: Int): Unit = {
 		instance.glFrontFace(mode)
 	}
 
-	def glFogfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glFogfv(pname, params)
+	def glFog(pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glFog(pname, params)
 	}
 
-	def glFogx(pname: Int, param: Int): Unit = {
-		instance.glFogx(pname, param)
+	def glFog(pname: Int, param: Int): Unit = {
+		instance.glFog(pname, param)
 	}
 
-	def glFogxv(pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glFogxv(pname, params)
+	def glFog(pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glFog(pname, params)
 	}
 
 	def glFogf(pname: Int, param: Float): Unit = {
@@ -3328,10 +3292,6 @@ object GL extends GL {
 		instance.glDisable(cap)
 	}
 
-	def glDepthRangex(zNear: Int, zFar: Int): Unit = {
-		instance.glDepthRangex(zNear, zFar)
-	}
-
 	def glDepthRangef(zNear: Float, zFar: Float): Unit = {
 		instance.glDepthRangef(zNear, zFar)
 	}
@@ -3368,10 +3328,6 @@ object GL extends GL {
 		instance.glColorMask(red, green, blue, alpha)
 	}
 
-	def glColor4x(red: Int, green: Int, blue: Int, alpha: Int): Unit = {
-		instance.glColor4x(red, green, blue, alpha)
-	}
-
 	def glColor4f(red: Float, green: Float, blue: Float, alpha: Float): Unit = {
 		instance.glColor4f(red, green, blue, alpha)
 	}
@@ -3382,10 +3338,6 @@ object GL extends GL {
 
 	def glClearStencil(s: Int): Unit = {
 		instance.glClearStencil(s)
-	}
-
-	def glClearDepthx(depth: Int): Unit = {
-		instance.glClearDepthx(depth)
 	}
 
 	def glClearDepthf(depth: Float): Unit = {

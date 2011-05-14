@@ -52,10 +52,6 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glVertexPointer(size, `type`, stride, offset)
 	}
 
-	def glTranslatex(x: Int, y: Int, z: Int): Unit = {
-		instance.glTranslatex(x, y, z)
-	}
-
 	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
 		instance.glTranslatef(x, y, z)
 	}
@@ -64,20 +60,16 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)
 	}
 
-	def glTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glTexParameterfv(target, pname, params)
 	}
 
-	def glTexParameteriv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glTexParameteriv(target, pname, params)
 	}
 
-	def glTexParameterx(target: Int, pname: Int, param: Int): Unit = {
+	def glTexParameter(target: Int, pname: Int, param: Int): Unit = {
 		instance.glTexParameterx(target, pname, param)
-	}
-
-	def glTexParameterxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glTexParameterxv(target, pname, params)
 	}
 
 	def glTexParameterf(target: Int, pname: Int, param: Float): Unit = {
@@ -92,11 +84,11 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, pixels)
 	}
 
-	def glTexEnvfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glTexEnv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glTexEnvfv(target, pname, params)
 	}
 
-	def glTexEnvxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glTexEnv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glTexEnvxv(target, pname, params)
 	}
 
@@ -136,10 +128,6 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glScissor(x, y, width, height)
 	}
 
-	def glScalex(x: Int, y: Int, z: Int): Unit = {
-		instance.glScalex(x, y, z)
-	}
-
 	def glScalef(x: Float, y: Float, z: Float): Unit = {
 		instance.glScalef(x, y, z)
 	}
@@ -172,15 +160,15 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glPointSize(size)
 	}
 
-	def glPointParameterfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glPointParameter(pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glPointParameterfv(pname, params)
 	}
 
-	def glPointParameterx(pname: Int, param: Int): Unit = {
+	def glPointParameter(pname: Int, param: Int): Unit = {
 		instance.glPointParameterx(pname, param)
 	}
 
-	def glPointParameterxv(pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glPointParameter(pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glPointParameterxv(pname, params)
 	}
 
@@ -192,8 +180,8 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glPixelStorei(pname, param)
 	}
 
-	def glOrthox(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
-		instance.glOrthox(left, right, bottom, top, zNear, zFar)
+	def glOrtho(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
+		instance.glOrthof(left, right, bottom, top, zNear, zFar)
 	}
 
 	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
@@ -204,7 +192,7 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glNormalPointer(`type`, stride, offset)
 	}
 
-	def glNormal3x(nx: Int, ny: Int, nz: Int): Unit = {
+	def glNormal(nx: Int, ny: Int, nz: Int): Unit = {
 		instance.glNormal3x(nx, ny, nz)
 	}
 
@@ -212,15 +200,11 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glNormal3f(nx, ny, nz)
 	}
 
-	def glMultiTexCoord4x(target: Int, s: Int, t: Int, r: Int, q: Int): Unit = {
-		instance.glMultiTexCoord4x(target, s, t, r, q)
-	}
-
 	def glMultiTexCoord4f(target: Int, s: Float, t: Float, r: Float, q: Float): Unit = {
 		instance.glMultiTexCoord4f(target, s, t, r, q)
 	}
 
-	def glMultMatrixf(m: java.nio.FloatBuffer): Unit = {
+	def glMultMatrix(m: java.nio.FloatBuffer): Unit = {
 		instance.glMultMatrixf(m)
 	}
 
@@ -228,15 +212,15 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glMatrixMode(mode)
 	}
 
-	def glMaterialfv(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glMaterialfv(face, pname, params)
 	}
 
-	def glMaterialx(face: Int, pname: Int, param: Int): Unit = {
+	def glMaterial(face: Int, pname: Int, param: Int): Unit = {
 		instance.glMaterialx(face, pname, param)
 	}
 
-	def glMaterialxv(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glMaterialxv(face, pname, params)
 	}
 
@@ -248,7 +232,7 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glLogicOp(opcode)
 	}
 
-	def glLoadMatrixf(m: java.nio.FloatBuffer): Unit = {
+	def glLoadMatrix(m: java.nio.FloatBuffer): Unit = {
 		instance.glLoadMatrixf(m)
 	}
 
@@ -260,15 +244,15 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glLineWidth(width)
 	}
 
-	def glLightModelfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glLightModel(pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glLightModelfv(pname, params)
 	}
 
-	def glLightModelx(pname: Int, param: Int): Unit = {
+	def glLightModel(pname: Int, param: Int): Unit = {
 		instance.glLightModelx(pname, param)
 	}
 
-	def glLightModelxv(pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glLightModel(pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glLightModelxv(pname, params)
 	}
 
@@ -276,15 +260,15 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glLightModelf(pname, param)
 	}
 
-	def glLightfv(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glLightfv(light, pname, params)
 	}
 
-	def glLightx(light: Int, pname: Int, param: Int): Unit = {
+	def glLight(light: Int, pname: Int, param: Int): Unit = {
 		instance.glLightx(light, pname, param)
 	}
 
-	def glLightxv(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glLightxv(light, pname, params)
 	}
 
@@ -308,19 +292,15 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glHint(target, mode)
 	}
 
-	def glGetTexParameterfv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glGetTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glGetTexParameterfv(target, pname, params)
 	}
 
-	def glGetTexParameteriv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glGetTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glGetTexParameteriv(target, pname, params)
 	}
 
-	def glGetTexParameterxv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetTexParameterxv(target, pname, params)
-	}
-
-	def glGetTexEnvxv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glGetTexEnv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glGetTexEnvxv(env, pname, params)
 	}
 
@@ -328,19 +308,19 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glGetString(name)
 	}
 
-	def glGetMaterialfv(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glGetMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glGetMaterialfv(face, pname, params)
 	}
 
-	def glGetMaterialxv(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glGetMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glGetMaterialxv(face, pname, params)
 	}
 
-	def glGetLightfv(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glGetLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glGetLightfv(light, pname, params)
 	}
 
-	def glGetLightxv(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glGetLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glGetLightxv(light, pname, params)
 	}
 
@@ -348,23 +328,23 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glGetError()
 	}
 
-	def glFrustumx(left: Int, right: Int, bottom: Int, top: Int, zNear: Int, zFar: Int): Unit = {
-		instance.glFrustumx(left, right, bottom, top, zNear, zFar)
+	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
+		instance.glFrustumf(left, right, bottom, top, zNear, zFar)
 	}
 
 	def glFrontFace(mode: Int): Unit = {
 		instance.glFrontFace(mode)
 	}
 
-	def glFogfv(pname: Int, params: java.nio.FloatBuffer): Unit = {
+	def glFog(pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glFogfv(pname, params)
 	}
 
-	def glFogx(pname: Int, param: Int): Unit = {
+	def glFog(pname: Int, param: Int): Unit = {
 		instance.glFogx(pname, param)
 	}
 
-	def glFogxv(pname: Int, params: java.nio.IntBuffer): Unit = {
+	def glFog(pname: Int, params: java.nio.IntBuffer): Unit = {
 		instance.glFogxv(pname, params)
 	}
 
@@ -408,10 +388,6 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glDisable(cap)
 	}
 
-	def glDepthRangex(zNear: Int, zFar: Int): Unit = {
-		instance.glDepthRangex(zNear, zFar)
-	}
-
 	def glDepthRangef(zNear: Float, zFar: Float): Unit = {
 		instance.glDepthRangef(zNear, zFar)
 	}
@@ -448,10 +424,6 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glColorMask(red, green, blue, alpha)
 	}
 
-	def glColor4x(red: Int, green: Int, blue: Int, alpha: Int): Unit = {
-		instance.glColor4x(red, green, blue, alpha)
-	}
-
 	def glColor4f(red: Float, green: Float, blue: Float, alpha: Float): Unit = {
 		instance.glColor4f(red, green, blue, alpha)
 	}
@@ -462,10 +434,6 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 
 	def glClearStencil(s: Int): Unit = {
 		instance.glClearStencil(s)
-	}
-
-	def glClearDepthx(depth: Int): Unit = {
-		instance.glClearDepthx(depth)
 	}
 
 	def glClearDepthf(depth: Float): Unit = {
