@@ -30,12 +30,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.opengl
+package org.sgine
 
-trait GLDisplay {
-  def create(): Unit
-
-  def resize(width: Int, height: Int): Unit
-
-  def render(): Unit
+/**
+ * 
+ *
+ * @author Matt Hicks <mhicks@sgine.org>
+ */
+trait Updatable {
+  def update(): Unit
 }
