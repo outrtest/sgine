@@ -32,6 +32,8 @@
 
 package org.sgine.opengl
 
+import org.sgine.{Disposable, Updatable}
+
 trait GLController extends GLDisplay {
   def display: GLDisplay
   def gl: GL
@@ -71,14 +73,25 @@ trait GLController extends GLDisplay {
     try {
       while (keepAlive) {
         update()
-        display.update()
+        display match {
+          case u: Updatable => u.update()
+          case _ =>
+        }
+
+        // TODO: support Pausable
 
         render()
         display.render()
       }
     } finally {
-      display.dispose()
-      dispose()
+      display match {
+        case d: Disposable => d.dispose()
+        case _ =>
+      }
+      this match {
+        case d: Disposable => d.dispose()
+        case _ =>
+      }
     }
   }
 

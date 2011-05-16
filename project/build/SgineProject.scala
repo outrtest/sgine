@@ -18,9 +18,10 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
 
   class OpenGLProject(info: ProjectInfo) extends ParentProject(info) {
     lazy val generator = project("generator", "sgine-opengl-generator", new OpenGLGeneratorProject(_))
-    lazy val api = project("api", "sgine-opengl-api")
+    lazy val api = project("api", "sgine-opengl-api", core)
     lazy val lwjgl = project("lwjgl", "sgine-opengl-lwjgl", new OpenGLLWJGLProject(_), api)
     lazy val android = project("android", "sgine-opengl-android", new OpenGLAndroidProject(_), api)
+    lazy val nehe = project("nehe", "sgine-opengl-nehe", new OpenGLNeHeProject(_), api, lwjgl)
   }
 
   class OpenGLGeneratorProject(info: ProjectInfo) extends DefaultProject(info) {
@@ -33,4 +34,7 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   }
 
   class OpenGLAndroidProject(info: ProjectInfo) extends DefaultProject(info)
+
+  class OpenGLNeHeProject(info: ProjectInfo) extends DefaultProject(info) {
+  }
 }
