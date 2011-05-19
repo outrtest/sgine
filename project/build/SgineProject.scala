@@ -16,7 +16,9 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   lazy val event = project("event", "sgine-event", new SgineProjectBase(_))
   lazy val opengl = project("opengl", "sgine-opengl", new OpenGLProject(_))
   lazy val properties = project("property", "sgine-property", new SgineProjectBase(_))
-  lazy val render = project("render", "sgine-render", new SgineProjectBase(_), opengl)
+  lazy val render = project("render", "sgine-render", new SgineProjectBase(_), opengl.api)
+
+  override def deliverProjectDependencies = super.deliverProjectDependencies.toList - opengl.projectID
 
   Credentials(Path.userHome / ".ivy2" / ".credentials", log)
 
