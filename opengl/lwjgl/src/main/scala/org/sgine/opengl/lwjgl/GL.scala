@@ -486,8 +486,8 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glClearStencil(s)
 	}
 
-	def glClearDepthf(depth: Float): Unit = {
-		org.lwjgl.opengl.GL41.glClearDepthf(depth)
+	def glClearDepth(depth: Float): Unit = {
+		org.lwjgl.opengl.GL11.glClearDepth(depth)
 	}
 
 	def glClearColor(red: Float, green: Float, blue: Float, alpha: Float): Unit = {
