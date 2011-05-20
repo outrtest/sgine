@@ -105,9 +105,16 @@ class ClassExtractor(static: Boolean) {
     }
   }
 
-  private def isValidMethod(m: Method) = m.getName match {
-    case "glGetTexParameterxv" => false
-    case "glTexParameterxv" => false
-    case _ => true
+  private def isValidMethod(m: Method) = {
+    val name = m.getDeclaringClass.getName + "." + m.getName
+    if (name.endsWith("glGetTexParameterxv")) {
+      false
+    } else if (name.endsWith("glTexParameterxv")) {
+      false
+    } else if (name == "org.lwjgl.opengl.GL41.glClearDepthf") {
+      false
+    } else {
+      true
+    }
   }
 }

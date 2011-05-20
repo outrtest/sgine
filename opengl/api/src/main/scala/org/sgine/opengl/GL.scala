@@ -242,7 +242,7 @@ trait GL {
 
 	def glClearStencil(s: Int): Unit
 
-	def glClearDepthf(depth: Float): Unit
+	def glClearDepth(depth: Float): Unit
 
 	def glClearColor(red: Float, green: Float, blue: Float, alpha: Float): Unit
 
@@ -3344,8 +3344,8 @@ object GL extends GL {
 		instance.glClearStencil(s)
 	}
 
-	def glClearDepthf(depth: Float): Unit = {
-		instance.glClearDepthf(depth)
+	def glClearDepth(depth: Float): Unit = {
+		instance.glClearDepth(depth)
 	}
 
 	def glClearColor(red: Float, green: Float, blue: Float, alpha: Float): Unit = {

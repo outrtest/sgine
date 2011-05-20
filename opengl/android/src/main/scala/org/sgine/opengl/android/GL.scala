@@ -438,7 +438,7 @@ class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.o
 		instance.glClearStencil(s)
 	}
 
-	def glClearDepthf(depth: Float): Unit = {
+	def glClearDepth(depth: Float): Unit = {
 		instance.glClearDepthf(depth)
 	}
 
