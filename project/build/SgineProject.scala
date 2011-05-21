@@ -3,7 +3,9 @@ import sbt._
 import reaktor.scct.ScctProject
 
 class SgineProject(info: ProjectInfo) extends ParentProject(info) {
-  val publishTo = "Scala Tools Nexus" at "http://nexus.scala-tools.org/content/repositories/releases/"
+  val publishSnapshots = "Scala Tools Nexus Snapshots" at "http://nexus.scala-tools.org/content/repositories/snapshots/"
+  val publishReleases = "Scala Tools Nexus Releases" at "http://nexus.scala-tools.org/content/repositories/releases/"
+  val publishTo = if (version.toString.endsWith("SNAPSHOT")) publishSnapshots else publishReleases
   val sourceArtifact = Artifact.sources(artifactID)
   val docsArtifact = Artifact.javadoc(artifactID)
 
