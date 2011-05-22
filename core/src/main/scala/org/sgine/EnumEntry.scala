@@ -32,7 +32,7 @@
 
 package org.sgine
 
-trait Enum {
+trait EnumEntry {
   lazy val name = generateName()
   lazy val parent = generateParent()
   lazy val ordinal = generateOrdinal()

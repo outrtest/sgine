@@ -33,10 +33,12 @@
 package org.sgine.opengl.generator
 
 import arg.{Argument, ConversionArgument, ExplicitArgument, VariableArgument}
+import explicit.ExplicitMatcher
 import java.lang.reflect.Method
 
-import com.googlecode.reflective._
 import util.matching.Regex
+import com.googlecode.reflective._
+import scala.Some
 
 /**
  * 
@@ -45,6 +47,10 @@ import util.matching.Regex
  * Date: 5/6/11
  */
 object MethodMatcher {
+  def explicitMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method]) = {
+    ExplicitMatcher.find(m1).map(em => em.toCombinedMethod)
+  }
+
   def perfectMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method], almost: Boolean) = {
     if ((m1.getName == m2.getName || almost) && parametersMatch(m1, m2) && m1.getReturnType == m2.getReturnType) {
       val argNames = m1.args.map(a => a.name).toList
@@ -68,7 +74,7 @@ object MethodMatcher {
       val lwjglMethodCreator = DynamicMethodCreator(m2, args)
       val argTypes = m1.getParameterTypes.zip(m2.getParameterTypes).map(argMapper _)
       val methodName = if (m1.getName != m2.getName) {
-        name
+        m2.getName
       } else {
         m1.getName
       }
@@ -79,83 +85,107 @@ object MethodMatcher {
       None
     }
   }
-
-  def smartMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method]) = {
-    val me1 = method2EnhancedMethod(m1)
-    val debug = OpenGLGenerator.debugMethodName == name
-    if (debug) println("SMART MATCH: " + name + " - " + method2EnhancedMethod(m1))
-    var matches: List[SmartMatch] = Nil
-    for (m2 <- m2s) {
-      if (debug) println("  " + m2)
-      val me2 = method2EnhancedMethod(m2)
-      val argumentsRight = new Array[Argument](me2.args.length)
-      var noMatch = false
-      var conversion: MethodArgument = null
-      for (index <- 0 until argumentsRight.length) {
-        val ma2 = me2.args(index)
-        me1.arg(ma2.name) match {
-          case Some(ma1) => {
-            if (debug) println("    Argument Match: " + ma1)
-            val c1 = ma1.`type`.clazz
-            val c2 = ma2.`type`.clazz
-            val v = if (!isBadMatch((c1, c2)) || (isNumeric(c1) && (isNumeric(c2)))) {
-              VariableArgument(ma1.name)
-            } else {
-              if (conversion != null) throw new RuntimeException("More than one conversion found! " + me1 + " / " + me2)
-              conversion = ma2
-              VariableArgument("conversion")
-            }
-            argumentsRight(index) = v
-          }
-          case None => {
-            if (debug) println("    No Match: " + me2.args(index).name)
-            noMatch = true
-          }
-        }
-      }
-      if (!noMatch) {
-        if (debug) println("  FULL MATCH: " + me1 + " - " + me2)
-        matches = SmartMatch(m2, conversion, argumentsRight.toList) :: matches
-      }
-    }
-    if (matches.isEmpty) {
-      None
-    } else if (matches.length == 1) {
-      if (debug) println("    Only one match: " + method2EnhancedMethod(matches.head.method))
-      None
-    } else if (matches.head.conversion == null) {
-      if (debug) println("    No conversion for: " + method2EnhancedMethod(matches.head.method))
-      None
-    } else {
-      // Create LWJGL method body
-      val b = new StringBuilder()
-      b.append(matches.head.conversion.name)
-      b.append(" match {\r\n")
-      for (m <- matches) {
-        b.append("\tcase conversion: ")
-        b.append(m.conversion.`type`.name)
-        b.append(" => ")
-        b.append(m.method.getDeclaringClass.getName)
-        b.append('.')
-        b.append(m.method.getName)
-        b.append('(')
-        b.append(m.argsRight.map(ma => ma.string).mkString(", "))
-        b.append(")\r\n")
-      }
-      b.append("\tcase _ => error(\"Failed conversion!\")\r\n")
-      b.append('}')
-
-      val argNames = m1.args.map(a => a.name)
-      val args = argNames.map(arg => VariableArgument(arg))
-      val androidMethodCreator = DynamicMethodCreator(m1, args)
-      val lwjglMethodCreator = StaticMethodCreator(matches.map(sm => sm.method), b.toString)
-      val descriptor = MethodDescriptor(m1.getName, argNames.zip(m1.getParameterTypes), m1.getReturnType, androidMethodCreator, lwjglMethodCreator)
-      val matcher = "Smart"
-      Some(CombinedMethod(m1.getName, descriptor, matcher))
-    }
-  }
-
-  case class SmartMatch(method: Method, conversion: MethodArgument, argsRight: List[Argument])
+//
+//  def smartMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method]) = {
+//    val me1 = method2EnhancedMethod(m1)
+//    val debug = OpenGLGenerator.debugMethodName == name
+//    if (debug) println("SMART MATCH: " + name + " - " + method2EnhancedMethod(m1))
+//    var matches: List[SmartMatch] = Nil
+//    for (m2 <- m2s) {
+//      if (debug) println("  " + m2)
+//      val me2 = method2EnhancedMethod(m2)
+//      val argumentsRight = new Array[Argument](me2.args.length)
+//      var noMatch = false
+//      var conversion: MethodArgument = null
+//      for (index <- 0 until argumentsRight.length) {
+//        val ma2 = me2.args(index)
+//        me1.arg(ma2.name) match {
+//          case Some(ma1) => {
+//            if (debug) println("    Argument Match: " + ma1)
+//            val c1 = ma1.`type`.clazz
+//            val c2 = ma2.`type`.clazz
+//            val v = if (!isBadMatch((c1, c2)) || (isNumeric(c1) && (isNumeric(c2)))) {
+//              VariableArgument(ma1.name)
+//            } else {
+//              if (conversion != null) throw new RuntimeException("More than one conversion found! " + me1 + " / " + me2)
+//              conversion = ma2
+//              VariableArgument("conversion")
+//            }
+//            argumentsRight(index) = v
+//          }
+//          case None => {
+//            if (debug) println("    No Match: " + me2.args(index).name)
+//            noMatch = true
+//          }
+//        }
+//      }
+//      if (!noMatch) {
+//        if (debug) println("  FULL MATCH: " + me1 + " - " + me2)
+//        matches = SmartMatch(m2, conversion, argumentsRight.toList) :: matches
+//      }
+//    }
+//    if (matches.isEmpty) {
+//      None
+//    } else if (matches.length == 1) {
+//      if (debug) println("    Only one match: " + method2EnhancedMethod(matches.head.method))
+//      None
+//    } else if (matches.head.conversion == null) {
+//      if (debug) println("    No conversion for: " + method2EnhancedMethod(matches.head.method))
+//      None
+//    } else {
+//      // Create LWJGL method body
+//      val b = new StringBuilder()
+//      b.append(matches.head.conversion.name)
+//      b.append(" match {\r\n")
+//      for (m <- matches) {
+//        if (m.conversion != null) {
+//          b.append("\tcase conversion: ")
+//          b.append(m.conversion.`type`.name)
+//          b.append(" => ")
+//          b.append(m.method.getDeclaringClass.getName)
+//          b.append('.')
+//          b.append(m.method.getName)
+//          b.append('(')
+//          b.append(m.argsRight.map(ma => ma.string).mkString(", "))
+//          b.append(")\r\n")
+//        }
+//      }
+//      b.append("\tcase _ => error(\"Failed conversion!\")\r\n")
+//      b.append('}')
+//
+//      val argNames = m1.args.map(a => a.name)
+//      val args = argNames.map(arg => VariableArgument(arg))
+//      val androidMethodCreator = DynamicMethodCreator(m1, args)
+//      val lwjglMethodCreator = StaticMethodCreator(matches.map(sm => sm.method), b.toString)
+//      val descriptor = MethodDescriptor(m1.getName, argNames.zip(m1.getParameterTypes), m1.getReturnType, androidMethodCreator, lwjglMethodCreator)
+//      val matcher = "Smart"
+//      Some(CombinedMethod(m1.getName, descriptor, matcher))
+//    }
+//  }
+//
+//  def smartMatch2(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method]) = {
+//    val em1 = method2EnhancedMethod(m1)
+//    var matches: List[SmartMatch2] = Nil
+//    def generate(m2: Method) = {
+//      val em2 = method2EnhancedMethod(m2)
+//      generateMatch(em1, em2) match {
+//        case Some(sm) => matches = sm :: matches
+//        case None => // Not a match
+//      }
+//    }
+//
+//    m2s.foreach(generate)
+//  }
+//
+//  // Determines if these methods are a convertible match and creates the conversion
+//  private def generateMatch(m1: EnhancedMethod, m2: EnhancedMethod): Option[SmartMatch2] = {
+//
+//    None
+//  }
+//
+//  case class SmartMatch2(m: EnhancedMethod, conversion: String)
+//
+//  case class SmartMatch(method: Method, conversion: MethodArgument, argsRight: List[Argument])
 
   private def argsString(m: EnhancedMethod) = {
     val s = m.toString
@@ -202,7 +232,8 @@ object MethodMatcher {
     def matches(m1: Class[_], m2: Class[_]) = (c1 == m1 && c2 == m2) || (c1 == m2 && c2 == m1)
     
     matches(classOf[Float], classOf[Double]) ||
-    matches(classOf[Int], classOf[Long])
+    matches(classOf[Int], classOf[Long]) ||
+    matches(classOf[CharSequence], classOf[String])
   }
 
   private def argMapper(t: Tuple2[Class[_], Class[_]]) = {
@@ -214,12 +245,16 @@ object MethodMatcher {
     val l = classOf[Long]
     val f = classOf[Float]
     val d = classOf[Double]
+    val s = classOf[String]
+    val cs = classOf[CharSequence]
     if (c1 == c2) {
       c1
     } else if (matches(f, d)) {
       f
     } else if (matches(i, l)) {
       i
+    } else if (matches(s, cs)) {
+      s
     } else {
       throw new RuntimeException("Unhandled types: " + c1 + " / " + c2)
     }

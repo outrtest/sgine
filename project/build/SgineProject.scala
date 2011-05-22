@@ -27,7 +27,7 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   class CoreProject(info: ProjectInfo) extends SgineProjectBase(info) with ScctProject
 
   class OpenGLProject(info: ProjectInfo) extends ParentProject(info) {
-    lazy val generator = project("generator", "sgine-opengl-generator", new OpenGLGeneratorProject(_))
+    lazy val generator = project("generator", "sgine-opengl-generator", new OpenGLGeneratorProject(_), core)
     lazy val api = project("api", "sgine-opengl-api", new SgineProjectBase(_), core)
     lazy val lwjgl = project("lwjgl", "sgine-opengl-lwjgl", new OpenGLLWJGLProject(_), api)
     lazy val android = project("android", "sgine-opengl-android", new OpenGLAndroidProject(_), api)

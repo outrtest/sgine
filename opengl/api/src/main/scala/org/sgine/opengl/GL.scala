@@ -50,21 +50,47 @@ trait GL {
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit
 
-	def glTranslatef(x: Float, y: Float, z: Float): Unit
+	def glVertexAttrib1f(indx: Int, x: Float): Unit
 
-	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
+	def glVertexAttrib2f(indx: Int, x: Float, y: Float): Unit
+
+	def glVertexAttrib3f(indx: Int, x: Float, y: Float, z: Float): Unit
+
+	def glVertexAttrib4f(indx: Int, x: Float, y: Float, z: Float, w: Float): Unit
+
+	def glValidateProgram(program: Int): Unit
+
+	def glUseProgram(program: Int): Unit
+
+	def glUniform1f(location: Int, x: Float): Unit
+
+	def glUniform1i(location: Int, x: Int): Unit
+
+	def glUniform2f(location: Int, x: Float, y: Float): Unit
+
+	def glUniform2i(location: Int, x: Int, y: Int): Unit
+
+	def glUniform3f(location: Int, x: Float, y: Float, z: Float): Unit
+
+	def glUniform3i(location: Int, x: Int, y: Int, z: Int): Unit
+
+	def glUniform4f(location: Int, x: Float, y: Float, z: Float, w: Float): Unit
+
+	def glUniform4i(location: Int, x: Int, y: Int, z: Int, w: Int): Unit
+
+	def glTranslatef(x: Float, y: Float, z: Float): Unit
 
 	def glTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glTexParameterI(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
-	def glTexParameter(target: Int, pname: Int, param: Int): Unit
+	def glTexParameterIu(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+
+	def glTexParameterIi(target: Int, pname: Int, param: Int): Unit
 
 	def glTexParameterf(target: Int, pname: Int, param: Float): Unit
 
 	def glTexParameteri(target: Int, pname: Int, param: Int): Unit
-
-	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
 
 	def glTexEnv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
@@ -74,15 +100,21 @@ trait GL {
 
 	def glTexEnvi(target: Int, pname: Int, param: Int): Unit
 
-	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
-
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit
+
+	def glStencilOpSeparate(face: Int, fail: Int, zfail: Int, zpass: Int): Unit
 
 	def glStencilOp(fail: Int, zfail: Int, zpass: Int): Unit
 
+	def glStencilMaskSeparate(face: Int, mask: Int): Unit
+
 	def glStencilMask(mask: Int): Unit
 
+	def glStencilFuncSeparate(face: Int, func: Int, ref: Int, mask: Int): Unit
+
 	def glStencilFunc(func: Int, ref: Int, mask: Int): Unit
+
+	def glShaderSource(shader: Int, string: String): Unit
 
 	def glShadeModel(mode: Int): Unit
 
@@ -94,8 +126,6 @@ trait GL {
 
 	def glRotatef(angle: Float, x: Float, y: Float, z: Float): Unit
 
-	def glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
-
 	def glPushMatrix(): Unit
 
 	def glPopMatrix(): Unit
@@ -106,7 +136,7 @@ trait GL {
 
 	def glPointParameter(pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glPointParameter(pname: Int, param: Int): Unit
+	def glPointParameteri(pname: Int, param: Int): Unit
 
 	def glPointParameter(pname: Int, params: java.nio.IntBuffer): Unit
 
@@ -116,11 +146,9 @@ trait GL {
 
 	def glOrtho(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit
 
-	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
-
 	def glNormalPointer(`type`: Int, stride: Int, offset: Int): Unit
 
-	def glNormal(nx: Int, ny: Int, nz: Int): Unit
+	def glNormal3i(nx: Int, ny: Int, nz: Int): Unit
 
 	def glNormal3f(nx: Float, ny: Float, nz: Float): Unit
 
@@ -132,7 +160,7 @@ trait GL {
 
 	def glMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glMaterial(face: Int, pname: Int, param: Int): Unit
+	def glMateriali(face: Int, pname: Int, param: Int): Unit
 
 	def glMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
@@ -144,11 +172,13 @@ trait GL {
 
 	def glLoadIdentity(): Unit
 
+	def glLinkProgram(program: Int): Unit
+
 	def glLineWidth(width: Float): Unit
 
 	def glLightModel(pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glLightModel(pname: Int, param: Int): Unit
+	def glLightModeli(pname: Int, param: Int): Unit
 
 	def glLightModel(pname: Int, params: java.nio.IntBuffer): Unit
 
@@ -156,7 +186,7 @@ trait GL {
 
 	def glLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glLight(light: Int, pname: Int, param: Int): Unit
+	def glLighti(light: Int, pname: Int, param: Int): Unit
 
 	def glLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
@@ -164,19 +194,41 @@ trait GL {
 
 	def glIsTexture(texture: Int): Boolean
 
+	def glIsShader(shader: Int): Boolean
+
+	def glIsProgram(program: Int): Boolean
+
 	def glIsEnabled(cap: Int): Boolean
 
 	def glIsBuffer(buffer: Int): Boolean
 
 	def glHint(target: Int, mode: Int): Unit
 
+	def glGetVertexAttrib(index: Int, pname: Int, params: java.nio.FloatBuffer): Unit
+
+	def glGetVertexAttribIu(index: Int, pname: Int, params: java.nio.IntBuffer): Unit
+
+	def glGetUniformLocation(program: Int, name: String): Int
+
+	def glGetUniform(program: Int, location: Int, params: java.nio.FloatBuffer): Unit
+
+	def glGetUniformu(program: Int, location: Int, params: java.nio.IntBuffer): Unit
+
 	def glGetTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glGetTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+	def glGetTexParameterI(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+
+	def glGetTexParameterIu(target: Int, pname: Int, params: java.nio.IntBuffer): Unit
+
+	def glGetTexEnv(env: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
 	def glGetTexEnv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glGetString(name: Int): String
+
+	def glGetShader(shader: Int, pname: Int, params: java.nio.IntBuffer): Unit
+
+	def glGetProgram(program: Int, pname: Int, params: java.nio.IntBuffer): Unit
 
 	def glGetMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit
 
@@ -188,13 +240,15 @@ trait GL {
 
 	def glGetError(): Int
 
+	def glGetAttribLocation(program: Int, name: String): Int
+
 	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit
 
 	def glFrontFace(mode: Int): Unit
 
 	def glFog(pname: Int, params: java.nio.FloatBuffer): Unit
 
-	def glFog(pname: Int, param: Int): Unit
+	def glFogi(pname: Int, param: Int): Unit
 
 	def glFog(pname: Int, params: java.nio.IntBuffer): Unit
 
@@ -204,19 +258,25 @@ trait GL {
 
 	def glFinish(): Unit
 
+	def glEnableVertexAttribArray(index: Int): Unit
+
 	def glEnableClientState(array: Int): Unit
 
 	def glEnable(cap: Int): Unit
-
-	def glDrawElements(mode: Int, count: Int, `type`: Int, indices: java.nio.Buffer): Unit
 
 	def glDrawElements(mode: Int, count: Int, `type`: Int, offset: Int): Unit
 
 	def glDrawArrays(mode: Int, first: Int, count: Int): Unit
 
+	def glDisableVertexAttribArray(index: Int): Unit
+
 	def glDisableClientState(array: Int): Unit
 
 	def glDisable(cap: Int): Unit
+
+	def glDetachShader(program: Int, shader: Int): Unit
+
+	def glDepthRange(zNear: Float, zFar: Float): Unit
 
 	def glDepthRangef(zNear: Float, zFar: Float): Unit
 
@@ -224,13 +284,21 @@ trait GL {
 
 	def glDepthFunc(func: Int): Unit
 
+	def glDeleteShader(shader: Int): Unit
+
+	def glDeleteProgram(program: Int): Unit
+
 	def glCullFace(mode: Int): Unit
+
+	def glCreateShader(`type`: Int): Int
+
+	def glCreateProgram(): Int
 
 	def glCopyTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, x: Int, y: Int, width: Int, height: Int): Unit
 
 	def glCopyTexImage2D(target: Int, level: Int, internalformat: Int, x: Int, y: Int, width: Int, height: Int, border: Int): Unit
 
-	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
+	def glCompileShader(shader: Int): Unit
 
 	def glColorPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit
 
@@ -248,15 +316,23 @@ trait GL {
 
 	def glClear(mask: Int): Unit
 
-	def glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit
-
-	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit
+	def glBlendFuncSeparate(srcRGB: Int, dstRGB: Int, srcAlpha: Int, dstAlpha: Int): Unit
 
 	def glBlendFunc(sfactor: Int, dfactor: Int): Unit
+
+	def glBlendEquationSeparate(modeRGB: Int, modeAlpha: Int): Unit
+
+	def glBlendEquation(mode: Int): Unit
+
+	def glBlendColor(red: Float, green: Float, blue: Float, alpha: Float): Unit
 
 	def glBindTexture(target: Int, texture: Int): Unit
 
 	def glBindBuffer(target: Int, buffer: Int): Unit
+
+	def glBindAttribLocation(program: Int, index: Int, name: String): Unit
+
+	def glAttachShader(program: Int, shader: Int): Unit
 
 	def glAlphaFunc(func: Int, ref: Float): Unit
 
@@ -269,17 +345,49 @@ object GL extends GL {
 	def instance_=(gl: GL) = local.set(gl)
 
 	/**
+	 * Constant Value: 35721
+	 * 
+	 * @see android.opengl.GLES20#GL_ACTIVE_ATTRIBUTES
+	 * @see org.lwjgl.opengl.GL20#GL_ACTIVE_ATTRIBUTES
+	 */
+	val GL_ACTIVE_ATTRIBUTES: Int = 35721
+
+	/**
+	 * Constant Value: 35722
+	 * 
+	 * @see android.opengl.GLES20#GL_ACTIVE_ATTRIBUTE_MAX_LENGTH
+	 * @see org.lwjgl.opengl.GL20#GL_ACTIVE_ATTRIBUTE_MAX_LENGTH
+	 */
+	val GL_ACTIVE_ATTRIBUTE_MAX_LENGTH: Int = 35722
+
+	/**
 	 * Constant Value: 34016
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ACTIVE_TEXTURE
+	 * @see android.opengl.GLES11#GL_ACTIVE_TEXTURE
 	 * @see org.lwjgl.opengl.GL13#GL_ACTIVE_TEXTURE
 	 */
 	val GL_ACTIVE_TEXTURE: Int = 34016
 
 	/**
+	 * Constant Value: 35718
+	 * 
+	 * @see android.opengl.GLES20#GL_ACTIVE_UNIFORMS
+	 * @see org.lwjgl.opengl.GL20#GL_ACTIVE_UNIFORMS
+	 */
+	val GL_ACTIVE_UNIFORMS: Int = 35718
+
+	/**
+	 * Constant Value: 35719
+	 * 
+	 * @see android.opengl.GLES20#GL_ACTIVE_UNIFORM_MAX_LENGTH
+	 * @see org.lwjgl.opengl.GL20#GL_ACTIVE_UNIFORM_MAX_LENGTH
+	 */
+	val GL_ACTIVE_UNIFORM_MAX_LENGTH: Int = 35719
+
+	/**
 	 * Constant Value: 260
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ADD
+	 * @see android.opengl.GLES10#GL_ADD
 	 * @see org.lwjgl.opengl.GL11#GL_ADD
 	 */
 	val GL_ADD: Int = 260
@@ -287,7 +395,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34164
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ADD_SIGNED
+	 * @see android.opengl.GLES11#GL_ADD_SIGNED
 	 * @see org.lwjgl.opengl.GL13#GL_ADD_SIGNED
 	 */
 	val GL_ADD_SIGNED: Int = 34164
@@ -295,7 +403,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33902
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ALIASED_LINE_WIDTH_RANGE
+	 * @see android.opengl.GLES10#GL_ALIASED_LINE_WIDTH_RANGE
 	 * @see org.lwjgl.opengl.GL12#GL_ALIASED_LINE_WIDTH_RANGE
 	 */
 	val GL_ALIASED_LINE_WIDTH_RANGE: Int = 33902
@@ -303,7 +411,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33901
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ALIASED_POINT_SIZE_RANGE
+	 * @see android.opengl.GLES10#GL_ALIASED_POINT_SIZE_RANGE
 	 * @see org.lwjgl.opengl.GL12#GL_ALIASED_POINT_SIZE_RANGE
 	 */
 	val GL_ALIASED_POINT_SIZE_RANGE: Int = 33901
@@ -311,7 +419,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 6406
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ALPHA
+	 * @see android.opengl.GLES10#GL_ALPHA
 	 * @see org.lwjgl.opengl.GL11#GL_ALPHA
 	 */
 	val GL_ALPHA: Int = 6406
@@ -319,7 +427,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3413
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ALPHA_BITS
+	 * @see android.opengl.GLES10#GL_ALPHA_BITS
 	 * @see org.lwjgl.opengl.GL11#GL_ALPHA_BITS
 	 */
 	val GL_ALPHA_BITS: Int = 3413
@@ -327,7 +435,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3356
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ALPHA_SCALE
+	 * @see android.opengl.GLES11#GL_ALPHA_SCALE
 	 * @see org.lwjgl.opengl.GL11#GL_ALPHA_SCALE
 	 */
 	val GL_ALPHA_SCALE: Int = 3356
@@ -335,7 +443,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3008
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ALPHA_TEST
+	 * @see android.opengl.GLES10#GL_ALPHA_TEST
 	 * @see org.lwjgl.opengl.GL11#GL_ALPHA_TEST
 	 */
 	val GL_ALPHA_TEST: Int = 3008
@@ -343,7 +451,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3009
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ALPHA_TEST_FUNC
+	 * @see android.opengl.GLES11#GL_ALPHA_TEST_FUNC
 	 * @see org.lwjgl.opengl.GL11#GL_ALPHA_TEST_FUNC
 	 */
 	val GL_ALPHA_TEST_FUNC: Int = 3009
@@ -351,7 +459,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3010
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ALPHA_TEST_REF
+	 * @see android.opengl.GLES11#GL_ALPHA_TEST_REF
 	 * @see org.lwjgl.opengl.GL11#GL_ALPHA_TEST_REF
 	 */
 	val GL_ALPHA_TEST_REF: Int = 3010
@@ -359,7 +467,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 519
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ALWAYS
+	 * @see android.opengl.GLES10#GL_ALWAYS
 	 * @see org.lwjgl.opengl.GL11#GL_ALWAYS
 	 */
 	val GL_ALWAYS: Int = 519
@@ -367,7 +475,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4608
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_AMBIENT
+	 * @see android.opengl.GLES10#GL_AMBIENT
 	 * @see org.lwjgl.opengl.GL11#GL_AMBIENT
 	 */
 	val GL_AMBIENT: Int = 4608
@@ -375,7 +483,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5634
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_AMBIENT_AND_DIFFUSE
+	 * @see android.opengl.GLES10#GL_AMBIENT_AND_DIFFUSE
 	 * @see org.lwjgl.opengl.GL11#GL_AMBIENT_AND_DIFFUSE
 	 */
 	val GL_AMBIENT_AND_DIFFUSE: Int = 5634
@@ -383,7 +491,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5377
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_AND
+	 * @see android.opengl.GLES10#GL_AND
 	 * @see org.lwjgl.opengl.GL11#GL_AND
 	 */
 	val GL_AND: Int = 5377
@@ -391,7 +499,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5380
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_AND_INVERTED
+	 * @see android.opengl.GLES10#GL_AND_INVERTED
 	 * @see org.lwjgl.opengl.GL11#GL_AND_INVERTED
 	 */
 	val GL_AND_INVERTED: Int = 5380
@@ -399,7 +507,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5378
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_AND_REVERSE
+	 * @see android.opengl.GLES10#GL_AND_REVERSE
 	 * @see org.lwjgl.opengl.GL11#GL_AND_REVERSE
 	 */
 	val GL_AND_REVERSE: Int = 5378
@@ -407,7 +515,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34962
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ARRAY_BUFFER
+	 * @see android.opengl.GLES11#GL_ARRAY_BUFFER
 	 * @see org.lwjgl.opengl.GL15#GL_ARRAY_BUFFER
 	 */
 	val GL_ARRAY_BUFFER: Int = 34962
@@ -415,15 +523,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34964
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ARRAY_BUFFER_BINDING
+	 * @see android.opengl.GLES11#GL_ARRAY_BUFFER_BINDING
 	 * @see org.lwjgl.opengl.GL15#GL_ARRAY_BUFFER_BINDING
 	 */
 	val GL_ARRAY_BUFFER_BINDING: Int = 34964
 
 	/**
+	 * Constant Value: 35717
+	 * 
+	 * @see android.opengl.GLES20#GL_ATTACHED_SHADERS
+	 * @see org.lwjgl.opengl.GL20#GL_ATTACHED_SHADERS
+	 */
+	val GL_ATTACHED_SHADERS: Int = 35717
+
+	/**
 	 * Constant Value: 1029
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_BACK
+	 * @see android.opengl.GLES10#GL_BACK
 	 * @see org.lwjgl.opengl.GL11#GL_BACK
 	 */
 	val GL_BACK: Int = 1029
@@ -431,39 +547,135 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3042
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_BLEND
+	 * @see android.opengl.GLES10#GL_BLEND
 	 * @see org.lwjgl.opengl.GL11#GL_BLEND
 	 */
 	val GL_BLEND: Int = 3042
 
 	/**
+	 * Constant Value: 32773
+	 * 
+	 * @see android.opengl.GLES20#GL_BLEND_COLOR
+	 * @see org.lwjgl.opengl.GL14#GL_BLEND_COLOR
+	 */
+	val GL_BLEND_COLOR: Int = 32773
+
+	/**
 	 * Constant Value: 3040
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_BLEND_DST
+	 * @see android.opengl.GLES11#GL_BLEND_DST
 	 * @see org.lwjgl.opengl.GL11#GL_BLEND_DST
 	 */
 	val GL_BLEND_DST: Int = 3040
 
 	/**
+	 * Constant Value: 32970
+	 * 
+	 * @see android.opengl.GLES20#GL_BLEND_DST_ALPHA
+	 * @see org.lwjgl.opengl.GL14#GL_BLEND_DST_ALPHA
+	 */
+	val GL_BLEND_DST_ALPHA: Int = 32970
+
+	/**
+	 * Constant Value: 32968
+	 * 
+	 * @see android.opengl.GLES20#GL_BLEND_DST_RGB
+	 * @see org.lwjgl.opengl.GL14#GL_BLEND_DST_RGB
+	 */
+	val GL_BLEND_DST_RGB: Int = 32968
+
+	/**
+	 * Constant Value: 32777
+	 * 
+	 * @see android.opengl.GLES20#GL_BLEND_EQUATION
+	 * @see org.lwjgl.opengl.GL14#GL_BLEND_EQUATION
+	 */
+	val GL_BLEND_EQUATION: Int = 32777
+
+	/**
+	 * Constant Value: 34877
+	 * 
+	 * @see android.opengl.GLES20#GL_BLEND_EQUATION_ALPHA
+	 * @see org.lwjgl.opengl.GL20#GL_BLEND_EQUATION_ALPHA
+	 */
+	val GL_BLEND_EQUATION_ALPHA: Int = 34877
+
+	/**
+	 * Constant Value: 32777
+	 * 
+	 * @see android.opengl.GLES20#GL_BLEND_EQUATION_RGB
+	 * @see org.lwjgl.opengl.GL20#GL_BLEND_EQUATION_RGB
+	 */
+	val GL_BLEND_EQUATION_RGB: Int = 32777
+
+	/**
 	 * Constant Value: 3041
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_BLEND_SRC
+	 * @see android.opengl.GLES11#GL_BLEND_SRC
 	 * @see org.lwjgl.opengl.GL11#GL_BLEND_SRC
 	 */
 	val GL_BLEND_SRC: Int = 3041
 
 	/**
+	 * Constant Value: 32971
+	 * 
+	 * @see android.opengl.GLES20#GL_BLEND_SRC_ALPHA
+	 * @see org.lwjgl.opengl.GL14#GL_BLEND_SRC_ALPHA
+	 */
+	val GL_BLEND_SRC_ALPHA: Int = 32971
+
+	/**
+	 * Constant Value: 32969
+	 * 
+	 * @see android.opengl.GLES20#GL_BLEND_SRC_RGB
+	 * @see org.lwjgl.opengl.GL14#GL_BLEND_SRC_RGB
+	 */
+	val GL_BLEND_SRC_RGB: Int = 32969
+
+	/**
 	 * Constant Value: 3412
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_BLUE_BITS
+	 * @see android.opengl.GLES10#GL_BLUE_BITS
 	 * @see org.lwjgl.opengl.GL11#GL_BLUE_BITS
 	 */
 	val GL_BLUE_BITS: Int = 3412
 
 	/**
+	 * Constant Value: 35670
+	 * 
+	 * @see android.opengl.GLES20#GL_BOOL
+	 * @see org.lwjgl.opengl.GL20#GL_BOOL
+	 */
+	val GL_BOOL: Int = 35670
+
+	/**
+	 * Constant Value: 35671
+	 * 
+	 * @see android.opengl.GLES20#GL_BOOL_VEC2
+	 * @see org.lwjgl.opengl.GL20#GL_BOOL_VEC2
+	 */
+	val GL_BOOL_VEC2: Int = 35671
+
+	/**
+	 * Constant Value: 35672
+	 * 
+	 * @see android.opengl.GLES20#GL_BOOL_VEC3
+	 * @see org.lwjgl.opengl.GL20#GL_BOOL_VEC3
+	 */
+	val GL_BOOL_VEC3: Int = 35672
+
+	/**
+	 * Constant Value: 35673
+	 * 
+	 * @see android.opengl.GLES20#GL_BOOL_VEC4
+	 * @see org.lwjgl.opengl.GL20#GL_BOOL_VEC4
+	 */
+	val GL_BOOL_VEC4: Int = 35673
+
+	/**
 	 * Constant Value: 35003
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_BUFFER_ACCESS
+	 * @see android.opengl.GLES11#GL_BUFFER_ACCESS
 	 * @see org.lwjgl.opengl.GL15#GL_BUFFER_ACCESS
 	 */
 	val GL_BUFFER_ACCESS: Int = 35003
@@ -471,7 +683,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34660
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_BUFFER_SIZE
+	 * @see android.opengl.GLES11#GL_BUFFER_SIZE
 	 * @see org.lwjgl.opengl.GL15#GL_BUFFER_SIZE
 	 */
 	val GL_BUFFER_SIZE: Int = 34660
@@ -479,7 +691,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34661
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_BUFFER_USAGE
+	 * @see android.opengl.GLES11#GL_BUFFER_USAGE
 	 * @see org.lwjgl.opengl.GL15#GL_BUFFER_USAGE
 	 */
 	val GL_BUFFER_USAGE: Int = 34661
@@ -487,7 +699,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5120
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_BYTE
+	 * @see android.opengl.GLES10#GL_BYTE
 	 * @see org.lwjgl.opengl.GL11#GL_BYTE
 	 */
 	val GL_BYTE: Int = 5120
@@ -495,7 +707,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2305
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_CCW
+	 * @see android.opengl.GLES10#GL_CCW
 	 * @see org.lwjgl.opengl.GL11#GL_CCW
 	 */
 	val GL_CCW: Int = 2305
@@ -503,7 +715,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33071
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_CLAMP_TO_EDGE
+	 * @see android.opengl.GLES10#GL_CLAMP_TO_EDGE
 	 * @see org.lwjgl.opengl.GL12#GL_CLAMP_TO_EDGE
 	 */
 	val GL_CLAMP_TO_EDGE: Int = 33071
@@ -511,7 +723,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5376
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_CLEAR
+	 * @see android.opengl.GLES10#GL_CLEAR
 	 * @see org.lwjgl.opengl.GL11#GL_CLEAR
 	 */
 	val GL_CLEAR: Int = 5376
@@ -519,7 +731,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34017
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CLIENT_ACTIVE_TEXTURE
+	 * @see android.opengl.GLES11#GL_CLIENT_ACTIVE_TEXTURE
 	 * @see org.lwjgl.opengl.GL13#GL_CLIENT_ACTIVE_TEXTURE
 	 */
 	val GL_CLIENT_ACTIVE_TEXTURE: Int = 34017
@@ -527,7 +739,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 12288
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CLIP_PLANE0
+	 * @see android.opengl.GLES11#GL_CLIP_PLANE0
 	 * @see org.lwjgl.opengl.GL11#GL_CLIP_PLANE0
 	 */
 	val GL_CLIP_PLANE0: Int = 12288
@@ -535,7 +747,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 12289
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CLIP_PLANE1
+	 * @see android.opengl.GLES11#GL_CLIP_PLANE1
 	 * @see org.lwjgl.opengl.GL11#GL_CLIP_PLANE1
 	 */
 	val GL_CLIP_PLANE1: Int = 12289
@@ -543,7 +755,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 12290
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CLIP_PLANE2
+	 * @see android.opengl.GLES11#GL_CLIP_PLANE2
 	 * @see org.lwjgl.opengl.GL11#GL_CLIP_PLANE2
 	 */
 	val GL_CLIP_PLANE2: Int = 12290
@@ -551,7 +763,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 12291
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CLIP_PLANE3
+	 * @see android.opengl.GLES11#GL_CLIP_PLANE3
 	 * @see org.lwjgl.opengl.GL11#GL_CLIP_PLANE3
 	 */
 	val GL_CLIP_PLANE3: Int = 12291
@@ -559,7 +771,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 12292
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CLIP_PLANE4
+	 * @see android.opengl.GLES11#GL_CLIP_PLANE4
 	 * @see org.lwjgl.opengl.GL11#GL_CLIP_PLANE4
 	 */
 	val GL_CLIP_PLANE4: Int = 12292
@@ -567,7 +779,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 12293
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CLIP_PLANE5
+	 * @see android.opengl.GLES11#GL_CLIP_PLANE5
 	 * @see org.lwjgl.opengl.GL11#GL_CLIP_PLANE5
 	 */
 	val GL_CLIP_PLANE5: Int = 12293
@@ -575,7 +787,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32886
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_COLOR_ARRAY
+	 * @see android.opengl.GLES10#GL_COLOR_ARRAY
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_ARRAY
 	 */
 	val GL_COLOR_ARRAY: Int = 32886
@@ -583,7 +795,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34968
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COLOR_ARRAY_BUFFER_BINDING
+	 * @see android.opengl.GLES11#GL_COLOR_ARRAY_BUFFER_BINDING
 	 * @see org.lwjgl.opengl.GL15#GL_COLOR_ARRAY_BUFFER_BINDING
 	 */
 	val GL_COLOR_ARRAY_BUFFER_BINDING: Int = 34968
@@ -591,7 +803,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32912
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COLOR_ARRAY_POINTER
+	 * @see android.opengl.GLES11#GL_COLOR_ARRAY_POINTER
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_ARRAY_POINTER
 	 */
 	val GL_COLOR_ARRAY_POINTER: Int = 32912
@@ -599,7 +811,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32897
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COLOR_ARRAY_SIZE
+	 * @see android.opengl.GLES11#GL_COLOR_ARRAY_SIZE
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_ARRAY_SIZE
 	 */
 	val GL_COLOR_ARRAY_SIZE: Int = 32897
@@ -607,7 +819,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32899
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COLOR_ARRAY_STRIDE
+	 * @see android.opengl.GLES11#GL_COLOR_ARRAY_STRIDE
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_ARRAY_STRIDE
 	 */
 	val GL_COLOR_ARRAY_STRIDE: Int = 32899
@@ -615,15 +827,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32898
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COLOR_ARRAY_TYPE
+	 * @see android.opengl.GLES11#GL_COLOR_ARRAY_TYPE
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_ARRAY_TYPE
 	 */
 	val GL_COLOR_ARRAY_TYPE: Int = 32898
 
 	/**
+	 * Constant Value: 36064
+	 * 
+	 * @see android.opengl.GLES20#GL_COLOR_ATTACHMENT0
+	 * @see org.lwjgl.opengl.GL30#GL_COLOR_ATTACHMENT0
+	 */
+	val GL_COLOR_ATTACHMENT0: Int = 36064
+
+	/**
 	 * Constant Value: 16384
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_COLOR_BUFFER_BIT
+	 * @see android.opengl.GLES10#GL_COLOR_BUFFER_BIT
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_BUFFER_BIT
 	 */
 	val GL_COLOR_BUFFER_BIT: Int = 16384
@@ -631,7 +851,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3106
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COLOR_CLEAR_VALUE
+	 * @see android.opengl.GLES11#GL_COLOR_CLEAR_VALUE
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_CLEAR_VALUE
 	 */
 	val GL_COLOR_CLEAR_VALUE: Int = 3106
@@ -639,7 +859,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3058
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_COLOR_LOGIC_OP
+	 * @see android.opengl.GLES10#GL_COLOR_LOGIC_OP
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_LOGIC_OP
 	 */
 	val GL_COLOR_LOGIC_OP: Int = 3058
@@ -647,7 +867,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2903
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_COLOR_MATERIAL
+	 * @see android.opengl.GLES10#GL_COLOR_MATERIAL
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_MATERIAL
 	 */
 	val GL_COLOR_MATERIAL: Int = 2903
@@ -655,7 +875,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3107
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COLOR_WRITEMASK
+	 * @see android.opengl.GLES11#GL_COLOR_WRITEMASK
 	 * @see org.lwjgl.opengl.GL11#GL_COLOR_WRITEMASK
 	 */
 	val GL_COLOR_WRITEMASK: Int = 3107
@@ -663,7 +883,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34160
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COMBINE
+	 * @see android.opengl.GLES11#GL_COMBINE
 	 * @see org.lwjgl.opengl.GL13#GL_COMBINE
 	 */
 	val GL_COMBINE: Int = 34160
@@ -671,7 +891,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34162
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COMBINE_ALPHA
+	 * @see android.opengl.GLES11#GL_COMBINE_ALPHA
 	 * @see org.lwjgl.opengl.GL13#GL_COMBINE_ALPHA
 	 */
 	val GL_COMBINE_ALPHA: Int = 34162
@@ -679,15 +899,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34161
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_COMBINE_RGB
+	 * @see android.opengl.GLES11#GL_COMBINE_RGB
 	 * @see org.lwjgl.opengl.GL13#GL_COMBINE_RGB
 	 */
 	val GL_COMBINE_RGB: Int = 34161
 
 	/**
+	 * Constant Value: 35713
+	 * 
+	 * @see android.opengl.GLES20#GL_COMPILE_STATUS
+	 * @see org.lwjgl.opengl.GL20#GL_COMPILE_STATUS
+	 */
+	val GL_COMPILE_STATUS: Int = 35713
+
+	/**
 	 * Constant Value: 34467
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_COMPRESSED_TEXTURE_FORMATS
+	 * @see android.opengl.GLES10#GL_COMPRESSED_TEXTURE_FORMATS
 	 * @see org.lwjgl.opengl.GL13#GL_COMPRESSED_TEXTURE_FORMATS
 	 */
 	val GL_COMPRESSED_TEXTURE_FORMATS: Int = 34467
@@ -695,23 +923,39 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34166
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CONSTANT
+	 * @see android.opengl.GLES11#GL_CONSTANT
 	 * @see org.lwjgl.opengl.GL13#GL_CONSTANT
 	 */
 	val GL_CONSTANT: Int = 34166
 
 	/**
+	 * Constant Value: 32771
+	 * 
+	 * @see android.opengl.GLES20#GL_CONSTANT_ALPHA
+	 * @see org.lwjgl.opengl.GL11#GL_CONSTANT_ALPHA
+	 */
+	val GL_CONSTANT_ALPHA: Int = 32771
+
+	/**
 	 * Constant Value: 4615
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_CONSTANT_ATTENUATION
+	 * @see android.opengl.GLES10#GL_CONSTANT_ATTENUATION
 	 * @see org.lwjgl.opengl.GL11#GL_CONSTANT_ATTENUATION
 	 */
 	val GL_CONSTANT_ATTENUATION: Int = 4615
 
 	/**
+	 * Constant Value: 32769
+	 * 
+	 * @see android.opengl.GLES20#GL_CONSTANT_COLOR
+	 * @see org.lwjgl.opengl.GL11#GL_CONSTANT_COLOR
+	 */
+	val GL_CONSTANT_COLOR: Int = 32769
+
+	/**
 	 * Constant Value: 5379
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_COPY
+	 * @see android.opengl.GLES10#GL_COPY
 	 * @see org.lwjgl.opengl.GL11#GL_COPY
 	 */
 	val GL_COPY: Int = 5379
@@ -719,7 +963,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5388
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_COPY_INVERTED
+	 * @see android.opengl.GLES10#GL_COPY_INVERTED
 	 * @see org.lwjgl.opengl.GL11#GL_COPY_INVERTED
 	 */
 	val GL_COPY_INVERTED: Int = 5388
@@ -727,7 +971,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2884
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_CULL_FACE
+	 * @see android.opengl.GLES10#GL_CULL_FACE
 	 * @see org.lwjgl.opengl.GL11#GL_CULL_FACE
 	 */
 	val GL_CULL_FACE: Int = 2884
@@ -735,7 +979,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2885
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CULL_FACE_MODE
+	 * @see android.opengl.GLES11#GL_CULL_FACE_MODE
 	 * @see org.lwjgl.opengl.GL11#GL_CULL_FACE_MODE
 	 */
 	val GL_CULL_FACE_MODE: Int = 2885
@@ -743,7 +987,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2816
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CURRENT_COLOR
+	 * @see android.opengl.GLES11#GL_CURRENT_COLOR
 	 * @see org.lwjgl.opengl.GL11#GL_CURRENT_COLOR
 	 */
 	val GL_CURRENT_COLOR: Int = 2816
@@ -751,23 +995,39 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2818
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CURRENT_NORMAL
+	 * @see android.opengl.GLES11#GL_CURRENT_NORMAL
 	 * @see org.lwjgl.opengl.GL11#GL_CURRENT_NORMAL
 	 */
 	val GL_CURRENT_NORMAL: Int = 2818
 
 	/**
+	 * Constant Value: 35725
+	 * 
+	 * @see android.opengl.GLES20#GL_CURRENT_PROGRAM
+	 * @see org.lwjgl.opengl.GL20#GL_CURRENT_PROGRAM
+	 */
+	val GL_CURRENT_PROGRAM: Int = 35725
+
+	/**
 	 * Constant Value: 2819
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_CURRENT_TEXTURE_COORDS
+	 * @see android.opengl.GLES11#GL_CURRENT_TEXTURE_COORDS
 	 * @see org.lwjgl.opengl.GL11#GL_CURRENT_TEXTURE_COORDS
 	 */
 	val GL_CURRENT_TEXTURE_COORDS: Int = 2819
 
 	/**
+	 * Constant Value: 34342
+	 * 
+	 * @see android.opengl.GLES20#GL_CURRENT_VERTEX_ATTRIB
+	 * @see org.lwjgl.opengl.GL20#GL_CURRENT_VERTEX_ATTRIB
+	 */
+	val GL_CURRENT_VERTEX_ATTRIB: Int = 34342
+
+	/**
 	 * Constant Value: 2304
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_CW
+	 * @see android.opengl.GLES10#GL_CW
 	 * @see org.lwjgl.opengl.GL11#GL_CW
 	 */
 	val GL_CW: Int = 2304
@@ -775,7 +1035,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 8449
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DECAL
+	 * @see android.opengl.GLES10#GL_DECAL
 	 * @see org.lwjgl.opengl.GL11#GL_DECAL
 	 */
 	val GL_DECAL: Int = 8449
@@ -783,15 +1043,39 @@ object GL extends GL {
 	/**
 	 * Constant Value: 7683
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DECR
+	 * @see android.opengl.GLES10#GL_DECR
 	 * @see org.lwjgl.opengl.GL11#GL_DECR
 	 */
 	val GL_DECR: Int = 7683
 
 	/**
+	 * Constant Value: 34056
+	 * 
+	 * @see android.opengl.GLES20#GL_DECR_WRAP
+	 * @see org.lwjgl.opengl.GL14#GL_DECR_WRAP
+	 */
+	val GL_DECR_WRAP: Int = 34056
+
+	/**
+	 * Constant Value: 35712
+	 * 
+	 * @see android.opengl.GLES20#GL_DELETE_STATUS
+	 * @see org.lwjgl.opengl.GL20#GL_DELETE_STATUS
+	 */
+	val GL_DELETE_STATUS: Int = 35712
+
+	/**
+	 * Constant Value: 36096
+	 * 
+	 * @see android.opengl.GLES20#GL_DEPTH_ATTACHMENT
+	 * @see org.lwjgl.opengl.GL30#GL_DEPTH_ATTACHMENT
+	 */
+	val GL_DEPTH_ATTACHMENT: Int = 36096
+
+	/**
 	 * Constant Value: 3414
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DEPTH_BITS
+	 * @see android.opengl.GLES10#GL_DEPTH_BITS
 	 * @see org.lwjgl.opengl.GL11#GL_DEPTH_BITS
 	 */
 	val GL_DEPTH_BITS: Int = 3414
@@ -799,7 +1083,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 256
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DEPTH_BUFFER_BIT
+	 * @see android.opengl.GLES10#GL_DEPTH_BUFFER_BIT
 	 * @see org.lwjgl.opengl.GL11#GL_DEPTH_BUFFER_BIT
 	 */
 	val GL_DEPTH_BUFFER_BIT: Int = 256
@@ -807,15 +1091,31 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2931
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_DEPTH_CLEAR_VALUE
+	 * @see android.opengl.GLES11#GL_DEPTH_CLEAR_VALUE
 	 * @see org.lwjgl.opengl.GL11#GL_DEPTH_CLEAR_VALUE
 	 */
 	val GL_DEPTH_CLEAR_VALUE: Int = 2931
 
 	/**
+	 * Constant Value: 6402
+	 * 
+	 * @see android.opengl.GLES20#GL_DEPTH_COMPONENT
+	 * @see org.lwjgl.opengl.GL11#GL_DEPTH_COMPONENT
+	 */
+	val GL_DEPTH_COMPONENT: Int = 6402
+
+	/**
+	 * Constant Value: 33189
+	 * 
+	 * @see android.opengl.GLES20#GL_DEPTH_COMPONENT16
+	 * @see org.lwjgl.opengl.GL14#GL_DEPTH_COMPONENT16
+	 */
+	val GL_DEPTH_COMPONENT16: Int = 33189
+
+	/**
 	 * Constant Value: 2932
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_DEPTH_FUNC
+	 * @see android.opengl.GLES11#GL_DEPTH_FUNC
 	 * @see org.lwjgl.opengl.GL11#GL_DEPTH_FUNC
 	 */
 	val GL_DEPTH_FUNC: Int = 2932
@@ -823,7 +1123,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2928
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_DEPTH_RANGE
+	 * @see android.opengl.GLES11#GL_DEPTH_RANGE
 	 * @see org.lwjgl.opengl.GL11#GL_DEPTH_RANGE
 	 */
 	val GL_DEPTH_RANGE: Int = 2928
@@ -831,7 +1131,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2929
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DEPTH_TEST
+	 * @see android.opengl.GLES10#GL_DEPTH_TEST
 	 * @see org.lwjgl.opengl.GL11#GL_DEPTH_TEST
 	 */
 	val GL_DEPTH_TEST: Int = 2929
@@ -839,7 +1139,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2930
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_DEPTH_WRITEMASK
+	 * @see android.opengl.GLES11#GL_DEPTH_WRITEMASK
 	 * @see org.lwjgl.opengl.GL11#GL_DEPTH_WRITEMASK
 	 */
 	val GL_DEPTH_WRITEMASK: Int = 2930
@@ -847,7 +1147,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4609
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DIFFUSE
+	 * @see android.opengl.GLES10#GL_DIFFUSE
 	 * @see org.lwjgl.opengl.GL11#GL_DIFFUSE
 	 */
 	val GL_DIFFUSE: Int = 4609
@@ -855,7 +1155,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3024
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DITHER
+	 * @see android.opengl.GLES10#GL_DITHER
 	 * @see org.lwjgl.opengl.GL11#GL_DITHER
 	 */
 	val GL_DITHER: Int = 3024
@@ -863,7 +1163,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4352
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DONT_CARE
+	 * @see android.opengl.GLES10#GL_DONT_CARE
 	 * @see org.lwjgl.opengl.GL11#GL_DONT_CARE
 	 */
 	val GL_DONT_CARE: Int = 4352
@@ -871,7 +1171,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34478
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_DOT3_RGB
+	 * @see android.opengl.GLES11#GL_DOT3_RGB
 	 * @see org.lwjgl.opengl.GL13#GL_DOT3_RGB
 	 */
 	val GL_DOT3_RGB: Int = 34478
@@ -879,7 +1179,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34479
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_DOT3_RGBA
+	 * @see android.opengl.GLES11#GL_DOT3_RGBA
 	 * @see org.lwjgl.opengl.GL13#GL_DOT3_RGBA
 	 */
 	val GL_DOT3_RGBA: Int = 34479
@@ -887,7 +1187,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 772
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DST_ALPHA
+	 * @see android.opengl.GLES10#GL_DST_ALPHA
 	 * @see org.lwjgl.opengl.GL11#GL_DST_ALPHA
 	 */
 	val GL_DST_ALPHA: Int = 772
@@ -895,7 +1195,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 774
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_DST_COLOR
+	 * @see android.opengl.GLES10#GL_DST_COLOR
 	 * @see org.lwjgl.opengl.GL11#GL_DST_COLOR
 	 */
 	val GL_DST_COLOR: Int = 774
@@ -903,7 +1203,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 35048
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_DYNAMIC_DRAW
+	 * @see android.opengl.GLES11#GL_DYNAMIC_DRAW
 	 * @see org.lwjgl.opengl.GL15#GL_DYNAMIC_DRAW
 	 */
 	val GL_DYNAMIC_DRAW: Int = 35048
@@ -911,7 +1211,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34963
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ELEMENT_ARRAY_BUFFER
+	 * @see android.opengl.GLES11#GL_ELEMENT_ARRAY_BUFFER
 	 * @see org.lwjgl.opengl.GL15#GL_ELEMENT_ARRAY_BUFFER
 	 */
 	val GL_ELEMENT_ARRAY_BUFFER: Int = 34963
@@ -919,7 +1219,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34965
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_ELEMENT_ARRAY_BUFFER_BINDING
+	 * @see android.opengl.GLES11#GL_ELEMENT_ARRAY_BUFFER_BINDING
 	 * @see org.lwjgl.opengl.GL15#GL_ELEMENT_ARRAY_BUFFER_BINDING
 	 */
 	val GL_ELEMENT_ARRAY_BUFFER_BINDING: Int = 34965
@@ -927,7 +1227,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5632
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_EMISSION
+	 * @see android.opengl.GLES10#GL_EMISSION
 	 * @see org.lwjgl.opengl.GL11#GL_EMISSION
 	 */
 	val GL_EMISSION: Int = 5632
@@ -935,7 +1235,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 514
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_EQUAL
+	 * @see android.opengl.GLES10#GL_EQUAL
 	 * @see org.lwjgl.opengl.GL11#GL_EQUAL
 	 */
 	val GL_EQUAL: Int = 514
@@ -943,7 +1243,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5385
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_EQUIV
+	 * @see android.opengl.GLES10#GL_EQUIV
 	 * @see org.lwjgl.opengl.GL11#GL_EQUIV
 	 */
 	val GL_EQUIV: Int = 5385
@@ -951,7 +1251,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2048
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_EXP
+	 * @see android.opengl.GLES10#GL_EXP
 	 * @see org.lwjgl.opengl.GL11#GL_EXP
 	 */
 	val GL_EXP: Int = 2048
@@ -959,7 +1259,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2049
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_EXP2
+	 * @see android.opengl.GLES10#GL_EXP2
 	 * @see org.lwjgl.opengl.GL11#GL_EXP2
 	 */
 	val GL_EXP2: Int = 2049
@@ -967,7 +1267,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 7939
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_EXTENSIONS
+	 * @see android.opengl.GLES10#GL_EXTENSIONS
 	 * @see org.lwjgl.opengl.GL11#GL_EXTENSIONS
 	 */
 	val GL_EXTENSIONS: Int = 7939
@@ -975,7 +1275,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 0
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FALSE
+	 * @see android.opengl.GLES10#GL_FALSE
 	 * @see org.lwjgl.opengl.GL11#GL_FALSE
 	 */
 	val GL_FALSE: Int = 0
@@ -983,7 +1283,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4353
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FASTEST
+	 * @see android.opengl.GLES10#GL_FASTEST
 	 * @see org.lwjgl.opengl.GL11#GL_FASTEST
 	 */
 	val GL_FASTEST: Int = 4353
@@ -991,7 +1291,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5132
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FIXED
+	 * @see android.opengl.GLES10#GL_FIXED
 	 * @see org.lwjgl.opengl.GL41#GL_FIXED
 	 */
 	val GL_FIXED: Int = 5132
@@ -999,7 +1299,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 7424
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FLAT
+	 * @see android.opengl.GLES10#GL_FLAT
 	 * @see org.lwjgl.opengl.GL11#GL_FLAT
 	 */
 	val GL_FLAT: Int = 7424
@@ -1007,15 +1307,63 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5126
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FLOAT
+	 * @see android.opengl.GLES10#GL_FLOAT
 	 * @see org.lwjgl.opengl.GL11#GL_FLOAT
 	 */
 	val GL_FLOAT: Int = 5126
 
 	/**
+	 * Constant Value: 35674
+	 * 
+	 * @see android.opengl.GLES20#GL_FLOAT_MAT2
+	 * @see org.lwjgl.opengl.GL20#GL_FLOAT_MAT2
+	 */
+	val GL_FLOAT_MAT2: Int = 35674
+
+	/**
+	 * Constant Value: 35675
+	 * 
+	 * @see android.opengl.GLES20#GL_FLOAT_MAT3
+	 * @see org.lwjgl.opengl.GL20#GL_FLOAT_MAT3
+	 */
+	val GL_FLOAT_MAT3: Int = 35675
+
+	/**
+	 * Constant Value: 35676
+	 * 
+	 * @see android.opengl.GLES20#GL_FLOAT_MAT4
+	 * @see org.lwjgl.opengl.GL20#GL_FLOAT_MAT4
+	 */
+	val GL_FLOAT_MAT4: Int = 35676
+
+	/**
+	 * Constant Value: 35664
+	 * 
+	 * @see android.opengl.GLES20#GL_FLOAT_VEC2
+	 * @see org.lwjgl.opengl.GL20#GL_FLOAT_VEC2
+	 */
+	val GL_FLOAT_VEC2: Int = 35664
+
+	/**
+	 * Constant Value: 35665
+	 * 
+	 * @see android.opengl.GLES20#GL_FLOAT_VEC3
+	 * @see org.lwjgl.opengl.GL20#GL_FLOAT_VEC3
+	 */
+	val GL_FLOAT_VEC3: Int = 35665
+
+	/**
+	 * Constant Value: 35666
+	 * 
+	 * @see android.opengl.GLES20#GL_FLOAT_VEC4
+	 * @see org.lwjgl.opengl.GL20#GL_FLOAT_VEC4
+	 */
+	val GL_FLOAT_VEC4: Int = 35666
+
+	/**
 	 * Constant Value: 2912
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FOG
+	 * @see android.opengl.GLES10#GL_FOG
 	 * @see org.lwjgl.opengl.GL11#GL_FOG
 	 */
 	val GL_FOG: Int = 2912
@@ -1023,7 +1371,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2918
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FOG_COLOR
+	 * @see android.opengl.GLES10#GL_FOG_COLOR
 	 * @see org.lwjgl.opengl.GL11#GL_FOG_COLOR
 	 */
 	val GL_FOG_COLOR: Int = 2918
@@ -1031,7 +1379,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2914
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FOG_DENSITY
+	 * @see android.opengl.GLES10#GL_FOG_DENSITY
 	 * @see org.lwjgl.opengl.GL11#GL_FOG_DENSITY
 	 */
 	val GL_FOG_DENSITY: Int = 2914
@@ -1039,7 +1387,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2916
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FOG_END
+	 * @see android.opengl.GLES10#GL_FOG_END
 	 * @see org.lwjgl.opengl.GL11#GL_FOG_END
 	 */
 	val GL_FOG_END: Int = 2916
@@ -1047,7 +1395,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3156
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FOG_HINT
+	 * @see android.opengl.GLES10#GL_FOG_HINT
 	 * @see org.lwjgl.opengl.GL11#GL_FOG_HINT
 	 */
 	val GL_FOG_HINT: Int = 3156
@@ -1055,7 +1403,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2917
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FOG_MODE
+	 * @see android.opengl.GLES10#GL_FOG_MODE
 	 * @see org.lwjgl.opengl.GL11#GL_FOG_MODE
 	 */
 	val GL_FOG_MODE: Int = 2917
@@ -1063,15 +1411,103 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2915
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FOG_START
+	 * @see android.opengl.GLES10#GL_FOG_START
 	 * @see org.lwjgl.opengl.GL11#GL_FOG_START
 	 */
 	val GL_FOG_START: Int = 2915
 
 	/**
+	 * Constant Value: 35632
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAGMENT_SHADER
+	 * @see org.lwjgl.opengl.GL20#GL_FRAGMENT_SHADER
+	 */
+	val GL_FRAGMENT_SHADER: Int = 35632
+
+	/**
+	 * Constant Value: 36160
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER
+	 */
+	val GL_FRAMEBUFFER: Int = 36160
+
+	/**
+	 * Constant Value: 36049
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME
+	 */
+	val GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME: Int = 36049
+
+	/**
+	 * Constant Value: 36048
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE
+	 */
+	val GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE: Int = 36048
+
+	/**
+	 * Constant Value: 36051
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE
+	 */
+	val GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE: Int = 36051
+
+	/**
+	 * Constant Value: 36050
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL
+	 */
+	val GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL: Int = 36050
+
+	/**
+	 * Constant Value: 36006
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_BINDING
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_BINDING
+	 */
+	val GL_FRAMEBUFFER_BINDING: Int = 36006
+
+	/**
+	 * Constant Value: 36053
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_COMPLETE
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_COMPLETE
+	 */
+	val GL_FRAMEBUFFER_COMPLETE: Int = 36053
+
+	/**
+	 * Constant Value: 36054
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT
+	 */
+	val GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: Int = 36054
+
+	/**
+	 * Constant Value: 36055
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT
+	 */
+	val GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: Int = 36055
+
+	/**
+	 * Constant Value: 36061
+	 * 
+	 * @see android.opengl.GLES20#GL_FRAMEBUFFER_UNSUPPORTED
+	 * @see org.lwjgl.opengl.GL30#GL_FRAMEBUFFER_UNSUPPORTED
+	 */
+	val GL_FRAMEBUFFER_UNSUPPORTED: Int = 36061
+
+	/**
 	 * Constant Value: 1028
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FRONT
+	 * @see android.opengl.GLES10#GL_FRONT
 	 * @see org.lwjgl.opengl.GL11#GL_FRONT
 	 */
 	val GL_FRONT: Int = 1028
@@ -1079,7 +1515,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 1032
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_FRONT_AND_BACK
+	 * @see android.opengl.GLES10#GL_FRONT_AND_BACK
 	 * @see org.lwjgl.opengl.GL11#GL_FRONT_AND_BACK
 	 */
 	val GL_FRONT_AND_BACK: Int = 1032
@@ -1087,15 +1523,39 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2886
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_FRONT_FACE
+	 * @see android.opengl.GLES11#GL_FRONT_FACE
 	 * @see org.lwjgl.opengl.GL11#GL_FRONT_FACE
 	 */
 	val GL_FRONT_FACE: Int = 2886
 
 	/**
+	 * Constant Value: 32774
+	 * 
+	 * @see android.opengl.GLES20#GL_FUNC_ADD
+	 * @see org.lwjgl.opengl.GL14#GL_FUNC_ADD
+	 */
+	val GL_FUNC_ADD: Int = 32774
+
+	/**
+	 * Constant Value: 32779
+	 * 
+	 * @see android.opengl.GLES20#GL_FUNC_REVERSE_SUBTRACT
+	 * @see org.lwjgl.opengl.GL14#GL_FUNC_REVERSE_SUBTRACT
+	 */
+	val GL_FUNC_REVERSE_SUBTRACT: Int = 32779
+
+	/**
+	 * Constant Value: 32778
+	 * 
+	 * @see android.opengl.GLES20#GL_FUNC_SUBTRACT
+	 * @see org.lwjgl.opengl.GL14#GL_FUNC_SUBTRACT
+	 */
+	val GL_FUNC_SUBTRACT: Int = 32778
+
+	/**
 	 * Constant Value: 33169
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_GENERATE_MIPMAP
+	 * @see android.opengl.GLES11#GL_GENERATE_MIPMAP
 	 * @see org.lwjgl.opengl.GL14#GL_GENERATE_MIPMAP
 	 */
 	val GL_GENERATE_MIPMAP: Int = 33169
@@ -1103,7 +1563,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33170
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_GENERATE_MIPMAP_HINT
+	 * @see android.opengl.GLES11#GL_GENERATE_MIPMAP_HINT
 	 * @see org.lwjgl.opengl.GL14#GL_GENERATE_MIPMAP_HINT
 	 */
 	val GL_GENERATE_MIPMAP_HINT: Int = 33170
@@ -1111,7 +1571,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 518
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_GEQUAL
+	 * @see android.opengl.GLES10#GL_GEQUAL
 	 * @see org.lwjgl.opengl.GL11#GL_GEQUAL
 	 */
 	val GL_GEQUAL: Int = 518
@@ -1119,7 +1579,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 516
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_GREATER
+	 * @see android.opengl.GLES10#GL_GREATER
 	 * @see org.lwjgl.opengl.GL11#GL_GREATER
 	 */
 	val GL_GREATER: Int = 516
@@ -1127,39 +1587,127 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3411
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_GREEN_BITS
+	 * @see android.opengl.GLES10#GL_GREEN_BITS
 	 * @see org.lwjgl.opengl.GL11#GL_GREEN_BITS
 	 */
 	val GL_GREEN_BITS: Int = 3411
 
 	/**
+	 * Constant Value: 36338
+	 * 
+	 * @see android.opengl.GLES20#GL_HIGH_FLOAT
+	 * @see org.lwjgl.opengl.GL41#GL_HIGH_FLOAT
+	 */
+	val GL_HIGH_FLOAT: Int = 36338
+
+	/**
+	 * Constant Value: 36341
+	 * 
+	 * @see android.opengl.GLES20#GL_HIGH_INT
+	 * @see org.lwjgl.opengl.GL41#GL_HIGH_INT
+	 */
+	val GL_HIGH_INT: Int = 36341
+
+	/**
+	 * Constant Value: 35739
+	 * 
+	 * @see android.opengl.GLES20#GL_IMPLEMENTATION_COLOR_READ_FORMAT
+	 * @see org.lwjgl.opengl.GL41#GL_IMPLEMENTATION_COLOR_READ_FORMAT
+	 */
+	val GL_IMPLEMENTATION_COLOR_READ_FORMAT: Int = 35739
+
+	/**
+	 * Constant Value: 35738
+	 * 
+	 * @see android.opengl.GLES20#GL_IMPLEMENTATION_COLOR_READ_TYPE
+	 * @see org.lwjgl.opengl.GL41#GL_IMPLEMENTATION_COLOR_READ_TYPE
+	 */
+	val GL_IMPLEMENTATION_COLOR_READ_TYPE: Int = 35738
+
+	/**
 	 * Constant Value: 7682
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_INCR
+	 * @see android.opengl.GLES10#GL_INCR
 	 * @see org.lwjgl.opengl.GL11#GL_INCR
 	 */
 	val GL_INCR: Int = 7682
 
 	/**
+	 * Constant Value: 34055
+	 * 
+	 * @see android.opengl.GLES20#GL_INCR_WRAP
+	 * @see org.lwjgl.opengl.GL14#GL_INCR_WRAP
+	 */
+	val GL_INCR_WRAP: Int = 34055
+
+	/**
+	 * Constant Value: 35716
+	 * 
+	 * @see android.opengl.GLES20#GL_INFO_LOG_LENGTH
+	 * @see org.lwjgl.opengl.GL20#GL_INFO_LOG_LENGTH
+	 */
+	val GL_INFO_LOG_LENGTH: Int = 35716
+
+	/**
+	 * Constant Value: 5124
+	 * 
+	 * @see android.opengl.GLES20#GL_INT
+	 * @see org.lwjgl.opengl.GL11#GL_INT
+	 */
+	val GL_INT: Int = 5124
+
+	/**
 	 * Constant Value: 34165
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_INTERPOLATE
+	 * @see android.opengl.GLES11#GL_INTERPOLATE
 	 * @see org.lwjgl.opengl.GL13#GL_INTERPOLATE
 	 */
 	val GL_INTERPOLATE: Int = 34165
 
 	/**
+	 * Constant Value: 35667
+	 * 
+	 * @see android.opengl.GLES20#GL_INT_VEC2
+	 * @see org.lwjgl.opengl.GL20#GL_INT_VEC2
+	 */
+	val GL_INT_VEC2: Int = 35667
+
+	/**
+	 * Constant Value: 35668
+	 * 
+	 * @see android.opengl.GLES20#GL_INT_VEC3
+	 * @see org.lwjgl.opengl.GL20#GL_INT_VEC3
+	 */
+	val GL_INT_VEC3: Int = 35668
+
+	/**
+	 * Constant Value: 35669
+	 * 
+	 * @see android.opengl.GLES20#GL_INT_VEC4
+	 * @see org.lwjgl.opengl.GL20#GL_INT_VEC4
+	 */
+	val GL_INT_VEC4: Int = 35669
+
+	/**
 	 * Constant Value: 1280
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_INVALID_ENUM
+	 * @see android.opengl.GLES10#GL_INVALID_ENUM
 	 * @see org.lwjgl.opengl.GL11#GL_INVALID_ENUM
 	 */
 	val GL_INVALID_ENUM: Int = 1280
 
 	/**
+	 * Constant Value: 1286
+	 * 
+	 * @see android.opengl.GLES20#GL_INVALID_FRAMEBUFFER_OPERATION
+	 * @see org.lwjgl.opengl.GL30#GL_INVALID_FRAMEBUFFER_OPERATION
+	 */
+	val GL_INVALID_FRAMEBUFFER_OPERATION: Int = 1286
+
+	/**
 	 * Constant Value: 1282
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_INVALID_OPERATION
+	 * @see android.opengl.GLES10#GL_INVALID_OPERATION
 	 * @see org.lwjgl.opengl.GL11#GL_INVALID_OPERATION
 	 */
 	val GL_INVALID_OPERATION: Int = 1282
@@ -1167,7 +1715,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 1281
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_INVALID_VALUE
+	 * @see android.opengl.GLES10#GL_INVALID_VALUE
 	 * @see org.lwjgl.opengl.GL11#GL_INVALID_VALUE
 	 */
 	val GL_INVALID_VALUE: Int = 1281
@@ -1175,7 +1723,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5386
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_INVERT
+	 * @see android.opengl.GLES10#GL_INVERT
 	 * @see org.lwjgl.opengl.GL11#GL_INVERT
 	 */
 	val GL_INVERT: Int = 5386
@@ -1183,7 +1731,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 7680
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_KEEP
+	 * @see android.opengl.GLES10#GL_KEEP
 	 * @see org.lwjgl.opengl.GL11#GL_KEEP
 	 */
 	val GL_KEEP: Int = 7680
@@ -1191,7 +1739,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 515
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LEQUAL
+	 * @see android.opengl.GLES10#GL_LEQUAL
 	 * @see org.lwjgl.opengl.GL11#GL_LEQUAL
 	 */
 	val GL_LEQUAL: Int = 515
@@ -1199,7 +1747,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 513
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LESS
+	 * @see android.opengl.GLES10#GL_LESS
 	 * @see org.lwjgl.opengl.GL11#GL_LESS
 	 */
 	val GL_LESS: Int = 513
@@ -1207,7 +1755,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 16384
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT0
+	 * @see android.opengl.GLES10#GL_LIGHT0
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT0
 	 */
 	val GL_LIGHT0: Int = 16384
@@ -1215,7 +1763,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 16385
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT1
+	 * @see android.opengl.GLES10#GL_LIGHT1
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT1
 	 */
 	val GL_LIGHT1: Int = 16385
@@ -1223,7 +1771,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 16386
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT2
+	 * @see android.opengl.GLES10#GL_LIGHT2
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT2
 	 */
 	val GL_LIGHT2: Int = 16386
@@ -1231,7 +1779,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 16387
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT3
+	 * @see android.opengl.GLES10#GL_LIGHT3
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT3
 	 */
 	val GL_LIGHT3: Int = 16387
@@ -1239,7 +1787,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 16388
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT4
+	 * @see android.opengl.GLES10#GL_LIGHT4
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT4
 	 */
 	val GL_LIGHT4: Int = 16388
@@ -1247,7 +1795,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 16389
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT5
+	 * @see android.opengl.GLES10#GL_LIGHT5
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT5
 	 */
 	val GL_LIGHT5: Int = 16389
@@ -1255,7 +1803,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 16390
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT6
+	 * @see android.opengl.GLES10#GL_LIGHT6
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT6
 	 */
 	val GL_LIGHT6: Int = 16390
@@ -1263,7 +1811,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 16391
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT7
+	 * @see android.opengl.GLES10#GL_LIGHT7
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT7
 	 */
 	val GL_LIGHT7: Int = 16391
@@ -1271,7 +1819,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2896
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHTING
+	 * @see android.opengl.GLES10#GL_LIGHTING
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHTING
 	 */
 	val GL_LIGHTING: Int = 2896
@@ -1279,7 +1827,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2899
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT_MODEL_AMBIENT
+	 * @see android.opengl.GLES10#GL_LIGHT_MODEL_AMBIENT
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT_MODEL_AMBIENT
 	 */
 	val GL_LIGHT_MODEL_AMBIENT: Int = 2899
@@ -1287,7 +1835,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2898
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LIGHT_MODEL_TWO_SIDE
+	 * @see android.opengl.GLES10#GL_LIGHT_MODEL_TWO_SIDE
 	 * @see org.lwjgl.opengl.GL11#GL_LIGHT_MODEL_TWO_SIDE
 	 */
 	val GL_LIGHT_MODEL_TWO_SIDE: Int = 2898
@@ -1295,7 +1843,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 9729
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINEAR
+	 * @see android.opengl.GLES10#GL_LINEAR
 	 * @see org.lwjgl.opengl.GL11#GL_LINEAR
 	 */
 	val GL_LINEAR: Int = 9729
@@ -1303,7 +1851,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4616
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINEAR_ATTENUATION
+	 * @see android.opengl.GLES10#GL_LINEAR_ATTENUATION
 	 * @see org.lwjgl.opengl.GL11#GL_LINEAR_ATTENUATION
 	 */
 	val GL_LINEAR_ATTENUATION: Int = 4616
@@ -1311,7 +1859,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 9987
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINEAR_MIPMAP_LINEAR
+	 * @see android.opengl.GLES10#GL_LINEAR_MIPMAP_LINEAR
 	 * @see org.lwjgl.opengl.GL11#GL_LINEAR_MIPMAP_LINEAR
 	 */
 	val GL_LINEAR_MIPMAP_LINEAR: Int = 9987
@@ -1319,7 +1867,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 9985
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINEAR_MIPMAP_NEAREST
+	 * @see android.opengl.GLES10#GL_LINEAR_MIPMAP_NEAREST
 	 * @see org.lwjgl.opengl.GL11#GL_LINEAR_MIPMAP_NEAREST
 	 */
 	val GL_LINEAR_MIPMAP_NEAREST: Int = 9985
@@ -1327,7 +1875,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 1
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINES
+	 * @see android.opengl.GLES10#GL_LINES
 	 * @see org.lwjgl.opengl.GL11#GL_LINES
 	 */
 	val GL_LINES: Int = 1
@@ -1335,7 +1883,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINE_LOOP
+	 * @see android.opengl.GLES10#GL_LINE_LOOP
 	 * @see org.lwjgl.opengl.GL11#GL_LINE_LOOP
 	 */
 	val GL_LINE_LOOP: Int = 2
@@ -1343,7 +1891,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2848
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINE_SMOOTH
+	 * @see android.opengl.GLES10#GL_LINE_SMOOTH
 	 * @see org.lwjgl.opengl.GL11#GL_LINE_SMOOTH
 	 */
 	val GL_LINE_SMOOTH: Int = 2848
@@ -1351,7 +1899,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3154
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINE_SMOOTH_HINT
+	 * @see android.opengl.GLES10#GL_LINE_SMOOTH_HINT
 	 * @see org.lwjgl.opengl.GL11#GL_LINE_SMOOTH_HINT
 	 */
 	val GL_LINE_SMOOTH_HINT: Int = 3154
@@ -1359,7 +1907,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LINE_STRIP
+	 * @see android.opengl.GLES10#GL_LINE_STRIP
 	 * @see org.lwjgl.opengl.GL11#GL_LINE_STRIP
 	 */
 	val GL_LINE_STRIP: Int = 3
@@ -1367,23 +1915,47 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2849
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_LINE_WIDTH
+	 * @see android.opengl.GLES11#GL_LINE_WIDTH
 	 * @see org.lwjgl.opengl.GL11#GL_LINE_WIDTH
 	 */
 	val GL_LINE_WIDTH: Int = 2849
 
 	/**
+	 * Constant Value: 35714
+	 * 
+	 * @see android.opengl.GLES20#GL_LINK_STATUS
+	 * @see org.lwjgl.opengl.GL20#GL_LINK_STATUS
+	 */
+	val GL_LINK_STATUS: Int = 35714
+
+	/**
 	 * Constant Value: 3056
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_LOGIC_OP_MODE
+	 * @see android.opengl.GLES11#GL_LOGIC_OP_MODE
 	 * @see org.lwjgl.opengl.GL11#GL_LOGIC_OP_MODE
 	 */
 	val GL_LOGIC_OP_MODE: Int = 3056
 
 	/**
+	 * Constant Value: 36336
+	 * 
+	 * @see android.opengl.GLES20#GL_LOW_FLOAT
+	 * @see org.lwjgl.opengl.GL41#GL_LOW_FLOAT
+	 */
+	val GL_LOW_FLOAT: Int = 36336
+
+	/**
+	 * Constant Value: 36339
+	 * 
+	 * @see android.opengl.GLES20#GL_LOW_INT
+	 * @see org.lwjgl.opengl.GL41#GL_LOW_INT
+	 */
+	val GL_LOW_INT: Int = 36339
+
+	/**
 	 * Constant Value: 6409
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LUMINANCE
+	 * @see android.opengl.GLES10#GL_LUMINANCE
 	 * @see org.lwjgl.opengl.GL11#GL_LUMINANCE
 	 */
 	val GL_LUMINANCE: Int = 6409
@@ -1391,7 +1963,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 6410
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_LUMINANCE_ALPHA
+	 * @see android.opengl.GLES10#GL_LUMINANCE_ALPHA
 	 * @see org.lwjgl.opengl.GL11#GL_LUMINANCE_ALPHA
 	 */
 	val GL_LUMINANCE_ALPHA: Int = 6410
@@ -1399,7 +1971,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2976
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_MATRIX_MODE
+	 * @see android.opengl.GLES11#GL_MATRIX_MODE
 	 * @see org.lwjgl.opengl.GL11#GL_MATRIX_MODE
 	 */
 	val GL_MATRIX_MODE: Int = 2976
@@ -1407,15 +1979,31 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3378
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_MAX_CLIP_PLANES
+	 * @see android.opengl.GLES11#GL_MAX_CLIP_PLANES
 	 * @see org.lwjgl.opengl.GL11#GL_MAX_CLIP_PLANES
 	 */
 	val GL_MAX_CLIP_PLANES: Int = 3378
 
 	/**
+	 * Constant Value: 35661
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+	 * @see org.lwjgl.opengl.GL20#GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+	 */
+	val GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: Int = 35661
+
+	/**
+	 * Constant Value: 34076
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_CUBE_MAP_TEXTURE_SIZE
+	 * @see org.lwjgl.opengl.GL13#GL_MAX_CUBE_MAP_TEXTURE_SIZE
+	 */
+	val GL_MAX_CUBE_MAP_TEXTURE_SIZE: Int = 34076
+
+	/**
 	 * Constant Value: 33001
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_ELEMENTS_INDICES
+	 * @see android.opengl.GLES10#GL_MAX_ELEMENTS_INDICES
 	 * @see org.lwjgl.opengl.GL12#GL_MAX_ELEMENTS_INDICES
 	 */
 	val GL_MAX_ELEMENTS_INDICES: Int = 33001
@@ -1423,15 +2011,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33000
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_ELEMENTS_VERTICES
+	 * @see android.opengl.GLES10#GL_MAX_ELEMENTS_VERTICES
 	 * @see org.lwjgl.opengl.GL12#GL_MAX_ELEMENTS_VERTICES
 	 */
 	val GL_MAX_ELEMENTS_VERTICES: Int = 33000
 
 	/**
+	 * Constant Value: 36349
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_FRAGMENT_UNIFORM_VECTORS
+	 * @see org.lwjgl.opengl.GL41#GL_MAX_FRAGMENT_UNIFORM_VECTORS
+	 */
+	val GL_MAX_FRAGMENT_UNIFORM_VECTORS: Int = 36349
+
+	/**
 	 * Constant Value: 3377
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_LIGHTS
+	 * @see android.opengl.GLES10#GL_MAX_LIGHTS
 	 * @see org.lwjgl.opengl.GL11#GL_MAX_LIGHTS
 	 */
 	val GL_MAX_LIGHTS: Int = 3377
@@ -1439,7 +2035,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3382
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_MODELVIEW_STACK_DEPTH
+	 * @see android.opengl.GLES10#GL_MAX_MODELVIEW_STACK_DEPTH
 	 * @see org.lwjgl.opengl.GL11#GL_MAX_MODELVIEW_STACK_DEPTH
 	 */
 	val GL_MAX_MODELVIEW_STACK_DEPTH: Int = 3382
@@ -1447,15 +2043,31 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3384
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_PROJECTION_STACK_DEPTH
+	 * @see android.opengl.GLES10#GL_MAX_PROJECTION_STACK_DEPTH
 	 * @see org.lwjgl.opengl.GL11#GL_MAX_PROJECTION_STACK_DEPTH
 	 */
 	val GL_MAX_PROJECTION_STACK_DEPTH: Int = 3384
 
 	/**
+	 * Constant Value: 34024
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_RENDERBUFFER_SIZE
+	 * @see org.lwjgl.opengl.GL30#GL_MAX_RENDERBUFFER_SIZE
+	 */
+	val GL_MAX_RENDERBUFFER_SIZE: Int = 34024
+
+	/**
+	 * Constant Value: 34930
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_TEXTURE_IMAGE_UNITS
+	 * @see org.lwjgl.opengl.GL20#GL_MAX_TEXTURE_IMAGE_UNITS
+	 */
+	val GL_MAX_TEXTURE_IMAGE_UNITS: Int = 34930
+
+	/**
 	 * Constant Value: 3379
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_TEXTURE_SIZE
+	 * @see android.opengl.GLES10#GL_MAX_TEXTURE_SIZE
 	 * @see org.lwjgl.opengl.GL11#GL_MAX_TEXTURE_SIZE
 	 */
 	val GL_MAX_TEXTURE_SIZE: Int = 3379
@@ -1463,7 +2075,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3385
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_TEXTURE_STACK_DEPTH
+	 * @see android.opengl.GLES10#GL_MAX_TEXTURE_STACK_DEPTH
 	 * @see org.lwjgl.opengl.GL11#GL_MAX_TEXTURE_STACK_DEPTH
 	 */
 	val GL_MAX_TEXTURE_STACK_DEPTH: Int = 3385
@@ -1471,23 +2083,79 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34018
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_TEXTURE_UNITS
+	 * @see android.opengl.GLES10#GL_MAX_TEXTURE_UNITS
 	 * @see org.lwjgl.opengl.GL13#GL_MAX_TEXTURE_UNITS
 	 */
 	val GL_MAX_TEXTURE_UNITS: Int = 34018
 
 	/**
+	 * Constant Value: 36348
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_VARYING_VECTORS
+	 * @see org.lwjgl.opengl.GL41#GL_MAX_VARYING_VECTORS
+	 */
+	val GL_MAX_VARYING_VECTORS: Int = 36348
+
+	/**
+	 * Constant Value: 34921
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_VERTEX_ATTRIBS
+	 * @see org.lwjgl.opengl.GL20#GL_MAX_VERTEX_ATTRIBS
+	 */
+	val GL_MAX_VERTEX_ATTRIBS: Int = 34921
+
+	/**
+	 * Constant Value: 35660
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
+	 * @see org.lwjgl.opengl.GL20#GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
+	 */
+	val GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS: Int = 35660
+
+	/**
+	 * Constant Value: 36347
+	 * 
+	 * @see android.opengl.GLES20#GL_MAX_VERTEX_UNIFORM_VECTORS
+	 * @see org.lwjgl.opengl.GL41#GL_MAX_VERTEX_UNIFORM_VECTORS
+	 */
+	val GL_MAX_VERTEX_UNIFORM_VECTORS: Int = 36347
+
+	/**
 	 * Constant Value: 3386
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MAX_VIEWPORT_DIMS
+	 * @see android.opengl.GLES10#GL_MAX_VIEWPORT_DIMS
 	 * @see org.lwjgl.opengl.GL11#GL_MAX_VIEWPORT_DIMS
 	 */
 	val GL_MAX_VIEWPORT_DIMS: Int = 3386
 
 	/**
+	 * Constant Value: 36337
+	 * 
+	 * @see android.opengl.GLES20#GL_MEDIUM_FLOAT
+	 * @see org.lwjgl.opengl.GL41#GL_MEDIUM_FLOAT
+	 */
+	val GL_MEDIUM_FLOAT: Int = 36337
+
+	/**
+	 * Constant Value: 36340
+	 * 
+	 * @see android.opengl.GLES20#GL_MEDIUM_INT
+	 * @see org.lwjgl.opengl.GL41#GL_MEDIUM_INT
+	 */
+	val GL_MEDIUM_INT: Int = 36340
+
+	/**
+	 * Constant Value: 33648
+	 * 
+	 * @see android.opengl.GLES20#GL_MIRRORED_REPEAT
+	 * @see org.lwjgl.opengl.GL14#GL_MIRRORED_REPEAT
+	 */
+	val GL_MIRRORED_REPEAT: Int = 33648
+
+	/**
 	 * Constant Value: 5888
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MODELVIEW
+	 * @see android.opengl.GLES10#GL_MODELVIEW
 	 * @see org.lwjgl.opengl.GL11#GL_MODELVIEW
 	 */
 	val GL_MODELVIEW: Int = 5888
@@ -1495,7 +2163,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2982
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_MODELVIEW_MATRIX
+	 * @see android.opengl.GLES11#GL_MODELVIEW_MATRIX
 	 * @see org.lwjgl.opengl.GL11#GL_MODELVIEW_MATRIX
 	 */
 	val GL_MODELVIEW_MATRIX: Int = 2982
@@ -1503,7 +2171,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2979
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_MODELVIEW_STACK_DEPTH
+	 * @see android.opengl.GLES11#GL_MODELVIEW_STACK_DEPTH
 	 * @see org.lwjgl.opengl.GL11#GL_MODELVIEW_STACK_DEPTH
 	 */
 	val GL_MODELVIEW_STACK_DEPTH: Int = 2979
@@ -1511,7 +2179,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 8448
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MODULATE
+	 * @see android.opengl.GLES10#GL_MODULATE
 	 * @see org.lwjgl.opengl.GL11#GL_MODULATE
 	 */
 	val GL_MODULATE: Int = 8448
@@ -1519,7 +2187,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32925
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_MULTISAMPLE
+	 * @see android.opengl.GLES10#GL_MULTISAMPLE
 	 * @see org.lwjgl.opengl.GL13#GL_MULTISAMPLE
 	 */
 	val GL_MULTISAMPLE: Int = 32925
@@ -1527,7 +2195,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5390
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NAND
+	 * @see android.opengl.GLES10#GL_NAND
 	 * @see org.lwjgl.opengl.GL11#GL_NAND
 	 */
 	val GL_NAND: Int = 5390
@@ -1535,7 +2203,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 9728
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NEAREST
+	 * @see android.opengl.GLES10#GL_NEAREST
 	 * @see org.lwjgl.opengl.GL11#GL_NEAREST
 	 */
 	val GL_NEAREST: Int = 9728
@@ -1543,7 +2211,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 9986
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NEAREST_MIPMAP_LINEAR
+	 * @see android.opengl.GLES10#GL_NEAREST_MIPMAP_LINEAR
 	 * @see org.lwjgl.opengl.GL11#GL_NEAREST_MIPMAP_LINEAR
 	 */
 	val GL_NEAREST_MIPMAP_LINEAR: Int = 9986
@@ -1551,7 +2219,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 9984
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NEAREST_MIPMAP_NEAREST
+	 * @see android.opengl.GLES10#GL_NEAREST_MIPMAP_NEAREST
 	 * @see org.lwjgl.opengl.GL11#GL_NEAREST_MIPMAP_NEAREST
 	 */
 	val GL_NEAREST_MIPMAP_NEAREST: Int = 9984
@@ -1559,7 +2227,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 512
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NEVER
+	 * @see android.opengl.GLES10#GL_NEVER
 	 * @see org.lwjgl.opengl.GL11#GL_NEVER
 	 */
 	val GL_NEVER: Int = 512
@@ -1567,15 +2235,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4354
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NICEST
+	 * @see android.opengl.GLES10#GL_NICEST
 	 * @see org.lwjgl.opengl.GL11#GL_NICEST
 	 */
 	val GL_NICEST: Int = 4354
 
 	/**
+	 * Constant Value: 0
+	 * 
+	 * @see android.opengl.GLES20#GL_NONE
+	 * @see org.lwjgl.opengl.GL11#GL_NONE
+	 */
+	val GL_NONE: Int = 0
+
+	/**
 	 * Constant Value: 5381
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NOOP
+	 * @see android.opengl.GLES10#GL_NOOP
 	 * @see org.lwjgl.opengl.GL11#GL_NOOP
 	 */
 	val GL_NOOP: Int = 5381
@@ -1583,7 +2259,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5384
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NOR
+	 * @see android.opengl.GLES10#GL_NOR
 	 * @see org.lwjgl.opengl.GL11#GL_NOR
 	 */
 	val GL_NOR: Int = 5384
@@ -1591,7 +2267,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2977
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NORMALIZE
+	 * @see android.opengl.GLES10#GL_NORMALIZE
 	 * @see org.lwjgl.opengl.GL11#GL_NORMALIZE
 	 */
 	val GL_NORMALIZE: Int = 2977
@@ -1599,7 +2275,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32885
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NORMAL_ARRAY
+	 * @see android.opengl.GLES10#GL_NORMAL_ARRAY
 	 * @see org.lwjgl.opengl.GL11#GL_NORMAL_ARRAY
 	 */
 	val GL_NORMAL_ARRAY: Int = 32885
@@ -1607,7 +2283,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34967
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_NORMAL_ARRAY_BUFFER_BINDING
+	 * @see android.opengl.GLES11#GL_NORMAL_ARRAY_BUFFER_BINDING
 	 * @see org.lwjgl.opengl.GL15#GL_NORMAL_ARRAY_BUFFER_BINDING
 	 */
 	val GL_NORMAL_ARRAY_BUFFER_BINDING: Int = 34967
@@ -1615,7 +2291,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32911
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_NORMAL_ARRAY_POINTER
+	 * @see android.opengl.GLES11#GL_NORMAL_ARRAY_POINTER
 	 * @see org.lwjgl.opengl.GL11#GL_NORMAL_ARRAY_POINTER
 	 */
 	val GL_NORMAL_ARRAY_POINTER: Int = 32911
@@ -1623,7 +2299,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32895
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_NORMAL_ARRAY_STRIDE
+	 * @see android.opengl.GLES11#GL_NORMAL_ARRAY_STRIDE
 	 * @see org.lwjgl.opengl.GL11#GL_NORMAL_ARRAY_STRIDE
 	 */
 	val GL_NORMAL_ARRAY_STRIDE: Int = 32895
@@ -1631,7 +2307,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32894
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_NORMAL_ARRAY_TYPE
+	 * @see android.opengl.GLES11#GL_NORMAL_ARRAY_TYPE
 	 * @see org.lwjgl.opengl.GL11#GL_NORMAL_ARRAY_TYPE
 	 */
 	val GL_NORMAL_ARRAY_TYPE: Int = 32894
@@ -1639,7 +2315,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 517
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NOTEQUAL
+	 * @see android.opengl.GLES10#GL_NOTEQUAL
 	 * @see org.lwjgl.opengl.GL11#GL_NOTEQUAL
 	 */
 	val GL_NOTEQUAL: Int = 517
@@ -1647,7 +2323,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 0
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NO_ERROR
+	 * @see android.opengl.GLES10#GL_NO_ERROR
 	 * @see org.lwjgl.opengl.GL11#GL_NO_ERROR
 	 */
 	val GL_NO_ERROR: Int = 0
@@ -1655,23 +2331,47 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34466
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_NUM_COMPRESSED_TEXTURE_FORMATS
+	 * @see android.opengl.GLES10#GL_NUM_COMPRESSED_TEXTURE_FORMATS
 	 * @see org.lwjgl.opengl.GL13#GL_NUM_COMPRESSED_TEXTURE_FORMATS
 	 */
 	val GL_NUM_COMPRESSED_TEXTURE_FORMATS: Int = 34466
 
 	/**
+	 * Constant Value: 36345
+	 * 
+	 * @see android.opengl.GLES20#GL_NUM_SHADER_BINARY_FORMATS
+	 * @see org.lwjgl.opengl.GL41#GL_NUM_SHADER_BINARY_FORMATS
+	 */
+	val GL_NUM_SHADER_BINARY_FORMATS: Int = 36345
+
+	/**
 	 * Constant Value: 1
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ONE
+	 * @see android.opengl.GLES10#GL_ONE
 	 * @see org.lwjgl.opengl.GL11#GL_ONE
 	 */
 	val GL_ONE: Int = 1
 
 	/**
+	 * Constant Value: 32772
+	 * 
+	 * @see android.opengl.GLES20#GL_ONE_MINUS_CONSTANT_ALPHA
+	 * @see org.lwjgl.opengl.GL11#GL_ONE_MINUS_CONSTANT_ALPHA
+	 */
+	val GL_ONE_MINUS_CONSTANT_ALPHA: Int = 32772
+
+	/**
+	 * Constant Value: 32770
+	 * 
+	 * @see android.opengl.GLES20#GL_ONE_MINUS_CONSTANT_COLOR
+	 * @see org.lwjgl.opengl.GL11#GL_ONE_MINUS_CONSTANT_COLOR
+	 */
+	val GL_ONE_MINUS_CONSTANT_COLOR: Int = 32770
+
+	/**
 	 * Constant Value: 773
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ONE_MINUS_DST_ALPHA
+	 * @see android.opengl.GLES10#GL_ONE_MINUS_DST_ALPHA
 	 * @see org.lwjgl.opengl.GL11#GL_ONE_MINUS_DST_ALPHA
 	 */
 	val GL_ONE_MINUS_DST_ALPHA: Int = 773
@@ -1679,7 +2379,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 775
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ONE_MINUS_DST_COLOR
+	 * @see android.opengl.GLES10#GL_ONE_MINUS_DST_COLOR
 	 * @see org.lwjgl.opengl.GL11#GL_ONE_MINUS_DST_COLOR
 	 */
 	val GL_ONE_MINUS_DST_COLOR: Int = 775
@@ -1687,7 +2387,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 771
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ONE_MINUS_SRC_ALPHA
+	 * @see android.opengl.GLES10#GL_ONE_MINUS_SRC_ALPHA
 	 * @see org.lwjgl.opengl.GL11#GL_ONE_MINUS_SRC_ALPHA
 	 */
 	val GL_ONE_MINUS_SRC_ALPHA: Int = 771
@@ -1695,7 +2395,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 769
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ONE_MINUS_SRC_COLOR
+	 * @see android.opengl.GLES10#GL_ONE_MINUS_SRC_COLOR
 	 * @see org.lwjgl.opengl.GL11#GL_ONE_MINUS_SRC_COLOR
 	 */
 	val GL_ONE_MINUS_SRC_COLOR: Int = 769
@@ -1703,7 +2403,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34200
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_OPERAND0_ALPHA
+	 * @see android.opengl.GLES11#GL_OPERAND0_ALPHA
 	 * @see org.lwjgl.opengl.GL13#GL_OPERAND0_ALPHA
 	 */
 	val GL_OPERAND0_ALPHA: Int = 34200
@@ -1711,7 +2411,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34192
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_OPERAND0_RGB
+	 * @see android.opengl.GLES11#GL_OPERAND0_RGB
 	 * @see org.lwjgl.opengl.GL13#GL_OPERAND0_RGB
 	 */
 	val GL_OPERAND0_RGB: Int = 34192
@@ -1719,7 +2419,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34201
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_OPERAND1_ALPHA
+	 * @see android.opengl.GLES11#GL_OPERAND1_ALPHA
 	 * @see org.lwjgl.opengl.GL13#GL_OPERAND1_ALPHA
 	 */
 	val GL_OPERAND1_ALPHA: Int = 34201
@@ -1727,7 +2427,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34193
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_OPERAND1_RGB
+	 * @see android.opengl.GLES11#GL_OPERAND1_RGB
 	 * @see org.lwjgl.opengl.GL13#GL_OPERAND1_RGB
 	 */
 	val GL_OPERAND1_RGB: Int = 34193
@@ -1735,7 +2435,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34202
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_OPERAND2_ALPHA
+	 * @see android.opengl.GLES11#GL_OPERAND2_ALPHA
 	 * @see org.lwjgl.opengl.GL13#GL_OPERAND2_ALPHA
 	 */
 	val GL_OPERAND2_ALPHA: Int = 34202
@@ -1743,7 +2443,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34194
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_OPERAND2_RGB
+	 * @see android.opengl.GLES11#GL_OPERAND2_RGB
 	 * @see org.lwjgl.opengl.GL13#GL_OPERAND2_RGB
 	 */
 	val GL_OPERAND2_RGB: Int = 34194
@@ -1751,7 +2451,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5383
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_OR
+	 * @see android.opengl.GLES10#GL_OR
 	 * @see org.lwjgl.opengl.GL11#GL_OR
 	 */
 	val GL_OR: Int = 5383
@@ -1759,7 +2459,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5389
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_OR_INVERTED
+	 * @see android.opengl.GLES10#GL_OR_INVERTED
 	 * @see org.lwjgl.opengl.GL11#GL_OR_INVERTED
 	 */
 	val GL_OR_INVERTED: Int = 5389
@@ -1767,7 +2467,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5387
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_OR_REVERSE
+	 * @see android.opengl.GLES10#GL_OR_REVERSE
 	 * @see org.lwjgl.opengl.GL11#GL_OR_REVERSE
 	 */
 	val GL_OR_REVERSE: Int = 5387
@@ -1775,7 +2475,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 1285
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_OUT_OF_MEMORY
+	 * @see android.opengl.GLES10#GL_OUT_OF_MEMORY
 	 * @see org.lwjgl.opengl.GL11#GL_OUT_OF_MEMORY
 	 */
 	val GL_OUT_OF_MEMORY: Int = 1285
@@ -1783,7 +2483,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3333
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_PACK_ALIGNMENT
+	 * @see android.opengl.GLES10#GL_PACK_ALIGNMENT
 	 * @see org.lwjgl.opengl.GL11#GL_PACK_ALIGNMENT
 	 */
 	val GL_PACK_ALIGNMENT: Int = 3333
@@ -1791,7 +2491,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3152
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_PERSPECTIVE_CORRECTION_HINT
+	 * @see android.opengl.GLES10#GL_PERSPECTIVE_CORRECTION_HINT
 	 * @see org.lwjgl.opengl.GL11#GL_PERSPECTIVE_CORRECTION_HINT
 	 */
 	val GL_PERSPECTIVE_CORRECTION_HINT: Int = 3152
@@ -1799,7 +2499,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 0
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_POINTS
+	 * @see android.opengl.GLES10#GL_POINTS
 	 * @see org.lwjgl.opengl.GL11#GL_POINTS
 	 */
 	val GL_POINTS: Int = 0
@@ -1807,7 +2507,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33065
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_POINT_DISTANCE_ATTENUATION
+	 * @see android.opengl.GLES11#GL_POINT_DISTANCE_ATTENUATION
 	 * @see org.lwjgl.opengl.GL14#GL_POINT_DISTANCE_ATTENUATION
 	 */
 	val GL_POINT_DISTANCE_ATTENUATION: Int = 33065
@@ -1815,7 +2515,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33064
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_POINT_FADE_THRESHOLD_SIZE
+	 * @see android.opengl.GLES10#GL_POINT_FADE_THRESHOLD_SIZE
 	 * @see org.lwjgl.opengl.GL14#GL_POINT_FADE_THRESHOLD_SIZE
 	 */
 	val GL_POINT_FADE_THRESHOLD_SIZE: Int = 33064
@@ -1823,7 +2523,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2833
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_POINT_SIZE
+	 * @see android.opengl.GLES10#GL_POINT_SIZE
 	 * @see org.lwjgl.opengl.GL11#GL_POINT_SIZE
 	 */
 	val GL_POINT_SIZE: Int = 2833
@@ -1831,7 +2531,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33063
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_POINT_SIZE_MAX
+	 * @see android.opengl.GLES11#GL_POINT_SIZE_MAX
 	 * @see org.lwjgl.opengl.GL14#GL_POINT_SIZE_MAX
 	 */
 	val GL_POINT_SIZE_MAX: Int = 33063
@@ -1839,7 +2539,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33062
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_POINT_SIZE_MIN
+	 * @see android.opengl.GLES11#GL_POINT_SIZE_MIN
 	 * @see org.lwjgl.opengl.GL14#GL_POINT_SIZE_MIN
 	 */
 	val GL_POINT_SIZE_MIN: Int = 33062
@@ -1847,7 +2547,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2832
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_POINT_SMOOTH
+	 * @see android.opengl.GLES10#GL_POINT_SMOOTH
 	 * @see org.lwjgl.opengl.GL11#GL_POINT_SMOOTH
 	 */
 	val GL_POINT_SMOOTH: Int = 2832
@@ -1855,7 +2555,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3153
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_POINT_SMOOTH_HINT
+	 * @see android.opengl.GLES10#GL_POINT_SMOOTH_HINT
 	 * @see org.lwjgl.opengl.GL11#GL_POINT_SMOOTH_HINT
 	 */
 	val GL_POINT_SMOOTH_HINT: Int = 3153
@@ -1863,7 +2563,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32824
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_POLYGON_OFFSET_FACTOR
+	 * @see android.opengl.GLES11#GL_POLYGON_OFFSET_FACTOR
 	 * @see org.lwjgl.opengl.GL11#GL_POLYGON_OFFSET_FACTOR
 	 */
 	val GL_POLYGON_OFFSET_FACTOR: Int = 32824
@@ -1871,7 +2571,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32823
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_POLYGON_OFFSET_FILL
+	 * @see android.opengl.GLES10#GL_POLYGON_OFFSET_FILL
 	 * @see org.lwjgl.opengl.GL11#GL_POLYGON_OFFSET_FILL
 	 */
 	val GL_POLYGON_OFFSET_FILL: Int = 32823
@@ -1879,7 +2579,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 10752
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_POLYGON_OFFSET_UNITS
+	 * @see android.opengl.GLES11#GL_POLYGON_OFFSET_UNITS
 	 * @see org.lwjgl.opengl.GL11#GL_POLYGON_OFFSET_UNITS
 	 */
 	val GL_POLYGON_OFFSET_UNITS: Int = 10752
@@ -1887,7 +2587,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3155
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_POLYGON_SMOOTH_HINT
+	 * @see android.opengl.GLES10#GL_POLYGON_SMOOTH_HINT
 	 * @see org.lwjgl.opengl.GL11#GL_POLYGON_SMOOTH_HINT
 	 */
 	val GL_POLYGON_SMOOTH_HINT: Int = 3155
@@ -1895,7 +2595,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4611
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_POSITION
+	 * @see android.opengl.GLES10#GL_POSITION
 	 * @see org.lwjgl.opengl.GL11#GL_POSITION
 	 */
 	val GL_POSITION: Int = 4611
@@ -1903,7 +2603,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34168
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_PREVIOUS
+	 * @see android.opengl.GLES11#GL_PREVIOUS
 	 * @see org.lwjgl.opengl.GL13#GL_PREVIOUS
 	 */
 	val GL_PREVIOUS: Int = 34168
@@ -1911,7 +2611,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34167
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_PRIMARY_COLOR
+	 * @see android.opengl.GLES11#GL_PRIMARY_COLOR
 	 * @see org.lwjgl.opengl.GL13#GL_PRIMARY_COLOR
 	 */
 	val GL_PRIMARY_COLOR: Int = 34167
@@ -1919,7 +2619,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5889
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_PROJECTION
+	 * @see android.opengl.GLES10#GL_PROJECTION
 	 * @see org.lwjgl.opengl.GL11#GL_PROJECTION
 	 */
 	val GL_PROJECTION: Int = 5889
@@ -1927,7 +2627,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2983
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_PROJECTION_MATRIX
+	 * @see android.opengl.GLES11#GL_PROJECTION_MATRIX
 	 * @see org.lwjgl.opengl.GL11#GL_PROJECTION_MATRIX
 	 */
 	val GL_PROJECTION_MATRIX: Int = 2983
@@ -1935,7 +2635,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2980
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_PROJECTION_STACK_DEPTH
+	 * @see android.opengl.GLES11#GL_PROJECTION_STACK_DEPTH
 	 * @see org.lwjgl.opengl.GL11#GL_PROJECTION_STACK_DEPTH
 	 */
 	val GL_PROJECTION_STACK_DEPTH: Int = 2980
@@ -1943,7 +2643,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4617
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_QUADRATIC_ATTENUATION
+	 * @see android.opengl.GLES10#GL_QUADRATIC_ATTENUATION
 	 * @see org.lwjgl.opengl.GL11#GL_QUADRATIC_ATTENUATION
 	 */
 	val GL_QUADRATIC_ATTENUATION: Int = 4617
@@ -1951,15 +2651,103 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3410
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_RED_BITS
+	 * @see android.opengl.GLES10#GL_RED_BITS
 	 * @see org.lwjgl.opengl.GL11#GL_RED_BITS
 	 */
 	val GL_RED_BITS: Int = 3410
 
 	/**
+	 * Constant Value: 36161
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER
+	 */
+	val GL_RENDERBUFFER: Int = 36161
+
+	/**
+	 * Constant Value: 36179
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_ALPHA_SIZE
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_ALPHA_SIZE
+	 */
+	val GL_RENDERBUFFER_ALPHA_SIZE: Int = 36179
+
+	/**
+	 * Constant Value: 36007
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_BINDING
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_BINDING
+	 */
+	val GL_RENDERBUFFER_BINDING: Int = 36007
+
+	/**
+	 * Constant Value: 36178
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_BLUE_SIZE
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_BLUE_SIZE
+	 */
+	val GL_RENDERBUFFER_BLUE_SIZE: Int = 36178
+
+	/**
+	 * Constant Value: 36180
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_DEPTH_SIZE
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_DEPTH_SIZE
+	 */
+	val GL_RENDERBUFFER_DEPTH_SIZE: Int = 36180
+
+	/**
+	 * Constant Value: 36177
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_GREEN_SIZE
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_GREEN_SIZE
+	 */
+	val GL_RENDERBUFFER_GREEN_SIZE: Int = 36177
+
+	/**
+	 * Constant Value: 36163
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_HEIGHT
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_HEIGHT
+	 */
+	val GL_RENDERBUFFER_HEIGHT: Int = 36163
+
+	/**
+	 * Constant Value: 36164
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_INTERNAL_FORMAT
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_INTERNAL_FORMAT
+	 */
+	val GL_RENDERBUFFER_INTERNAL_FORMAT: Int = 36164
+
+	/**
+	 * Constant Value: 36176
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_RED_SIZE
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_RED_SIZE
+	 */
+	val GL_RENDERBUFFER_RED_SIZE: Int = 36176
+
+	/**
+	 * Constant Value: 36181
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_STENCIL_SIZE
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_STENCIL_SIZE
+	 */
+	val GL_RENDERBUFFER_STENCIL_SIZE: Int = 36181
+
+	/**
+	 * Constant Value: 36162
+	 * 
+	 * @see android.opengl.GLES20#GL_RENDERBUFFER_WIDTH
+	 * @see org.lwjgl.opengl.GL30#GL_RENDERBUFFER_WIDTH
+	 */
+	val GL_RENDERBUFFER_WIDTH: Int = 36162
+
+	/**
 	 * Constant Value: 7937
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_RENDERER
+	 * @see android.opengl.GLES10#GL_RENDERER
 	 * @see org.lwjgl.opengl.GL11#GL_RENDERER
 	 */
 	val GL_RENDERER: Int = 7937
@@ -1967,7 +2755,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 10497
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_REPEAT
+	 * @see android.opengl.GLES10#GL_REPEAT
 	 * @see org.lwjgl.opengl.GL11#GL_REPEAT
 	 */
 	val GL_REPEAT: Int = 10497
@@ -1975,7 +2763,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 7681
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_REPLACE
+	 * @see android.opengl.GLES10#GL_REPLACE
 	 * @see org.lwjgl.opengl.GL11#GL_REPLACE
 	 */
 	val GL_REPLACE: Int = 7681
@@ -1983,7 +2771,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32826
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_RESCALE_NORMAL
+	 * @see android.opengl.GLES10#GL_RESCALE_NORMAL
 	 * @see org.lwjgl.opengl.GL12#GL_RESCALE_NORMAL
 	 */
 	val GL_RESCALE_NORMAL: Int = 32826
@@ -1991,31 +2779,63 @@ object GL extends GL {
 	/**
 	 * Constant Value: 6407
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_RGB
+	 * @see android.opengl.GLES10#GL_RGB
 	 * @see org.lwjgl.opengl.GL11#GL_RGB
 	 */
 	val GL_RGB: Int = 6407
 
 	/**
+	 * Constant Value: 32855
+	 * 
+	 * @see android.opengl.GLES20#GL_RGB5_A1
+	 * @see org.lwjgl.opengl.GL11#GL_RGB5_A1
+	 */
+	val GL_RGB5_A1: Int = 32855
+
+	/**
 	 * Constant Value: 6408
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_RGBA
+	 * @see android.opengl.GLES10#GL_RGBA
 	 * @see org.lwjgl.opengl.GL11#GL_RGBA
 	 */
 	val GL_RGBA: Int = 6408
 
 	/**
+	 * Constant Value: 32854
+	 * 
+	 * @see android.opengl.GLES20#GL_RGBA4
+	 * @see org.lwjgl.opengl.GL11#GL_RGBA4
+	 */
+	val GL_RGBA4: Int = 32854
+
+	/**
 	 * Constant Value: 34163
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_RGB_SCALE
+	 * @see android.opengl.GLES11#GL_RGB_SCALE
 	 * @see org.lwjgl.opengl.GL13#GL_RGB_SCALE
 	 */
 	val GL_RGB_SCALE: Int = 34163
 
 	/**
+	 * Constant Value: 35678
+	 * 
+	 * @see android.opengl.GLES20#GL_SAMPLER_2D
+	 * @see org.lwjgl.opengl.GL20#GL_SAMPLER_2D
+	 */
+	val GL_SAMPLER_2D: Int = 35678
+
+	/**
+	 * Constant Value: 35680
+	 * 
+	 * @see android.opengl.GLES20#GL_SAMPLER_CUBE
+	 * @see org.lwjgl.opengl.GL20#GL_SAMPLER_CUBE
+	 */
+	val GL_SAMPLER_CUBE: Int = 35680
+
+	/**
 	 * Constant Value: 32937
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SAMPLES
+	 * @see android.opengl.GLES11#GL_SAMPLES
 	 * @see org.lwjgl.opengl.GL13#GL_SAMPLES
 	 */
 	val GL_SAMPLES: Int = 32937
@@ -2023,7 +2843,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32926
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SAMPLE_ALPHA_TO_COVERAGE
+	 * @see android.opengl.GLES10#GL_SAMPLE_ALPHA_TO_COVERAGE
 	 * @see org.lwjgl.opengl.GL13#GL_SAMPLE_ALPHA_TO_COVERAGE
 	 */
 	val GL_SAMPLE_ALPHA_TO_COVERAGE: Int = 32926
@@ -2031,7 +2851,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32927
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SAMPLE_ALPHA_TO_ONE
+	 * @see android.opengl.GLES10#GL_SAMPLE_ALPHA_TO_ONE
 	 * @see org.lwjgl.opengl.GL13#GL_SAMPLE_ALPHA_TO_ONE
 	 */
 	val GL_SAMPLE_ALPHA_TO_ONE: Int = 32927
@@ -2039,7 +2859,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32936
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SAMPLE_BUFFERS
+	 * @see android.opengl.GLES11#GL_SAMPLE_BUFFERS
 	 * @see org.lwjgl.opengl.GL13#GL_SAMPLE_BUFFERS
 	 */
 	val GL_SAMPLE_BUFFERS: Int = 32936
@@ -2047,7 +2867,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32928
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SAMPLE_COVERAGE
+	 * @see android.opengl.GLES10#GL_SAMPLE_COVERAGE
 	 * @see org.lwjgl.opengl.GL13#GL_SAMPLE_COVERAGE
 	 */
 	val GL_SAMPLE_COVERAGE: Int = 32928
@@ -2055,7 +2875,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32939
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SAMPLE_COVERAGE_INVERT
+	 * @see android.opengl.GLES11#GL_SAMPLE_COVERAGE_INVERT
 	 * @see org.lwjgl.opengl.GL13#GL_SAMPLE_COVERAGE_INVERT
 	 */
 	val GL_SAMPLE_COVERAGE_INVERT: Int = 32939
@@ -2063,7 +2883,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32938
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SAMPLE_COVERAGE_VALUE
+	 * @see android.opengl.GLES11#GL_SAMPLE_COVERAGE_VALUE
 	 * @see org.lwjgl.opengl.GL13#GL_SAMPLE_COVERAGE_VALUE
 	 */
 	val GL_SAMPLE_COVERAGE_VALUE: Int = 32938
@@ -2071,7 +2891,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3088
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SCISSOR_BOX
+	 * @see android.opengl.GLES11#GL_SCISSOR_BOX
 	 * @see org.lwjgl.opengl.GL11#GL_SCISSOR_BOX
 	 */
 	val GL_SCISSOR_BOX: Int = 3088
@@ -2079,7 +2899,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3089
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SCISSOR_TEST
+	 * @see android.opengl.GLES10#GL_SCISSOR_TEST
 	 * @see org.lwjgl.opengl.GL11#GL_SCISSOR_TEST
 	 */
 	val GL_SCISSOR_TEST: Int = 3089
@@ -2087,23 +2907,55 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5391
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SET
+	 * @see android.opengl.GLES10#GL_SET
 	 * @see org.lwjgl.opengl.GL11#GL_SET
 	 */
 	val GL_SET: Int = 5391
 
 	/**
+	 * Constant Value: 36346
+	 * 
+	 * @see android.opengl.GLES20#GL_SHADER_COMPILER
+	 * @see org.lwjgl.opengl.GL41#GL_SHADER_COMPILER
+	 */
+	val GL_SHADER_COMPILER: Int = 36346
+
+	/**
+	 * Constant Value: 35720
+	 * 
+	 * @see android.opengl.GLES20#GL_SHADER_SOURCE_LENGTH
+	 * @see org.lwjgl.opengl.GL20#GL_SHADER_SOURCE_LENGTH
+	 */
+	val GL_SHADER_SOURCE_LENGTH: Int = 35720
+
+	/**
+	 * Constant Value: 35663
+	 * 
+	 * @see android.opengl.GLES20#GL_SHADER_TYPE
+	 * @see org.lwjgl.opengl.GL20#GL_SHADER_TYPE
+	 */
+	val GL_SHADER_TYPE: Int = 35663
+
+	/**
 	 * Constant Value: 2900
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SHADE_MODEL
+	 * @see android.opengl.GLES11#GL_SHADE_MODEL
 	 * @see org.lwjgl.opengl.GL11#GL_SHADE_MODEL
 	 */
 	val GL_SHADE_MODEL: Int = 2900
 
 	/**
+	 * Constant Value: 35724
+	 * 
+	 * @see android.opengl.GLES20#GL_SHADING_LANGUAGE_VERSION
+	 * @see org.lwjgl.opengl.GL20#GL_SHADING_LANGUAGE_VERSION
+	 */
+	val GL_SHADING_LANGUAGE_VERSION: Int = 35724
+
+	/**
 	 * Constant Value: 5633
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SHININESS
+	 * @see android.opengl.GLES10#GL_SHININESS
 	 * @see org.lwjgl.opengl.GL11#GL_SHININESS
 	 */
 	val GL_SHININESS: Int = 5633
@@ -2111,7 +2963,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5122
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SHORT
+	 * @see android.opengl.GLES10#GL_SHORT
 	 * @see org.lwjgl.opengl.GL11#GL_SHORT
 	 */
 	val GL_SHORT: Int = 5122
@@ -2119,7 +2971,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 7425
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SMOOTH
+	 * @see android.opengl.GLES10#GL_SMOOTH
 	 * @see org.lwjgl.opengl.GL11#GL_SMOOTH
 	 */
 	val GL_SMOOTH: Int = 7425
@@ -2127,7 +2979,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2850
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SMOOTH_LINE_WIDTH_RANGE
+	 * @see android.opengl.GLES10#GL_SMOOTH_LINE_WIDTH_RANGE
 	 * @see org.lwjgl.opengl.GL12#GL_SMOOTH_LINE_WIDTH_RANGE
 	 */
 	val GL_SMOOTH_LINE_WIDTH_RANGE: Int = 2850
@@ -2135,7 +2987,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2834
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SMOOTH_POINT_SIZE_RANGE
+	 * @see android.opengl.GLES10#GL_SMOOTH_POINT_SIZE_RANGE
 	 * @see org.lwjgl.opengl.GL12#GL_SMOOTH_POINT_SIZE_RANGE
 	 */
 	val GL_SMOOTH_POINT_SIZE_RANGE: Int = 2834
@@ -2143,7 +2995,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4610
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SPECULAR
+	 * @see android.opengl.GLES10#GL_SPECULAR
 	 * @see org.lwjgl.opengl.GL11#GL_SPECULAR
 	 */
 	val GL_SPECULAR: Int = 4610
@@ -2151,7 +3003,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4614
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SPOT_CUTOFF
+	 * @see android.opengl.GLES10#GL_SPOT_CUTOFF
 	 * @see org.lwjgl.opengl.GL11#GL_SPOT_CUTOFF
 	 */
 	val GL_SPOT_CUTOFF: Int = 4614
@@ -2159,7 +3011,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4612
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SPOT_DIRECTION
+	 * @see android.opengl.GLES10#GL_SPOT_DIRECTION
 	 * @see org.lwjgl.opengl.GL11#GL_SPOT_DIRECTION
 	 */
 	val GL_SPOT_DIRECTION: Int = 4612
@@ -2167,7 +3019,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4613
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SPOT_EXPONENT
+	 * @see android.opengl.GLES10#GL_SPOT_EXPONENT
 	 * @see org.lwjgl.opengl.GL11#GL_SPOT_EXPONENT
 	 */
 	val GL_SPOT_EXPONENT: Int = 4613
@@ -2175,7 +3027,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34184
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SRC0_ALPHA
+	 * @see android.opengl.GLES11#GL_SRC0_ALPHA
 	 * @see org.lwjgl.opengl.GL15#GL_SRC0_ALPHA
 	 */
 	val GL_SRC0_ALPHA: Int = 34184
@@ -2183,7 +3035,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34176
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SRC0_RGB
+	 * @see android.opengl.GLES11#GL_SRC0_RGB
 	 * @see org.lwjgl.opengl.GL15#GL_SRC0_RGB
 	 */
 	val GL_SRC0_RGB: Int = 34176
@@ -2191,7 +3043,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34185
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SRC1_ALPHA
+	 * @see android.opengl.GLES11#GL_SRC1_ALPHA
 	 * @see org.lwjgl.opengl.GL15#GL_SRC1_ALPHA
 	 */
 	val GL_SRC1_ALPHA: Int = 34185
@@ -2199,7 +3051,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34177
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SRC1_RGB
+	 * @see android.opengl.GLES11#GL_SRC1_RGB
 	 * @see org.lwjgl.opengl.GL15#GL_SRC1_RGB
 	 */
 	val GL_SRC1_RGB: Int = 34177
@@ -2207,7 +3059,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34186
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SRC2_ALPHA
+	 * @see android.opengl.GLES11#GL_SRC2_ALPHA
 	 * @see org.lwjgl.opengl.GL15#GL_SRC2_ALPHA
 	 */
 	val GL_SRC2_ALPHA: Int = 34186
@@ -2215,7 +3067,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34178
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SRC2_RGB
+	 * @see android.opengl.GLES11#GL_SRC2_RGB
 	 * @see org.lwjgl.opengl.GL15#GL_SRC2_RGB
 	 */
 	val GL_SRC2_RGB: Int = 34178
@@ -2223,7 +3075,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 770
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SRC_ALPHA
+	 * @see android.opengl.GLES10#GL_SRC_ALPHA
 	 * @see org.lwjgl.opengl.GL11#GL_SRC_ALPHA
 	 */
 	val GL_SRC_ALPHA: Int = 770
@@ -2231,7 +3083,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 776
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SRC_ALPHA_SATURATE
+	 * @see android.opengl.GLES10#GL_SRC_ALPHA_SATURATE
 	 * @see org.lwjgl.opengl.GL11#GL_SRC_ALPHA_SATURATE
 	 */
 	val GL_SRC_ALPHA_SATURATE: Int = 776
@@ -2239,7 +3091,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 768
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SRC_COLOR
+	 * @see android.opengl.GLES10#GL_SRC_COLOR
 	 * @see org.lwjgl.opengl.GL11#GL_SRC_COLOR
 	 */
 	val GL_SRC_COLOR: Int = 768
@@ -2247,7 +3099,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 1283
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_STACK_OVERFLOW
+	 * @see android.opengl.GLES10#GL_STACK_OVERFLOW
 	 * @see org.lwjgl.opengl.GL11#GL_STACK_OVERFLOW
 	 */
 	val GL_STACK_OVERFLOW: Int = 1283
@@ -2255,7 +3107,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 1284
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_STACK_UNDERFLOW
+	 * @see android.opengl.GLES10#GL_STACK_UNDERFLOW
 	 * @see org.lwjgl.opengl.GL11#GL_STACK_UNDERFLOW
 	 */
 	val GL_STACK_UNDERFLOW: Int = 1284
@@ -2263,15 +3115,79 @@ object GL extends GL {
 	/**
 	 * Constant Value: 35044
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STATIC_DRAW
+	 * @see android.opengl.GLES11#GL_STATIC_DRAW
 	 * @see org.lwjgl.opengl.GL15#GL_STATIC_DRAW
 	 */
 	val GL_STATIC_DRAW: Int = 35044
 
 	/**
+	 * Constant Value: 36128
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_ATTACHMENT
+	 * @see org.lwjgl.opengl.GL30#GL_STENCIL_ATTACHMENT
+	 */
+	val GL_STENCIL_ATTACHMENT: Int = 36128
+
+	/**
+	 * Constant Value: 34817
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_BACK_FAIL
+	 * @see org.lwjgl.opengl.GL20#GL_STENCIL_BACK_FAIL
+	 */
+	val GL_STENCIL_BACK_FAIL: Int = 34817
+
+	/**
+	 * Constant Value: 34816
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_BACK_FUNC
+	 * @see org.lwjgl.opengl.GL20#GL_STENCIL_BACK_FUNC
+	 */
+	val GL_STENCIL_BACK_FUNC: Int = 34816
+
+	/**
+	 * Constant Value: 34818
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_BACK_PASS_DEPTH_FAIL
+	 * @see org.lwjgl.opengl.GL20#GL_STENCIL_BACK_PASS_DEPTH_FAIL
+	 */
+	val GL_STENCIL_BACK_PASS_DEPTH_FAIL: Int = 34818
+
+	/**
+	 * Constant Value: 34819
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_BACK_PASS_DEPTH_PASS
+	 * @see org.lwjgl.opengl.GL20#GL_STENCIL_BACK_PASS_DEPTH_PASS
+	 */
+	val GL_STENCIL_BACK_PASS_DEPTH_PASS: Int = 34819
+
+	/**
+	 * Constant Value: 36003
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_BACK_REF
+	 * @see org.lwjgl.opengl.GL20#GL_STENCIL_BACK_REF
+	 */
+	val GL_STENCIL_BACK_REF: Int = 36003
+
+	/**
+	 * Constant Value: 36004
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_BACK_VALUE_MASK
+	 * @see org.lwjgl.opengl.GL20#GL_STENCIL_BACK_VALUE_MASK
+	 */
+	val GL_STENCIL_BACK_VALUE_MASK: Int = 36004
+
+	/**
+	 * Constant Value: 36005
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_BACK_WRITEMASK
+	 * @see org.lwjgl.opengl.GL20#GL_STENCIL_BACK_WRITEMASK
+	 */
+	val GL_STENCIL_BACK_WRITEMASK: Int = 36005
+
+	/**
 	 * Constant Value: 3415
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_STENCIL_BITS
+	 * @see android.opengl.GLES10#GL_STENCIL_BITS
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_BITS
 	 */
 	val GL_STENCIL_BITS: Int = 3415
@@ -2279,7 +3195,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 1024
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_STENCIL_BUFFER_BIT
+	 * @see android.opengl.GLES10#GL_STENCIL_BUFFER_BIT
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_BUFFER_BIT
 	 */
 	val GL_STENCIL_BUFFER_BIT: Int = 1024
@@ -2287,7 +3203,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2961
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STENCIL_CLEAR_VALUE
+	 * @see android.opengl.GLES11#GL_STENCIL_CLEAR_VALUE
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_CLEAR_VALUE
 	 */
 	val GL_STENCIL_CLEAR_VALUE: Int = 2961
@@ -2295,7 +3211,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2964
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STENCIL_FAIL
+	 * @see android.opengl.GLES11#GL_STENCIL_FAIL
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_FAIL
 	 */
 	val GL_STENCIL_FAIL: Int = 2964
@@ -2303,15 +3219,31 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2962
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STENCIL_FUNC
+	 * @see android.opengl.GLES11#GL_STENCIL_FUNC
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_FUNC
 	 */
 	val GL_STENCIL_FUNC: Int = 2962
 
 	/**
+	 * Constant Value: 6401
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_INDEX
+	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_INDEX
+	 */
+	val GL_STENCIL_INDEX: Int = 6401
+
+	/**
+	 * Constant Value: 36168
+	 * 
+	 * @see android.opengl.GLES20#GL_STENCIL_INDEX8
+	 * @see org.lwjgl.opengl.GL30#GL_STENCIL_INDEX8
+	 */
+	val GL_STENCIL_INDEX8: Int = 36168
+
+	/**
 	 * Constant Value: 2965
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STENCIL_PASS_DEPTH_FAIL
+	 * @see android.opengl.GLES11#GL_STENCIL_PASS_DEPTH_FAIL
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_PASS_DEPTH_FAIL
 	 */
 	val GL_STENCIL_PASS_DEPTH_FAIL: Int = 2965
@@ -2319,7 +3251,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2966
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STENCIL_PASS_DEPTH_PASS
+	 * @see android.opengl.GLES11#GL_STENCIL_PASS_DEPTH_PASS
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_PASS_DEPTH_PASS
 	 */
 	val GL_STENCIL_PASS_DEPTH_PASS: Int = 2966
@@ -2327,7 +3259,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2967
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STENCIL_REF
+	 * @see android.opengl.GLES11#GL_STENCIL_REF
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_REF
 	 */
 	val GL_STENCIL_REF: Int = 2967
@@ -2335,7 +3267,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2960
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_STENCIL_TEST
+	 * @see android.opengl.GLES10#GL_STENCIL_TEST
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_TEST
 	 */
 	val GL_STENCIL_TEST: Int = 2960
@@ -2343,7 +3275,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2963
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STENCIL_VALUE_MASK
+	 * @see android.opengl.GLES11#GL_STENCIL_VALUE_MASK
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_VALUE_MASK
 	 */
 	val GL_STENCIL_VALUE_MASK: Int = 2963
@@ -2351,15 +3283,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2968
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_STENCIL_WRITEMASK
+	 * @see android.opengl.GLES11#GL_STENCIL_WRITEMASK
 	 * @see org.lwjgl.opengl.GL11#GL_STENCIL_WRITEMASK
 	 */
 	val GL_STENCIL_WRITEMASK: Int = 2968
 
 	/**
+	 * Constant Value: 35040
+	 * 
+	 * @see android.opengl.GLES20#GL_STREAM_DRAW
+	 * @see org.lwjgl.opengl.GL15#GL_STREAM_DRAW
+	 */
+	val GL_STREAM_DRAW: Int = 35040
+
+	/**
 	 * Constant Value: 3408
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_SUBPIXEL_BITS
+	 * @see android.opengl.GLES10#GL_SUBPIXEL_BITS
 	 * @see org.lwjgl.opengl.GL11#GL_SUBPIXEL_BITS
 	 */
 	val GL_SUBPIXEL_BITS: Int = 3408
@@ -2367,7 +3307,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34023
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_SUBTRACT
+	 * @see android.opengl.GLES11#GL_SUBTRACT
 	 * @see org.lwjgl.opengl.GL13#GL_SUBTRACT
 	 */
 	val GL_SUBTRACT: Int = 34023
@@ -2375,7 +3315,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5890
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE
+	 * @see android.opengl.GLES10#GL_TEXTURE
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE
 	 */
 	val GL_TEXTURE: Int = 5890
@@ -2383,7 +3323,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33984
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE0
+	 * @see android.opengl.GLES10#GL_TEXTURE0
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE0
 	 */
 	val GL_TEXTURE0: Int = 33984
@@ -2391,7 +3331,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33985
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE1
+	 * @see android.opengl.GLES10#GL_TEXTURE1
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE1
 	 */
 	val GL_TEXTURE1: Int = 33985
@@ -2399,7 +3339,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33994
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE10
+	 * @see android.opengl.GLES10#GL_TEXTURE10
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE10
 	 */
 	val GL_TEXTURE10: Int = 33994
@@ -2407,7 +3347,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33995
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE11
+	 * @see android.opengl.GLES10#GL_TEXTURE11
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE11
 	 */
 	val GL_TEXTURE11: Int = 33995
@@ -2415,7 +3355,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33996
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE12
+	 * @see android.opengl.GLES10#GL_TEXTURE12
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE12
 	 */
 	val GL_TEXTURE12: Int = 33996
@@ -2423,7 +3363,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33997
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE13
+	 * @see android.opengl.GLES10#GL_TEXTURE13
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE13
 	 */
 	val GL_TEXTURE13: Int = 33997
@@ -2431,7 +3371,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33998
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE14
+	 * @see android.opengl.GLES10#GL_TEXTURE14
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE14
 	 */
 	val GL_TEXTURE14: Int = 33998
@@ -2439,7 +3379,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33999
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE15
+	 * @see android.opengl.GLES10#GL_TEXTURE15
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE15
 	 */
 	val GL_TEXTURE15: Int = 33999
@@ -2447,7 +3387,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34000
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE16
+	 * @see android.opengl.GLES10#GL_TEXTURE16
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE16
 	 */
 	val GL_TEXTURE16: Int = 34000
@@ -2455,7 +3395,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34001
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE17
+	 * @see android.opengl.GLES10#GL_TEXTURE17
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE17
 	 */
 	val GL_TEXTURE17: Int = 34001
@@ -2463,7 +3403,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34002
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE18
+	 * @see android.opengl.GLES10#GL_TEXTURE18
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE18
 	 */
 	val GL_TEXTURE18: Int = 34002
@@ -2471,7 +3411,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34003
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE19
+	 * @see android.opengl.GLES10#GL_TEXTURE19
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE19
 	 */
 	val GL_TEXTURE19: Int = 34003
@@ -2479,7 +3419,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33986
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE2
+	 * @see android.opengl.GLES10#GL_TEXTURE2
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE2
 	 */
 	val GL_TEXTURE2: Int = 33986
@@ -2487,7 +3427,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34004
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE20
+	 * @see android.opengl.GLES10#GL_TEXTURE20
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE20
 	 */
 	val GL_TEXTURE20: Int = 34004
@@ -2495,7 +3435,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34005
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE21
+	 * @see android.opengl.GLES10#GL_TEXTURE21
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE21
 	 */
 	val GL_TEXTURE21: Int = 34005
@@ -2503,7 +3443,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34006
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE22
+	 * @see android.opengl.GLES10#GL_TEXTURE22
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE22
 	 */
 	val GL_TEXTURE22: Int = 34006
@@ -2511,7 +3451,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34007
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE23
+	 * @see android.opengl.GLES10#GL_TEXTURE23
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE23
 	 */
 	val GL_TEXTURE23: Int = 34007
@@ -2519,7 +3459,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34008
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE24
+	 * @see android.opengl.GLES10#GL_TEXTURE24
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE24
 	 */
 	val GL_TEXTURE24: Int = 34008
@@ -2527,7 +3467,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34009
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE25
+	 * @see android.opengl.GLES10#GL_TEXTURE25
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE25
 	 */
 	val GL_TEXTURE25: Int = 34009
@@ -2535,7 +3475,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34010
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE26
+	 * @see android.opengl.GLES10#GL_TEXTURE26
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE26
 	 */
 	val GL_TEXTURE26: Int = 34010
@@ -2543,7 +3483,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34011
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE27
+	 * @see android.opengl.GLES10#GL_TEXTURE27
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE27
 	 */
 	val GL_TEXTURE27: Int = 34011
@@ -2551,7 +3491,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34012
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE28
+	 * @see android.opengl.GLES10#GL_TEXTURE28
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE28
 	 */
 	val GL_TEXTURE28: Int = 34012
@@ -2559,7 +3499,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34013
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE29
+	 * @see android.opengl.GLES10#GL_TEXTURE29
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE29
 	 */
 	val GL_TEXTURE29: Int = 34013
@@ -2567,7 +3507,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33987
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE3
+	 * @see android.opengl.GLES10#GL_TEXTURE3
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE3
 	 */
 	val GL_TEXTURE3: Int = 33987
@@ -2575,7 +3515,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34014
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE30
+	 * @see android.opengl.GLES10#GL_TEXTURE30
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE30
 	 */
 	val GL_TEXTURE30: Int = 34014
@@ -2583,7 +3523,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34015
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE31
+	 * @see android.opengl.GLES10#GL_TEXTURE31
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE31
 	 */
 	val GL_TEXTURE31: Int = 34015
@@ -2591,7 +3531,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33988
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE4
+	 * @see android.opengl.GLES10#GL_TEXTURE4
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE4
 	 */
 	val GL_TEXTURE4: Int = 33988
@@ -2599,7 +3539,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33989
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE5
+	 * @see android.opengl.GLES10#GL_TEXTURE5
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE5
 	 */
 	val GL_TEXTURE5: Int = 33989
@@ -2607,7 +3547,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33990
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE6
+	 * @see android.opengl.GLES10#GL_TEXTURE6
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE6
 	 */
 	val GL_TEXTURE6: Int = 33990
@@ -2615,7 +3555,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33991
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE7
+	 * @see android.opengl.GLES10#GL_TEXTURE7
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE7
 	 */
 	val GL_TEXTURE7: Int = 33991
@@ -2623,7 +3563,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33992
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE8
+	 * @see android.opengl.GLES10#GL_TEXTURE8
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE8
 	 */
 	val GL_TEXTURE8: Int = 33992
@@ -2631,7 +3571,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33993
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE9
+	 * @see android.opengl.GLES10#GL_TEXTURE9
 	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE9
 	 */
 	val GL_TEXTURE9: Int = 33993
@@ -2639,7 +3579,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3553
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_2D
+	 * @see android.opengl.GLES10#GL_TEXTURE_2D
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_2D
 	 */
 	val GL_TEXTURE_2D: Int = 3553
@@ -2647,15 +3587,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32873
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_TEXTURE_BINDING_2D
+	 * @see android.opengl.GLES11#GL_TEXTURE_BINDING_2D
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_BINDING_2D
 	 */
 	val GL_TEXTURE_BINDING_2D: Int = 32873
 
 	/**
+	 * Constant Value: 34068
+	 * 
+	 * @see android.opengl.GLES20#GL_TEXTURE_BINDING_CUBE_MAP
+	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE_BINDING_CUBE_MAP
+	 */
+	val GL_TEXTURE_BINDING_CUBE_MAP: Int = 34068
+
+	/**
 	 * Constant Value: 32888
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_COORD_ARRAY
+	 * @see android.opengl.GLES10#GL_TEXTURE_COORD_ARRAY
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_COORD_ARRAY
 	 */
 	val GL_TEXTURE_COORD_ARRAY: Int = 32888
@@ -2663,7 +3611,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34970
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING
+	 * @see android.opengl.GLES11#GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING
 	 * @see org.lwjgl.opengl.GL15#GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING
 	 */
 	val GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING: Int = 34970
@@ -2671,7 +3619,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32914
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_TEXTURE_COORD_ARRAY_POINTER
+	 * @see android.opengl.GLES11#GL_TEXTURE_COORD_ARRAY_POINTER
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_COORD_ARRAY_POINTER
 	 */
 	val GL_TEXTURE_COORD_ARRAY_POINTER: Int = 32914
@@ -2679,7 +3627,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32904
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_TEXTURE_COORD_ARRAY_SIZE
+	 * @see android.opengl.GLES11#GL_TEXTURE_COORD_ARRAY_SIZE
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_COORD_ARRAY_SIZE
 	 */
 	val GL_TEXTURE_COORD_ARRAY_SIZE: Int = 32904
@@ -2687,7 +3635,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32906
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_TEXTURE_COORD_ARRAY_STRIDE
+	 * @see android.opengl.GLES11#GL_TEXTURE_COORD_ARRAY_STRIDE
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_COORD_ARRAY_STRIDE
 	 */
 	val GL_TEXTURE_COORD_ARRAY_STRIDE: Int = 32906
@@ -2695,15 +3643,71 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32905
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_TEXTURE_COORD_ARRAY_TYPE
+	 * @see android.opengl.GLES11#GL_TEXTURE_COORD_ARRAY_TYPE
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_COORD_ARRAY_TYPE
 	 */
 	val GL_TEXTURE_COORD_ARRAY_TYPE: Int = 32905
 
 	/**
+	 * Constant Value: 34067
+	 * 
+	 * @see android.opengl.GLES20#GL_TEXTURE_CUBE_MAP
+	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP
+	 */
+	val GL_TEXTURE_CUBE_MAP: Int = 34067
+
+	/**
+	 * Constant Value: 34070
+	 * 
+	 * @see android.opengl.GLES20#GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+	 */
+	val GL_TEXTURE_CUBE_MAP_NEGATIVE_X: Int = 34070
+
+	/**
+	 * Constant Value: 34072
+	 * 
+	 * @see android.opengl.GLES20#GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+	 */
+	val GL_TEXTURE_CUBE_MAP_NEGATIVE_Y: Int = 34072
+
+	/**
+	 * Constant Value: 34074
+	 * 
+	 * @see android.opengl.GLES20#GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+	 */
+	val GL_TEXTURE_CUBE_MAP_NEGATIVE_Z: Int = 34074
+
+	/**
+	 * Constant Value: 34069
+	 * 
+	 * @see android.opengl.GLES20#GL_TEXTURE_CUBE_MAP_POSITIVE_X
+	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP_POSITIVE_X
+	 */
+	val GL_TEXTURE_CUBE_MAP_POSITIVE_X: Int = 34069
+
+	/**
+	 * Constant Value: 34071
+	 * 
+	 * @see android.opengl.GLES20#GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+	 */
+	val GL_TEXTURE_CUBE_MAP_POSITIVE_Y: Int = 34071
+
+	/**
+	 * Constant Value: 34073
+	 * 
+	 * @see android.opengl.GLES20#GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+	 * @see org.lwjgl.opengl.GL13#GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+	 */
+	val GL_TEXTURE_CUBE_MAP_POSITIVE_Z: Int = 34073
+
+	/**
 	 * Constant Value: 8960
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_ENV
+	 * @see android.opengl.GLES10#GL_TEXTURE_ENV
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_ENV
 	 */
 	val GL_TEXTURE_ENV: Int = 8960
@@ -2711,7 +3715,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 8705
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_ENV_COLOR
+	 * @see android.opengl.GLES10#GL_TEXTURE_ENV_COLOR
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_ENV_COLOR
 	 */
 	val GL_TEXTURE_ENV_COLOR: Int = 8705
@@ -2719,7 +3723,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 8704
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_ENV_MODE
+	 * @see android.opengl.GLES10#GL_TEXTURE_ENV_MODE
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_ENV_MODE
 	 */
 	val GL_TEXTURE_ENV_MODE: Int = 8704
@@ -2727,7 +3731,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 10240
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_MAG_FILTER
+	 * @see android.opengl.GLES10#GL_TEXTURE_MAG_FILTER
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_MAG_FILTER
 	 */
 	val GL_TEXTURE_MAG_FILTER: Int = 10240
@@ -2735,7 +3739,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2984
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_TEXTURE_MATRIX
+	 * @see android.opengl.GLES11#GL_TEXTURE_MATRIX
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_MATRIX
 	 */
 	val GL_TEXTURE_MATRIX: Int = 2984
@@ -2743,7 +3747,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 10241
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_MIN_FILTER
+	 * @see android.opengl.GLES10#GL_TEXTURE_MIN_FILTER
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_MIN_FILTER
 	 */
 	val GL_TEXTURE_MIN_FILTER: Int = 10241
@@ -2751,7 +3755,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 2981
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_TEXTURE_STACK_DEPTH
+	 * @see android.opengl.GLES11#GL_TEXTURE_STACK_DEPTH
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_STACK_DEPTH
 	 */
 	val GL_TEXTURE_STACK_DEPTH: Int = 2981
@@ -2759,7 +3763,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 10242
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_WRAP_S
+	 * @see android.opengl.GLES10#GL_TEXTURE_WRAP_S
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_WRAP_S
 	 */
 	val GL_TEXTURE_WRAP_S: Int = 10242
@@ -2767,7 +3771,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 10243
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TEXTURE_WRAP_T
+	 * @see android.opengl.GLES10#GL_TEXTURE_WRAP_T
 	 * @see org.lwjgl.opengl.GL11#GL_TEXTURE_WRAP_T
 	 */
 	val GL_TEXTURE_WRAP_T: Int = 10243
@@ -2775,7 +3779,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 4
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TRIANGLES
+	 * @see android.opengl.GLES10#GL_TRIANGLES
 	 * @see org.lwjgl.opengl.GL11#GL_TRIANGLES
 	 */
 	val GL_TRIANGLES: Int = 4
@@ -2783,7 +3787,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 6
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TRIANGLE_FAN
+	 * @see android.opengl.GLES10#GL_TRIANGLE_FAN
 	 * @see org.lwjgl.opengl.GL11#GL_TRIANGLE_FAN
 	 */
 	val GL_TRIANGLE_FAN: Int = 6
@@ -2791,7 +3795,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TRIANGLE_STRIP
+	 * @see android.opengl.GLES10#GL_TRIANGLE_STRIP
 	 * @see org.lwjgl.opengl.GL11#GL_TRIANGLE_STRIP
 	 */
 	val GL_TRIANGLE_STRIP: Int = 5
@@ -2799,7 +3803,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 1
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_TRUE
+	 * @see android.opengl.GLES10#GL_TRUE
 	 * @see org.lwjgl.opengl.GL11#GL_TRUE
 	 */
 	val GL_TRUE: Int = 1
@@ -2807,7 +3811,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 3317
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_UNPACK_ALIGNMENT
+	 * @see android.opengl.GLES10#GL_UNPACK_ALIGNMENT
 	 * @see org.lwjgl.opengl.GL11#GL_UNPACK_ALIGNMENT
 	 */
 	val GL_UNPACK_ALIGNMENT: Int = 3317
@@ -2815,15 +3819,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5121
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_UNSIGNED_BYTE
+	 * @see android.opengl.GLES10#GL_UNSIGNED_BYTE
 	 * @see org.lwjgl.opengl.GL11#GL_UNSIGNED_BYTE
 	 */
 	val GL_UNSIGNED_BYTE: Int = 5121
 
 	/**
+	 * Constant Value: 5125
+	 * 
+	 * @see android.opengl.GLES20#GL_UNSIGNED_INT
+	 * @see org.lwjgl.opengl.GL11#GL_UNSIGNED_INT
+	 */
+	val GL_UNSIGNED_INT: Int = 5125
+
+	/**
 	 * Constant Value: 5123
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_UNSIGNED_SHORT
+	 * @see android.opengl.GLES10#GL_UNSIGNED_SHORT
 	 * @see org.lwjgl.opengl.GL11#GL_UNSIGNED_SHORT
 	 */
 	val GL_UNSIGNED_SHORT: Int = 5123
@@ -2831,7 +3843,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32819
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_UNSIGNED_SHORT_4_4_4_4
+	 * @see android.opengl.GLES10#GL_UNSIGNED_SHORT_4_4_4_4
 	 * @see org.lwjgl.opengl.GL12#GL_UNSIGNED_SHORT_4_4_4_4
 	 */
 	val GL_UNSIGNED_SHORT_4_4_4_4: Int = 32819
@@ -2839,7 +3851,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32820
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_UNSIGNED_SHORT_5_5_5_1
+	 * @see android.opengl.GLES10#GL_UNSIGNED_SHORT_5_5_5_1
 	 * @see org.lwjgl.opengl.GL12#GL_UNSIGNED_SHORT_5_5_5_1
 	 */
 	val GL_UNSIGNED_SHORT_5_5_5_1: Int = 32820
@@ -2847,15 +3859,23 @@ object GL extends GL {
 	/**
 	 * Constant Value: 33635
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_UNSIGNED_SHORT_5_6_5
+	 * @see android.opengl.GLES10#GL_UNSIGNED_SHORT_5_6_5
 	 * @see org.lwjgl.opengl.GL12#GL_UNSIGNED_SHORT_5_6_5
 	 */
 	val GL_UNSIGNED_SHORT_5_6_5: Int = 33635
 
 	/**
+	 * Constant Value: 35715
+	 * 
+	 * @see android.opengl.GLES20#GL_VALIDATE_STATUS
+	 * @see org.lwjgl.opengl.GL20#GL_VALIDATE_STATUS
+	 */
+	val GL_VALIDATE_STATUS: Int = 35715
+
+	/**
 	 * Constant Value: 7936
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_VENDOR
+	 * @see android.opengl.GLES10#GL_VENDOR
 	 * @see org.lwjgl.opengl.GL11#GL_VENDOR
 	 */
 	val GL_VENDOR: Int = 7936
@@ -2863,7 +3883,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 7938
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_VERSION
+	 * @see android.opengl.GLES10#GL_VERSION
 	 * @see org.lwjgl.opengl.GL11#GL_VERSION
 	 */
 	val GL_VERSION: Int = 7938
@@ -2871,7 +3891,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32884
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_VERTEX_ARRAY
+	 * @see android.opengl.GLES10#GL_VERTEX_ARRAY
 	 * @see org.lwjgl.opengl.GL11#GL_VERTEX_ARRAY
 	 */
 	val GL_VERTEX_ARRAY: Int = 32884
@@ -2879,7 +3899,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 34966
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_VERTEX_ARRAY_BUFFER_BINDING
+	 * @see android.opengl.GLES11#GL_VERTEX_ARRAY_BUFFER_BINDING
 	 * @see org.lwjgl.opengl.GL15#GL_VERTEX_ARRAY_BUFFER_BINDING
 	 */
 	val GL_VERTEX_ARRAY_BUFFER_BINDING: Int = 34966
@@ -2887,7 +3907,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32910
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_VERTEX_ARRAY_POINTER
+	 * @see android.opengl.GLES11#GL_VERTEX_ARRAY_POINTER
 	 * @see org.lwjgl.opengl.GL11#GL_VERTEX_ARRAY_POINTER
 	 */
 	val GL_VERTEX_ARRAY_POINTER: Int = 32910
@@ -2895,7 +3915,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32890
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_VERTEX_ARRAY_SIZE
+	 * @see android.opengl.GLES11#GL_VERTEX_ARRAY_SIZE
 	 * @see org.lwjgl.opengl.GL11#GL_VERTEX_ARRAY_SIZE
 	 */
 	val GL_VERTEX_ARRAY_SIZE: Int = 32890
@@ -2903,7 +3923,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32892
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_VERTEX_ARRAY_STRIDE
+	 * @see android.opengl.GLES11#GL_VERTEX_ARRAY_STRIDE
 	 * @see org.lwjgl.opengl.GL11#GL_VERTEX_ARRAY_STRIDE
 	 */
 	val GL_VERTEX_ARRAY_STRIDE: Int = 32892
@@ -2911,15 +3931,79 @@ object GL extends GL {
 	/**
 	 * Constant Value: 32891
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_VERTEX_ARRAY_TYPE
+	 * @see android.opengl.GLES11#GL_VERTEX_ARRAY_TYPE
 	 * @see org.lwjgl.opengl.GL11#GL_VERTEX_ARRAY_TYPE
 	 */
 	val GL_VERTEX_ARRAY_TYPE: Int = 32891
 
 	/**
+	 * Constant Value: 34975
+	 * 
+	 * @see android.opengl.GLES20#GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING
+	 * @see org.lwjgl.opengl.GL15#GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING
+	 */
+	val GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: Int = 34975
+
+	/**
+	 * Constant Value: 34338
+	 * 
+	 * @see android.opengl.GLES20#GL_VERTEX_ATTRIB_ARRAY_ENABLED
+	 * @see org.lwjgl.opengl.GL20#GL_VERTEX_ATTRIB_ARRAY_ENABLED
+	 */
+	val GL_VERTEX_ATTRIB_ARRAY_ENABLED: Int = 34338
+
+	/**
+	 * Constant Value: 34922
+	 * 
+	 * @see android.opengl.GLES20#GL_VERTEX_ATTRIB_ARRAY_NORMALIZED
+	 * @see org.lwjgl.opengl.GL20#GL_VERTEX_ATTRIB_ARRAY_NORMALIZED
+	 */
+	val GL_VERTEX_ATTRIB_ARRAY_NORMALIZED: Int = 34922
+
+	/**
+	 * Constant Value: 34373
+	 * 
+	 * @see android.opengl.GLES20#GL_VERTEX_ATTRIB_ARRAY_POINTER
+	 * @see org.lwjgl.opengl.GL20#GL_VERTEX_ATTRIB_ARRAY_POINTER
+	 */
+	val GL_VERTEX_ATTRIB_ARRAY_POINTER: Int = 34373
+
+	/**
+	 * Constant Value: 34339
+	 * 
+	 * @see android.opengl.GLES20#GL_VERTEX_ATTRIB_ARRAY_SIZE
+	 * @see org.lwjgl.opengl.GL20#GL_VERTEX_ATTRIB_ARRAY_SIZE
+	 */
+	val GL_VERTEX_ATTRIB_ARRAY_SIZE: Int = 34339
+
+	/**
+	 * Constant Value: 34340
+	 * 
+	 * @see android.opengl.GLES20#GL_VERTEX_ATTRIB_ARRAY_STRIDE
+	 * @see org.lwjgl.opengl.GL20#GL_VERTEX_ATTRIB_ARRAY_STRIDE
+	 */
+	val GL_VERTEX_ATTRIB_ARRAY_STRIDE: Int = 34340
+
+	/**
+	 * Constant Value: 34341
+	 * 
+	 * @see android.opengl.GLES20#GL_VERTEX_ATTRIB_ARRAY_TYPE
+	 * @see org.lwjgl.opengl.GL20#GL_VERTEX_ATTRIB_ARRAY_TYPE
+	 */
+	val GL_VERTEX_ATTRIB_ARRAY_TYPE: Int = 34341
+
+	/**
+	 * Constant Value: 35633
+	 * 
+	 * @see android.opengl.GLES20#GL_VERTEX_SHADER
+	 * @see org.lwjgl.opengl.GL20#GL_VERTEX_SHADER
+	 */
+	val GL_VERTEX_SHADER: Int = 35633
+
+	/**
 	 * Constant Value: 2978
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_VIEWPORT
+	 * @see android.opengl.GLES11#GL_VIEWPORT
 	 * @see org.lwjgl.opengl.GL11#GL_VIEWPORT
 	 */
 	val GL_VIEWPORT: Int = 2978
@@ -2927,7 +4011,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 35001
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL11#GL_WRITE_ONLY
+	 * @see android.opengl.GLES11#GL_WRITE_ONLY
 	 * @see org.lwjgl.opengl.GL15#GL_WRITE_ONLY
 	 */
 	val GL_WRITE_ONLY: Int = 35001
@@ -2935,7 +4019,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 5382
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_XOR
+	 * @see android.opengl.GLES10#GL_XOR
 	 * @see org.lwjgl.opengl.GL11#GL_XOR
 	 */
 	val GL_XOR: Int = 5382
@@ -2943,7 +4027,7 @@ object GL extends GL {
 	/**
 	 * Constant Value: 0
 	 * 
-	 * @see javax.microedition.khronos.opengles.GL10#GL_ZERO
+	 * @see android.opengl.GLES10#GL_ZERO
 	 * @see org.lwjgl.opengl.GL11#GL_ZERO
 	 */
 	val GL_ZERO: Int = 0
@@ -2960,24 +4044,80 @@ object GL extends GL {
 		instance.glVertexPointer(size, `type`, stride, offset)
 	}
 
-	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
-		instance.glTranslatef(x, y, z)
+	def glVertexAttrib1f(indx: Int, x: Float): Unit = {
+		instance.glVertexAttrib1f(indx, x)
 	}
 
-	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
-		instance.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)
+	def glVertexAttrib2f(indx: Int, x: Float, y: Float): Unit = {
+		instance.glVertexAttrib2f(indx, x, y)
+	}
+
+	def glVertexAttrib3f(indx: Int, x: Float, y: Float, z: Float): Unit = {
+		instance.glVertexAttrib3f(indx, x, y, z)
+	}
+
+	def glVertexAttrib4f(indx: Int, x: Float, y: Float, z: Float, w: Float): Unit = {
+		instance.glVertexAttrib4f(indx, x, y, z, w)
+	}
+
+	def glValidateProgram(program: Int): Unit = {
+		instance.glValidateProgram(program)
+	}
+
+	def glUseProgram(program: Int): Unit = {
+		instance.glUseProgram(program)
+	}
+
+	def glUniform1f(location: Int, x: Float): Unit = {
+		instance.glUniform1f(location, x)
+	}
+
+	def glUniform1i(location: Int, x: Int): Unit = {
+		instance.glUniform1i(location, x)
+	}
+
+	def glUniform2f(location: Int, x: Float, y: Float): Unit = {
+		instance.glUniform2f(location, x, y)
+	}
+
+	def glUniform2i(location: Int, x: Int, y: Int): Unit = {
+		instance.glUniform2i(location, x, y)
+	}
+
+	def glUniform3f(location: Int, x: Float, y: Float, z: Float): Unit = {
+		instance.glUniform3f(location, x, y, z)
+	}
+
+	def glUniform3i(location: Int, x: Int, y: Int, z: Int): Unit = {
+		instance.glUniform3i(location, x, y, z)
+	}
+
+	def glUniform4f(location: Int, x: Float, y: Float, z: Float, w: Float): Unit = {
+		instance.glUniform4f(location, x, y, z, w)
+	}
+
+	def glUniform4i(location: Int, x: Int, y: Int, z: Int, w: Int): Unit = {
+		instance.glUniform4i(location, x, y, z, w)
+	}
+
+	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
+		instance.glTranslatef(x, y, z)
 	}
 
 	def glTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glTexParameter(target, pname, params)
 	}
 
-	def glTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glTexParameter(target, pname, params)
+	def glTexParameterI(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glTexParameterI(target, pname, params)
 	}
 
-	def glTexParameter(target: Int, pname: Int, param: Int): Unit = {
-		instance.glTexParameter(target, pname, param)
+	def glTexParameterIu(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glTexParameterIu(target, pname, params)
+	}
+
+	def glTexParameterIi(target: Int, pname: Int, param: Int): Unit = {
+		instance.glTexParameterIi(target, pname, param)
 	}
 
 	def glTexParameterf(target: Int, pname: Int, param: Float): Unit = {
@@ -2986,10 +4126,6 @@ object GL extends GL {
 
 	def glTexParameteri(target: Int, pname: Int, param: Int): Unit = {
 		instance.glTexParameteri(target, pname, param)
-	}
-
-	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
-		instance.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, pixels)
 	}
 
 	def glTexEnv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
@@ -3008,24 +4144,36 @@ object GL extends GL {
 		instance.glTexEnvi(target, pname, param)
 	}
 
-	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
-		instance.glTexCoordPointer(size, `type`, stride, pointer)
-	}
-
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
 		instance.glTexCoordPointer(size, `type`, stride, offset)
+	}
+
+	def glStencilOpSeparate(face: Int, fail: Int, zfail: Int, zpass: Int): Unit = {
+		instance.glStencilOpSeparate(face, fail, zfail, zpass)
 	}
 
 	def glStencilOp(fail: Int, zfail: Int, zpass: Int): Unit = {
 		instance.glStencilOp(fail, zfail, zpass)
 	}
 
+	def glStencilMaskSeparate(face: Int, mask: Int): Unit = {
+		instance.glStencilMaskSeparate(face, mask)
+	}
+
 	def glStencilMask(mask: Int): Unit = {
 		instance.glStencilMask(mask)
 	}
 
+	def glStencilFuncSeparate(face: Int, func: Int, ref: Int, mask: Int): Unit = {
+		instance.glStencilFuncSeparate(face, func, ref, mask)
+	}
+
 	def glStencilFunc(func: Int, ref: Int, mask: Int): Unit = {
 		instance.glStencilFunc(func, ref, mask)
+	}
+
+	def glShaderSource(shader: Int, string: String): Unit = {
+		instance.glShaderSource(shader, string)
 	}
 
 	def glShadeModel(mode: Int): Unit = {
@@ -3048,10 +4196,6 @@ object GL extends GL {
 		instance.glRotatef(angle, x, y, z)
 	}
 
-	def glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
-		instance.glReadPixels(x, y, width, height, format, `type`, pixels)
-	}
-
 	def glPushMatrix(): Unit = {
 		instance.glPushMatrix()
 	}
@@ -3072,8 +4216,8 @@ object GL extends GL {
 		instance.glPointParameter(pname, params)
 	}
 
-	def glPointParameter(pname: Int, param: Int): Unit = {
-		instance.glPointParameter(pname, param)
+	def glPointParameteri(pname: Int, param: Int): Unit = {
+		instance.glPointParameteri(pname, param)
 	}
 
 	def glPointParameter(pname: Int, params: java.nio.IntBuffer): Unit = {
@@ -3092,16 +4236,12 @@ object GL extends GL {
 		instance.glOrtho(left, right, bottom, top, zNear, zFar)
 	}
 
-	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
-		instance.glNormalPointer(`type`, stride, pointer)
-	}
-
 	def glNormalPointer(`type`: Int, stride: Int, offset: Int): Unit = {
 		instance.glNormalPointer(`type`, stride, offset)
 	}
 
-	def glNormal(nx: Int, ny: Int, nz: Int): Unit = {
-		instance.glNormal(nx, ny, nz)
+	def glNormal3i(nx: Int, ny: Int, nz: Int): Unit = {
+		instance.glNormal3i(nx, ny, nz)
 	}
 
 	def glNormal3f(nx: Float, ny: Float, nz: Float): Unit = {
@@ -3124,8 +4264,8 @@ object GL extends GL {
 		instance.glMaterial(face, pname, params)
 	}
 
-	def glMaterial(face: Int, pname: Int, param: Int): Unit = {
-		instance.glMaterial(face, pname, param)
+	def glMateriali(face: Int, pname: Int, param: Int): Unit = {
+		instance.glMateriali(face, pname, param)
 	}
 
 	def glMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
@@ -3148,6 +4288,10 @@ object GL extends GL {
 		instance.glLoadIdentity()
 	}
 
+	def glLinkProgram(program: Int): Unit = {
+		instance.glLinkProgram(program)
+	}
+
 	def glLineWidth(width: Float): Unit = {
 		instance.glLineWidth(width)
 	}
@@ -3156,8 +4300,8 @@ object GL extends GL {
 		instance.glLightModel(pname, params)
 	}
 
-	def glLightModel(pname: Int, param: Int): Unit = {
-		instance.glLightModel(pname, param)
+	def glLightModeli(pname: Int, param: Int): Unit = {
+		instance.glLightModeli(pname, param)
 	}
 
 	def glLightModel(pname: Int, params: java.nio.IntBuffer): Unit = {
@@ -3172,8 +4316,8 @@ object GL extends GL {
 		instance.glLight(light, pname, params)
 	}
 
-	def glLight(light: Int, pname: Int, param: Int): Unit = {
-		instance.glLight(light, pname, param)
+	def glLighti(light: Int, pname: Int, param: Int): Unit = {
+		instance.glLighti(light, pname, param)
 	}
 
 	def glLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
@@ -3188,6 +4332,14 @@ object GL extends GL {
 		instance.glIsTexture(texture)
 	}
 
+	def glIsShader(shader: Int): Boolean = {
+		instance.glIsShader(shader)
+	}
+
+	def glIsProgram(program: Int): Boolean = {
+		instance.glIsProgram(program)
+	}
+
 	def glIsEnabled(cap: Int): Boolean = {
 		instance.glIsEnabled(cap)
 	}
@@ -3200,12 +4352,40 @@ object GL extends GL {
 		instance.glHint(target, mode)
 	}
 
+	def glGetVertexAttrib(index: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glGetVertexAttrib(index, pname, params)
+	}
+
+	def glGetVertexAttribIu(index: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetVertexAttribIu(index, pname, params)
+	}
+
+	def glGetUniformLocation(program: Int, name: String): Int = {
+		instance.glGetUniformLocation(program, name)
+	}
+
+	def glGetUniform(program: Int, location: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glGetUniform(program, location, params)
+	}
+
+	def glGetUniformu(program: Int, location: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetUniformu(program, location, params)
+	}
+
 	def glGetTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
 		instance.glGetTexParameter(target, pname, params)
 	}
 
-	def glGetTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetTexParameter(target, pname, params)
+	def glGetTexParameterI(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetTexParameterI(target, pname, params)
+	}
+
+	def glGetTexParameterIu(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetTexParameterIu(target, pname, params)
+	}
+
+	def glGetTexEnv(env: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		instance.glGetTexEnv(env, pname, params)
 	}
 
 	def glGetTexEnv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
@@ -3214,6 +4394,14 @@ object GL extends GL {
 
 	def glGetString(name: Int): String = {
 		instance.glGetString(name)
+	}
+
+	def glGetShader(shader: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetShader(shader, pname, params)
+	}
+
+	def glGetProgram(program: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		instance.glGetProgram(program, pname, params)
 	}
 
 	def glGetMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
@@ -3236,6 +4424,10 @@ object GL extends GL {
 		instance.glGetError()
 	}
 
+	def glGetAttribLocation(program: Int, name: String): Int = {
+		instance.glGetAttribLocation(program, name)
+	}
+
 	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
 		instance.glFrustum(left, right, bottom, top, zNear, zFar)
 	}
@@ -3248,8 +4440,8 @@ object GL extends GL {
 		instance.glFog(pname, params)
 	}
 
-	def glFog(pname: Int, param: Int): Unit = {
-		instance.glFog(pname, param)
+	def glFogi(pname: Int, param: Int): Unit = {
+		instance.glFogi(pname, param)
 	}
 
 	def glFog(pname: Int, params: java.nio.IntBuffer): Unit = {
@@ -3268,16 +4460,16 @@ object GL extends GL {
 		instance.glFinish()
 	}
 
+	def glEnableVertexAttribArray(index: Int): Unit = {
+		instance.glEnableVertexAttribArray(index)
+	}
+
 	def glEnableClientState(array: Int): Unit = {
 		instance.glEnableClientState(array)
 	}
 
 	def glEnable(cap: Int): Unit = {
 		instance.glEnable(cap)
-	}
-
-	def glDrawElements(mode: Int, count: Int, `type`: Int, indices: java.nio.Buffer): Unit = {
-		instance.glDrawElements(mode, count, `type`, indices)
 	}
 
 	def glDrawElements(mode: Int, count: Int, `type`: Int, offset: Int): Unit = {
@@ -3288,12 +4480,24 @@ object GL extends GL {
 		instance.glDrawArrays(mode, first, count)
 	}
 
+	def glDisableVertexAttribArray(index: Int): Unit = {
+		instance.glDisableVertexAttribArray(index)
+	}
+
 	def glDisableClientState(array: Int): Unit = {
 		instance.glDisableClientState(array)
 	}
 
 	def glDisable(cap: Int): Unit = {
 		instance.glDisable(cap)
+	}
+
+	def glDetachShader(program: Int, shader: Int): Unit = {
+		instance.glDetachShader(program, shader)
+	}
+
+	def glDepthRange(zNear: Float, zFar: Float): Unit = {
+		instance.glDepthRange(zNear, zFar)
 	}
 
 	def glDepthRangef(zNear: Float, zFar: Float): Unit = {
@@ -3308,8 +4512,24 @@ object GL extends GL {
 		instance.glDepthFunc(func)
 	}
 
+	def glDeleteShader(shader: Int): Unit = {
+		instance.glDeleteShader(shader)
+	}
+
+	def glDeleteProgram(program: Int): Unit = {
+		instance.glDeleteProgram(program)
+	}
+
 	def glCullFace(mode: Int): Unit = {
 		instance.glCullFace(mode)
+	}
+
+	def glCreateShader(`type`: Int): Int = {
+		instance.glCreateShader(`type`)
+	}
+
+	def glCreateProgram(): Int = {
+		instance.glCreateProgram()
 	}
 
 	def glCopyTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, x: Int, y: Int, width: Int, height: Int): Unit = {
@@ -3320,8 +4540,8 @@ object GL extends GL {
 		instance.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border)
 	}
 
-	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
-		instance.glColorPointer(size, `type`, stride, pointer)
+	def glCompileShader(shader: Int): Unit = {
+		instance.glCompileShader(shader)
 	}
 
 	def glColorPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
@@ -3356,16 +4576,24 @@ object GL extends GL {
 		instance.glClear(mask)
 	}
 
-	def glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit = {
-		instance.glBufferSubData(target, offset, size, data)
-	}
-
-	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
-		instance.glBufferData(target, size, data, usage)
+	def glBlendFuncSeparate(srcRGB: Int, dstRGB: Int, srcAlpha: Int, dstAlpha: Int): Unit = {
+		instance.glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha)
 	}
 
 	def glBlendFunc(sfactor: Int, dfactor: Int): Unit = {
 		instance.glBlendFunc(sfactor, dfactor)
+	}
+
+	def glBlendEquationSeparate(modeRGB: Int, modeAlpha: Int): Unit = {
+		instance.glBlendEquationSeparate(modeRGB, modeAlpha)
+	}
+
+	def glBlendEquation(mode: Int): Unit = {
+		instance.glBlendEquation(mode)
+	}
+
+	def glBlendColor(red: Float, green: Float, blue: Float, alpha: Float): Unit = {
+		instance.glBlendColor(red, green, blue, alpha)
 	}
 
 	def glBindTexture(target: Int, texture: Int): Unit = {
@@ -3374,6 +4602,14 @@ object GL extends GL {
 
 	def glBindBuffer(target: Int, buffer: Int): Unit = {
 		instance.glBindBuffer(target, buffer)
+	}
+
+	def glBindAttribLocation(program: Int, index: Int, name: String): Unit = {
+		instance.glBindAttribLocation(program, index, name)
+	}
+
+	def glAttachShader(program: Int, shader: Int): Unit = {
+		instance.glAttachShader(program, shader)
 	}
 
 	def glAlphaFunc(func: Int, ref: Float): Unit = {

@@ -103,7 +103,7 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
     val isPerfect = MethodMatcher.perfectMatch(_: String, _: Method, _: Method, _: List[Method], _: List[Method], false)
     val isAlmostPerfect = MethodMatcher.perfectMatch(_: String, _: Method, _: Method, _: List[Method], _: List[Method], true)
     // MethodMatcher.signaturePointerMatch _
-    val matchers = List(isPerfect, isAlmostPerfect, MethodMatcher.smartMatch _)
+    val matchers = List(isPerfect, isAlmostPerfect, MethodMatcher.explicitMatch _) //, MethodMatcher.smartMatch _)
     val combined = runMatchers(name, matchers, Nil)
 
     unusedAndroid = e1Methods ::: unusedAndroid

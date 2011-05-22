@@ -30,65 +30,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.opengl.generator
-
-import ClassCreator._
-
-import com.googlecode.reflective.EnhancedClass._
+package org.sgine.render
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
+ * Date: 5/20/11
  */
-case class CombinedMethod(methodName: String, descriptor: MethodDescriptor, matcher: String) {
-  def generateAbstract() = {
-    val b = new StringBuilder()
-    // TODO: populate scaladoc
-    generateSignature(b)
-    b.toString()
-  }
-
-  def generate() = {
-    val b = new StringBuilder()
-    generateSignature(b)
-    b.append(" = {\r\n")
-    b.append("\t\tinstance.")
-    b.append(methodName)
-    b.append('(')
-    b.append(descriptor.args.map(t => fix(t._1)).mkString(", "))
-    b.append(')')
-    b.append("\r\n\t}")
-    b.toString()
-  }
-
-  def generateAndroid() = {
-    val b = new StringBuilder()
-    generateSignature(b)
-    generateBody(b, descriptor.androidBody)
-    b.toString()
-  }
-
-  def generateLWJGL() = {
-    val b = new StringBuilder()
-    generateSignature(b)
-    generateBody(b, descriptor.lwjglBody)
-    b.toString()
-  }
-
-  private def generateSignature(b: StringBuilder) = {
-    b.append("\tdef ")
-    b.append(methodName)
-    b.append('(')
-    b.append(descriptor.args.map(t => fix(t._1) + ": " + convertClass(t._2)).mkString(", "))
-    b.append("): ")
-    b.append(convertClass(descriptor.returnType))
-  }
-
-  private def generateBody(b: StringBuilder, body: String) = {
-    b.append(" = {\r\n")
-    b.append("\t\t")
-    b.append(body.replaceAll("\r\n", "\r\n\t\t"))
-    b.append("\r\n\t}")
-  }
+trait Renderable {
+  def render(): Unit
 }

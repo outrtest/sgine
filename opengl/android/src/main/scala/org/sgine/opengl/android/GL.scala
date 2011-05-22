@@ -43,438 +43,590 @@ import sys.error
  */
 class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.opengl.GL {
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
-		instance.glViewport(x, y, width, height)
+		android.opengl.GLES20.glViewport(x, y, width, height)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
-		instance.glVertexPointer(size, `type`, stride, pointer)
+		android.opengl.GLES10.glVertexPointer(size, `type`, stride, pointer)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
-		instance.glVertexPointer(size, `type`, stride, offset)
+		android.opengl.GLES11.glVertexPointer(size, `type`, stride, offset)
+	}
+
+	def glVertexAttrib1f(indx: Int, x: Float): Unit = {
+		android.opengl.GLES20.glVertexAttrib1f(indx, x)
+	}
+
+	def glVertexAttrib2f(indx: Int, x: Float, y: Float): Unit = {
+		android.opengl.GLES20.glVertexAttrib2f(indx, x, y)
+	}
+
+	def glVertexAttrib3f(indx: Int, x: Float, y: Float, z: Float): Unit = {
+		android.opengl.GLES20.glVertexAttrib3f(indx, x, y, z)
+	}
+
+	def glVertexAttrib4f(indx: Int, x: Float, y: Float, z: Float, w: Float): Unit = {
+		android.opengl.GLES20.glVertexAttrib4f(indx, x, y, z, w)
+	}
+
+	def glValidateProgram(program: Int): Unit = {
+		android.opengl.GLES20.glValidateProgram(program)
+	}
+
+	def glUseProgram(program: Int): Unit = {
+		android.opengl.GLES20.glUseProgram(program)
+	}
+
+	def glUniform1f(location: Int, x: Float): Unit = {
+		android.opengl.GLES20.glUniform1f(location, x)
+	}
+
+	def glUniform1i(location: Int, x: Int): Unit = {
+		android.opengl.GLES20.glUniform1i(location, x)
+	}
+
+	def glUniform2f(location: Int, x: Float, y: Float): Unit = {
+		android.opengl.GLES20.glUniform2f(location, x, y)
+	}
+
+	def glUniform2i(location: Int, x: Int, y: Int): Unit = {
+		android.opengl.GLES20.glUniform2i(location, x, y)
+	}
+
+	def glUniform3f(location: Int, x: Float, y: Float, z: Float): Unit = {
+		android.opengl.GLES20.glUniform3f(location, x, y, z)
+	}
+
+	def glUniform3i(location: Int, x: Int, y: Int, z: Int): Unit = {
+		android.opengl.GLES20.glUniform3i(location, x, y, z)
+	}
+
+	def glUniform4f(location: Int, x: Float, y: Float, z: Float, w: Float): Unit = {
+		android.opengl.GLES20.glUniform4f(location, x, y, z, w)
+	}
+
+	def glUniform4i(location: Int, x: Int, y: Int, z: Int, w: Int): Unit = {
+		android.opengl.GLES20.glUniform4i(location, x, y, z, w)
 	}
 
 	def glTranslatef(x: Float, y: Float, z: Float): Unit = {
-		instance.glTranslatef(x, y, z)
-	}
-
-	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
-		instance.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)
+		android.opengl.GLES10.glTranslatef(x, y, z)
 	}
 
 	def glTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glTexParameterfv(target, pname, params)
+		android.opengl.GLES20.glTexParameterfv(target, pname, params)
 	}
 
-	def glTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glTexParameteriv(target, pname, params)
+	def glTexParameterI(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES11.glTexParameteriv(target, pname, params)
 	}
 
-	def glTexParameter(target: Int, pname: Int, param: Int): Unit = {
-		instance.glTexParameterx(target, pname, param)
+	def glTexParameterIu(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES20.glTexParameteriv(target, pname, params)
+	}
+
+	def glTexParameterIi(target: Int, pname: Int, param: Int): Unit = {
+		android.opengl.GLES10.glTexParameterx(target, pname, param)
 	}
 
 	def glTexParameterf(target: Int, pname: Int, param: Float): Unit = {
-		instance.glTexParameterf(target, pname, param)
+		android.opengl.GLES20.glTexParameterf(target, pname, param)
 	}
 
 	def glTexParameteri(target: Int, pname: Int, param: Int): Unit = {
-		instance.glTexParameteri(target, pname, param)
-	}
-
-	def glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
-		instance.glTexImage2D(target, level, internalformat, width, height, border, format, `type`, pixels)
+		android.opengl.GLES20.glTexParameteri(target, pname, param)
 	}
 
 	def glTexEnv(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glTexEnvfv(target, pname, params)
+		android.opengl.GLES10.glTexEnvfv(target, pname, params)
 	}
 
 	def glTexEnv(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glTexEnvxv(target, pname, params)
+		android.opengl.GLES10.glTexEnvxv(target, pname, params)
 	}
 
 	def glTexEnvf(target: Int, pname: Int, param: Float): Unit = {
-		instance.glTexEnvf(target, pname, param)
+		android.opengl.GLES10.glTexEnvf(target, pname, param)
 	}
 
 	def glTexEnvi(target: Int, pname: Int, param: Int): Unit = {
-		instance.glTexEnvi(target, pname, param)
-	}
-
-	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
-		instance.glTexCoordPointer(size, `type`, stride, pointer)
+		android.opengl.GLES11.glTexEnvi(target, pname, param)
 	}
 
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
-		instance.glTexCoordPointer(size, `type`, stride, offset)
+		android.opengl.GLES11.glTexCoordPointer(size, `type`, stride, offset)
+	}
+
+	def glStencilOpSeparate(face: Int, fail: Int, zfail: Int, zpass: Int): Unit = {
+		android.opengl.GLES20.glStencilOpSeparate(face, fail, zfail, zpass)
 	}
 
 	def glStencilOp(fail: Int, zfail: Int, zpass: Int): Unit = {
-		instance.glStencilOp(fail, zfail, zpass)
+		android.opengl.GLES20.glStencilOp(fail, zfail, zpass)
+	}
+
+	def glStencilMaskSeparate(face: Int, mask: Int): Unit = {
+		android.opengl.GLES20.glStencilMaskSeparate(face, mask)
 	}
 
 	def glStencilMask(mask: Int): Unit = {
-		instance.glStencilMask(mask)
+		android.opengl.GLES20.glStencilMask(mask)
+	}
+
+	def glStencilFuncSeparate(face: Int, func: Int, ref: Int, mask: Int): Unit = {
+		android.opengl.GLES20.glStencilFuncSeparate(face, func, ref, mask)
 	}
 
 	def glStencilFunc(func: Int, ref: Int, mask: Int): Unit = {
-		instance.glStencilFunc(func, ref, mask)
+		android.opengl.GLES20.glStencilFunc(func, ref, mask)
+	}
+
+	def glShaderSource(shader: Int, string: String): Unit = {
+		android.opengl.GLES20.glShaderSource(shader, string)
 	}
 
 	def glShadeModel(mode: Int): Unit = {
-		instance.glShadeModel(mode)
+		android.opengl.GLES10.glShadeModel(mode)
 	}
 
 	def glScissor(x: Int, y: Int, width: Int, height: Int): Unit = {
-		instance.glScissor(x, y, width, height)
+		android.opengl.GLES20.glScissor(x, y, width, height)
 	}
 
 	def glScalef(x: Float, y: Float, z: Float): Unit = {
-		instance.glScalef(x, y, z)
+		android.opengl.GLES10.glScalef(x, y, z)
 	}
 
 	def glSampleCoverage(value: Float, invert: Boolean): Unit = {
-		instance.glSampleCoverage(value, invert)
+		android.opengl.GLES20.glSampleCoverage(value, invert)
 	}
 
 	def glRotatef(angle: Float, x: Float, y: Float, z: Float): Unit = {
-		instance.glRotatef(angle, x, y, z)
-	}
-
-	def glReadPixels(x: Int, y: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
-		instance.glReadPixels(x, y, width, height, format, `type`, pixels)
+		android.opengl.GLES10.glRotatef(angle, x, y, z)
 	}
 
 	def glPushMatrix(): Unit = {
-		instance.glPushMatrix()
+		android.opengl.GLES10.glPushMatrix()
 	}
 
 	def glPopMatrix(): Unit = {
-		instance.glPopMatrix()
+		android.opengl.GLES10.glPopMatrix()
 	}
 
 	def glPolygonOffset(factor: Float, units: Float): Unit = {
-		instance.glPolygonOffset(factor, units)
+		android.opengl.GLES20.glPolygonOffset(factor, units)
 	}
 
 	def glPointSize(size: Float): Unit = {
-		instance.glPointSize(size)
+		android.opengl.GLES10.glPointSize(size)
 	}
 
 	def glPointParameter(pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glPointParameterfv(pname, params)
+		android.opengl.GLES11.glPointParameterfv(pname, params)
 	}
 
-	def glPointParameter(pname: Int, param: Int): Unit = {
-		instance.glPointParameterx(pname, param)
+	def glPointParameteri(pname: Int, param: Int): Unit = {
+		android.opengl.GLES11.glPointParameterx(pname, param)
 	}
 
 	def glPointParameter(pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glPointParameterxv(pname, params)
+		android.opengl.GLES11.glPointParameterxv(pname, params)
 	}
 
 	def glPointParameterf(pname: Int, param: Float): Unit = {
-		instance.glPointParameterf(pname, param)
+		android.opengl.GLES11.glPointParameterf(pname, param)
 	}
 
 	def glPixelStorei(pname: Int, param: Int): Unit = {
-		instance.glPixelStorei(pname, param)
+		android.opengl.GLES20.glPixelStorei(pname, param)
 	}
 
 	def glOrtho(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
-		instance.glOrthof(left, right, bottom, top, zNear, zFar)
-	}
-
-	def glNormalPointer(`type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
-		instance.glNormalPointer(`type`, stride, pointer)
+		android.opengl.GLES10.glOrthof(left, right, bottom, top, zNear, zFar)
 	}
 
 	def glNormalPointer(`type`: Int, stride: Int, offset: Int): Unit = {
-		instance.glNormalPointer(`type`, stride, offset)
+		android.opengl.GLES11.glNormalPointer(`type`, stride, offset)
 	}
 
-	def glNormal(nx: Int, ny: Int, nz: Int): Unit = {
-		instance.glNormal3x(nx, ny, nz)
+	def glNormal3i(nx: Int, ny: Int, nz: Int): Unit = {
+		android.opengl.GLES10.glNormal3x(nx, ny, nz)
 	}
 
 	def glNormal3f(nx: Float, ny: Float, nz: Float): Unit = {
-		instance.glNormal3f(nx, ny, nz)
+		android.opengl.GLES10.glNormal3f(nx, ny, nz)
 	}
 
 	def glMultiTexCoord4f(target: Int, s: Float, t: Float, r: Float, q: Float): Unit = {
-		instance.glMultiTexCoord4f(target, s, t, r, q)
+		android.opengl.GLES10.glMultiTexCoord4f(target, s, t, r, q)
 	}
 
 	def glMultMatrix(m: java.nio.FloatBuffer): Unit = {
-		instance.glMultMatrixf(m)
+		android.opengl.GLES10.glMultMatrixf(m)
 	}
 
 	def glMatrixMode(mode: Int): Unit = {
-		instance.glMatrixMode(mode)
+		android.opengl.GLES10.glMatrixMode(mode)
 	}
 
 	def glMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glMaterialfv(face, pname, params)
+		android.opengl.GLES10.glMaterialfv(face, pname, params)
 	}
 
-	def glMaterial(face: Int, pname: Int, param: Int): Unit = {
-		instance.glMaterialx(face, pname, param)
+	def glMateriali(face: Int, pname: Int, param: Int): Unit = {
+		android.opengl.GLES10.glMaterialx(face, pname, param)
 	}
 
 	def glMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glMaterialxv(face, pname, params)
+		android.opengl.GLES10.glMaterialxv(face, pname, params)
 	}
 
 	def glMaterialf(face: Int, pname: Int, param: Float): Unit = {
-		instance.glMaterialf(face, pname, param)
+		android.opengl.GLES10.glMaterialf(face, pname, param)
 	}
 
 	def glLogicOp(opcode: Int): Unit = {
-		instance.glLogicOp(opcode)
+		android.opengl.GLES10.glLogicOp(opcode)
 	}
 
 	def glLoadMatrix(m: java.nio.FloatBuffer): Unit = {
-		instance.glLoadMatrixf(m)
+		android.opengl.GLES10.glLoadMatrixf(m)
 	}
 
 	def glLoadIdentity(): Unit = {
-		instance.glLoadIdentity()
+		android.opengl.GLES10.glLoadIdentity()
+	}
+
+	def glLinkProgram(program: Int): Unit = {
+		android.opengl.GLES20.glLinkProgram(program)
 	}
 
 	def glLineWidth(width: Float): Unit = {
-		instance.glLineWidth(width)
+		android.opengl.GLES20.glLineWidth(width)
 	}
 
 	def glLightModel(pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glLightModelfv(pname, params)
+		android.opengl.GLES10.glLightModelfv(pname, params)
 	}
 
-	def glLightModel(pname: Int, param: Int): Unit = {
-		instance.glLightModelx(pname, param)
+	def glLightModeli(pname: Int, param: Int): Unit = {
+		android.opengl.GLES10.glLightModelx(pname, param)
 	}
 
 	def glLightModel(pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glLightModelxv(pname, params)
+		android.opengl.GLES10.glLightModelxv(pname, params)
 	}
 
 	def glLightModelf(pname: Int, param: Float): Unit = {
-		instance.glLightModelf(pname, param)
+		android.opengl.GLES10.glLightModelf(pname, param)
 	}
 
 	def glLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glLightfv(light, pname, params)
+		android.opengl.GLES10.glLightfv(light, pname, params)
 	}
 
-	def glLight(light: Int, pname: Int, param: Int): Unit = {
-		instance.glLightx(light, pname, param)
+	def glLighti(light: Int, pname: Int, param: Int): Unit = {
+		android.opengl.GLES10.glLightx(light, pname, param)
 	}
 
 	def glLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glLightxv(light, pname, params)
+		android.opengl.GLES10.glLightxv(light, pname, params)
 	}
 
 	def glLightf(light: Int, pname: Int, param: Float): Unit = {
-		instance.glLightf(light, pname, param)
+		android.opengl.GLES10.glLightf(light, pname, param)
 	}
 
 	def glIsTexture(texture: Int): Boolean = {
-		instance.glIsTexture(texture)
+		android.opengl.GLES20.glIsTexture(texture)
+	}
+
+	def glIsShader(shader: Int): Boolean = {
+		android.opengl.GLES20.glIsShader(shader)
+	}
+
+	def glIsProgram(program: Int): Boolean = {
+		android.opengl.GLES20.glIsProgram(program)
 	}
 
 	def glIsEnabled(cap: Int): Boolean = {
-		instance.glIsEnabled(cap)
+		android.opengl.GLES20.glIsEnabled(cap)
 	}
 
 	def glIsBuffer(buffer: Int): Boolean = {
-		instance.glIsBuffer(buffer)
+		android.opengl.GLES20.glIsBuffer(buffer)
 	}
 
 	def glHint(target: Int, mode: Int): Unit = {
-		instance.glHint(target, mode)
+		android.opengl.GLES20.glHint(target, mode)
+	}
+
+	def glGetVertexAttrib(index: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		android.opengl.GLES20.glGetVertexAttribfv(index, pname, params)
+	}
+
+	def glGetVertexAttribIu(index: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES20.glGetVertexAttribiv(index, pname, params)
+	}
+
+	def glGetUniformLocation(program: Int, name: String): Int = {
+		android.opengl.GLES20.glGetUniformLocation(program, name)
+	}
+
+	def glGetUniform(program: Int, location: Int, params: java.nio.FloatBuffer): Unit = {
+		android.opengl.GLES20.glGetUniformfv(program, location, params)
+	}
+
+	def glGetUniformu(program: Int, location: Int, params: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES20.glGetUniformiv(program, location, params)
 	}
 
 	def glGetTexParameter(target: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glGetTexParameterfv(target, pname, params)
+		android.opengl.GLES20.glGetTexParameterfv(target, pname, params)
 	}
 
-	def glGetTexParameter(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetTexParameteriv(target, pname, params)
+	def glGetTexParameterI(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES11.glGetTexParameteriv(target, pname, params)
+	}
+
+	def glGetTexParameterIu(target: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES20.glGetTexParameteriv(target, pname, params)
+	}
+
+	def glGetTexEnv(env: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
+		android.opengl.GLES11.glGetTexEnvfv(env, pname, params)
 	}
 
 	def glGetTexEnv(env: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetTexEnvxv(env, pname, params)
+		android.opengl.GLES11.glGetTexEnvxv(env, pname, params)
 	}
 
 	def glGetString(name: Int): String = {
-		instance.glGetString(name)
+		android.opengl.GLES20.glGetString(name)
+	}
+
+	def glGetShader(shader: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES20.glGetShaderiv(shader, pname, params)
+	}
+
+	def glGetProgram(program: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES20.glGetProgramiv(program, pname, params)
 	}
 
 	def glGetMaterial(face: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glGetMaterialfv(face, pname, params)
+		android.opengl.GLES11.glGetMaterialfv(face, pname, params)
 	}
 
 	def glGetMaterial(face: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetMaterialxv(face, pname, params)
+		android.opengl.GLES11.glGetMaterialxv(face, pname, params)
 	}
 
 	def glGetLight(light: Int, pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glGetLightfv(light, pname, params)
+		android.opengl.GLES11.glGetLightfv(light, pname, params)
 	}
 
 	def glGetLight(light: Int, pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glGetLightxv(light, pname, params)
+		android.opengl.GLES11.glGetLightxv(light, pname, params)
 	}
 
 	def glGetError(): Int = {
-		instance.glGetError()
+		android.opengl.GLES20.glGetError()
+	}
+
+	def glGetAttribLocation(program: Int, name: String): Int = {
+		android.opengl.GLES20.glGetAttribLocation(program, name)
 	}
 
 	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
-		instance.glFrustumf(left, right, bottom, top, zNear, zFar)
+		android.opengl.GLES10.glFrustumf(left, right, bottom, top, zNear, zFar)
 	}
 
 	def glFrontFace(mode: Int): Unit = {
-		instance.glFrontFace(mode)
+		android.opengl.GLES20.glFrontFace(mode)
 	}
 
 	def glFog(pname: Int, params: java.nio.FloatBuffer): Unit = {
-		instance.glFogfv(pname, params)
+		android.opengl.GLES10.glFogfv(pname, params)
 	}
 
-	def glFog(pname: Int, param: Int): Unit = {
-		instance.glFogx(pname, param)
+	def glFogi(pname: Int, param: Int): Unit = {
+		android.opengl.GLES10.glFogx(pname, param)
 	}
 
 	def glFog(pname: Int, params: java.nio.IntBuffer): Unit = {
-		instance.glFogxv(pname, params)
+		android.opengl.GLES10.glFogxv(pname, params)
 	}
 
 	def glFogf(pname: Int, param: Float): Unit = {
-		instance.glFogf(pname, param)
+		android.opengl.GLES10.glFogf(pname, param)
 	}
 
 	def glFlush(): Unit = {
-		instance.glFlush()
+		android.opengl.GLES20.glFlush()
 	}
 
 	def glFinish(): Unit = {
-		instance.glFinish()
+		android.opengl.GLES20.glFinish()
+	}
+
+	def glEnableVertexAttribArray(index: Int): Unit = {
+		android.opengl.GLES20.glEnableVertexAttribArray(index)
 	}
 
 	def glEnableClientState(array: Int): Unit = {
-		instance.glEnableClientState(array)
+		android.opengl.GLES10.glEnableClientState(array)
 	}
 
 	def glEnable(cap: Int): Unit = {
-		instance.glEnable(cap)
-	}
-
-	def glDrawElements(mode: Int, count: Int, `type`: Int, indices: java.nio.Buffer): Unit = {
-		instance.glDrawElements(mode, count, `type`, indices)
+		android.opengl.GLES20.glEnable(cap)
 	}
 
 	def glDrawElements(mode: Int, count: Int, `type`: Int, offset: Int): Unit = {
-		instance.glDrawElements(mode, count, `type`, offset)
+		android.opengl.GLES11.glDrawElements(mode, count, `type`, offset)
 	}
 
 	def glDrawArrays(mode: Int, first: Int, count: Int): Unit = {
-		instance.glDrawArrays(mode, first, count)
+		android.opengl.GLES20.glDrawArrays(mode, first, count)
+	}
+
+	def glDisableVertexAttribArray(index: Int): Unit = {
+		android.opengl.GLES20.glDisableVertexAttribArray(index)
 	}
 
 	def glDisableClientState(array: Int): Unit = {
-		instance.glDisableClientState(array)
+		android.opengl.GLES10.glDisableClientState(array)
 	}
 
 	def glDisable(cap: Int): Unit = {
-		instance.glDisable(cap)
+		android.opengl.GLES20.glDisable(cap)
+	}
+
+	def glDetachShader(program: Int, shader: Int): Unit = {
+		android.opengl.GLES20.glDetachShader(program, shader)
+	}
+
+	def glDepthRange(zNear: Float, zFar: Float): Unit = {
+		android.opengl.GLES10.glDepthRangef(zNear, zFar)
 	}
 
 	def glDepthRangef(zNear: Float, zFar: Float): Unit = {
-		instance.glDepthRangef(zNear, zFar)
+		android.opengl.GLES20.glDepthRangef(zNear, zFar)
 	}
 
 	def glDepthMask(flag: Boolean): Unit = {
-		instance.glDepthMask(flag)
+		android.opengl.GLES20.glDepthMask(flag)
 	}
 
 	def glDepthFunc(func: Int): Unit = {
-		instance.glDepthFunc(func)
+		android.opengl.GLES20.glDepthFunc(func)
+	}
+
+	def glDeleteShader(shader: Int): Unit = {
+		android.opengl.GLES20.glDeleteShader(shader)
+	}
+
+	def glDeleteProgram(program: Int): Unit = {
+		android.opengl.GLES20.glDeleteProgram(program)
 	}
 
 	def glCullFace(mode: Int): Unit = {
-		instance.glCullFace(mode)
+		android.opengl.GLES20.glCullFace(mode)
+	}
+
+	def glCreateShader(`type`: Int): Int = {
+		android.opengl.GLES20.glCreateShader(`type`)
+	}
+
+	def glCreateProgram(): Int = {
+		android.opengl.GLES20.glCreateProgram()
 	}
 
 	def glCopyTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, x: Int, y: Int, width: Int, height: Int): Unit = {
-		instance.glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height)
+		android.opengl.GLES20.glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height)
 	}
 
 	def glCopyTexImage2D(target: Int, level: Int, internalformat: Int, x: Int, y: Int, width: Int, height: Int, border: Int): Unit = {
-		instance.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border)
+		android.opengl.GLES20.glCopyTexImage2D(target, level, internalformat, x, y, width, height, border)
 	}
 
-	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
-		instance.glColorPointer(size, `type`, stride, pointer)
+	def glCompileShader(shader: Int): Unit = {
+		android.opengl.GLES20.glCompileShader(shader)
 	}
 
 	def glColorPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
-		instance.glColorPointer(size, `type`, stride, offset)
+		android.opengl.GLES11.glColorPointer(size, `type`, stride, offset)
 	}
 
 	def glColorMask(red: Boolean, green: Boolean, blue: Boolean, alpha: Boolean): Unit = {
-		instance.glColorMask(red, green, blue, alpha)
+		android.opengl.GLES20.glColorMask(red, green, blue, alpha)
 	}
 
 	def glColor4f(red: Float, green: Float, blue: Float, alpha: Float): Unit = {
-		instance.glColor4f(red, green, blue, alpha)
+		android.opengl.GLES10.glColor4f(red, green, blue, alpha)
 	}
 
 	def glClientActiveTexture(texture: Int): Unit = {
-		instance.glClientActiveTexture(texture)
+		android.opengl.GLES10.glClientActiveTexture(texture)
 	}
 
 	def glClearStencil(s: Int): Unit = {
-		instance.glClearStencil(s)
+		android.opengl.GLES20.glClearStencil(s)
 	}
 
 	def glClearDepth(depth: Float): Unit = {
-		instance.glClearDepthf(depth)
+		android.opengl.GLES20.glClearDepthf(depth)
 	}
 
 	def glClearColor(red: Float, green: Float, blue: Float, alpha: Float): Unit = {
-		instance.glClearColor(red, green, blue, alpha)
+		android.opengl.GLES20.glClearColor(red, green, blue, alpha)
 	}
 
 	def glClear(mask: Int): Unit = {
-		instance.glClear(mask)
+		android.opengl.GLES20.glClear(mask)
 	}
 
-	def glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit = {
-		instance.glBufferSubData(target, offset, size, data)
-	}
-
-	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
-		instance.glBufferData(target, size, data, usage)
+	def glBlendFuncSeparate(srcRGB: Int, dstRGB: Int, srcAlpha: Int, dstAlpha: Int): Unit = {
+		android.opengl.GLES20.glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha)
 	}
 
 	def glBlendFunc(sfactor: Int, dfactor: Int): Unit = {
-		instance.glBlendFunc(sfactor, dfactor)
+		android.opengl.GLES20.glBlendFunc(sfactor, dfactor)
+	}
+
+	def glBlendEquationSeparate(modeRGB: Int, modeAlpha: Int): Unit = {
+		android.opengl.GLES20.glBlendEquationSeparate(modeRGB, modeAlpha)
+	}
+
+	def glBlendEquation(mode: Int): Unit = {
+		android.opengl.GLES20.glBlendEquation(mode)
+	}
+
+	def glBlendColor(red: Float, green: Float, blue: Float, alpha: Float): Unit = {
+		android.opengl.GLES20.glBlendColor(red, green, blue, alpha)
 	}
 
 	def glBindTexture(target: Int, texture: Int): Unit = {
-		instance.glBindTexture(target, texture)
+		android.opengl.GLES20.glBindTexture(target, texture)
 	}
 
 	def glBindBuffer(target: Int, buffer: Int): Unit = {
-		instance.glBindBuffer(target, buffer)
+		android.opengl.GLES20.glBindBuffer(target, buffer)
+	}
+
+	def glBindAttribLocation(program: Int, index: Int, name: String): Unit = {
+		android.opengl.GLES20.glBindAttribLocation(program, index, name)
+	}
+
+	def glAttachShader(program: Int, shader: Int): Unit = {
+		android.opengl.GLES20.glAttachShader(program, shader)
 	}
 
 	def glAlphaFunc(func: Int, ref: Float): Unit = {
-		instance.glAlphaFunc(func, ref)
+		android.opengl.GLES10.glAlphaFunc(func, ref)
 	}
 
 	def glActiveTexture(texture: Int): Unit = {
-		instance.glActiveTexture(texture)
+		android.opengl.GLES20.glActiveTexture(texture)
 	}
 }
