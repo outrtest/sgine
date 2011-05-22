@@ -30,65 +30,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.opengl.generator
+package org.sgine.render.implementation.opengl
 
-import ClassCreator._
+import org.sgine.render.implementation.ShapeRenderer
 
-import com.googlecode.reflective.EnhancedClass._
+import org.sgine.opengl.GL._
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
+ * Date: 5/20/11
  */
-case class CombinedMethod(methodName: String, descriptor: MethodDescriptor, matcher: String) {
-  def generateAbstract() = {
-    val b = new StringBuilder()
-    // TODO: populate scaladoc
-    generateSignature(b)
-    b.toString()
+class OpenGLVBOShapeRenderer extends ShapeRenderer {
+  private var id: Int = -1
+
+  def updateVertices(vertices: Seq[Float]) = {
+    if (id != -1) {   // Delete existing VBO
+//      glDeleteBuffers(id)
+    }
+//    glGenBuffers()
+    glBindBuffer(GL_ARRAY_BUFFER, id)
+//    glBufferData(GL_ARRAY_BUFFER, size, GL_STREAM_DRAW)
   }
 
-  def generate() = {
-    val b = new StringBuilder()
-    generateSignature(b)
-    b.append(" = {\r\n")
-    b.append("\t\tinstance.")
-    b.append(methodName)
-    b.append('(')
-    b.append(descriptor.args.map(t => fix(t._1)).mkString(", "))
-    b.append(')')
-    b.append("\r\n\t}")
-    b.toString()
-  }
+  def render() = {
+    if (id != -1) {
+      glEnableClientState(GL_VERTEX_ARRAY)
+      glBindBuffer(GL_ARRAY_BUFFER, id)
 
-  def generateAndroid() = {
-    val b = new StringBuilder()
-    generateSignature(b)
-    generateBody(b, descriptor.androidBody)
-    b.toString()
-  }
-
-  def generateLWJGL() = {
-    val b = new StringBuilder()
-    generateSignature(b)
-    generateBody(b, descriptor.lwjglBody)
-    b.toString()
-  }
-
-  private def generateSignature(b: StringBuilder) = {
-    b.append("\tdef ")
-    b.append(methodName)
-    b.append('(')
-    b.append(descriptor.args.map(t => fix(t._1) + ": " + convertClass(t._2)).mkString(", "))
-    b.append("): ")
-    b.append(convertClass(descriptor.returnType))
-  }
-
-  private def generateBody(b: StringBuilder, body: String) = {
-    b.append(" = {\r\n")
-    b.append("\t\t")
-    b.append(body.replaceAll("\r\n", "\r\n\t\t"))
-    b.append("\r\n\t}")
+      glVertexPointer(3, GL_FLOAT, 0, 0)
+//      glDrawArrays(GL_TRIANGLES, 0, length)
+    }
   }
 }

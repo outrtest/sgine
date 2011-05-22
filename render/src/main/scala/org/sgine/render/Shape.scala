@@ -32,11 +32,18 @@
 
 package org.sgine.render
 
+import implementation.ShapeRenderer
+
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 5/18/11
  */
-trait Shape {
+trait Shape extends Renderable {
+  private lazy val renderer = ShapeRenderer()
+
+  def updateVertices(vertices: Seq[Float]) = renderer.updateVertices(vertices)
+
+  def render() = renderer.render()
 }

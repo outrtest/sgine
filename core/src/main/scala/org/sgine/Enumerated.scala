@@ -37,7 +37,7 @@ import scala.util.Random
 /**
  * Enumerated must be mixed into the companion object for Enum implementation.
  */
-trait Enumerated[E <: Enum] extends Traversable[E] {
+trait Enumerated[E <: EnumEntry] extends Traversable[E] {
   private lazy val r = new Random()
 
   /**

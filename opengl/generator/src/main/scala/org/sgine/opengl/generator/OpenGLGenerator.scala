@@ -33,11 +33,11 @@
 package org.sgine.opengl.generator
 
 import org.lwjgl.opengl._
-import javax.microedition.khronos.opengles.GL10
 import java.io.{FileWriter, File}
 import com.googlecode.reflective._
 import com.googlecode.reflective.doc.DocumentationReflection
 import java.lang.reflect.Method
+import android.opengl.{GLES10, GLES11, GLES20}
 
 /**
  * 
@@ -46,11 +46,11 @@ import java.lang.reflect.Method
  */
 object OpenGLGenerator {
   val showNoMappings = false
-  val debugMethodName = "glFrustum"
+  val debugMethodName = "glVertexPointer"
 
   def main(args: Array[String]): Unit = {
     // Run in offline mode
-    DocumentationReflection.remoteSources = false
+//    DocumentationReflection.remoteSources = false
 
     val apiBase = new File("opengl/api/src/main/scala/org/sgine/opengl/")
     val androidBase = new File("opengl/android/src/main/scala/org/sgine/opengl/android/")
@@ -63,8 +63,8 @@ object OpenGLGenerator {
     val glMethodNames = GLNameGenerator.generate()
 
     // Populate Android methods and fields into ClassExtractor
-    val androidExtractor = new ClassExtractor(false) {
-      classes = List(classOf[GL10], classOf[javax.microedition.khronos.opengles.GL11])
+    val androidExtractor = new ClassExtractor(true) {
+      classes = List(classOf[GLES10], classOf[GLES11], classOf[GLES20])
 
       process()
     }
