@@ -90,7 +90,80 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       |}""".stripMargin
   }
 
+  case object glGenBuffer extends ExplicitMatcher {
+    val methodName = "glGenBuffer"
+    val args = Nil
+    val returnType = classOf[Int]
+    val left = List(
+      method("android.opengl.GLES11.glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL15.glGenBuffers(): Int").get
+    )
+    val androidBody = """val buffers = new Array[Int](1)
+      |android.opengl.GLES11.glGenBuffers(1, buffers, 0)
+      |buffers(0)""".stripMargin
+    val lwjglBody = """org.lwjgl.opengl.GL15.glGenBuffers()"""
+  }
+
+  case object glGenBuffers extends ExplicitMatcher {
+    val methodName = "glGenBuffers"
+    val args = List(
+      "buffers" -> classOf[java.nio.IntBuffer]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES11.glGenBuffers(n: Int, buffers: java.nio.IntBuffer): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL15.glGenBuffers(buffers: java.nio.IntBuffer): Unit").get
+    )
+    val androidBody = """android.opengl.GLES11.glGenBuffers(0, buffers)"""
+    val lwjglBody = """org.lwjgl.opengl.GL15.glGenBuffers(buffers)"""
+  }
+
+  case object glGenBuffers2 extends ExplicitMatcher {
+    val methodName = "glGenBuffers"
+    val args = List(
+      "n" -> classOf[Int],
+      "buffers" -> classOf[Array[Int]],
+      "offset" -> classOf[Int]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES11.glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL15.glGenBuffers(): Int").get
+    )
+    val androidBody = """android.opengl.GLES11.glGenBuffers(n, buffers, offset)"""
+    val lwjglBody = """if (n > 0) {
+      | buffers(offset) = org.lwjgl.opengl.GL15.glGenBuffers()
+      | glGenBuffers(n - 1, buffers, offset + 1)
+      |}""".stripMargin
+  }
+
+  case object glDeleteBuffers extends ExplicitMatcher {
+    val methodName = "glDeleteBuffers"
+    val args = List(
+      "n" -> classOf[Int],
+      "buffers" -> classOf[Array[Int]],
+      "offset" -> classOf[Int]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES11.glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL15.glDeleteBuffers(buffer: Int): Unit").get
+    )
+    val androidBody = """android.opengl.GLES11.glDeleteBuffers(n, buffers, offset)"""
+    val lwjglBody = """for (index <- offset until (offset + n)) {
+      | org.lwjgl.opengl.GL15.glDeleteBuffers(buffers(index))
+      |}""".stripMargin
+  }
+
   def find(androidMethod: Method): Option[ExplicitMatcher] = ExplicitMatcher.find(em => em.isMatch(androidMethod))
 
-  val values = List(glVertexPointer)
+  val values = List(glVertexPointer, glGenBuffer, glGenBuffers, glGenBuffers2, glDeleteBuffers)
 }

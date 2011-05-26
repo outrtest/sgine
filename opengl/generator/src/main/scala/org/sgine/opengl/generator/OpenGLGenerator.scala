@@ -35,7 +35,6 @@ package org.sgine.opengl.generator
 import org.lwjgl.opengl._
 import java.io.{FileWriter, File}
 import com.googlecode.reflective._
-import com.googlecode.reflective.doc.DocumentationReflection
 import java.lang.reflect.Method
 import android.opengl.{GLES10, GLES11, GLES20}
 
@@ -46,7 +45,7 @@ import android.opengl.{GLES10, GLES11, GLES20}
  */
 object OpenGLGenerator {
   val showNoMappings = false
-  val debugMethodName = "glVertexPointer"
+  val debugMethodName = "glGenBuffers"
 
   def main(args: Array[String]): Unit = {
     // Run in offline mode

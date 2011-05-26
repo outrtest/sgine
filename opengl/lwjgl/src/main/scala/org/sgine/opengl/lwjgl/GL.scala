@@ -444,6 +444,14 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL20.glGetAttribLocation(program, name)
 	}
 
+	def glGenBuffer(): Int = {
+		org.lwjgl.opengl.GL15.glGenBuffers()
+	}
+
+	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
+		org.lwjgl.opengl.GL15.glGenBuffers(buffers)
+	}
+
 	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
 		org.lwjgl.opengl.GL11.glFrustum(left, right, bottom, top, zNear, zFar)
 	}
@@ -534,6 +542,12 @@ object GL extends org.sgine.opengl.GL {
 
 	def glDeleteProgram(program: Int): Unit = {
 		org.lwjgl.opengl.GL20.glDeleteProgram(program)
+	}
+
+	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
+		for (index <- offset until (offset + n)) {
+		 org.lwjgl.opengl.GL15.glDeleteBuffers(buffers(index))
+		}
 	}
 
 	def glCullFace(mode: Int): Unit = {
@@ -635,4 +649,6 @@ object GL extends org.sgine.opengl.GL {
 	def glActiveTexture(texture: Int): Unit = {
 		org.lwjgl.opengl.GL13.glActiveTexture(texture)
 	}
+
+  def glDeleteBuffer(id: Int) = org.lwjgl.opengl.GL15.glDeleteBuffers(id)
 }

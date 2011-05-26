@@ -43,4 +43,6 @@ import sys.error
  */
 object GL extends org.sgine.opengl.GL {
 $methods
+
+  def glDeleteBuffer(id: Int) = org.lwjgl.opengl.GL15.glDeleteBuffers(id)
 }
