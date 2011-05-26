@@ -41,6 +41,8 @@ import sys.error
  *
  * @see org.sgine.opengl.generator.OpenGLGenerator
  */
-class GL(instance: javax.microedition.khronos.opengles.GL11) extends org.sgine.opengl.GL {
+object GL extends org.sgine.opengl.GL {
 $methods
+
+  def glDeleteBuffer(id: Int) = android.opengl.GLES11.glDeleteBuffers(1, Array(id), 0)
 }

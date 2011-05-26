@@ -47,9 +47,9 @@ class OpenGLVBOShapeRenderer extends ShapeRenderer {
 
   def updateVertices(vertices: Seq[Float]) = {
     if (id != -1) {   // Delete existing VBO
-//      glDeleteBuffers(id)
+      glDeleteBuffer(id)
     }
-//    glGenBuffers()
+    id = glGenBuffer()
     glBindBuffer(GL_ARRAY_BUFFER, id)
 //    glBufferData(GL_ARRAY_BUFFER, size, GL_STREAM_DRAW)
   }
