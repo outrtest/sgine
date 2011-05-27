@@ -24,12 +24,10 @@ class EnumeratedSpec extends FlatSpec with ShouldMatchers {
   }
 }
 
-sealed trait TestEnum extends EnumEntry
+sealed class TestEnum extends EnumEntry
 
 object TestEnum extends Enumerated[TestEnum] {
-  case object One extends TestEnum
-  case object Two extends TestEnum
-  case object Three extends TestEnum
-
-  val values = List(One, Two, Three)
+  val One = new TestEnum
+  val Two = new TestEnum
+  val Three = new TestEnum
 }

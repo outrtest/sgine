@@ -62,7 +62,7 @@ sealed trait ExplicitMatcher extends EnumEntry {
 }
 
 object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
-  case object glVertexPointer extends ExplicitMatcher {
+  val glVertexPointer = new ExplicitMatcher {
     val methodName = "glVertexPointer"
     val args = List(
       "size" -> classOf[Int],
@@ -90,7 +90,7 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       |}""".stripMargin
   }
 
-  case object glGenBuffer extends ExplicitMatcher {
+  val glGenBuffer = new ExplicitMatcher {
     val methodName = "glGenBuffer"
     val args = Nil
     val returnType = classOf[Int]
@@ -106,7 +106,7 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
     val lwjglBody = """org.lwjgl.opengl.GL15.glGenBuffers()"""
   }
 
-  case object glGenBuffers extends ExplicitMatcher {
+  val glGenBuffers = new ExplicitMatcher {
     val methodName = "glGenBuffers"
     val args = List(
       "buffers" -> classOf[java.nio.IntBuffer]
@@ -122,7 +122,7 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
     val lwjglBody = """org.lwjgl.opengl.GL15.glGenBuffers(buffers)"""
   }
 
-  case object glGenBuffers2 extends ExplicitMatcher {
+  val glGenBuffers2 = new ExplicitMatcher {
     val methodName = "glGenBuffers"
     val args = List(
       "n" -> classOf[Int],
@@ -143,7 +143,7 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       |}""".stripMargin
   }
 
-  case object glDeleteBuffers extends ExplicitMatcher {
+  val glDeleteBuffers = new ExplicitMatcher {
     val methodName = "glDeleteBuffers"
     val args = List(
       "n" -> classOf[Int],
@@ -164,6 +164,4 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
   }
 
   def find(androidMethod: Method): Option[ExplicitMatcher] = ExplicitMatcher.find(em => em.isMatch(androidMethod))
-
-  val values = List(glVertexPointer, glGenBuffer, glGenBuffers, glGenBuffers2, glDeleteBuffers)
 }
