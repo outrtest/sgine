@@ -37,13 +37,31 @@ import scala.util.Random
 /**
  * Enumerated must be mixed into the companion object for Enum implementation.
  */
-trait Enumerated[E <: EnumEntry] extends Traversable[E] {
+trait Enumerated[E <: EnumEntry] extends Traversable[E] with DelayedInit {
   private lazy val r = new Random()
 
+  private var list: List[E] = _
+
+  def delayedInit(f: => Unit) = {
+    f
+    // Initialize and enumerate EnumEntries
+    var ordinal = 0
+    list = (for (m <- getClass.getMethods;
+      if (classOf[EnumEntry].isAssignableFrom(m.getReturnType) &&
+          m.getName != "random" &&
+          m.getParameterTypes.length == 0)) yield {
+        val name = m.getName
+        val e = m.invoke(this).asInstanceOf[E]
+        e.init(name, this, ordinal)
+        ordinal += 1
+        e
+    }).toList
+  }
+
   /**
-   * Sequence of all associated Enums
+   * List of all associated Enums
    */
-  def values: Seq[E]
+  final def values = list
 
   /**
    * Number of Enums
