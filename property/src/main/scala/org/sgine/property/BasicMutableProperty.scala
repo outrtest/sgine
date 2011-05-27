@@ -33,8 +33,8 @@
 package org.sgine.property
 
 /**
- * BasicMutableProperty stores the property value as a field and allows modification. This class is fully thread-safe to
- * allow concurrent modification and access.
+ * BasicMutableProperty stores the property value as a field and allows modification. This class is
+ * fully thread-safe to allow concurrent modification and access.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
@@ -48,5 +48,9 @@ class BasicMutableProperty[T](implicit val manifest: Manifest[T]) extends Mutabl
 
   def apply() = v
 
-  def apply(value: T) = v = value
+  def apply(value: T) = {
+    val previous = v
+    v = value
+    changed(previous, value)
+  }
 }

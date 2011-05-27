@@ -12,6 +12,7 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   val lwjglRepo = "LWJGL Repository" at "http://adterrasperaspera.com/lwjgl/"
   val lwjglVersion = "2.7.1"
   val reflectiveVersion = "1.0"
+  val scalatestVersion = "1.4.1"
 
   lazy val concurrent = project("concurrent", "sgine-concurrent", new SgineProjectBase(_))
   lazy val core = project("core", "sgine-core", new CoreProject(_))
@@ -24,7 +25,9 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
 
   Credentials(Path.userHome / ".ivy2" / ".credentials", log)
 
-  class CoreProject(info: ProjectInfo) extends SgineProjectBase(info) with ScctProject
+  class CoreProject(info: ProjectInfo) extends SgineProjectBase(info) with ScctProject {
+    val scalaTest = "org.scalatest" %% "scalatest" % scalatestVersion % "test"
+  }
 
   class OpenGLProject(info: ProjectInfo) extends ParentProject(info) {
     lazy val generator = project("generator", "sgine-opengl-generator", new OpenGLGeneratorProject(_), core)
