@@ -32,14 +32,27 @@
 
 package org.sgine.render
 
-import org.sgine.Disposable
-
+import org.sgine.Updatable
 /**
- * 
+ * RenderApplication can be extended to provide a complete implementation agnostic application.
+ *
+ * The contents of the application construction are delayed until the rendering context is prepared so all creation
+ * of renderables can be done within the body of the RenderApplication implementation.
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 5/20/11
  */
-trait Renderable extends Disposable {
-  def render(): Unit
+trait RenderApplication extends Renderable with Updatable with DelayedInit {
+  private var _renderer: Renderer = _
+  private[render] var bodyFunction: () => Unit = _
+
+  def renderer = _renderer
+  def title: String = getClass.getSimpleName
+
+  def delayedInit(x: => Unit) = {
+    bodyFunction = () => x
+  }
+
+  def main(args: Array[String]): Unit = {
+    _renderer = Renderer(this)
+  }
 }

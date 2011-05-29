@@ -30,23 +30,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.render.implementation
-
-import opengl.OpenGLVBOShapeRenderer
+package org.sgine.render
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 5/20/11
  */
-trait ShapeRenderer {
-  def updateVertices(vertices: Seq[Float]): Unit
+object Vertices {
+  def triangle(x: Float = 0.0f, y: Float = 0.0f, z: Float = 0.0f, width: Float = 2.0f, height: Float = 2.0f) = {
+    val test = y + (height / 2.0f)
+    List(
+      x, (y + (height / 2.0f)).toFloat, z,                      // Top point
+      (x - (width / 2.0f)).toFloat, (y - (height / 2.0f)).toFloat, z,     // Bottom left point
+      (x + (width / 2.0f)).toFloat, (y - (height / 2.0f)).toFloat, z      // Bottom right point
+    )
+  }
 
-  def render(): Unit
-}
-
-object ShapeRenderer {
-  // TODO: provide detection
-  def apply(): ShapeRenderer = new OpenGLVBOShapeRenderer()
+  def quad(x1: Float = -1.0f, y1: Float = 1.0f, x2: Float = 1.0f, y2: Float = -1.0f, z: Float = 0.0f) = {
+    List(
+      x1, y1, 0.0f,       // Top left
+      x2, y1, 0.0f,       // Top right
+      x1, y2, 0.0f,       // Bottom left
+      x2, y2, 0.0f,       // Bottom right
+      x1, y2, 0.0f,       // Bottom left
+      x2, y1, 0.0f       // Top right
+    )
+  }
 }

@@ -32,14 +32,41 @@
 
 package org.sgine.render
 
+import implementation.opengl.OpenGLRenderer
+import org.sgine.math.Matrix4
 import org.sgine.Disposable
+import org.sgine.opengl.lwjgl.LWJGLController
+import java.lang.ThreadLocal
 
 /**
- * 
+ * Renderer implementation is defined by the current rendering platform available.
+ * This is <b>NOT</b> thread-safe, all operations should occur in the same thread.
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 5/20/11
  */
-trait Renderable extends Disposable {
-  def render(): Unit
+trait Renderer extends Disposable {
+  def application: RenderApplication
+
+  def create() = {
+    Renderer.renderer.set(this)
+    application.bodyFunction()
+  }
+
+  protected[render] def createShape(vertices: Seq[Float]): Shape
+
+  protected[render] def createMutableShape(vertices: Seq[Float]): MutableShape
+
+  def loadMatrix(matrix: Matrix4): Unit
+}
+
+object Renderer {
+  private val renderer = new ThreadLocal[Renderer]
+
+  def apply(application: RenderApplication) = {
+    val renderer = new OpenGLRenderer(application)
+    val controller = LWJGLController(renderer, 1024, 768, application.title)
+    renderer
+  }
+
+  def apply() = renderer.get()
 }

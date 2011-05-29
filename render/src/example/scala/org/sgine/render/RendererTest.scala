@@ -32,14 +32,31 @@
 
 package org.sgine.render
 
-import org.sgine.Disposable
+import org.sgine.math.Matrix4
 
 /**
- * 
+ * RendererTest provides a very simplistic usage of the render framework.
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 5/20/11
  */
-trait Renderable extends Disposable {
-  def render(): Unit
+object RendererTest extends RenderApplication {
+  private val triangleMatrix = Matrix4.Identity.translate(x = -1.5, z = -6.0)
+  private val triangleShape = Shape(Vertices.triangle())
+  private val quadMatrix = Matrix4.Identity.translate(x = 1.5, z = -6.0)
+  private val quadShape = Shape(Vertices.quad())
+
+  def update() = {
+  }
+
+  def render() = {
+    renderer.loadMatrix(triangleMatrix)
+    triangleShape.render()
+    renderer.loadMatrix(quadMatrix)
+    quadShape.render()
+  }
+
+  def dispose() = {
+    triangleShape.dispose()
+    quadShape.dispose()
+  }
 }
