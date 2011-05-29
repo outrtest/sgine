@@ -42,8 +42,40 @@ import sys.error
  * @see org.sgine.opengl.generator.OpenGLGenerator
  */
 object GL extends org.sgine.opengl.GL {
-	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
-		org.lwjgl.opengl.GL11.glViewport(x, y, width, height)
+	def glDeleteBuffer(id: Int): Unit = {
+		org.lwjgl.opengl.GL15.glDeleteBuffers(id)
+	}
+
+	def glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
+		if (n > 0) {
+		 buffers(offset) = org.lwjgl.opengl.GL15.glGenBuffers()
+		 glGenBuffers(n - 1, buffers, offset + 1)
+		}
+	}
+
+	def glGenBuffer(): Int = {
+		org.lwjgl.opengl.GL15.glGenBuffers()
+	}
+
+	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
+		org.lwjgl.opengl.GL15.glGenBuffers(buffers)
+	}
+
+	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
+		for (index <- offset until (offset + n)) {
+		 org.lwjgl.opengl.GL15.glDeleteBuffers(buffers(index))
+		}
+	}
+
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		data match {
+		 case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
+		}
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
@@ -54,6 +86,10 @@ object GL extends org.sgine.opengl.GL {
 		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glVertexPointer(size, stride, b)
 		 case _ => error("Failed conversion of buffer type: " + pointer.getClass.getName)
 		}
+	}
+
+	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
+		org.lwjgl.opengl.GL11.glViewport(x, y, width, height)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
@@ -444,14 +480,6 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL20.glGetAttribLocation(program, name)
 	}
 
-	def glGenBuffer(): Int = {
-		org.lwjgl.opengl.GL15.glGenBuffers()
-	}
-
-	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
-		org.lwjgl.opengl.GL15.glGenBuffers(buffers)
-	}
-
 	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
 		org.lwjgl.opengl.GL11.glFrustum(left, right, bottom, top, zNear, zFar)
 	}
@@ -542,12 +570,6 @@ object GL extends org.sgine.opengl.GL {
 
 	def glDeleteProgram(program: Int): Unit = {
 		org.lwjgl.opengl.GL20.glDeleteProgram(program)
-	}
-
-	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
-		for (index <- offset until (offset + n)) {
-		 org.lwjgl.opengl.GL15.glDeleteBuffers(buffers(index))
-		}
 	}
 
 	def glCullFace(mode: Int): Unit = {
@@ -649,6 +671,4 @@ object GL extends org.sgine.opengl.GL {
 	def glActiveTexture(texture: Int): Unit = {
 		org.lwjgl.opengl.GL13.glActiveTexture(texture)
 	}
-
-  def glDeleteBuffer(id: Int) = org.lwjgl.opengl.GL15.glDeleteBuffers(id)
 }

@@ -32,11 +32,9 @@
 
 package org.sgine.opengl.generator
 
-import arg.{Argument, ConversionArgument, ExplicitArgument, VariableArgument}
-import explicit.ExplicitMatcher
+import arg.VariableArgument
 import java.lang.reflect.Method
 
-import util.matching.Regex
 import com.googlecode.reflective._
 import scala.Some
 
@@ -47,10 +45,6 @@ import scala.Some
  * Date: 5/6/11
  */
 object MethodMatcher {
-  def explicitMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method]) = {
-    ExplicitMatcher.find(m1).map(em => em.toCombinedMethod)
-  }
-
   def perfectMatch(name: String, m1: Method, m2: Method, m1s: List[Method], m2s: List[Method], almost: Boolean) = {
     if ((m1.getName == m2.getName || almost) && parametersMatch(m1, m2) && m1.getReturnType == m2.getReturnType) {
       val argNames = m1.args.map(a => a.name).toList

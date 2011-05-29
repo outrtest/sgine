@@ -33,10 +33,10 @@
 package org.sgine.opengl.generator
 
 import annotation.tailrec
-import arg.VariableArgument
+import explicit.ExplicitMatcher
 import java.lang.reflect.{Method, Field}
 
-import com.googlecode.reflective._
+import collection.immutable.List._
 
 /**
  * 
@@ -90,6 +90,17 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
       }
       combineMethods(methodNames.tail, combinedMethods ::: combined)
     } else {
+      combineExplicitMethods(ExplicitMatcher.values, combined)
+    }
+  }
+
+  @tailrec
+  private def combineExplicitMethods(explicitMatchers: List[ExplicitMatcher], combined: List[CombinedMethod]): List[CombinedMethod] = {
+    if (!explicitMatchers.isEmpty) {
+      val explicitMatcher = explicitMatchers.head
+      val combinedMethod = explicitMatcher.toCombinedMethod
+      combineExplicitMethods(explicitMatchers.tail, combinedMethod :: combined)
+    } else {
       combined
     }
   }
@@ -102,8 +113,9 @@ class Combiner(methodNames: List[String], e1: ClassExtractor, e2: ClassExtractor
 
     val isPerfect = MethodMatcher.perfectMatch(_: String, _: Method, _: Method, _: List[Method], _: List[Method], false)
     val isAlmostPerfect = MethodMatcher.perfectMatch(_: String, _: Method, _: Method, _: List[Method], _: List[Method], true)
-    // MethodMatcher.signaturePointerMatch _
-    val matchers = List(isPerfect, isAlmostPerfect, MethodMatcher.explicitMatch _) //, MethodMatcher.smartMatch _)
+
+    // Process the rest
+    val matchers = List(isPerfect, isAlmostPerfect) //, MethodMatcher.smartMatch _)
     val combined = runMatchers(name, matchers, Nil)
 
     unusedAndroid = e1Methods ::: unusedAndroid

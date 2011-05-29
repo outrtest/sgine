@@ -45,8 +45,6 @@ import sys.error
  */
 trait GL {
 $abstractMethods
-
-  def glDeleteBuffer(id: Int): Unit
 }
 
 object GL extends GL {
@@ -57,8 +55,6 @@ object GL extends GL {
 $fields
 
 $methods
-
-  def glDeleteBuffer(id: Int) = instance.glDeleteBuffer(id)
 
   /**
    * Convenience method to replication the functionality of GLU utility method. Wraps glFrustum.
