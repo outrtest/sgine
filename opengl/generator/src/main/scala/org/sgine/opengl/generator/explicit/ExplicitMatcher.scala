@@ -143,6 +143,22 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       |}""".stripMargin
   }
 
+  val glDeleteBuffer = new ExplicitMatcher {
+    val methodName = "glDeleteBuffer"
+    val args = List(
+      "id" -> classOf[Int]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES11.glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL15.glDeleteBuffers(buffer: Int): Unit").get
+    )
+    val androidBody = """android.opengl.GLES11.glDeleteBuffers(1, Array(id), 0)"""
+    val lwjglBody = """org.lwjgl.opengl.GL15.glDeleteBuffers(id)"""
+  }
+
   val glDeleteBuffers = new ExplicitMatcher {
     val methodName = "glDeleteBuffers"
     val args = List(
@@ -163,5 +179,33 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       |}""".stripMargin
   }
 
-  def find(androidMethod: Method): Option[ExplicitMatcher] = ExplicitMatcher.find(em => em.isMatch(androidMethod))
+  val glBufferData = new ExplicitMatcher {
+    val methodName = "glBufferData"
+    val args = List(
+      "target" -> classOf[Int],
+      "size" -> classOf[Int],
+      "data" -> classOf[java.nio.Buffer],
+      "usage" -> classOf[Int]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES11.glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL15.glBufferData(target: Int, data: java.nio.ByteBuffer, usage: Int): Unit").get,
+      method("org.lwjgl.opengl.GL15.glBufferData(target: Int, data: java.nio.ShortBuffer, usage: Int): Unit").get,
+      method("org.lwjgl.opengl.GL15.glBufferData(target: Int, data: java.nio.IntBuffer, usage: Int): Unit").get,
+      method("org.lwjgl.opengl.GL15.glBufferData(target: Int, data: java.nio.FloatBuffer, usage: Int): Unit").get,
+      method("org.lwjgl.opengl.GL15.glBufferData(target: Int, data: java.nio.DoubleBuffer, usage: Int): Unit").get
+    )
+    val androidBody = """android.opengl.GLES11.glBufferData(target, size, data, usage)"""
+    val lwjglBody = """data match {
+      | case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+      | case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+      | case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+      | case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+      | case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+      | case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
+      |}""".stripMargin
+  }
 }

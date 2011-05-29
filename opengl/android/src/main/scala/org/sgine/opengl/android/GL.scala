@@ -40,12 +40,38 @@ package org.sgine.opengl.android
  * @see org.sgine.opengl.generator.OpenGLGenerator
  */
 object GL extends org.sgine.opengl.GL {
-	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
-		android.opengl.GLES20.glViewport(x, y, width, height)
+	def glDeleteBuffer(id: Int): Unit = {
+		android.opengl.GLES11.glDeleteBuffers(1, Array(id), 0)
+	}
+
+	def glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
+		android.opengl.GLES11.glGenBuffers(n, buffers, offset)
+	}
+
+	def glGenBuffer(): Int = {
+		val buffers = new Array[Int](1)
+		android.opengl.GLES11.glGenBuffers(1, buffers, 0)
+		buffers(0)
+	}
+
+	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES11.glGenBuffers(0, buffers)
+	}
+
+	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
+		android.opengl.GLES11.glDeleteBuffers(n, buffers, offset)
+	}
+
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		android.opengl.GLES11.glBufferData(target, size, data, usage)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		android.opengl.GLES10.glVertexPointer(size, `type`, stride, pointer)
+	}
+
+	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
+		android.opengl.GLES20.glViewport(x, y, width, height)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
@@ -436,16 +462,6 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES20.glGetAttribLocation(program, name)
 	}
 
-	def glGenBuffer(): Int = {
-		val buffers = new Array[Int](1)
-		android.opengl.GLES11.glGenBuffers(1, buffers, 0)
-		buffers(0)
-	}
-
-	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
-		android.opengl.GLES11.glGenBuffers(0, buffers)
-	}
-
 	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
 		android.opengl.GLES10.glFrustumf(left, right, bottom, top, zNear, zFar)
 	}
@@ -536,10 +552,6 @@ object GL extends org.sgine.opengl.GL {
 
 	def glDeleteProgram(program: Int): Unit = {
 		android.opengl.GLES20.glDeleteProgram(program)
-	}
-
-	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
-		android.opengl.GLES11.glDeleteBuffers(n, buffers, offset)
 	}
 
 	def glCullFace(mode: Int): Unit = {
@@ -641,6 +653,4 @@ object GL extends org.sgine.opengl.GL {
 	def glActiveTexture(texture: Int): Unit = {
 		android.opengl.GLES20.glActiveTexture(texture)
 	}
-
-  def glDeleteBuffer(id: Int) = android.opengl.GLES11.glDeleteBuffers(1, Array(id), 0)
 }

@@ -42,9 +42,21 @@ import scala.math._
  * @see org.sgine.opengl.generator.OpenGLGenerator
  */
 trait GL {
-	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit
+	def glDeleteBuffer(id: Int): Unit
+
+	def glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit
+
+	def glGenBuffer(): Int
+
+	def glGenBuffers(buffers: java.nio.IntBuffer): Unit
+
+	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit
+
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
+
+	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit
 
@@ -240,10 +252,6 @@ trait GL {
 
 	def glGetAttribLocation(program: Int, name: String): Int
 
-	def glGenBuffer(): Int
-
-	def glGenBuffers(buffers: java.nio.IntBuffer): Unit
-
 	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit
 
 	def glFrontFace(mode: Int): Unit
@@ -289,8 +297,6 @@ trait GL {
 	def glDeleteShader(shader: Int): Unit
 
 	def glDeleteProgram(program: Int): Unit
-
-	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit
 
 	def glCullFace(mode: Int): Unit
 
@@ -341,8 +347,6 @@ trait GL {
 	def glAlphaFunc(func: Int, ref: Float): Unit
 
 	def glActiveTexture(texture: Int): Unit
-
-  def glDeleteBuffer(id: Int): Unit
 }
 
 object GL extends GL {
@@ -4038,12 +4042,36 @@ object GL extends GL {
 	 */
 	val GL_ZERO: Int = 0
 
-	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
-		instance.glViewport(x, y, width, height)
+	def glDeleteBuffer(id: Int): Unit = {
+		instance.glDeleteBuffer(id)
+	}
+
+	def glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
+		instance.glGenBuffers(n, buffers, offset)
+	}
+
+	def glGenBuffer(): Int = {
+		instance.glGenBuffer()
+	}
+
+	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
+		instance.glGenBuffers(buffers)
+	}
+
+	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
+		instance.glDeleteBuffers(n, buffers, offset)
+	}
+
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		instance.glBufferData(target, size, data, usage)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		instance.glVertexPointer(size, `type`, stride, pointer)
+	}
+
+	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
+		instance.glViewport(x, y, width, height)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, offset: Int): Unit = {
@@ -4434,14 +4462,6 @@ object GL extends GL {
 		instance.glGetAttribLocation(program, name)
 	}
 
-	def glGenBuffer(): Int = {
-		instance.glGenBuffer()
-	}
-
-	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
-		instance.glGenBuffers(buffers)
-	}
-
 	def glFrustum(left: Float, right: Float, bottom: Float, top: Float, zNear: Float, zFar: Float): Unit = {
 		instance.glFrustum(left, right, bottom, top, zNear, zFar)
 	}
@@ -4532,10 +4552,6 @@ object GL extends GL {
 
 	def glDeleteProgram(program: Int): Unit = {
 		instance.glDeleteProgram(program)
-	}
-
-	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
-		instance.glDeleteBuffers(n, buffers, offset)
 	}
 
 	def glCullFace(mode: Int): Unit = {
@@ -4637,8 +4653,6 @@ object GL extends GL {
 	def glActiveTexture(texture: Int): Unit = {
 		instance.glActiveTexture(texture)
 	}
-
-  def glDeleteBuffer(id: Int) = instance.glDeleteBuffer(id)
 
   /**
    * Convenience method to replication the functionality of GLU utility method. Wraps glFrustum.

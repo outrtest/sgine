@@ -43,6 +43,4 @@ import sys.error
  */
 object GL extends org.sgine.opengl.GL {
 $methods
-
-  def glDeleteBuffer(id: Int) = android.opengl.GLES11.glDeleteBuffers(1, Array(id), 0)
 }
