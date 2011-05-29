@@ -17,9 +17,10 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   lazy val concurrent = project("concurrent", "sgine-concurrent", new SgineProjectBase(_))
   lazy val core = project("core", "sgine-core", new CoreProject(_))
   lazy val event = project("event", "sgine-event", new SgineProjectBase(_))
+  lazy val math = project("math", "sgine-math", new SgineProjectBase(_))
   lazy val opengl = project("opengl", "sgine-opengl", new OpenGLProject(_))
   lazy val properties = project("property", "sgine-property", new SgineProjectBase(_))
-  lazy val render = project("render", "sgine-render", new SgineProjectBase(_), opengl.api)
+  lazy val render = project("render", "sgine-render", new SgineProjectBase(_), math, opengl.api, opengl.android, opengl.lwjgl)
 
   override def deliverProjectDependencies = super.deliverProjectDependencies.toList - opengl.projectID
 
