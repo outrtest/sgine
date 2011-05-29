@@ -32,9 +32,9 @@
 
 package org.sgine.render.implementation.opengl
 
-import org.sgine.render.implementation.ShapeRenderer
-
 import org.sgine.opengl.GL._
+import java.nio.{ByteOrder, ByteBuffer}
+import org.sgine.render.Shape
 
 /**
  * 
@@ -42,16 +42,25 @@ import org.sgine.opengl.GL._
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 5/20/11
  */
-class OpenGLVBOShapeRenderer extends ShapeRenderer {
+class OpenGLVBOShapeRenderer extends Shape {
   private var id: Int = -1
+  private var length: Int = _
 
-  def updateVertices(vertices: Seq[Float]) = {
-    if (id != -1) {   // Delete existing VBO
-      glDeleteBuffer(id)
+  def updateVertices(vertices: Seq[Float], dynamic: Boolean) = {
+    if (id == -1) {
+      id = glGenBuffer()
     }
-    id = glGenBuffer()
     glBindBuffer(GL_ARRAY_BUFFER, id)
-//    glBufferData(GL_ARRAY_BUFFER, size, GL_STREAM_DRAW)
+
+    val size = vertices.length * 4
+    val bb = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder)
+    val data = bb.asFloatBuffer()
+    data.clear()
+    vertices.foreach(f => data.put(f))
+    data.flip()
+    val usage = if (dynamic) GL_STREAM_DRAW else GL_STATIC_DRAW
+    glBufferData(GL_ARRAY_BUFFER, size, data, usage)
+    length = vertices.length
   }
 
   def render() = {
@@ -60,7 +69,14 @@ class OpenGLVBOShapeRenderer extends ShapeRenderer {
       glBindBuffer(GL_ARRAY_BUFFER, id)
 
       glVertexPointer(3, GL_FLOAT, 0, 0)
-//      glDrawArrays(GL_TRIANGLES, 0, length)
+      glDrawArrays(GL_TRIANGLES, 0, length)
+    }
+  }
+
+  def dispose() = {
+    if (id != -1) {   // Delete existing VBO
+      glDeleteBuffer(id)
+      id = -1
     }
   }
 }

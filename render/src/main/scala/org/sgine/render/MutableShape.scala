@@ -32,14 +32,11 @@
 
 package org.sgine.render
 
-import org.sgine.Disposable
-
 /**
- * 
+ * DynamicShape provides the ability to update vertices at any time.
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 5/20/11
  */
-trait Renderable extends Disposable {
-  def render(): Unit
+trait MutableShape extends Shape {
+  def updateVertices(vertices: Seq[Float]): Unit = updateVertices(vertices, true)
 }

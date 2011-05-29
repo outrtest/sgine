@@ -32,18 +32,19 @@
 
 package org.sgine.render
 
-import implementation.ShapeRenderer
-
 /**
- * 
+ * Shape provides a renderable representation of shapes created via triangles.
+ * See StaticShape and DynamicShape for specific implementations.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 5/18/11
  */
 trait Shape extends Renderable {
-  private lazy val renderer = ShapeRenderer()
+  protected def updateVertices(vertices: Seq[Float], dynamic: Boolean): Unit
 
-  def updateVertices(vertices: Seq[Float]) = renderer.updateVertices(vertices)
+  def render(): Unit
+}
 
-  def render() = renderer.render()
+object Shape {
+  def apply(vertices: Seq[Float]) = Renderer().createShape(vertices)
 }

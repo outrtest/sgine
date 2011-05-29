@@ -30,16 +30,69 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.render
+package org.sgine.render.implementation.opengl
 
-import org.sgine.Disposable
+import org.sgine.math.Matrix4
+import org.sgine.opengl.GL._
+import org.sgine.opengl.GLDisplay
+import org.sgine.render.{RenderApplication, MutableShape, Renderer}
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 5/20/11
  */
-trait Renderable extends Disposable {
-  def render(): Unit
+class OpenGLRenderer(val application: RenderApplication) extends Renderer with GLDisplay {
+  private val matrixBuffer = Matrix4.floatBuffer
+
+  def loadMatrix(matrix: Matrix4) = {
+    matrix.toBuffer(matrixBuffer)
+    glLoadMatrix(matrixBuffer)
+  }
+
+  protected[render] def createShape(vertices: Seq[Float]) = {
+    val shape = new OpenGLVBOShapeRenderer
+    shape.updateVertices(vertices, false)
+    shape
+  }
+
+  protected[render] def createMutableShape(vertices: Seq[Float]) = {
+    val shape = new OpenGLVBOShapeRenderer with MutableShape
+    shape.updateVertices(vertices, true)
+    shape
+  }
+
+  override def create() = {
+    glShadeModel(GL_SMOOTH)
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+    glClearDepth(1.0f)
+    glEnable(GL_DEPTH_TEST)
+    glDepthFunc(GL_LEQUAL)
+
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+
+    super.create()
+  }
+
+  def resize(width: Int, height: Int) = {
+    glViewport(0, 0, width, height)
+
+    gluPerspective(45.0f, width.toFloat / height.toFloat, 0.1f, 100.0f)
+
+    glMatrixMode(GL_MODELVIEW)
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+  }
+
+  def render() = {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glLoadIdentity()
+
+    application.update()
+    application.render()
+  }
+
+  def dispose() = {
+    application.dispose()
+  }
 }
