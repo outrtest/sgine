@@ -113,7 +113,7 @@ class Lesson03 extends GLDisplay {
     glTranslatef(3.0f, 0.0f, 0.0f)
     glVertexPointer(3, GL_FLOAT, 0, quadVertexBuffer)
     glEnableClientState(GL_VERTEX_ARRAY)
-    glColor4f(0.0f, 0.0f, 1.0f, 1.0f)
+    glColor4f(0.5f, 0.5f, 1.0f, 1.0f)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, quadVertices.length / 3)
     glDisableClientState(GL_VERTEX_ARRAY)
   }
