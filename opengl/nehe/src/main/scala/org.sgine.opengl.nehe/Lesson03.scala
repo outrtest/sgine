@@ -34,22 +34,23 @@ package org.sgine.opengl.nehe
 
 import org.sgine.opengl.GLDisplay
 import org.sgine.opengl.GL._
-import java.nio.{FloatBuffer, ByteOrder, ByteBuffer}
-
+import java.nio.{ByteOrder, ByteBuffer, FloatBuffer}
 import org.sgine.opengl.lwjgl.LWJGLController
 
 /**
- * Ported from the NeHe OpenGL Tutorials Lesson 02
- *
- * http://org.sgine.opengl.nehe.gamedev.net/data/lessons/lesson.asp?lesson=02
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Lesson02 extends GLDisplay {
+class Lesson03 extends GLDisplay {
   private val triangleVertices = Array(0.0f, 1.0f, 0.0f,
                                        -1.0f, -1.0f, 0.0f,
                                        1.0f, -1.0f, 0.0f)
+  private val triangleColors = Array(1.0f, 0.0f, 0.0f, 1.0f,
+                                     0.0f, 1.0f, 0.0f, 1.0f,
+                                     0.0f, 0.0f, 1.0f, 1.0f)
   private var triangleVertexBuffer: FloatBuffer = _
+  private var triangleColorBuffer: FloatBuffer = _
 
   private val quadVertices = Array(-1.0f, -1.0f, 0.0f,
                                    1.0f, -1.0f, 0.0f,
@@ -73,6 +74,11 @@ class Lesson02 extends GLDisplay {
     triangleVertexBuffer = bb.asFloatBuffer()
     triangleVertexBuffer.put(triangleVertices)
     triangleVertexBuffer.position(0)
+    bb = ByteBuffer.allocateDirect(triangleColors.length * 4)
+    bb.order(ByteOrder.nativeOrder())
+    triangleColorBuffer = bb.asFloatBuffer()
+    triangleColorBuffer.put(triangleColors)
+    triangleColorBuffer.position(0)
 
     // Create Quad
     bb = ByteBuffer.allocateDirect(quadVertices.length * 4)
@@ -97,21 +103,25 @@ class Lesson02 extends GLDisplay {
     glTranslatef(-1.5f, 0.0f, -6.0f)
 
     glVertexPointer(3, GL_FLOAT, 0, triangleVertexBuffer)
+    glColorPointer(4, GL_FLOAT, 0, triangleColorBuffer)
     glEnableClientState(GL_VERTEX_ARRAY)
-    glDrawArrays(GL_TRIANGLES, 0, triangleVertices.length / 3)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, triangleVertices.length / 3)
     glDisableClientState(GL_VERTEX_ARRAY)
+    glDisableClientState(GL_COLOR_ARRAY)
 
     glTranslatef(3.0f, 0.0f, 0.0f)
     glVertexPointer(3, GL_FLOAT, 0, quadVertexBuffer)
     glEnableClientState(GL_VERTEX_ARRAY)
+    glColor4f(0.0f, 0.0f, 1.0f, 1.0f)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, quadVertices.length / 3)
     glDisableClientState(GL_VERTEX_ARRAY)
   }
 }
 
-object Lesson02 {
+object Lesson03 {
   def main(args: Array[String]): Unit = {
-    val lesson02 = new Lesson02()
-    val controller = LWJGLController(lesson02, 1024, 768, "NeHe Lesson 02")
+    val lesson03 = new Lesson03()
+    val controller = LWJGLController(lesson03, 1024, 768, "NeHe Lesson 03")
   }
 }
