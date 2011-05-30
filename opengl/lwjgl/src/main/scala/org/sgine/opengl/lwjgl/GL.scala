@@ -88,6 +88,14 @@ object GL extends org.sgine.opengl.GL {
 		}
 	}
 
+	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		pointer match {
+		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, stride, b)
+		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, stride, b)
+		 case _ => error("Failed conversion of buffer type: " + pointer.getClass.getName)
+		}
+	}
+
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
 		org.lwjgl.opengl.GL11.glViewport(x, y, width, height)
 	}

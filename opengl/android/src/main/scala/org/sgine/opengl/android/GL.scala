@@ -70,6 +70,10 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES10.glVertexPointer(size, `type`, stride, pointer)
 	}
 
+	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		android.opengl.GLES10.glColorPointer(size, `type`, stride, pointer)
+	}
+
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
 		android.opengl.GLES20.glViewport(x, y, width, height)
 	}
