@@ -76,6 +76,10 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES10.glVertexPointer(size, `type`, stride, pointer)
 	}
 
+	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		android.opengl.GLES10.glTexCoordPointer(size, `type`, stride, pointer)
+	}
+
 	def glGenTextures(textures: java.nio.IntBuffer): Unit = {
 		android.opengl.GLES10.glGenTextures(textures.remaining, textures)
 	}
