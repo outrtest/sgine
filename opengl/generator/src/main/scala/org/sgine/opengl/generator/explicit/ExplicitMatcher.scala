@@ -36,6 +36,7 @@ import java.lang.reflect.Method
 import org.sgine.{EnumEntry, Enumerated}
 import com.googlecode.reflective._
 import org.sgine.opengl.generator.{StaticMethodCreator, MethodDescriptor, CombinedMethod}
+import java.nio.IntBuffer
 
 /**
  * 
@@ -165,6 +166,39 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       | buffers(offset) = org.lwjgl.opengl.GL15.glGenBuffers()
       | glGenBuffers(n - 1, buffers, offset + 1)
       |}""".stripMargin
+  }
+
+  val glGenTexture = new ExplicitMatcher {
+    val methodName = "glGenTexture"
+    val args = Nil
+    val returnType = classOf[Int]
+    val left = List(
+      method("android.opengl.GLES10.glGenTextures(n: Int, textures: Array[Int], offset: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL11.glGenTextures(): Int").get
+    )
+    val androidBody = """val buffers = new Array[Int](1)
+      |android.opengl.GLES10.glGenTextures(1, buffers, 0)
+      |buffers(0)""".stripMargin
+    val lwjglBody = """org.lwjgl.opengl.GL11.glGenTextures()"""
+  }
+
+  val glGenTextures = new ExplicitMatcher {
+    val methodName = "glGenTextures"
+    val args = List(
+      "textures" -> classOf[IntBuffer]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES10.glGenTextures(n: Int, textures: java.nio.IntBuffer): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL11.glGenTextures(textures: java.nio.IntBuffer): Unit").get
+    )
+    // TODO: Is "n" count or offset?
+    val androidBody = """android.opengl.GLES10.glGenTextures(textures.remaining, textures)"""
+    val lwjglBody = """org.lwjgl.opengl.GL11.glGenTextures(textures)"""
   }
 
   val glDeleteBuffer = new ExplicitMatcher {
