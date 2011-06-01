@@ -70,8 +70,18 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES10.glVertexPointer(size, `type`, stride, pointer)
 	}
 
+	def glGenTextures(textures: java.nio.IntBuffer): Unit = {
+		android.opengl.GLES10.glGenTextures(textures.remaining, textures)
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		android.opengl.GLES10.glColorPointer(size, `type`, stride, pointer)
+	}
+
+	def glGenTexture(): Int = {
+		val buffers = new Array[Int](1)
+		android.opengl.GLES10.glGenTextures(1, buffers, 0)
+		buffers(0)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
