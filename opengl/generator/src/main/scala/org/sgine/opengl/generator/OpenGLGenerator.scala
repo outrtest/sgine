@@ -45,7 +45,7 @@ import android.opengl.{GLES10, GLES11, GLES20}
  */
 object OpenGLGenerator {
   val showNoMappings = false
-  val debugMethodName = "glTexImage2D"
+  val debugMethodName = "glTexCoordPointer"
 
   def main(args: Array[String]): Unit = {
     // Run in offline mode

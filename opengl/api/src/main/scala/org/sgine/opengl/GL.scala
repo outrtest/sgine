@@ -58,6 +58,8 @@ trait GL {
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
+	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
+
 	def glGenTextures(textures: java.nio.IntBuffer): Unit
 
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
@@ -4080,6 +4082,10 @@ object GL extends GL {
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		instance.glVertexPointer(size, `type`, stride, pointer)
+	}
+
+	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
+		instance.glTexCoordPointer(size, `type`, stride, pointer)
 	}
 
 	def glGenTextures(textures: java.nio.IntBuffer): Unit = {

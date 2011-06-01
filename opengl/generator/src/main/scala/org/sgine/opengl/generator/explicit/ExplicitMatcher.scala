@@ -301,4 +301,32 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       | case _ => error("Failed conversion of buffer type: " + pixels.getClass.getName)
       |}""".stripMargin
   }
+
+  val glTexCoordPointer = new ExplicitMatcher {
+    val methodName = "glTexCoordPointer"
+    val args = List(
+      "size" -> classOf[Int],
+      "type" -> classOf[Int],
+      "stride" -> classOf[Int],
+      "pointer" -> classOf[java.nio.Buffer]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES10.glTexCoordPointer(size: Int, type: Int, stride: Int, pointer: java.nio.Buffer): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL11.glTexCoordPointer(size: Int, stride: Int, pointer: java.nio.ShortBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexCoordPointer(size: Int, stride: Int, pointer: java.nio.IntBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexCoordPointer(size: Int, stride: Int, pointer: java.nio.FloatBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexCoordPointer(size: Int, stride: Int, pointer: java.nio.DoubleBuffer): Unit").get
+    )
+    val androidBody = """android.opengl.GLES10.glTexCoordPointer(size, `type`, stride, pointer)"""
+    val lwjglBody = """pointer match {
+      | case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexCoordPointer(size, stride, b)
+      | case b: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexCoordPointer(size, stride, b)
+      | case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexCoordPointer(size, stride, b)
+      | case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexCoordPointer(size, stride, b)
+      | case _ => error("Failed conversion of buffer type: " + pointer.getClass.getName)
+      |}""".stripMargin
+  }
 }
