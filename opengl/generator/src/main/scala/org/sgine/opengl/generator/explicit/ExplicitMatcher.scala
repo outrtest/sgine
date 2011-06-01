@@ -266,4 +266,39 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       | case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
       |}""".stripMargin
   }
+
+  val glTexImage2D = new ExplicitMatcher {
+    val methodName = "glTexImage2D"
+    val args = List(
+      "target" -> classOf[Int],
+      "level" -> classOf[Int],
+      "internalFormat" -> classOf[Int],
+      "width" -> classOf[Int],
+      "height" -> classOf[Int],
+      "border" -> classOf[Int],
+      "format" -> classOf[Int],
+      "type" -> classOf[Int],
+      "pixels" -> classOf[java.nio.Buffer]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES10.glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: java.nio.Buffer): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL11.glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: java.nio.ByteBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: java.nio.ShortBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: java.nio.IntBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: java.nio.FloatBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexImage2D(target: Int, level: Int, internalformat: Int, width: Int, height: Int, border: Int, format: Int, type: Int, pixels: java.nio.DoubleBuffer): Unit").get
+    )
+    val androidBody = """android.opengl.GLES10.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, pixels)"""
+    val lwjglBody = """pixels match {
+      | case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+      | case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+      | case b: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+      | case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+      | case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+      | case _ => error("Failed conversion of buffer type: " + pixels.getClass.getName)
+      |}""".stripMargin
+  }
 }

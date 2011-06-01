@@ -44,6 +44,8 @@ import scala.math._
 trait GL {
 	def glDeleteBuffer(id: Int): Unit
 
+	def glGenTexture(): Int
+
 	def glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit
 
 	def glGenBuffer(): Int
@@ -60,7 +62,7 @@ trait GL {
 
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
-	def glGenTexture(): Int
+	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit
 
@@ -4052,6 +4054,10 @@ object GL extends GL {
 		instance.glDeleteBuffer(id)
 	}
 
+	def glGenTexture(): Int = {
+		instance.glGenTexture()
+	}
+
 	def glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
 		instance.glGenBuffers(n, buffers, offset)
 	}
@@ -4084,8 +4090,8 @@ object GL extends GL {
 		instance.glColorPointer(size, `type`, stride, pointer)
 	}
 
-	def glGenTexture(): Int = {
-		instance.glGenTexture()
+	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, pixels)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
