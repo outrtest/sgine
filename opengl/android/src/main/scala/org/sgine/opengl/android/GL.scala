@@ -44,6 +44,12 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES11.glDeleteBuffers(1, Array(id), 0)
 	}
 
+	def glGenTexture(): Int = {
+		val buffers = new Array[Int](1)
+		android.opengl.GLES10.glGenTextures(1, buffers, 0)
+		buffers(0)
+	}
+
 	def glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
 		android.opengl.GLES11.glGenBuffers(n, buffers, offset)
 	}
@@ -78,10 +84,8 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES10.glColorPointer(size, `type`, stride, pointer)
 	}
 
-	def glGenTexture(): Int = {
-		val buffers = new Array[Int](1)
-		android.opengl.GLES10.glGenTextures(1, buffers, 0)
-		buffers(0)
+	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		android.opengl.GLES10.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, pixels)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {

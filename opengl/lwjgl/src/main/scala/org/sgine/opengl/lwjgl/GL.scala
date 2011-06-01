@@ -46,6 +46,10 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL15.glDeleteBuffers(id)
 	}
 
+	def glGenTexture(): Int = {
+		org.lwjgl.opengl.GL11.glGenTextures()
+	}
+
 	def glGenBuffers(n: Int, buffers: Array[Int], offset: Int): Unit = {
 		if (n > 0) {
 		 buffers(offset) = org.lwjgl.opengl.GL15.glGenBuffers()
@@ -100,8 +104,15 @@ object GL extends org.sgine.opengl.GL {
 		}
 	}
 
-	def glGenTexture(): Int = {
-		org.lwjgl.opengl.GL11.glGenTextures()
+	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		pixels match {
+		 case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+		 case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+		 case b: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+		 case _ => error("Failed conversion of buffer type: " + pixels.getClass.getName)
+		}
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
