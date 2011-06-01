@@ -32,7 +32,8 @@
 
 package org.sgine.opengl
 
-import java.nio.{Buffer, FloatBuffer, DoubleBuffer}
+import annotation.tailrec
+import java.nio._
 
 /**
  * 
@@ -47,5 +48,25 @@ object GLUtil {
 
   def toDoubleBuffer(buffer: Buffer): DoubleBuffer = {
     throw new RuntimeException("Not implemented!")
+  }
+
+  @tailrec
+  def toBuffer(values: List[Float], dimensions: Int = 1, vertices: Int = 1, buffer: FloatBuffer = null): FloatBuffer = {
+    if (buffer == null) {
+      val b = ByteBuffer.allocateDirect((values.length * vertices) * 4).order(ByteOrder.nativeOrder()).asFloatBuffer()
+      toBuffer(values, dimensions, vertices, b)
+    } else if (!values.isEmpty) {
+      var updated = values
+      for (v <- 0 until vertices) {
+        updated = values
+        for (i <- 0 until dimensions) {
+          buffer.put(updated.head)
+          updated = updated.tail
+        }
+      }
+      toBuffer(updated, dimensions, vertices, buffer)
+    } else {
+      buffer
+    }
   }
 }
