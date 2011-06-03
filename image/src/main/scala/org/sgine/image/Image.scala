@@ -36,15 +36,63 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import java.net.URL
 import java.nio.{ByteOrder, ByteBuffer}
 import java.awt.color.ColorSpace
-import java.awt.Transparency
 import java.awt.image.{DataBuffer, ComponentColorModel, BufferedImage}
+import java.lang.IllegalArgumentException
+import java.awt.{AlphaComposite, Graphics2D, Transparency}
 
 /**
- * 
+ * Image provides a general purpose class to represent an image in memory and provides many useful features to load and
+ * manipulate.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class Image(width: Int, height: Int, buffer: ByteBuffer)
+class Image private(val width: Int, val height: Int, val buffer: ByteBuffer) {
+  /**
+   * Load an image via a URL.
+   *
+   * Note that the loaded image must represent the exact width and height specified for this image or an
+   * IllegalArgumentException will be thrown.
+   */
+  def load(url: URL) = {
+    val input = url.openStream
+		try {
+			val decoder = new PNGDecoder(input)
+      if (decoder.getWidth != width || decoder.getHeight != height) {
+        throw new IllegalArgumentException("Invalid width and height values. Actual: " + decoder.getWidth + "x" + decoder.getHeight + ", Supplied: " + width + "x" + height)
+      }
+			decoder.decode(buffer, decoder.getWidth * 4, PNGDecoder.Format.RGBA)
+			buffer.flip()
+		} finally {
+			input.close()
+		}
+  }
+
+  /**
+   * Loads the buffered image passed in. Only loads data for the width and height specified in the Image.
+   */
+  def load(bufferedImage: BufferedImage, x: Int = 0, y: Int = 0) = {
+    if (bufferedImage.getColorModel == Image.RGBA) {    // Image is compatible, apply it
+      if (bufferedImage.getProperty("reusableGraphic") != "yes") {    // Work-around for ReusableGraphic
+        bufferedImage.coerceData(true)    // Make sure the data is compatible
+      }
+
+      val data = new Array[Byte](width * 4)
+      val raster = bufferedImage.getRaster
+      for (i <- 0 until height) {
+        raster.getDataElements(x, y + i, width, 1, data)
+        buffer.put(data)
+      }
+      buffer.flip()
+    } else {                                            // Image needs to be converted - use ReusableGraphic
+      val draw = (g: Graphics2D) => {
+        g.setComposite(AlphaComposite.Src)
+        g.drawImage(bufferedImage, 0, 0, width, height, null)
+        g.dispose()
+      }
+      ReusableGraphic(this)(draw)
+    }
+  }
+}
 
 object Image {
   val RGBA = new ComponentColorModel(
@@ -55,39 +103,28 @@ object Image {
 			Transparency.TRANSLUCENT,
 			DataBuffer.TYPE_BYTE)
 
-  def load(bufferedImage: BufferedImage, x: Int, y: Int, width: Int, height: Int) = {
-    if (bufferedImage.getColorModel == RGBA) {
-      if (bufferedImage.getProperty("reusableGraphic") != "yes") {    // Work-around for ReusableGraphic
-        bufferedImage.coerceData(true)    // Make sure the data is compatible
-      }
-
-      val data = new Array[Byte](width * 4)
-      val raster = bufferedImage.getRaster
-      val buffer = ByteBuffer.allocateDirect(width * height * 4).order(ByteOrder.nativeOrder)
-      for (i <- 0 until height) {
-        raster.getDataElements(x, y + i, width, 1, data)
-        buffer.put(data)
-      }
-      buffer.flip()
-
-      Image(width, height, buffer)
-    } else {
-      // TODO: add support for ReusableGraphic
-    }
+  def apply(width: Int, height: Int) = {
+    val buffer = Image.createBuffer(width, height)
+    new Image(width, height, buffer)
   }
 
-  def load(url: URL) = {
+  def apply(width: Int, height: Int, buffer: ByteBuffer) = new Image(width, height, buffer)
+
+  def apply(url: URL) = {
     val input = url.openStream
 		try {
 			val decoder = new PNGDecoder(input)
-      // TODO: support buffer re-use
-			val buffer = ByteBuffer.allocateDirect((decoder.getWidth * decoder.getHeight) * 4).order(ByteOrder.nativeOrder)
+      val buffer = createBuffer(decoder.getWidth, decoder.getHeight)
 			decoder.decode(buffer, decoder.getWidth * 4, PNGDecoder.Format.RGBA)
 			buffer.flip()
-
-			Image(decoder.getWidth, decoder.getHeight, buffer)
+      
+      new Image(decoder.getWidth, decoder.getHeight, buffer)
 		} finally {
 			input.close()
 		}
+  }
+
+  def createBuffer(width: Int, height: Int) = {
+    ByteBuffer.allocateDirect(width * height * 4).order(ByteOrder.nativeOrder)
   }
 }
