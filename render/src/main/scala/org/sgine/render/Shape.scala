@@ -41,8 +41,6 @@ package org.sgine.render
  */
 trait Shape extends Renderable {
   protected def updateVertices(vertices: Seq[Float], dynamic: Boolean): Unit
-
-  def render(): Unit
 }
 
 object Shape {

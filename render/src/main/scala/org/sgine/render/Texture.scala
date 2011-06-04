@@ -32,44 +32,25 @@
 
 package org.sgine.render
 
-import implementation.opengl.OpenGLRenderer
-import org.sgine.math.Matrix4
-import org.sgine.Disposable
-import org.sgine.opengl.lwjgl.LWJGLController
-import java.lang.ThreadLocal
 import java.nio.ByteBuffer
 
 /**
- * Renderer implementation is defined by the current rendering platform available.
- * This is <b>NOT</b> thread-safe, all operations should occur in the same thread.
+ * Texture provides a renderable representation of pixel data.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Renderer extends Disposable {
-  def application: RenderApplication
+trait Texture extends Renderable {
+  def width: Int
+  def height: Int
 
-  def create() = {
-    Renderer.renderer.set(this)
-    application.bodyFunction()
-  }
-
-  protected[render] def createShape(vertices: Seq[Float]): Shape
-
-  protected[render] def createMutableShape(vertices: Seq[Float]): MutableShape
-
-  protected[render] def createTexture(width: Int, height: Int, buffer: ByteBuffer, mipmap: Boolean): Texture
-
-  def loadMatrix(matrix: Matrix4): Unit
+  /**
+   * Updates a section of this texture with the data in buffer.
+   */
+  protected def updateTexture(x1: Int, y1: Int, x2: Int, y2: Int, buffer: ByteBuffer): Unit
 }
 
-object Renderer {
-  private val renderer = new ThreadLocal[Renderer]
-
-  def apply(application: RenderApplication) = {
-    val renderer = new OpenGLRenderer(application)
-    val controller = LWJGLController(renderer, 1024, 768, application.title)
-    renderer
+object Texture {
+  def apply(width: Int, height: Int, buffer: ByteBuffer, mipmap: Boolean = true) = {
+    Renderer().createTexture(width, height, buffer, mipmap)
   }
-
-  def apply() = renderer.get()
 }
