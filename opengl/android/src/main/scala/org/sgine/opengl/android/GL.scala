@@ -40,6 +40,10 @@ package org.sgine.opengl.android
  * @see org.sgine.opengl.generator.OpenGLGenerator
  */
 object GL extends org.sgine.opengl.GL {
+	def glDeleteTexture(id: Int): Unit = {
+		android.opengl.GLES10.glDeleteTextures(1, Array(id), 0)
+	}
+
 	def glDeleteBuffer(id: Int): Unit = {
 		android.opengl.GLES11.glDeleteBuffers(1, Array(id), 0)
 	}
@@ -76,6 +80,10 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES10.glVertexPointer(size, `type`, stride, pointer)
 	}
 
+	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		android.opengl.GLES10.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, pixels)
+	}
+
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		android.opengl.GLES10.glTexCoordPointer(size, `type`, stride, pointer)
 	}
@@ -84,12 +92,16 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES10.glGenTextures(textures.remaining, textures)
 	}
 
+	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit = {
+		android.opengl.GLES10.glDeleteTextures(n, textures, offset)
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		android.opengl.GLES10.glColorPointer(size, `type`, stride, pointer)
 	}
 
-	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
-		android.opengl.GLES10.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, pixels)
+	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		android.opengl.GLES10.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {

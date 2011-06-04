@@ -42,6 +42,8 @@ import scala.math._
  * @see org.sgine.opengl.generator.OpenGLGenerator
  */
 trait GL {
+	def glDeleteTexture(id: Int): Unit
+
 	def glDeleteBuffer(id: Int): Unit
 
 	def glGenTexture(): Int
@@ -58,13 +60,17 @@ trait GL {
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
+	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
+
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
 	def glGenTextures(textures: java.nio.IntBuffer): Unit
 
+	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
-	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
+	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit
 
@@ -4052,6 +4058,10 @@ object GL extends GL {
 	 */
 	val GL_ZERO: Int = 0
 
+	def glDeleteTexture(id: Int): Unit = {
+		instance.glDeleteTexture(id)
+	}
+
 	def glDeleteBuffer(id: Int): Unit = {
 		instance.glDeleteBuffer(id)
 	}
@@ -4084,6 +4094,10 @@ object GL extends GL {
 		instance.glVertexPointer(size, `type`, stride, pointer)
 	}
 
+	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, pixels)
+	}
+
 	def glTexCoordPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		instance.glTexCoordPointer(size, `type`, stride, pointer)
 	}
@@ -4092,12 +4106,16 @@ object GL extends GL {
 		instance.glGenTextures(textures)
 	}
 
+	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit = {
+		instance.glDeleteTextures(n, textures, offset)
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		instance.glColorPointer(size, `type`, stride, pointer)
 	}
 
-	def glTexImage2D(target: Int, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
-		instance.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, pixels)
+	def glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, `type`: Int, pixels: java.nio.Buffer): Unit = {
+		instance.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {

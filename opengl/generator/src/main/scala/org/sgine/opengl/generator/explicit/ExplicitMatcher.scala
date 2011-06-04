@@ -217,6 +217,22 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
     val lwjglBody = """org.lwjgl.opengl.GL15.glDeleteBuffers(id)"""
   }
 
+  val glDeleteTexture = new ExplicitMatcher {
+    val methodName = "glDeleteTexture"
+    val args = List(
+      "id" -> classOf[Int]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES10.glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL11.glDeleteTextures(texture: Int): Unit").get
+    )
+    val androidBody = """android.opengl.GLES10.glDeleteTextures(1, Array(id), 0)"""
+    val lwjglBody = """org.lwjgl.opengl.GL11.glDeleteTextures(id)"""
+  }
+
   val glDeleteBuffers = new ExplicitMatcher {
     val methodName = "glDeleteBuffers"
     val args = List(
@@ -234,6 +250,26 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
     val androidBody = """android.opengl.GLES11.glDeleteBuffers(n, buffers, offset)"""
     val lwjglBody = """for (index <- offset until (offset + n)) {
       | org.lwjgl.opengl.GL15.glDeleteBuffers(buffers(index))
+      |}""".stripMargin
+  }
+
+  val glDeleteTextures = new ExplicitMatcher {
+    val methodName = "glDeleteTextures"
+    val args = List(
+      "n" -> classOf[Int],
+      "textures" -> classOf[Array[Int]],
+      "offset" -> classOf[Int]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES10.glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL11.glDeleteTextures(texture: Int): Unit").get
+    )
+    val androidBody = """android.opengl.GLES10.glDeleteTextures(n, textures, offset)"""
+    val lwjglBody = """for (index <- offset until (offset + n)) {
+      | org.lwjgl.opengl.GL11.glDeleteTextures(textures(index))
       |}""".stripMargin
   }
 
@@ -298,6 +334,41 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       | case b: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
       | case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
       | case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+      | case _ => error("Failed conversion of buffer type: " + pixels.getClass.getName)
+      |}""".stripMargin
+  }
+
+  val glTexSubImage2D = new ExplicitMatcher {
+    val methodName = "glTexSubImage2D"
+    val args = List(
+      "target" -> classOf[Int],
+      "level" -> classOf[Int],
+      "xoffset" -> classOf[Int],
+      "yoffset" -> classOf[Int],
+      "width" -> classOf[Int],
+      "height" -> classOf[Int],
+      "format" -> classOf[Int],
+      "type" -> classOf[Int],
+      "pixels" -> classOf[java.nio.Buffer]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES10.glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: java.nio.Buffer): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL11.glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: java.nio.ByteBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: java.nio.ShortBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: java.nio.IntBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: java.nio.FloatBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL11.glTexSubImage2D(target: Int, level: Int, xoffset: Int, yoffset: Int, width: Int, height: Int, format: Int, type: Int, pixels: java.nio.DoubleBuffer): Unit").get
+    )
+    val androidBody = """android.opengl.GLES10.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, pixels)"""
+    val lwjglBody = """pixels match {
+      | case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, b)
+      | case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, b)
+      | case b: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, b)
+      | case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, b)
+      | case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, `type`, b)
       | case _ => error("Failed conversion of buffer type: " + pixels.getClass.getName)
       |}""".stripMargin
   }
