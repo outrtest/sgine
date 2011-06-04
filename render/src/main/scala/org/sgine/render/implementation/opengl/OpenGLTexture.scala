@@ -32,74 +32,56 @@
 
 package org.sgine.render.implementation.opengl
 
-import org.sgine.math.Matrix4
-import org.sgine.opengl.GL._
-import org.sgine.opengl.GLDisplay
-import org.sgine.render.{RenderApplication, MutableShape, Renderer}
+import org.sgine.render.Texture
 import java.nio.ByteBuffer
+
+import org.sgine.opengl.GL._
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class OpenGLRenderer(val application: RenderApplication) extends Renderer with GLDisplay {
-  private val matrixBuffer = Matrix4.floatBuffer
+class OpenGLTexture(val width: Int, val height: Int, mipmap: Boolean) extends Texture {
+  var id = -1
 
-  def loadMatrix(matrix: Matrix4) = {
-    matrix.toBuffer(matrixBuffer)
-    glLoadMatrix(matrixBuffer)
-  }
+  def updateTexture(x1: Int, y1: Int, x2: Int, y2: Int, buffer: ByteBuffer) = {
+    val created = id == -1
 
-  protected[render] def createShape(vertices: Seq[Float]) = {
-    val shape = new OpenGLVBOShapeRenderer
-    shape.updateVertices(vertices, false)
-    shape
-  }
+    id = glGenTexture()
+    glBindTexture(GL_TEXTURE_2D, id)
 
-  protected[render] def createMutableShape(vertices: Seq[Float]) = {
-    val shape = new OpenGLVBOShapeRenderer with MutableShape
-    shape.updateVertices(vertices, true)
-    shape
-  }
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, if (mipmap) GL_LINEAR_MIPMAP_LINEAR else GL_LINEAR)
+    // TODO: detect if the following two are supported
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 
-  protected[render] def createTexture(width: Int, height: Int, buffer: ByteBuffer, mipmap: Boolean) = {
-    val texture = new OpenGLTexture(width, height, mipmap)
-    texture.updateTexture(0, 0, width, height, buffer)
-    texture
-  }
+    if (mipmap) {   // TODO: detect if it's supported
+      glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE)
+    }
 
-  override def create() = {
-    glShadeModel(GL_SMOOTH)
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
-    glClearDepth(1.0f)
-    glEnable(GL_DEPTH_TEST)
-    glDepthFunc(GL_LEQUAL)
+    // TODO: add handling for non power of two functionality
 
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-
-    super.create()
-  }
-
-  def resize(width: Int, height: Int) = {
-    glViewport(0, 0, width, height)
-
-    gluPerspective(45.0f, width.toFloat / height.toFloat, 0.1f, 100.0f)
-
-    glMatrixMode(GL_MODELVIEW)
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+    if (created) {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, null)
+    }
+    val w = x2 - x1
+    val h = y2 - y1
+    glTexSubImage2D(GL_TEXTURE_2D, 0, x1, y1, w, h, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
   }
 
   def render() = {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
-
-    application.update()
-    application.render()
+    if (id != -1) {
+      glBindTexture(GL_TEXTURE_2D, id)    // TODO: support dynamic determination of already bound
+      glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+    }
   }
 
   def dispose() = {
-    application.dispose()
+    if (id != -1) {
+      glDeleteTexture(id)
+      id = -1
+    }
   }
 }
