@@ -32,25 +32,15 @@
 
 package org.sgine.render
 
-import java.nio.ByteBuffer
-
 /**
- * Texture provides a renderable representation of pixel data.
+ * TextureCoords provides a renderable representation of texture coordinates.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Texture extends Renderable {
-  def width: Int
-  def height: Int
-
-  /**
-   * Updates a section of this texture with the data in buffer.
-   */
-  def updateTexture(x1: Int, y1: Int, x2: Int, y2: Int, buffer: ByteBuffer): Unit
+trait TextureCoords extends Renderable {
+  def updateCoords(coords: Seq[Float]): Unit
 }
 
-object Texture {
-  def apply(width: Int, height: Int, mipmap: Boolean, buffer: ByteBuffer) = {
-    Renderer().createTexture(width, height, buffer, mipmap)
-  }
+object TextureCoords {
+  def apply(coords: Seq[Float]) = Renderer().createTextureCoords(coords)
 }

@@ -30,27 +30,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.render
+package org.sgine.render.implementation.opengl
 
-import java.nio.ByteBuffer
+import org.sgine.render.TextureCoords
+
+import org.sgine.opengl.GL._
+import java.nio.{ByteOrder, ByteBuffer}
 
 /**
- * Texture provides a renderable representation of pixel data.
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Texture extends Renderable {
-  def width: Int
-  def height: Int
+class OpenGLTextureCoords extends TextureCoords {
+  private var id: Int = -1    // TODO: merge concepts with Shape for OpenGLBuffer trait and support combining?
+  private var length: Int = _
 
-  /**
-   * Updates a section of this texture with the data in buffer.
-   */
-  def updateTexture(x1: Int, y1: Int, x2: Int, y2: Int, buffer: ByteBuffer): Unit
-}
+  def updateCoords(coords: Seq[Float]) = {
+    if (id == -1) {
+      id = glGenBuffer()
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, id)
 
-object Texture {
-  def apply(width: Int, height: Int, mipmap: Boolean, buffer: ByteBuffer) = {
-    Renderer().createTexture(width, height, buffer, mipmap)
+    val size = coords.length * 4
+    val bb = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder)
+    val data = bb.asFloatBuffer()
+    data.clear()
+    coords.foreach(f => data.put(f))
+    data.flip()
+    val usage = GL_STATIC_DRAW
+    glBufferData(GL_ARRAY_BUFFER, size, data, usage)
+    length = coords.length
+  }
+
+  def render() = {
+    if (id != -1) {
+      glEnableClientState(GL_VERTEX_ARRAY)
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+      glBindBuffer(GL_ARRAY_BUFFER, id)
+      val stride = 0
+      val offset = 0
+      glTexCoordPointer(2, GL_FLOAT, stride, offset)
+    }
+  }
+
+  def dispose() = {
+    if (id != -1) {   // Delete existing VBO
+      glDeleteBuffer(id)
+      id = -1
+    }
   }
 }

@@ -59,6 +59,8 @@ trait Renderer extends Disposable {
 
   protected[render] def createTexture(width: Int, height: Int, buffer: ByteBuffer, mipmap: Boolean): Texture
 
+  protected[render] def createTextureCoords(coords: Seq[Float]): TextureCoords
+
   def loadMatrix(matrix: Matrix4): Unit
 }
 

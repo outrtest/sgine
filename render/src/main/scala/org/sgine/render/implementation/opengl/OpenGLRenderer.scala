@@ -69,12 +69,19 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
     texture
   }
 
+  protected[render] def createTextureCoords(coords: Seq[Float]) = {
+    val textureCoords = new OpenGLTextureCoords()
+    textureCoords.updateCoords(coords)
+    textureCoords
+  }
+
   override def create() = {
     glShadeModel(GL_SMOOTH)
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
     glClearDepth(1.0f)
     glEnable(GL_DEPTH_TEST)
     glDepthFunc(GL_LEQUAL)
+    glEnable(GL_TEXTURE_2D)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()

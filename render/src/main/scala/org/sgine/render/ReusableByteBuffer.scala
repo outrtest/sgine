@@ -32,25 +32,55 @@
 
 package org.sgine.render
 
-import java.nio.ByteBuffer
+import java.nio.{ByteOrder, ByteBuffer}
+import java.lang.ThreadLocal
 
 /**
- * Texture provides a renderable representation of pixel data.
+ * Provides a thread-local instance of a direct ByteBuffer to be re-used without creating excess garbage or memory
+ * consumption.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Texture extends Renderable {
-  def width: Int
-  def height: Int
+private class ReusableByteBuffer {
+  private var byteBuffer: ByteBuffer = _
 
-  /**
-   * Updates a section of this texture with the data in buffer.
-   */
-  def updateTexture(x1: Int, y1: Int, x2: Int, y2: Int, buffer: ByteBuffer): Unit
+  def allocate(size: Int) = {
+    if (byteBuffer == null || byteBuffer.capacity < size) {
+      byteBuffer = ReusableByteBuffer.createBuffer(size)
+    }
+    byteBuffer.clear()
+
+    byteBuffer
+  }
 }
 
-object Texture {
-  def apply(width: Int, height: Int, mipmap: Boolean, buffer: ByteBuffer) = {
-    Renderer().createTexture(width, height, buffer, mipmap)
+object ReusableByteBuffer {
+  private val instance = new ThreadLocal[ReusableByteBuffer]
+
+  def apply(size: Int)(f: ByteBuffer => Unit) = {
+    val rbb = get
+    val bb = rbb.allocate(size)
+    f(bb)
+  }
+
+  def apply(width: Int, height: Int)(f: ByteBuffer => Unit) = {
+    val rbb = get
+    val bb = rbb.allocate(width * height * 4)
+    f(bb)
+  }
+
+  private def get = {
+    instance.get() match {
+      case null => {
+        val rbb = new ReusableByteBuffer
+        instance.set(rbb)
+        rbb
+      }
+      case rbb => rbb
+    }
+  }
+
+  private def createBuffer(size: Int) = {
+    ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder)
   }
 }
