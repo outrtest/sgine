@@ -334,6 +334,7 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       | case b: java.nio.IntBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
       | case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
       | case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, b)
+      | case null => org.lwjgl.opengl.GL11.glTexImage2D(target, level, internalFormat, width, height, border, format, `type`, null.asInstanceOf[java.nio.FloatBuffer])
       | case _ => error("Failed conversion of buffer type: " + pixels.getClass.getName)
       |}""".stripMargin
   }
