@@ -17,7 +17,6 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   lazy val concurrent = project("concurrent", "sgine-concurrent", new SgineProjectBase(_))
   lazy val core = project("core", "sgine-core", new CoreProject(_))
   lazy val event = project("event", "sgine-event", new SgineProjectBase(_))
-  lazy val image = project("image", "sgine-image", new SgineProjectBase(_))
   lazy val math = project("math", "sgine-math", new SgineProjectBase(_))
   lazy val opengl = project("opengl", "sgine-opengl", new OpenGLProject(_))
   lazy val properties = project("property", "sgine-property", new SgineProjectBase(_))
