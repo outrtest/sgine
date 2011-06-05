@@ -32,25 +32,20 @@
 
 package org.sgine.render
 
+import java.net.URL
+import java.lang.Boolean
 import java.nio.ByteBuffer
 
 /**
- * Texture provides a renderable representation of pixel data.
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Texture extends Renderable {
-  def width: Int
-  def height: Int
-
-  /**
-   * Updates a section of this texture with the data in buffer.
-   */
-  def updateTexture(x1: Int, y1: Int, x2: Int, y2: Int, buffer: ByteBuffer): Unit
-}
-
-object Texture {
-  def apply(width: Int, height: Int, mipmap: Boolean, buffer: ByteBuffer) = {
-    Renderer().createTexture(width, height, buffer, mipmap)
+object TextureUtils {
+  def apply(url: URL, mipmap: Boolean = true) = {
+    var texture: Texture = null
+    val f = (width: Int, height: Int, buffer: ByteBuffer) => texture = Texture(width, height, mipmap, buffer)
+    ImageUtils(url)(f)
+    texture
   }
 }
