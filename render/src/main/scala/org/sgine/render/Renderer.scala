@@ -67,9 +67,9 @@ trait Renderer extends Disposable {
 object Renderer {
   private val renderer = new ThreadLocal[Renderer]
 
-  def apply(application: RenderApplication) = {
+  def apply(application: RenderApplication, width: Int = 1024, height: Int = 768) = {
     val renderer = new OpenGLRenderer(application)
-    val controller = LWJGLController(renderer, 1024, 768, application.title)
+    val controller = LWJGLController(renderer, width, height, application.title)
     renderer
   }
 

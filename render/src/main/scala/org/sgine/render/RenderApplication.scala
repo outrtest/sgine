@@ -52,7 +52,9 @@ trait RenderApplication extends Renderable with Updatable with DelayedInit {
     bodyFunction = () => x
   }
 
+  def screenSize = 1024 -> 768
+
   def main(args: Array[String]): Unit = {
-    _renderer = Renderer(this)
+    _renderer = Renderer(this, screenSize._1, screenSize._2)
   }
 }
