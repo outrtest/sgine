@@ -68,9 +68,11 @@ trait GL {
 
 	def glGenTextures(textures: java.nio.IntBuffer): Unit
 
+	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
-	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit
+	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit
 
@@ -4110,12 +4112,16 @@ object GL extends GL {
 		instance.glGenTextures(textures)
 	}
 
+	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit = {
+		instance.glDeleteTextures(n, textures, offset)
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		instance.glColorPointer(size, `type`, stride, pointer)
 	}
 
-	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit = {
-		instance.glDeleteTextures(n, textures, offset)
+	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit = {
+		instance.glBufferSubData(target, offset, data)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {

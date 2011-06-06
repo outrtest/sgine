@@ -303,6 +303,35 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       |}""".stripMargin
   }
 
+  val glBufferSubData = new ExplicitMatcher {
+    val methodName = "glBufferSubData"
+    val args = List(
+      "target" -> classOf[Int],
+      "offset" -> classOf[Long],
+      "data" -> classOf[java.nio.Buffer]
+    )
+    val returnType = classOf[Unit]
+    val left = List(
+      method("android.opengl.GLES11.glBufferSubData(target: Int, offset: Int, size: Int, data: java.nio.Buffer): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL15.glBufferSubData(target: Int, offset: Long, data: java.nio.ByteBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL15.glBufferSubData(target: Int, offset: Long, data: java.nio.ShortBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL15.glBufferSubData(target: Int, offset: Long, data: java.nio.IntBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL15.glBufferSubData(target: Int, offset: Long, data: java.nio.FloatBuffer): Unit").get,
+      method("org.lwjgl.opengl.GL15.glBufferSubData(target: Int, offset: Long, data: java.nio.DoubleBuffer): Unit").get
+    )
+    val androidBody = """android.opengl.GLES11.glBufferSubData(target, offset.toInt, data.limit - data.position, data)"""
+    val lwjglBody = """data match {
+      | case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+      | case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+      | case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+      | case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+      | case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+      | case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
+      |}""".stripMargin
+  }
+
   val glTexImage2D = new ExplicitMatcher {
     val methodName = "glTexImage2D"
     val args = List(
