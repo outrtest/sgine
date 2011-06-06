@@ -45,7 +45,7 @@ import android.opengl.{GLES10, GLES11, GLES20}
  */
 object OpenGLGenerator {
   val showNoMappings = false
-  val debugMethodName = "glDeleteTextures"
+  val debugMethodName = "glBufferSubData"
 
   def main(args: Array[String]): Unit = {
     // Run in offline mode

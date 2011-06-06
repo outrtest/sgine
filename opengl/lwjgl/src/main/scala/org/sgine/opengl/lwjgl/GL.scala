@@ -133,6 +133,12 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL11.glGenTextures(textures)
 	}
 
+	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit = {
+		for (index <- offset until (offset + n)) {
+		 org.lwjgl.opengl.GL11.glDeleteTextures(textures(index))
+		}
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		pointer match {
 		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL11.glColorPointer(size, stride, b)
@@ -141,9 +147,14 @@ object GL extends org.sgine.opengl.GL {
 		}
 	}
 
-	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit = {
-		for (index <- offset until (offset + n)) {
-		 org.lwjgl.opengl.GL11.glDeleteTextures(textures(index))
+	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit = {
+		data match {
+		 case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
 		}
 	}
 

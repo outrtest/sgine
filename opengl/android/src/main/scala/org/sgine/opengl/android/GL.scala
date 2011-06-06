@@ -96,12 +96,16 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES10.glGenTextures(textures.remaining, textures)
 	}
 
+	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit = {
+		android.opengl.GLES10.glDeleteTextures(n, textures, offset)
+	}
+
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
 		android.opengl.GLES10.glColorPointer(size, `type`, stride, pointer)
 	}
 
-	def glDeleteTextures(n: Int, textures: Array[Int], offset: Int): Unit = {
-		android.opengl.GLES10.glDeleteTextures(n, textures, offset)
+	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit = {
+		android.opengl.GLES11.glBufferSubData(target, offset.toInt, data.limit - data.position, data)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
