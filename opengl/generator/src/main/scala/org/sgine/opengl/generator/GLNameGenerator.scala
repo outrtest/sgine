@@ -44,8 +44,8 @@ object GLNameGenerator {
   val url = "http://www.opengl.org/sdk/docs/man/xhtml/index.html"
 
   def generate() = {
-//    val source = Source.fromURL(url)
-    val source = Source.fromURL(getClass.getClassLoader.getResource("opengl.org.html"), "UTF-8")
+    val source = Source.fromURL(url)
+//    val source = Source.fromURL(getClass.getClassLoader.getResource("opengl.org.html"), "UTF-8")
     val html = source.mkString.replaceAll("[&]nbsp", "")
     val xml = XML.loadString(html)
     (xml \\ "a").collect {

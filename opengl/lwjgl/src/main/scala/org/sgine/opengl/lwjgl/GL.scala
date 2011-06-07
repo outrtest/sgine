@@ -75,6 +75,17 @@ object GL extends org.sgine.opengl.GL {
 		}
 	}
 
+	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit = {
+		data match {
+		 case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
+		 case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
+		}
+	}
+
 	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
 		data match {
 		 case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
@@ -147,15 +158,8 @@ object GL extends org.sgine.opengl.GL {
 		}
 	}
 
-	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit = {
-		data match {
-		 case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
-		 case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
-		 case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
-		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
-		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
-		 case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
-		}
+	def glGetInteger(pname: Int): Int = {
+		org.lwjgl.opengl.GL11.glGetInteger(pname)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
