@@ -332,6 +332,22 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       |}""".stripMargin
   }
 
+  val glGetInteger = new ExplicitMatcher {
+    val methodName = "glGetInteger"
+    val args = List("pname" -> classOf[Int])
+    val returnType = classOf[Int]
+    val left = List(
+      method("android.opengl.GLES10.glGetIntegerv(pname: Int, params: Array[Int], offset: Int): Unit").get
+    )
+    val right = List(
+      method("org.lwjgl.opengl.GL11.glGetInteger(pname: Int): Int").get
+    )
+    val androidBody = """val params = new Array[Int](1)
+      |android.opengl.GLES10.glGetIntegerv(pname, params, 0)
+      |params(0)""".stripMargin
+    val lwjglBody = """org.lwjgl.opengl.GL11.glGetInteger(pname)"""
+  }
+
   val glTexImage2D = new ExplicitMatcher {
     val methodName = "glTexImage2D"
     val args = List(
