@@ -33,8 +33,8 @@
 package org.sgine.render.implementation.opengl
 
 import org.sgine.opengl.GL._
-import java.nio.{ByteOrder, ByteBuffer}
-import org.sgine.render.Shape
+import java.nio.ByteBuffer
+import org.sgine.render.{ReusableByteBuffer, Texture, Shape}
 
 /**
  * 
@@ -42,34 +42,77 @@ import org.sgine.render.Shape
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 5/20/11
  */
-class OpenGLVBOShapeRenderer extends Shape {
-  private var id: Int = -1
-  private var length: Int = _
+class OpenGLVBOShapeRenderer(val dynamic: Boolean) extends Shape {
+  private val FloatBytes = 4
 
-  def updateVertices(vertices: Seq[Float], dynamic: Boolean) = {
+  private var id: Int = -1
+  private var texture: Texture = _
+  private var vertices: Seq[Float] = Nil
+  private var textureCoords: Seq[Float] = Nil
+
+  private val writeVertices = (buffer: ByteBuffer) => {
+    vertices.foreach(f => buffer.putFloat(f))
+    buffer.flip()
+    glBufferSubData(GL_ARRAY_BUFFER, 0, buffer)
+  }
+
+  private val writeTextureCoords = (buffer: ByteBuffer) => {
+    textureCoords.foreach(f => buffer.putFloat(f))
+    buffer.flip()
+    glBufferSubData(GL_ARRAY_BUFFER, vertices.length * FloatBytes, buffer)
+  }
+
+  def updateVertices(vertices: Seq[Float]) = {
     if (id == -1) {
       id = glGenBuffer()
     }
     glBindBuffer(GL_ARRAY_BUFFER, id)
+    
+    val vertexCountChanged = this.vertices.length != vertices.length
+    this.vertices = vertices
 
-    val size = vertices.length * 4
-    val bb = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder)
-    val data = bb.asFloatBuffer()
-    data.clear()
-    vertices.foreach(f => data.put(f))
-    data.flip()
+    if (vertexCountChanged) {    // Vertex count has changed!
+      reload()
+    } else {
+      ReusableByteBuffer(vertices.length * FloatBytes)(writeVertices)
+    }
+  }
+
+  def updateTexture(texture: Texture, textureCoords: Seq[Float]) = {
+    this.texture = texture
+    if (vertices != Nil) {
+      val coordsCountChanged = this.textureCoords.length != textureCoords.length
+      this.textureCoords = textureCoords
+
+      if (coordsCountChanged) {   // Texture Coords count has changed!
+        reload()
+      } else {
+        ReusableByteBuffer(textureCoords.length * FloatBytes)(writeTextureCoords)
+      }
+    } else {
+      this.textureCoords = textureCoords
+    }
+  }
+
+  def reload() = {
+    val size = (vertices.length + (if (texture != null) textureCoords.length else 0)) * FloatBytes
     val usage = if (dynamic) GL_STREAM_DRAW else GL_STATIC_DRAW
-    glBufferData(GL_ARRAY_BUFFER, size, data, usage)
-    length = vertices.length
+    glBufferData(GL_ARRAY_BUFFER, size, null, usage)
+    ReusableByteBuffer(vertices.length * FloatBytes)(writeVertices)
+    ReusableByteBuffer(textureCoords.length * FloatBytes)(writeTextureCoords)
   }
 
   def render() = {
     if (id != -1) {
+      texture.render()
+      
       glEnableClientState(GL_VERTEX_ARRAY)
+      glEnableClientState(GL_TEXTURE_COORD_ARRAY)
       glBindBuffer(GL_ARRAY_BUFFER, id)
 
       glVertexPointer(3, GL_FLOAT, 0, 0)
-      glDrawArrays(GL_TRIANGLES, 0, length)
+      glTexCoordPointer(2, GL_FLOAT, 0, vertices.size * FloatBytes)
+      glDrawArrays(GL_TRIANGLES, 0, vertices.size)
     }
   }
 
