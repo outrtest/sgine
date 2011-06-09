@@ -35,7 +35,7 @@ package org.sgine.render.implementation.opengl
 import org.sgine.math.Matrix4
 import org.sgine.opengl.GL._
 import org.sgine.opengl.GLDisplay
-import org.sgine.render.{RenderApplication, MutableShape, Renderer}
+import org.sgine.render.{RenderApplication, Renderer}
 import java.nio.ByteBuffer
 
 /**
@@ -51,15 +51,9 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
     glLoadMatrix(matrixBuffer)
   }
 
-  protected[render] def createShape(vertices: Seq[Float]) = {
-    val shape = new OpenGLVBOShapeRenderer
-    shape.updateVertices(vertices, false)
-    shape
-  }
-
-  protected[render] def createMutableShape(vertices: Seq[Float]) = {
-    val shape = new OpenGLVBOShapeRenderer with MutableShape
-    shape.updateVertices(vertices, true)
+  protected[render] def createShape(vertices: Seq[Float], dynamic: Boolean) = {
+    val shape = new OpenGLVBOShapeRenderer(dynamic)
+    shape.updateVertices(vertices)
     shape
   }
 
@@ -67,12 +61,6 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
     val texture = new OpenGLTexture(width, height, mipmap)
     texture.updateTexture(0, 0, width, height, buffer)
     texture
-  }
-
-  protected[render] def createTextureCoords(coords: Seq[Float]) = {
-    val textureCoords = new OpenGLTextureCoords()
-    textureCoords.updateCoords(coords)
-    textureCoords
   }
 
   override def create() = {
