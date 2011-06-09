@@ -65,6 +65,10 @@ object GL extends org.sgine.opengl.GL {
 		org.lwjgl.opengl.GL15.glGenBuffers()
 	}
 
+	def glGetInteger(pname: Int): Int = {
+		org.lwjgl.opengl.GL11.glGetInteger(pname)
+	}
+
 	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
 		org.lwjgl.opengl.GL15.glGenBuffers(buffers)
 	}
@@ -82,17 +86,6 @@ object GL extends org.sgine.opengl.GL {
 		 case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
 		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
 		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferSubData(target, offset, b)
-		 case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
-		}
-	}
-
-	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
-		data match {
-		 case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
-		 case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
-		 case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
-		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
-		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
 		 case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
 		}
 	}
@@ -158,8 +151,16 @@ object GL extends org.sgine.opengl.GL {
 		}
 	}
 
-	def glGetInteger(pname: Int): Int = {
-		org.lwjgl.opengl.GL11.glGetInteger(pname)
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		data match {
+		 case b: java.nio.ByteBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case b: java.nio.ShortBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+		 case null => org.lwjgl.opengl.GL15.glBufferData(target, size, usage)
+		 case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
+		}
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {

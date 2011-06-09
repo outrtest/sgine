@@ -299,6 +299,7 @@ object ExplicitMatcher extends Enumerated[ExplicitMatcher] {
       | case b: java.nio.IntBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
       | case b: java.nio.FloatBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
       | case b: java.nio.DoubleBuffer => org.lwjgl.opengl.GL15.glBufferData(target, b, usage)
+      | case null => org.lwjgl.opengl.GL15.glBufferData(target, size, usage)
       | case _ => error("Failed conversion of buffer type: " + data.getClass.getName)
       |}""".stripMargin
   }
