@@ -52,13 +52,13 @@ trait GL {
 
 	def glGenBuffer(): Int
 
+	def glGetInteger(pname: Int): Int
+
 	def glGenBuffers(buffers: java.nio.IntBuffer): Unit
 
 	def glDeleteBuffers(n: Int, buffers: Array[Int], offset: Int): Unit
 
 	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit
-
-	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
@@ -74,7 +74,7 @@ trait GL {
 
 	def glColorPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit
 
-	def glGetInteger(pname: Int): Int
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit
 
@@ -4082,6 +4082,10 @@ object GL extends GL {
 		instance.glGenBuffer()
 	}
 
+	def glGetInteger(pname: Int): Int = {
+		instance.glGetInteger(pname)
+	}
+
 	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
 		instance.glGenBuffers(buffers)
 	}
@@ -4092,10 +4096,6 @@ object GL extends GL {
 
 	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit = {
 		instance.glBufferSubData(target, offset, data)
-	}
-
-	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
-		instance.glBufferData(target, size, data, usage)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
@@ -4126,8 +4126,8 @@ object GL extends GL {
 		instance.glColorPointer(size, `type`, stride, pointer)
 	}
 
-	def glGetInteger(pname: Int): Int = {
-		instance.glGetInteger(pname)
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		instance.glBufferData(target, size, data, usage)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {

@@ -64,6 +64,12 @@ object GL extends org.sgine.opengl.GL {
 		buffers(0)
 	}
 
+	def glGetInteger(pname: Int): Int = {
+		val params = new Array[Int](1)
+		android.opengl.GLES10.glGetIntegerv(pname, params, 0)
+		params(0)
+	}
+
 	def glGenBuffers(buffers: java.nio.IntBuffer): Unit = {
 		android.opengl.GLES11.glGenBuffers(0, buffers)
 	}
@@ -74,10 +80,6 @@ object GL extends org.sgine.opengl.GL {
 
 	def glBufferSubData(target: Int, offset: Long, data: java.nio.Buffer): Unit = {
 		android.opengl.GLES11.glBufferSubData(target, offset.toInt, data.limit - data.position, data)
-	}
-
-	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
-		android.opengl.GLES11.glBufferData(target, size, data, usage)
 	}
 
 	def glVertexPointer(size: Int, `type`: Int, stride: Int, pointer: java.nio.Buffer): Unit = {
@@ -108,10 +110,8 @@ object GL extends org.sgine.opengl.GL {
 		android.opengl.GLES10.glColorPointer(size, `type`, stride, pointer)
 	}
 
-	def glGetInteger(pname: Int): Int = {
-		val params = new Array[Int](1)
-		android.opengl.GLES10.glGetIntegerv(pname, params, 0)
-		params(0)
+	def glBufferData(target: Int, size: Int, data: java.nio.Buffer, usage: Int): Unit = {
+		android.opengl.GLES11.glBufferData(target, size, data, usage)
 	}
 
 	def glViewport(x: Int, y: Int, width: Int, height: Int): Unit = {
