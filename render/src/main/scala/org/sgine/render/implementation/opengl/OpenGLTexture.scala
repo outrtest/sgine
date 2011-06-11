@@ -71,12 +71,14 @@ class OpenGLTexture(val width: Int, val height: Int, mipmap: Boolean) extends Te
     glTexSubImage2D(GL_TEXTURE_2D, 0, x1, y1, w, h, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
   }
 
-  def render() = {
+  def bind() = {
     if (id != -1) {
       glBindTexture(GL_TEXTURE_2D, id)    // TODO: support dynamic determination of already bound
       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
     }
   }
+
+  def unbind() = glBindTexture(GL_TEXTURE_2D, 0)
 
   def dispose() = {
     if (id != -1) {
