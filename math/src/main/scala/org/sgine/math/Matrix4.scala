@@ -131,7 +131,6 @@ trait Matrix4 extends Traversable[Double] {
       m30, m31, m32, m33)
   }
 
-
   def rotate(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0) = {
     val cx = cos(x)
     val sx = sin(x)
@@ -175,6 +174,13 @@ trait Matrix4 extends Traversable[Double] {
       t10, t11, t12, m13,
       t20, t21, t22, m23,
       t30, t31, t32, m33)
+  }
+
+  def scale(x: Double = 1.0, y: Double = 1.0, z: Double = 1.0) = {
+    apply(m00 * x, m01 * x, m02 * x, m03 * x,
+      m10 * y, m11 * y, m12 * y, m13 * y,
+      m20 * z, m21 * z, m22 * z, m23 * z,
+      m30, m31, m32, m33)
   }
 
   def foreach[U](f: Double => U) = forindexed(0, f)
