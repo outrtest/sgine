@@ -67,9 +67,11 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
     glShadeModel(GL_SMOOTH)
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f)
     glClearDepth(1.0f)
+    glEnable(GL_BLEND)
     glEnable(GL_DEPTH_TEST)
     glDepthFunc(GL_LEQUAL)
     glEnable(GL_TEXTURE_2D)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()

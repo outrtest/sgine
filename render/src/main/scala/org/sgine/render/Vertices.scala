@@ -57,4 +57,6 @@ object Vertices {
       x2, y1, 0.0f       // Top right
     )
   }
+
+  def rect(width: Float, height: Float) = quad((-width / 2.0f).toFloat, (height / 2.0f).toFloat, (width / 2.0f).toFloat, (-height / 2.0f).toFloat)
 }

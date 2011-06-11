@@ -99,20 +99,27 @@ class OpenGLVBOShapeRenderer(val dynamic: Boolean) extends Shape {
     val usage = if (dynamic) GL_STREAM_DRAW else GL_STATIC_DRAW
     glBufferData(GL_ARRAY_BUFFER, size, null, usage)
     ReusableByteBuffer(vertices.length * FloatBytes)(writeVertices)
-    ReusableByteBuffer(textureCoords.length * FloatBytes)(writeTextureCoords)
+    if (textureCoords != Nil) {
+      ReusableByteBuffer(textureCoords.length * FloatBytes)(writeTextureCoords)
+    }
   }
 
   def render() = {
     if (id != -1) {
-      texture.render()
-      
       glEnableClientState(GL_VERTEX_ARRAY)
-      glEnableClientState(GL_TEXTURE_COORD_ARRAY)
       glBindBuffer(GL_ARRAY_BUFFER, id)
 
+      if (texture != null) {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+        texture.bind()
+        glTexCoordPointer(2, GL_FLOAT, 0, vertices.size * FloatBytes)
+      }
       glVertexPointer(3, GL_FLOAT, 0, 0)
-      glTexCoordPointer(2, GL_FLOAT, 0, vertices.size * FloatBytes)
       glDrawArrays(GL_TRIANGLES, 0, vertices.size)
+      if (texture != null) {
+        texture.unbind()
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY)
+      }
     }
   }
 

@@ -39,9 +39,13 @@ import java.nio.ByteBuffer
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Texture extends Renderable {
+trait Texture {
   def width: Int
   def height: Int
+
+  def bind(): Unit
+
+  def unbind(): Unit
 
   /**
    * Updates a section of this texture with the data in buffer.
