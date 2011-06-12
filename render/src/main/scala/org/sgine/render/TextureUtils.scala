@@ -33,8 +33,8 @@
 package org.sgine.render
 
 import java.net.URL
-import java.lang.Boolean
 import java.nio.ByteBuffer
+import scala.math._
 
 /**
  * 
@@ -46,6 +46,27 @@ object TextureUtils {
     var texture: Texture = null
     val f = (width: Int, height: Int, buffer: ByteBuffer) => texture = Texture(width, height, mipmap, buffer)
     ImageUtils(url)(f)
+    texture
+  }
+
+  def create(width: Int, height: Int, mipmap: Boolean, red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 1.0) = {
+    var texture: Texture = null
+    val size = width * height
+    val r = round(red * 255.0).toByte
+    val g = round(green * 255.0).toByte
+    val b = round(blue * 255.0).toByte
+    val a = round(alpha * 255.0).toByte
+    val f = (buffer: ByteBuffer) => {
+      for (i <- 0 until size) {
+        buffer.put(r)
+        buffer.put(g)
+        buffer.put(b)
+        buffer.put(a)
+      }
+      buffer.flip()
+      texture = Texture(width, height, mipmap, buffer)
+    }
+    ReusableByteBuffer(width, height)(f)
     texture
   }
 }
