@@ -48,7 +48,9 @@ class OpenGLTexture(val width: Int, val height: Int, mipmap: Boolean) extends Te
   def updateTexture(x1: Int, y1: Int, x2: Int, y2: Int, buffer: ByteBuffer) = {
     val created = id == -1
 
-    id = glGenTexture()
+    if (id == -1) {
+      id = glGenTexture()
+    }
     glBindTexture(GL_TEXTURE_2D, id)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
