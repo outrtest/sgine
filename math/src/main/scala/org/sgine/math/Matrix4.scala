@@ -98,6 +98,15 @@ trait Matrix4 extends Traversable[Double] {
              m33: Double = this.m33
              ): Matrix4
 
+  def apply(m: Matrix4): Matrix4 = apply(
+    m.m00, m.m01, m.m02, m.m03,
+    m.m10, m.m11, m.m12, m.m13,
+    m.m20, m.m21, m.m22, m.m23,
+    m.m30, m.m31, m.m32, m.m33
+  )
+
+  def identity = apply(Matrix4.Identity)
+
   /**
    * Creates a new java.nio.DoubleBuffer and sets this Matrix4 to it
    */
@@ -128,6 +137,44 @@ trait Matrix4 extends Traversable[Double] {
     apply(m00, m01, m02, m03 + x,
       m10, m11, m12, m13 + y,
       m20, m21, m22, m23 + z,
+      m30, m31, m32, m33)
+  }
+
+  def rotateX(angle: Double) = {
+    val sinx = sin(angle)
+    val cosx = cos(angle)
+
+    val t10 = cosx * m10 - sinx * m20
+    val t20 = sinx * m10 + cosx * m20
+    val t11 = cosx * m11 - sinx * m21
+    val t21 = sinx * m11 + cosx * m21
+    val t12 = cosx * m12 - sinx * m22
+    val t22 = sinx * m12 + cosx * m22
+    val t13 = cosx * m13 - sinx * m23
+    val t23 = sinx * m13 + cosx * m23
+
+    apply(m00, m01, m02, m03,
+      t10, t11, t12, t13,
+      t20, t21, t22, t23,
+      m30, m31, m32, m33)
+  }
+
+  def rotateY(angle: Double) = {
+    val siny = sin(angle)
+    val cosy = cos(angle)
+
+    val t00 = cosy * m00 + siny * m20
+    val t20 = cosy * m20 - siny * m00
+    val t01 = cosy * m01 + siny * m21
+    val t21 = cosy * m21 - siny * m01
+    val t02 = cosy * m02 + siny * m22
+    val t22 = cosy * m22 - siny * m02
+    val t03 = cosy * m03 + siny * m23
+    val t23 = cosy * m23 - siny * m03
+
+    apply(t00, t01, t02, t03,
+      m10, m11, m12, m13,
+      t20, t21, t22, t23,
       m30, m31, m32, m33)
   }
 
