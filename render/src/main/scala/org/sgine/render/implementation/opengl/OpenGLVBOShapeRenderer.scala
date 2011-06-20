@@ -47,22 +47,22 @@ class OpenGLVBOShapeRenderer(val dynamic: Boolean) extends Shape {
 
   private var id: Int = -1
   private var texture: Texture = _
-  private var vertices: Seq[Float] = Nil
-  private var textureCoords: Seq[Float] = Nil
+  private var vertices: Seq[Double] = Nil
+  private var textureCoords: Seq[Double] = Nil
 
   private val writeVertices = (buffer: ByteBuffer) => {
-    vertices.foreach(f => buffer.putFloat(f))
+    vertices.foreach(f => buffer.putFloat(f.toFloat))
     buffer.flip()
     glBufferSubData(GL_ARRAY_BUFFER, 0, buffer)
   }
 
   private val writeTextureCoords = (buffer: ByteBuffer) => {
-    textureCoords.foreach(f => buffer.putFloat(f))
+    textureCoords.foreach(f => buffer.putFloat(f.toFloat))
     buffer.flip()
     glBufferSubData(GL_ARRAY_BUFFER, vertices.length * FloatBytes, buffer)
   }
 
-  def updateVertices(vertices: Seq[Float]) = {
+  def updateVertices(vertices: Seq[Double]) = {
     if (id == -1) {
       id = glGenBuffer()
     }
@@ -78,7 +78,7 @@ class OpenGLVBOShapeRenderer(val dynamic: Boolean) extends Shape {
     }
   }
 
-  def updateTexture(texture: Texture, textureCoords: Seq[Float]) = {
+  def updateTexture(texture: Texture, textureCoords: Seq[Double]) = {
     this.texture = texture
     if (vertices != Nil) {
       val coordsCountChanged = this.textureCoords.length != textureCoords.length

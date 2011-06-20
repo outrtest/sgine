@@ -33,10 +33,19 @@
 package org.sgine.render
 
 /**
- *
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class Textured[R <: Renderable](renderable: R, texture: Texture, mapper: Function1[R, Seq[Float]]) {
-  def textureCoords() = mapper(renderable)
+class TextureMap[T, S <: TextureMapEntry](texture: Texture) {
+  protected var map = Map.empty[T, S]
+  
+  def apply(t: T) = map(t)
+
+  def get(t: T) = map.get(t)
+}
+
+trait TextureMapEntry {
+  def vertices: Seq[Double]
+  def textureCoords: Seq[Double]
 }

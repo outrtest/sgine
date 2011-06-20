@@ -51,7 +51,7 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
     glLoadMatrix(matrixBuffer)
   }
 
-  protected[render] def createShape(vertices: Seq[Float], dynamic: Boolean) = {
+  protected[render] def createShape(vertices: Seq[Double], dynamic: Boolean) = {
     val shape = new OpenGLVBOShapeRenderer(dynamic)
     shape.updateVertices(vertices)
     shape

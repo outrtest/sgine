@@ -32,9 +32,9 @@
 
 package org.sgine.render
 
-import java.net.URL
 import java.nio.ByteBuffer
 import scala.math._
+import org.sgine.resource.Resource
 
 /**
  * 
@@ -42,10 +42,10 @@ import scala.math._
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object TextureUtils {
-  def apply(url: URL, mipmap: Boolean = true) = {
+  def apply(resource: Resource, mipmap: Boolean = true) = {
     var texture: Texture = null
     val f = (width: Int, height: Int, buffer: ByteBuffer) => texture = Texture(width, height, mipmap, buffer)
-    ImageUtils(url)(f)
+    ImageUtils(resource.url)(f)
     texture
   }
 
