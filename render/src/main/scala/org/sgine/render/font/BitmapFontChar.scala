@@ -30,7 +30,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.render
+package org.sgine.render.font
 
 /*
  * Copyright (c) 2011 Sgine
@@ -64,38 +64,35 @@ package org.sgine.render
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.sgine.math.Matrix4
-import org.sgine.resource.Resource
+import org.sgine.render._
 
 /**
- * RendererTest provides a very simplistic usage of the render framework.
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object ImageTest extends RenderApplication {
-  private val quadMatrix = Matrix4.Identity.scale(x = 0.01, y = 0.01).translate(z = -10.0)
-  private val coords = List(
-    0.0, 0.0,
-    1.0, 0.0,
-    0.0, 1.0,
-    1.0, 1.0,
-    0.0, 1.0,
-    1.0, 0.0
-  )
-  private val quadTexture = TextureUtils(Resource("sgine.png"))
-  private val quadShape = Shape(Vertices.rect(400.0, 96.0))
-  quadShape.updateTexture(quadTexture, coords)
+class BitmapFontChar(val vertices: Seq[Double], val textureCoords: Seq[Double]) extends TextureMapEntry {
+  protected[render] var _font: BitmapFont = _
+	protected[render] var _code: Int = _
+	protected[render] var _x: Double = _
+	protected[render] var _y: Double = _
+	protected[render] var _width: Double = _
+	protected[render] var _height: Double = _
+	protected[render] var _xOffset: Double = _
+	protected[render] var _yOffset: Double = _
+	protected[render] var _xAdvance: Double = _
+	protected[render] var _kernings = Map.empty[Int, Double]
 
-  def update() = {
-  }
+	def font = _font
+	def code = _code
+	def xOffset = _xOffset
+	def yOffset = _yOffset
+	def xAdvance = _xAdvance
+	def kernings = _kernings
 
-  def render() = {
-    renderer.loadMatrix(quadMatrix)
-    quadTexture.bind()
-    quadShape.render()
-  }
-
-  def dispose() = {
-    quadShape.dispose()
+  def kerning(previous: Int) = if (kernings.contains(previous)) {
+    kernings(previous)
+  } else {
+    0.0
   }
 }

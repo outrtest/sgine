@@ -53,7 +53,7 @@ trait Renderer extends Disposable {
     application.bodyFunction()
   }
 
-  protected[render] def createShape(vertices: Seq[Float], dynamic: Boolean): Shape
+  protected[render] def createShape(vertices: Seq[Double], dynamic: Boolean): Shape
 
   protected[render] def createTexture(width: Int, height: Int, buffer: ByteBuffer, mipmap: Boolean): Texture
 

@@ -40,11 +40,11 @@ package org.sgine.render
  * Date: 5/18/11
  */
 trait Shape extends Renderable {
-  def updateVertices(vertices: Seq[Float]): Unit
+  def updateVertices(vertices: Seq[Double]): Unit
 
-  def updateTexture(texture: Texture, coords: Seq[Float]): Unit
+  def updateTexture(texture: Texture, coords: Seq[Double]): Unit
 }
 
 object Shape {
-  def apply(vertices: Seq[Float], dynamic: Boolean = false) = Renderer().createShape(vertices, dynamic)
+  def apply(vertices: Seq[Double], dynamic: Boolean = false) = Renderer().createShape(vertices, dynamic)
 }
