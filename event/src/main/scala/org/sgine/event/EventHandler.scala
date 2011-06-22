@@ -32,8 +32,15 @@
 
 package org.sgine.event
 
-class EventHandler
-
-object EventHandler {
-  def apply[E <: Event](f: E => Unit): EventHandler = null
+/**
+ * 
+ *
+ * @author Matt Hicks <mhicks@sgine.org>
+ * Date: 6/21/11
+ */
+case class EventHandler[T](listener: T => Unit, manifest: Manifest[T]) {
+  def invoke(event: T) = {
+    // TODO: support filters
+    listener(event)
+  }
 }

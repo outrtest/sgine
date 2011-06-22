@@ -1,39 +1,76 @@
-/*
- * Copyright (c) 2011 Sgine
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- *  Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- *
- *  Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in the
- *   documentation and/or other materials provided with the distribution.
- *
- *  Neither the name of 'Sgine' nor the names of its contributors
- *   may be used to endorse or promote products derived from this software
- *   without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.sgine.event
 
-trait Listenable {
-  def parent: Listenable = null
+import annotation.tailrec
+import actors.DaemonActor
+import org.sgine.concurrent.Executor
 
-  val listeners = new Listeners(this)
+/**
+ * 
+ *
+ * @author Matt Hicks <mhicks@sgine.org>
+ * Date: 6/21/11
+ */
+trait Listenable {
+  private var map = Map.empty[Class[_], List[EventHandler[_]]]
+  private lazy val actor = createActor()
+
+  private def createActor() = {
+    val a = new DaemonActor() {
+      def act() {
+        loop {
+          react {
+            case invocation: Function0[Unit] => invocation()
+          }
+        }
+      }
+    }
+    a.start()
+  }
+
+  protected[event] def addHandler[T](handler: EventHandler[T]) = {
+    synchronized {
+      val list = map.get(handler.manifest.erasure) match {
+        case Some(list) => handler :: list
+        case None => List(handler)
+      }
+      map += handler.manifest.erasure -> list
+    }
+  }
+
+  protected[event] def removeHandler[T](handler: EventHandler[T]) = {
+    synchronized {
+      map.get(handler.manifest.erasure) match {
+        case Some(list) => map += handler.manifest.erasure -> list.filter(eh => eh == handler); true
+        case None => false
+      }
+    }
+  }
+
+  protected[event] def hasListeners(clazz: Class[_]) = map.contains(clazz)
+
+  protected[event] def fireSynchronous[T](clazz: Class[T], event: T) = {
+    val listeners = map.getOrElse(clazz, Nil)
+    invoke(event, listeners.asInstanceOf[List[EventHandler[T]]])
+  }
+
+  protected[event] def fireAsynchronous[T](clazz: Class[T], event: T) = {
+    val f = () => fireSynchronous(clazz, event)
+    actor ! f
+  }
+
+  protected[event] def fireConcurrent[T](clazz: Class[T], event: T) = {
+    Executor.execute(new Runnable() {
+      def run() = fireSynchronous(clazz, event)
+    })
+  }
+
+  @tailrec
+  protected[event] final def invoke[T](event: T, listeners: List[EventHandler[T]]): Unit = {
+    if (!listeners.isEmpty) {
+      val handler = listeners.head
+      handler.invoke(event)
+
+      invoke(event, listeners.tail)
+    }
+  }
 }
