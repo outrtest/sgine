@@ -12,11 +12,11 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   val lwjglRepo = "LWJGL Repository" at "http://adterrasperaspera.com/lwjgl/"
   val lwjglVersion = "2.7.1"
   val reflectiveVersion = "1.0"
-  val scalatestVersion = "1.4.1"
+  val scalatestVersion = "1.6.1"
 
   lazy val concurrent = project("concurrent", "sgine-concurrent", new SgineProjectBase(_))
   lazy val core = project("core", "sgine-core", new CoreProject(_))
-  lazy val event = project("event", "sgine-event", new SgineProjectBase(_))
+  lazy val event = project("event", "sgine-event", new SgineProjectBase(_), concurrent)
   lazy val math = project("math", "sgine-math", new SgineProjectBase(_))
   lazy val opengl = project("opengl", "sgine-opengl", new OpenGLProject(_))
   lazy val properties = project("property", "sgine-property", new SgineProjectBase(_))
@@ -26,7 +26,11 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
 
   Credentials(Path.userHome / ".ivy2" / ".credentials", log)
 
-  class CoreProject(info: ProjectInfo) extends SgineProjectBase(info) with ScctProject {
+  class CoreProject(info: ProjectInfo) extends SgineProjectBase(info) {
+    val scalaTest = "org.scalatest" %% "scalatest" % scalatestVersion % "test"
+  }
+
+  class EventProject(info: ProjectInfo) extends SgineProjectBase(info) {
     val scalaTest = "org.scalatest" %% "scalatest" % scalatestVersion % "test"
   }
 
@@ -52,7 +56,7 @@ class SgineProject(info: ProjectInfo) extends ParentProject(info) {
   class OpenGLNeHeProject(info: ProjectInfo) extends SgineProjectBase(info) {
   }
 
-  class SgineProjectBase(info: ProjectInfo) extends DefaultProject(info) {
+  class SgineProjectBase(info: ProjectInfo) extends DefaultProject(info) with ScctProject {
     override def packageDocsJar = defaultJarPath("-javadoc.jar")
     override def packageSrcJar = defaultJarPath("-sources.jar")
     override def packageToPublishActions = super.packageToPublishActions ++ Seq(packageDocs, packageSrc)

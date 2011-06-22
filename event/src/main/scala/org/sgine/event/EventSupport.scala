@@ -32,4 +32,39 @@
 
 package org.sgine.event
 
-trait Event
+/**
+ * 
+ *
+ * @author Matt Hicks <mhicks@sgine.org>
+ * Date: 6/21/11
+ */
+trait EventSupport[T] {
+  def +=(listener: T => Unit)(implicit manifest: Manifest[T]): EventHandler[T] = {
+    this += EventHandler(listener, manifest)
+  }
+
+  def +=(handler: EventHandler[T]): EventHandler[T] = {
+    EventSupport.listenable.get().addHandler(handler)
+    handler
+  }
+
+  def hasListeners(implicit manifest: Manifest[T]) = EventSupport.listenable.get().hasListeners(manifest.erasure)
+
+  def fire(event: T)(implicit manifest: Manifest[T]) = fireSynchronous(event)
+
+  def fireSynchronous(event: T)(implicit manifest: Manifest[T]) = {
+    EventSupport.listenable.get().fireSynchronous(manifest.erasure.asInstanceOf[Class[T]], event)
+  }
+
+  def fireAsynchronous(event: T)(implicit manifest: Manifest[T]) = {
+    EventSupport.listenable.get().fireAsynchronous(manifest.erasure.asInstanceOf[Class[T]], event)
+  }
+
+  def fireConcurrent(event: T)(implicit manifest: Manifest[T]) = {
+    EventSupport.listenable.get().fireConcurrent(manifest.erasure.asInstanceOf[Class[T]], event)
+  }
+}
+
+object EventSupport {
+  protected[event] val listenable = new ThreadLocal[Listenable]
+}
