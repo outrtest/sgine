@@ -26,7 +26,17 @@ object SgineBuild extends Build {
   private def createSettings(_name: String) = baseSettings ++ Seq(name := _name)
 
   lazy val root = Project("root", file("."))
-    .settings(publishArtifact in Compile := false)
+    .settings(
+      publishArtifact in Compile := false,
+      publishTo <<= (version) { version: String =>
+      val nexus = "http://nexus.scala-tools.org/content/repositories/"
+        if (version.trim.endsWith("SNAPSHOT")) {
+          Some("snapshots" at nexus + "snapshots/")
+        } else {
+          Some("releases" at nexus + "releases/")
+        }
+      }
+    )
     .aggregate(concurrent, core, event, math, openglGenerator, openglApi, openglLwjgl, openglAndroid, openglNehe, property, render)
   lazy val concurrent = Project("concurrent", file("concurrent"), settings = createSettings("sgine-concurrent"))
   lazy val core = Project("core", file("core"), settings = createSettings("sgine-core"))
