@@ -33,6 +33,8 @@
 package org.sgine.event
 
 import org.sgine.{Priority, ProcessingMode}
+import java.lang.ref.SoftReference
+import java.lang.ThreadLocal
 
 /**
  * 
@@ -45,20 +47,45 @@ class EventHandler[T](listener: T => Any,
                       val priority: Double = Priority.Normal,
                       val recursion: Recursion = Recursion.Current)
                      (implicit val manifest: Manifest[T]) extends Ordered[EventHandler[T]] {
-  def invoke(event: T) = {
-    // TODO: support filters
+  def invoke(event: T, currentTarget: Listenable) = {
+    EventHandler.currentTarget.set(currentTarget)
+    EventHandler.currentHandler.set(this)
     listener(event)
+    EventHandler.currentTarget.set(null)
+    EventHandler.currentHandler.set(null)
   }
 
   def compare(that: EventHandler[T]) = that.priority.compare(priority)
 }
 
 object EventHandler {
+  private val currentTarget = new ThreadLocal[Listenable]
+  private val currentHandler = new ThreadLocal[EventHandler[_]]
+
   def apply[T](processingMode: ProcessingMode = ProcessingMode.Synchronous,
                priority: Double = Priority.Normal,
                recursion: Recursion = Recursion.Current)
               (listener: T => Any)
               (implicit manifest: Manifest[T]) = {
     new EventHandler(listener, processingMode, priority, recursion)
+  }
+
+  /**
+   * Creates a wrapped listener using a SoftReference in order to allow underlying listener
+   * to be garbage collected if out of scope and space is needed.
+   */
+  def soft[T](processingMode: ProcessingMode = ProcessingMode.Synchronous,
+              priority: Double = Priority.Normal,
+              recursion: Recursion = Recursion.Current)
+              (listener: T => Any)
+              (implicit manifest: Manifest[T]) = {
+    val ref = new SoftReference(listener)
+    val softListener = (event: T) => {
+      val listener = ref.get
+      if (listener == null) {
+        currentTarget.get.removeHandler(currentHandler.get)
+      }
+    }
+    new EventHandler(softListener, processingMode, priority, recursion)
   }
 }
