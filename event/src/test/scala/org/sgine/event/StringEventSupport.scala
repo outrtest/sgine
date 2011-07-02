@@ -39,10 +39,7 @@ package org.sgine.event
  * Date: 6/21/11
  */
 trait StringEventSupport extends Listenable {
-  def strings = {
-    EventSupport.listenable.set(this)
-    StringEventSupport
-  }
+  def strings = StringEventSupport(this)
 }
 
 object StringEventSupport extends EventSupport[String]

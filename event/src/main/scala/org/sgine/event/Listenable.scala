@@ -1,6 +1,7 @@
 package org.sgine.event
 
 import annotation.tailrec
+import org.sgine.ProcessingMode
 import actors.DaemonActor
 import org.sgine.concurrent.Executor
 
@@ -11,8 +12,8 @@ import org.sgine.concurrent.Executor
  * Date: 6/21/11
  */
 trait Listenable {
-  private var map = Map.empty[Class[_], List[EventHandler[_]]]
   private lazy val actor = createActor()
+  protected var map = Map.empty[Class[_], List[EventHandler[_]]]
 
   private def createActor() = {
     val a = new DaemonActor() {
@@ -46,29 +47,31 @@ trait Listenable {
     }
   }
 
-  protected[event] def hasListeners(clazz: Class[_]) = map.contains(clazz)
+  protected[event] def clear[T](clazz: Class[T]) = synchronized {
+    map += clazz -> Nil
+  }
 
-  protected[event] def fireSynchronous[T](clazz: Class[T], event: T) = {
+  protected[event] def hasListeners(clazz: Class[_]) = map.get(clazz) match {
+    case Some(list) if (!list.isEmpty) => true
+    case _ => false
+  }
+
+  protected[event] def fire[T](clazz: Class[T], event: T) = {
     val listeners = map.getOrElse(clazz, Nil)
     invoke(event, listeners.asInstanceOf[List[EventHandler[T]]])
   }
 
-  protected[event] def fireAsynchronous[T](clazz: Class[T], event: T) = {
-    val f = () => fireSynchronous(clazz, event)
-    actor ! f
-  }
-
-  protected[event] def fireConcurrent[T](clazz: Class[T], event: T) = {
-    Executor.execute(new Runnable() {
-      def run() = fireSynchronous(clazz, event)
-    })
-  }
-
   @tailrec
-  protected[event] final def invoke[T](event: T, listeners: List[EventHandler[T]]): Unit = {
+  private final def invoke[T](event: T, listeners: List[EventHandler[T]]): Unit = {
     if (!listeners.isEmpty) {
       val handler = listeners.head
-      handler.invoke(event)
+      handler.processingMode match {
+        case ProcessingMode.Synchronous => handler.invoke(event)
+        case ProcessingMode.Asynchronous => actor ! (() => handler.invoke(event))
+        case ProcessingMode.Concurrent => Executor.execute(new Runnable() {
+          def run() = handler.invoke(event)
+        })
+      }
 
       invoke(event, listeners.tail)
     }

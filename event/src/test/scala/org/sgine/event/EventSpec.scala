@@ -34,6 +34,8 @@ package org.sgine.event
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
+import java.util.concurrent.atomic.AtomicInteger
+import org.sgine.concurrent.{Executor, Time}
 
 /**
  * 
@@ -43,9 +45,65 @@ import org.scalatest.FlatSpec
  */
 class EventSpec extends FlatSpec with ShouldMatchers {
   val test = new Test()
+  val count = new AtomicInteger(0)
 
   "StringEventSupport" should "have no listeners" in {
     test.strings.hasListeners should equal(false)
+  }
+
+  it should "add a listener" in {
+    val listener = (s: String) => count.addAndGet(1)
+    test.strings.hasListeners should equal(false)
+    test.strings += listener
+    test.strings.hasListeners should equal(true)
+  }
+
+  it should "receive synchronous events" in {
+    count.get should equal(0)
+    test.strings.fire("Test 1")
+    count.get should equal(1)
+  }
+
+  it should "clear listeners" in {
+    test.strings.clear()
+    test.strings.hasListeners should equal(false)
+  }
+
+  it should "receive asynchronous events" in {
+    count.set(0)
+    test.strings.asynchronous {
+      case s => count.addAndGet(1)
+    }
+    test.strings.fire("Test 1")
+    Time.waitFor(1.0) {
+      count.get == 1
+    } should equal(true)
+  }
+
+  it should "receive concurrent events" in {
+    count.set(0)
+    test.strings.clear()
+    test.strings.concurrent {
+      case s => count.addAndGet(1)
+    }
+    test.strings.fire("Test 1")
+    Time.waitFor(1.0) {
+      count.get == 1
+    } should equal(true)
+  }
+
+  it should "wait for a specific event" in {
+    test.strings.clear()
+    Executor.invoke {
+      Thread.sleep(100)
+      test.strings.fire("Test 1")
+    }
+    test.strings.waitFor(1.0) should equal(Some("Test 1"))
+  }
+
+  it should "fail to wait for a specific event" in {
+    test.strings.clear()
+    test.strings.waitFor(0.5) should equal(None)
   }
 }
 

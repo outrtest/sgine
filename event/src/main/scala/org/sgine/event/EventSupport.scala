@@ -32,6 +32,9 @@
 
 package org.sgine.event
 
+import org.sgine.ProcessingMode
+import org.sgine.concurrent.Time
+
 /**
  * 
  *
@@ -39,8 +42,8 @@ package org.sgine.event
  * Date: 6/21/11
  */
 trait EventSupport[T] {
-  def +=(listener: T => Unit)(implicit manifest: Manifest[T]): EventHandler[T] = {
-    this += EventHandler(listener, manifest)
+  def +=(listener: T => Any)(implicit manifest: Manifest[T]): EventHandler[T] = {
+    this += EventHandler(listener, ProcessingMode.Synchronous, manifest)
   }
 
   def +=(handler: EventHandler[T]): EventHandler[T] = {
@@ -48,20 +51,48 @@ trait EventSupport[T] {
     handler
   }
 
+  def -=(handler: EventHandler[T]): EventHandler[T] = {
+    EventSupport.listenable.get().removeHandler(handler)
+    handler
+  }
+
+  def clear()(implicit manifest: Manifest[T]) = EventSupport.listenable.get().clear(manifest.erasure)
+
+  def synchronous(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    val handler = new EventHandler[T](f, ProcessingMode.Synchronous, manifest)
+    this += handler
+  }
+
+  def asynchronous(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    val handler = new EventHandler[T](f, ProcessingMode.Asynchronous, manifest)
+    this += handler
+  }
+
+  def concurrent(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    val handler = new EventHandler[T](f, ProcessingMode.Concurrent, manifest)
+    this += handler
+  }
+
   def hasListeners(implicit manifest: Manifest[T]) = EventSupport.listenable.get().hasListeners(manifest.erasure)
 
-  def fire(event: T)(implicit manifest: Manifest[T]) = fireSynchronous(event)
-
-  def fireSynchronous(event: T)(implicit manifest: Manifest[T]) = {
-    EventSupport.listenable.get().fireSynchronous(manifest.erasure.asInstanceOf[Class[T]], event)
+  def fire(event: T)(implicit manifest: Manifest[T]) = {
+    EventSupport.listenable.get().fire(manifest.erasure.asInstanceOf[Class[T]], event)
   }
 
-  def fireAsynchronous(event: T)(implicit manifest: Manifest[T]) = {
-    EventSupport.listenable.get().fireAsynchronous(manifest.erasure.asInstanceOf[Class[T]], event)
+  def waitFor(time: Double)(implicit manifest: Manifest[T]) = {
+    var response: Option[T] = None
+    val handler = new EventHandler((t: T) => response = Some(t), ProcessingMode.Synchronous, manifest)
+    this += handler
+    Time.waitFor(time) {
+      response != None
+    }
+    this -= handler
+    response
   }
 
-  def fireConcurrent(event: T)(implicit manifest: Manifest[T]) = {
-    EventSupport.listenable.get().fireConcurrent(manifest.erasure.asInstanceOf[Class[T]], event)
+  def apply(listenable: Listenable) = {
+    EventSupport.listenable.set(listenable)
+    this
   }
 }
 

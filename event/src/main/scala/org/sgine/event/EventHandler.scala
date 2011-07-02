@@ -32,13 +32,15 @@
 
 package org.sgine.event
 
+import org.sgine.ProcessingMode
+
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 6/21/11
  */
-case class EventHandler[T](listener: T => Unit, manifest: Manifest[T]) {
+case class EventHandler[T](listener: T => Any, processingMode: ProcessingMode, manifest: Manifest[T]) {
   def invoke(event: T) = {
     // TODO: support filters
     listener(event)
