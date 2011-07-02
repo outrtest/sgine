@@ -43,7 +43,7 @@ import org.sgine.concurrent.Time
  */
 trait EventSupport[T] {
   def +=(listener: T => Any)(implicit manifest: Manifest[T]): EventHandler[T] = {
-    this += EventHandler(listener, ProcessingMode.Synchronous)(manifest)
+    this += new EventHandler(listener, ProcessingMode.Synchronous)(manifest)
   }
 
   def +=(handler: EventHandler[T]): EventHandler[T] = {
@@ -76,6 +76,8 @@ trait EventSupport[T] {
   }
 
   def hasListeners(implicit manifest: Manifest[T]) = EventSupport.listenable.get().hasListeners(manifest.erasure)
+
+  def shouldFire(implicit manifest: Manifest[T]) = EventSupport.listenable.get().shouldFire(manifest.erasure)
 
   def fire(event: T)(implicit manifest: Manifest[T]) = {
     EventSupport.listenable.get().fire(manifest.erasure.asInstanceOf[Class[T]], event)

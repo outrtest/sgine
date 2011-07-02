@@ -32,33 +32,24 @@
 
 package org.sgine.event
 
-import org.sgine.{Priority, ProcessingMode}
+import org.sgine.{Enumerated, EnumEntry}
 
 /**
- * 
+ * Recursion defines the propagation of events received for an EventHandler.
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 6/21/11
  */
-class EventHandler[T](listener: T => Any,
-                      val processingMode: ProcessingMode,
-                      val priority: Double = Priority.Normal,
-                      val recursion: Recursion = Recursion.Current)
-                     (implicit val manifest: Manifest[T]) extends Ordered[EventHandler[T]] {
-  def invoke(event: T) = {
-    // TODO: support filters
-    listener(event)
-  }
+sealed class Recursion extends EnumEntry
 
-  def compare(that: EventHandler[T]) = that.priority.compare(priority)
-}
-
-object EventHandler {
-  def apply[T](processingMode: ProcessingMode = ProcessingMode.Synchronous,
-               priority: Double = Priority.Normal,
-               recursion: Recursion = Recursion.Current)
-              (listener: T => Any)
-              (implicit manifest: Manifest[T]) = {
-    new EventHandler(listener, processingMode, priority, recursion)
-  }
+object Recursion extends Enumerated[Recursion] {
+  /**
+   * EventHandler is invoked when events occur only the current Listenable
+   * it is attached to.
+   */
+  val Current = new Recursion
+  /**
+   * EventHandler is invoked when events occur on the current Listenable as
+   * well as all of its children.
+   */
+  val Children = new Recursion
 }
