@@ -108,20 +108,50 @@ class EventSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "properly sort and stop propagation" in {
-    test.strings.clear()
+    test.uber.clear()
     count.set(0)
-    val listener1 = (s: String) => count.addAndGet(1)
-    val listener2 = (s: String) => {
+    val listener1 = (u: UberEvent) => count.addAndGet(1)
+    val listener2 = (u: UberEvent) => {
       count.addAndGet(1)
-      Event.stopPropagation()
+      u.cancel()
     }
     val h1 = new EventHandler(listener1, ProcessingMode.Synchronous, Priority.Low)
     val h2 = new EventHandler(listener2, ProcessingMode.Synchronous, Priority.Normal)
-    test.strings += h1
-    test.strings += h2
-    test.strings.fire("Hello")
+    test.uber += h1
+    test.uber += h2
+    test.uber.fire(new UberEvent)
     count.get should equal(1)
+  }
+
+  it should "propagate messages to the parent handler for Recursion.Children" in {
+    test.uber.clear()
+    count.set(0)
+    val child = new ChildTest(test)
+    val h1 = EventHandler[UberEvent]() {
+      case evt => count.addAndGet(1)
+    }
+    child.uber += h1
+    val h2 = EventHandler[UberEvent]() {
+      case evt => count.addAndGet(10)
+    }
+    test.uber += h2
+    val h3 = EventHandler[UberEvent](recursion = Recursion.Children) {
+      case evt => count.addAndGet(100)
+    }
+    test.uber += h3
+    child.uber.fire(new UberEvent)
+    count.get should equal(101)
   }
 }
 
-class Test extends StringEventSupport
+class ChildTest(override val parent: Test) extends UberEventSupport
+
+class Test extends StringEventSupport with UberEventSupport
+
+trait UberEventSupport extends Listenable {
+  def uber = UberEventSupport(this)
+}
+
+object UberEventSupport extends EventSupport[UberEvent]
+
+class UberEvent extends Event

@@ -39,11 +39,12 @@ package org.sgine.event
  * Date: 7/1/11
  */
 trait Event {
-  def stopPropagation() = Event.stopPropagation()
-}
+  private[event] var _cancel = false
+  private[event] var _target: Listenable = null
+  private[event] var _currentTarget: Listenable = null
 
-object Event {
-  protected[event] val _stopPropagation = new ThreadLocal[Boolean]
-
-  def stopPropagation() = _stopPropagation.set(true)
+  final def cancelled = _cancel
+  final def cancel() = _cancel = true
+  final def target = _target
+  final def currentTarget = _currentTarget
 }

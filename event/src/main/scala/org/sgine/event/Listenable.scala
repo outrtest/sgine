@@ -11,6 +11,8 @@ import org.sgine.concurrent.Executor
  * Date: 6/21/11
  */
 trait Listenable {
+  def parent: Listenable = null
+
   private lazy val actor = createActor()
   protected var map = Map.empty[Class[_], List[EventHandler[_]]]
 
@@ -60,28 +62,54 @@ trait Listenable {
     case _ => false
   }
 
+  protected[event] def shouldFire(clazz: Class[_]) = hasListeners(clazz)
+
   protected[event] def fire[T](clazz: Class[T], event: T) = {
-    val listeners = map.getOrElse(clazz, Nil)
-    invoke(event, listeners.asInstanceOf[List[EventHandler[T]]])
+    event match {
+      case event: Event => event._target = this
+      case _ =>
+    }
+    fireRecursive[T](clazz, event, Recursion.Current)
+  }
+
+  private def fireRecursive[T](clazz: Class[T], event: T, recursion: Recursion): Unit = {
+    val listeners = map.getOrElse(clazz, Nil).asInstanceOf[List[EventHandler[T]]]
+    event match {
+      case event: Event => event._currentTarget = this
+      case _ =>
+    }
+    if (!invoke(event, listeners, recursion)) {
+      if (parent != null) {
+        parent.fireRecursive(clazz, event, Recursion.Children)
+      }
+    }
   }
 
   @tailrec
-  private final def invoke[T](event: T, listeners: List[EventHandler[T]]): Unit = {
+  private final def invoke[T](event: T, listeners: List[EventHandler[T]], recursion: Recursion): Boolean = {
     if (!listeners.isEmpty) {
       val handler = listeners.head
-      handler.processingMode match {
-        case ProcessingMode.Synchronous => handler.invoke(event)
-        case ProcessingMode.Asynchronous => actor ! (() => handler.invoke(event))
-        case ProcessingMode.Concurrent => Executor.execute(new Runnable() {
-          def run() = handler.invoke(event)
-        })
+      if (recursion == Recursion.Current || recursion == handler.recursion) {
+        handler.processingMode match {
+          case ProcessingMode.Synchronous => handler.invoke(event)
+          case ProcessingMode.Asynchronous => actor ! (() => handler.invoke(event))
+          case ProcessingMode.Concurrent => Executor.execute(new Runnable() {
+            def run() = handler.invoke(event)
+          })
+        }
       }
 
-      if (Event._stopPropagation.get) {
-        Event._stopPropagation.set(false)
-      } else {
-        invoke(event, listeners.tail)
+      val cancelled = event match {
+        case event: Event => event.cancelled
+        case _ => false
       }
+      if (cancelled) {
+        true
+      } else {
+        invoke(event, listeners.tail, recursion)
+      }
+    } else {
+      false
     }
   }
 }
