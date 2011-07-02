@@ -21,7 +21,8 @@ object SgineBuild extends Build {
     },
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
     publishArtifact in Test := true,
-    resolvers += "LWJGL Repository" at "http://adterrasperaspera.com/lwjgl/"
+    resolvers += "LWJGL Repository" at "http://adterrasperaspera.com/lwjgl/",
+    scalacOptions ++= Seq("-unchecked", "-deprecation")
   )
   private def createSettings(_name: String) = baseSettings ++ Seq(name := _name)
 
