@@ -43,7 +43,7 @@ import org.sgine.concurrent.Time
  */
 trait EventSupport[T] {
   def +=(listener: T => Any)(implicit manifest: Manifest[T]): EventHandler[T] = {
-    this += EventHandler(listener, ProcessingMode.Synchronous, manifest)
+    this += EventHandler(listener, ProcessingMode.Synchronous)(manifest)
   }
 
   def +=(handler: EventHandler[T]): EventHandler[T] = {
@@ -56,20 +56,22 @@ trait EventSupport[T] {
     handler
   }
 
+  def size(implicit manifest: Manifest[T]) = EventSupport.listenable.get().size(manifest.erasure)
+
   def clear()(implicit manifest: Manifest[T]) = EventSupport.listenable.get().clear(manifest.erasure)
 
   def synchronous(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Synchronous, manifest)
+    val handler = new EventHandler[T](f, ProcessingMode.Synchronous)(manifest)
     this += handler
   }
 
   def asynchronous(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Asynchronous, manifest)
+    val handler = new EventHandler[T](f, ProcessingMode.Asynchronous)(manifest)
     this += handler
   }
 
   def concurrent(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Concurrent, manifest)
+    val handler = new EventHandler[T](f, ProcessingMode.Concurrent)(manifest)
     this += handler
   }
 
@@ -81,7 +83,7 @@ trait EventSupport[T] {
 
   def waitFor(time: Double)(implicit manifest: Manifest[T]) = {
     var response: Option[T] = None
-    val handler = new EventHandler((t: T) => response = Some(t), ProcessingMode.Synchronous, manifest)
+    val handler = new EventHandler((t: T) => response = Some(t), ProcessingMode.Synchronous)(manifest)
     this += handler
     Time.waitFor(time) {
       response != None

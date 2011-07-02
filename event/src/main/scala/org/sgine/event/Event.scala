@@ -32,22 +32,18 @@
 
 package org.sgine.event
 
-import org.sgine.{Priority, ProcessingMode}
-
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 6/21/11
+ * Date: 7/1/11
  */
-case class EventHandler[T](listener: T => Any,
-                           processingMode: ProcessingMode,
-                           val priority: Double = Priority.Normal)
-                          (implicit val manifest: Manifest[T]) extends Ordered[EventHandler[T]] {
-  def invoke(event: T) = {
-    // TODO: support filters
-    listener(event)
-  }
+trait Event {
+  def stopPropagation() = Event.stopPropagation()
+}
 
-  def compare(that: EventHandler[T]) = that.priority.compare(priority)
+object Event {
+  protected[event] val _stopPropagation = new ThreadLocal[Boolean]
+
+  def stopPropagation() = _stopPropagation.set(true)
 }
