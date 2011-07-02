@@ -142,6 +142,16 @@ class EventSpec extends FlatSpec with ShouldMatchers {
     child.uber.fire(new UberEvent)
     count.get should equal(101)
   }
+
+  it should "invoke messages on the Bus" in {
+    test.uber.clear()
+    count.set(0)
+    Bus.synchronous[UberEvent] {
+      case event => count.addAndGet(1)
+    }
+    test.uber.fire(new UberEvent)
+    count.get should equal(1)
+  }
 }
 
 class ChildTest(override val parent: Test) extends UberEventSupport
