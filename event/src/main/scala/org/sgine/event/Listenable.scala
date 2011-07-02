@@ -35,9 +35,11 @@ trait Listenable {
         case Some(list) => (handler :: list).asInstanceOf[List[EventHandler[T]]]
         case None => List(handler)
       }
-      map += handler.manifest.erasure -> list.sorted
+      map += handler.manifest.erasure -> list.sortWith(sorter)
     }
   }
+
+  private val sorter = (eh1: EventHandler[_], eh2: EventHandler[_]) => eh1.priority > eh2.priority
 
   protected[event] def removeHandler[T](handler: EventHandler[T]) = {
     synchronized {
@@ -101,10 +103,10 @@ trait Listenable {
       val handler = listeners.head
       if (recursion == Recursion.Current || recursion == handler.recursion) {
         handler.processingMode match {
-          case ProcessingMode.Synchronous => handler.invoke(event)
-          case ProcessingMode.Asynchronous => actor ! (() => handler.invoke(event))
+          case ProcessingMode.Synchronous => handler.invoke(event, this)
+          case ProcessingMode.Asynchronous => actor ! (() => handler.invoke(event, this))
           case ProcessingMode.Concurrent => Executor.execute(new Runnable() {
-            def run() = handler.invoke(event)
+            def run() = handler.invoke(event, Listenable.this)
           })
         }
       }
