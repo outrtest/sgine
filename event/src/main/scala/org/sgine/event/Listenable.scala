@@ -4,7 +4,6 @@ import annotation.tailrec
 import org.sgine.ProcessingMode
 import actors.DaemonActor
 import org.sgine.concurrent.Executor
-
 /**
  * 
  *
@@ -20,7 +19,7 @@ trait Listenable {
       def act() {
         loop {
           react {
-            case invocation: Function0[Unit] => invocation()
+            case invocation: Function0[_] => invocation()
           }
         }
       }
@@ -30,11 +29,11 @@ trait Listenable {
 
   protected[event] def addHandler[T](handler: EventHandler[T]) = {
     synchronized {
-      val list = map.get(handler.manifest.erasure) match {
-        case Some(list) => handler :: list
+      val list: List[EventHandler[T]] = map.get(handler.manifest.erasure) match {
+        case Some(list) => (handler :: list).asInstanceOf[List[EventHandler[T]]]
         case None => List(handler)
       }
-      map += handler.manifest.erasure -> list
+      map += handler.manifest.erasure -> list.sorted
     }
   }
 
@@ -45,6 +44,11 @@ trait Listenable {
         case None => false
       }
     }
+  }
+
+  protected[event] def size[T](clazz: Class[T]) = map.get(clazz) match {
+    case Some(list) => list.size
+    case None => 0
   }
 
   protected[event] def clear[T](clazz: Class[T]) = synchronized {
@@ -73,7 +77,11 @@ trait Listenable {
         })
       }
 
-      invoke(event, listeners.tail)
+      if (Event._stopPropagation.get) {
+        Event._stopPropagation.set(false)
+      } else {
+        invoke(event, listeners.tail)
+      }
     }
   }
 }

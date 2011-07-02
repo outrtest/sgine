@@ -36,6 +36,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
 import java.util.concurrent.atomic.AtomicInteger
 import org.sgine.concurrent.{Executor, Time}
+import org.sgine.{Priority, ProcessingMode}
 
 /**
  * 
@@ -104,6 +105,22 @@ class EventSpec extends FlatSpec with ShouldMatchers {
   it should "fail to wait for a specific event" in {
     test.strings.clear()
     test.strings.waitFor(0.5) should equal(None)
+  }
+
+  it should "properly sort and stop propagation" in {
+    test.strings.clear()
+    count.set(0)
+    val listener1 = (s: String) => count.addAndGet(1)
+    val listener2 = (s: String) => {
+      count.addAndGet(1)
+      Event.stopPropagation()
+    }
+    val h1 = new EventHandler(listener1, ProcessingMode.Synchronous, Priority.Low)
+    val h2 = new EventHandler(listener2, ProcessingMode.Synchronous, Priority.Normal)
+    test.strings += h1
+    test.strings += h2
+    test.strings.fire("Hello")
+    count.get should equal(1)
   }
 }
 
