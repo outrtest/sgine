@@ -72,8 +72,14 @@ trait Listenable {
     fireRecursive[T](clazz, event, Recursion.Current)
 
     // Fire event on the Bus
-    val listeners = Bus.map.getOrElse(clazz, Nil).asInstanceOf[List[EventHandler[T]]]
-    Bus.invoke(event, listeners, Recursion.Current)
+    val cancelled = event match {
+      case event: Event => event.cancelled
+      case _ => false
+    }
+    if (!cancelled) {
+      val listeners = Bus.map.getOrElse(clazz, Nil).asInstanceOf[List[EventHandler[T]]]
+      Bus.invoke(event, listeners, Recursion.Current)
+    }
   }
 
   private def fireRecursive[T](clazz: Class[T], event: T, recursion: Recursion): Unit = {
