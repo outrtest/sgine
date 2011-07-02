@@ -40,6 +40,8 @@ object Executor {
 
   def execute[T](f: () => T): Unit = execute(new R(f))
 
+  def invoke[T](f: => T): Unit = execute(() => f)
+
   def execute(r: Runnable): Unit = executor.execute(r)
 
   class C[T](f: () => T) extends Callable[T] {
