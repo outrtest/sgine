@@ -22,6 +22,12 @@ class EnumeratedSpec extends FlatSpec with ShouldMatchers {
     TestEnum(2) should be(TestEnum.Three)
     TestEnum.Three.ordinal should be(2)
   }
+
+  it should "not equal other entries" in {
+    TestEnum.One should not equal(TestEnum.Two)
+    TestEnum.Two should not equal(TestEnum.Three)
+    TestEnum.Three should not equal(TestEnum.One)
+  }
 }
 
 sealed class TestEnum extends EnumEntry
