@@ -43,16 +43,7 @@ trait Property[T] extends (() => T) {
   implicit val manifest: Manifest[T]
 
   def value = apply()
-
-  /**
-   * Invoked when the internal value has changed.
-   */
-  protected def changed(from: T, to: T) = {
-  }
 }
 
 object Property {
-  def apply[T](read: () => T, write: T => Unit)(implicit manifest: Manifest[T]): MutableProperty[T] ={
-    new FunctionMutableProperty(read, write)
-  }
 }

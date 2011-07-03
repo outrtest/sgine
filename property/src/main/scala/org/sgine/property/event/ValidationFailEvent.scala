@@ -30,13 +30,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.property
+package org.sgine.property.event
+
+import org.sgine.event.Event
 
 /**
- * FunctionProperty utilizes a function to read the value of the property.
+ * ValidationFailEvent is thrown when validation upon a property fails.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class FunctionProperty[T](read: () => T)(implicit val manifest: Manifest[T]) extends Property[T] {
-  def apply() = read()
-}
+case class ValidationFailEvent[T](failedValue: T, message: String) extends Event

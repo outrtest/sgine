@@ -32,12 +32,115 @@
 
 package org.sgine.property
 
+import event.{ValidationFailEvent, ValidationFailEventSupport}
+import org.sgine.event.{Bindable, ChangeEvent, ChangeEventSupport}
+import java.util.concurrent.atomic.AtomicReference
 /**
- * MutableProperty expands on the functionality of Property by providing the ability to modify the associated value.
+ * MutableProperty represents a property that is mutable. Additionally, many features are supported herein:
+ *  - Binding via the Bindable trait
+ *  - Fires ChangeEvents
+ *  - Allows for delegation of getter and setter to functions
+ *  - Supports a default function to define a value until an initial value is set
+ *  - Allows filtering incoming values upon change
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * @see Property
  */
-trait MutableProperty[T] extends Property[T] with (T => Unit) {
-  def value_=(value: T) = apply(value)
+class MutableProperty[T](implicit val manifest: Manifest[T]) extends Property[T]
+                                                             with ((T) => Any)
+                                                             with ChangeEventSupport
+                                                             with Bindable[T]
+                                                             with ValidationFailEventSupport {
+  lazy private val ref = new AtomicReference[T]
+  private def v = ref.get
+  private def v_=(v: T) = ref.set(v)
+  private var getter: () => T = _
+  private var setter: (T) => Any = _
+
+  /**
+   * Filters the incoming value upon change if defined.
+   *
+   * Defaults to null.
+   */
+  var filter: (T) => T = _
+
+  /**
+   * Validates incoming value upon change. If Some is returned the value is not applied.
+   * The function may also choose to throw an exception depending on how validation handling
+   * is implemented. If Some is returned the property will throw a ValidationFailEvent with
+   * the validation failure String and the new value will not be assigned. All validations are
+   * executed which may cause multiple validation fail events to be thrown for a single assignment.
+   *
+   * Defaults to Nil.
+   */
+  var validations: List[(T) => Option[String]] = _
+
+  /**
+   * Defines whether the defaultFunction should be used as the backing value. This defaults to true
+   * until a value is explicitly set, but unless defaultFunction is specified it doesn't do anything.
+   */
+  var default = true
+  /**
+   * The function to use to determine the default value.
+   */
+  var defaultFunction: () => T = _
+
+  def value_=(v: T) = apply(v)
+
+  def apply() = {
+    if (default && defaultFunction != null) {
+      defaultFunction()
+    } else if (getter != null) {
+      getter()
+    } else {
+      v
+    }
+  }
+
+  def apply(v: T) = {
+    if (isValid(v)) {
+      val value = if (filter != null) filter(v) else v
+      val oldValue = if (setter != null) {
+        val oldValue = getter()
+        setter(value)
+        oldValue
+      } else {
+        val oldValue = this.v
+        this.v = value
+        oldValue
+      }
+      default = false
+      if (change.shouldFire) {
+        change.fire(ChangeEvent(oldValue, value))
+      }
+    }
+  }
+
+  /**
+   * Define delegate getter and setter methods to override the local value.
+   */
+  def delegate(getter: () => T = null, setter: (T) => Any = null) = {
+    this.getter = getter
+    this.setter = setter
+  }
+
+  private def isValid(v: T) = {
+    if (!validations.isEmpty) {
+      var failure = false
+      def validate(validator: (T) => Option[String]) = {
+        validator(v) match {
+          case Some(message) => {   // Fire validation fail event per validation fail
+            if (validationFailure.shouldFire) {
+              validationFailure.fire(ValidationFailEvent(v, message))
+            }
+            failure = true
+          }
+          case None =>
+        }
+      }
+      validations.foreach(validate)
+      !failure
+    } else {
+      true
+    }
+  }
 }
