@@ -30,27 +30,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.property
+package org.sgine.property.event
+
+import org.sgine.event.{EventSupport, Listenable}
 
 /**
- * BasicMutableProperty stores the property value as a field and allows modification. This class is
- * fully thread-safe to allow concurrent modification and access.
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class BasicMutableProperty[T](implicit val manifest: Manifest[T]) extends MutableProperty[T] {
-  @volatile private var v: T = _
-
-  def this(value: T)(implicit manifest: Manifest[T]) = {
-    this()
-    apply(value)
-  }
-
-  def apply() = v
-
-  def apply(value: T) = {
-    val previous = v
-    v = value
-    changed(previous, value)
-  }
+trait ValidationFailEventSupport extends Listenable {
+  def validationFailure = ValidationFailEventSupport(this)
 }
+
+object ValidationFailEventSupport extends EventSupport[ValidationFailEvent[_]]
