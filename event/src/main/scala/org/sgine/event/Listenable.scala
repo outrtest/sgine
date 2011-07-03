@@ -2,32 +2,18 @@ package org.sgine.event
 
 import annotation.tailrec
 import org.sgine.ProcessingMode
-import actors.DaemonActor
-import org.sgine.concurrent.Executor
+import org.sgine.concurrent.Concurrent
+
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 6/21/11
  */
-trait Listenable {
+trait Listenable extends Concurrent {
   def parent: Listenable = null
 
-  private lazy val actor = createActor()
   protected var map = Map.empty[Class[_], List[EventHandler[_]]]
-
-  private def createActor() = {
-    val a = new DaemonActor() {
-      def act() {
-        loop {
-          react {
-            case invocation: Function0[_] => invocation()
-          }
-        }
-      }
-    }
-    a.start()
-  }
 
   protected[event] def addHandler[T](handler: EventHandler[T]) = {
     synchronized {
@@ -104,10 +90,8 @@ trait Listenable {
       if (recursion == Recursion.Current || recursion == handler.recursion) {
         handler.processingMode match {
           case ProcessingMode.Synchronous => handler.invoke(event, this)
-          case ProcessingMode.Asynchronous => actor ! (() => handler.invoke(event, this))
-          case ProcessingMode.Concurrent => Executor.execute(new Runnable() {
-            def run() = handler.invoke(event, Listenable.this)
-          })
+          case ProcessingMode.Asynchronous => asynchronous(handler.invoke(event, this))
+          case ProcessingMode.Concurrent => concurrent(handler.invoke(event, Listenable.this))
         }
       }
 

@@ -42,6 +42,15 @@ import org.sgine.concurrent.Time
  * Date: 6/21/11
  */
 trait EventSupport[T] {
+  /**
+   * If alwaysFire is enabled events will always fire even if there are no listeners attached.
+   * This can be useful for hierarchical listening as "shouldFire" does not account for parents
+   * listening for children events.
+   *
+   * Defaults to false
+   */
+  var alwaysFire = false
+
   def +=(listener: T => Any)(implicit manifest: Manifest[T]): EventHandler[T] = {
     this += new EventHandler(listener, ProcessingMode.Synchronous)(manifest)
   }
@@ -77,7 +86,15 @@ trait EventSupport[T] {
 
   def hasListeners(implicit manifest: Manifest[T]) = EventSupport.listenable.get().hasListeners(manifest.erasure)
 
-  def shouldFire(implicit manifest: Manifest[T]) = EventSupport.listenable.get().shouldFire(manifest.erasure)
+  /**
+   * Will return true if there is a listener attached to this Listenable or the Bus for this type. Additionally,
+   * if "alwaysFire" is set to true this will always return true.
+   *
+   * Note: this does not account for hierarchical listening (such as Recursion.Children on a parent)
+   */
+  def shouldFire(implicit manifest: Manifest[T]) = {
+    EventSupport.listenable.get().shouldFire(manifest.erasure) || Bus.shouldFire(manifest.erasure) || alwaysFire
+  }
 
   def fire(event: T)(implicit manifest: Manifest[T]) = {
     EventSupport.listenable.get().fire(manifest.erasure.asInstanceOf[Class[T]], event)
