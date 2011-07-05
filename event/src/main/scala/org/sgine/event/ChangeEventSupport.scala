@@ -33,12 +33,10 @@
 package org.sgine.event
 
 /**
- * 
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait ChangeEventSupport extends Listenable {
-  def change = ChangeEventSupport(this)
+trait ChangeEventSupport[T] extends Listenable {
+  lazy val change = new EventSupport[ChangeEvent[T]](this)
 }
-
-object ChangeEventSupport extends EventSupport[ChangeEvent[_]]

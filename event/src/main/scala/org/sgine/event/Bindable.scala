@@ -35,21 +35,21 @@ import org.sgine.ProcessingMode
  */
 
 /**
- * 
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Bindable[T] extends ((T) => Any) {
   implicit val manifest: Manifest[T]
-  
-  private lazy val listener = (event: ChangeEvent[_]) => apply(event.newValue.asInstanceOf[T])
+
+  private lazy val listener = (event: ChangeEvent[T]) => apply(event.newValue.asInstanceOf[T])
   private lazy val bindingHandler = new EventHandler(listener, ProcessingMode.Synchronous)
 
-  def bind(to: ChangeEventSupport) = {
+  def bind(to: ChangeEventSupport[T]) = {
     to.change += bindingHandler
   }
 
-  def unbind(to: ChangeEventSupport) = {
+  def unbind(to: ChangeEventSupport[T]) = {
     to.change -= bindingHandler
   }
 }
