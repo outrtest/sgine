@@ -36,12 +36,12 @@ import org.sgine.ProcessingMode
 import org.sgine.concurrent.Time
 
 /**
- * 
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 6/21/11
  */
-trait EventSupport[T] {
+class EventSupport[T](_listenable: Listenable = null) {
   /**
    * If alwaysFire is enabled events will always fire even if there are no listeners attached.
    * This can be useful for hierarchical listening as "shouldFire" does not account for parents
@@ -56,18 +56,18 @@ trait EventSupport[T] {
   }
 
   def +=(handler: EventHandler[T]): EventHandler[T] = {
-    EventSupport.listenable.get().addHandler(handler)
+    listenable.addHandler(handler)
     handler
   }
 
   def -=(handler: EventHandler[T]): EventHandler[T] = {
-    EventSupport.listenable.get().removeHandler(handler)
+    listenable.removeHandler(handler)
     handler
   }
 
-  def size(implicit manifest: Manifest[T]) = EventSupport.listenable.get().size(manifest.erasure)
+  def size(implicit manifest: Manifest[T]) = listenable.size(manifest.erasure)
 
-  def clear()(implicit manifest: Manifest[T]) = EventSupport.listenable.get().clear(manifest.erasure)
+  def clear()(implicit manifest: Manifest[T]) = listenable.clear(manifest.erasure)
 
   def synchronous(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
     val handler = new EventHandler[T](f, ProcessingMode.Synchronous)(manifest)
@@ -84,7 +84,7 @@ trait EventSupport[T] {
     this += handler
   }
 
-  def hasListeners(implicit manifest: Manifest[T]) = EventSupport.listenable.get().hasListeners(manifest.erasure)
+  def hasListeners(implicit manifest: Manifest[T]) = listenable.hasListeners(manifest.erasure)
 
   /**
    * Will return true if there is a listener attached to this Listenable or the Bus for this type. Additionally,
@@ -93,11 +93,11 @@ trait EventSupport[T] {
    * Note: this does not account for hierarchical listening (such as Recursion.Children on a parent)
    */
   def shouldFire(implicit manifest: Manifest[T]) = {
-    EventSupport.listenable.get().shouldFire(manifest.erasure) || Bus.shouldFire(manifest.erasure) || alwaysFire
+    listenable.shouldFire(manifest.erasure) || Bus.shouldFire(manifest.erasure) || alwaysFire
   }
 
   def fire(event: T)(implicit manifest: Manifest[T]) = {
-    EventSupport.listenable.get().fire(manifest.erasure.asInstanceOf[Class[T]], event)
+    listenable.fire(manifest.erasure.asInstanceOf[Class[T]], event)
   }
 
   def waitFor(time: Double)(implicit manifest: Manifest[T]) = {
@@ -112,11 +112,16 @@ trait EventSupport[T] {
   }
 
   def apply(listenable: Listenable) = {
-    EventSupport.listenable.set(listenable)
+    EventSupport._listenable.set(listenable)
     this
+  }
+
+  private def listenable = _listenable match {
+    case null => EventSupport._listenable.get()
+    case listenable => listenable
   }
 }
 
 object EventSupport {
-  protected[event] val listenable = new ThreadLocal[Listenable]
+  protected[event] val _listenable = new ThreadLocal[Listenable]
 }

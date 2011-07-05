@@ -5,7 +5,7 @@ import org.sgine.ProcessingMode
 import org.sgine.concurrent.Concurrent
 
 /**
- * 
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 6/21/11
@@ -18,7 +18,11 @@ trait Listenable extends Concurrent {
   protected[event] def addHandler[T](handler: EventHandler[T]) = {
     synchronized {
       val list: List[EventHandler[T]] = map.get(handler.manifest.erasure) match {
-        case Some(list) => (handler :: list).asInstanceOf[List[EventHandler[T]]]
+        case Some(list) => if (list.contains(handler)) {
+          list.asInstanceOf[List[EventHandler[T]]]
+        } else {
+          (handler :: list).asInstanceOf[List[EventHandler[T]]]
+        }
         case None => List(handler)
       }
       map += handler.manifest.erasure -> list.sortWith(sorter)
@@ -30,7 +34,10 @@ trait Listenable extends Concurrent {
   protected[event] def removeHandler[T](handler: EventHandler[T]) = {
     synchronized {
       map.get(handler.manifest.erasure) match {
-        case Some(list) => map += handler.manifest.erasure -> list.filter(eh => eh == handler); true
+        case Some(list) => {
+          map += handler.manifest.erasure -> list.filterNot(eh => eh == handler)
+          true
+        }
         case None => false
       }
     }
