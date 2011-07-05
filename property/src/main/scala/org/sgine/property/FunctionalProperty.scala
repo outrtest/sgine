@@ -33,14 +33,11 @@
 package org.sgine.property
 
 /**
- * Property provides an abstraction and hierarchical control over object and an alternative methodology to getter/setter
- * principles. The base Property trait provides a read-only mechanism to access values.
+ * FunctionalProperty delegates the value from the supplied function.
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * @see MutableProperty
+ * Date: 7/3/11
  */
-trait Property[T] extends (() => T) {
-  implicit val manifest: Manifest[T]
-
-  def value = apply()
+class FunctionalProperty[T](f: () => T)(implicit val manifest: Manifest[T]) extends Property[T] {
+  def apply() = f()
 }
