@@ -35,6 +35,9 @@ package org.sgine.property
 import event.{ValidationFailEvent, ValidationFailEventSupport}
 import org.sgine.event.{Bindable, ChangeEvent, ChangeEventSupport}
 import java.util.concurrent.atomic.AtomicReference
+
+import org.sgine.transaction.Transactable
+
 /**
  * MutableProperty represents a property that is mutable. Additionally, many features are supported herein:
  *  - Binding via the Bindable trait
@@ -46,13 +49,17 @@ import java.util.concurrent.atomic.AtomicReference
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class MutableProperty[T](implicit val manifest: Manifest[T]) extends Property[T]
-                                                             with ((T) => Any)
-                                                             with ChangeEventSupport
-                                                             with Bindable[T]
-                                                             with ValidationFailEventSupport {
+with ((T) => Any)
+with ChangeEventSupport[T]
+with ValidationFailEventSupport
+with Bindable[T]
+with Transactable[T] {
   lazy private val ref = new AtomicReference[T]
+
   private def v = ref.get
+
   private def v_=(v: T) = ref.set(v)
+
   private var getter: () => T = _
   private var setter: (T) => Any = _
 
@@ -72,7 +79,7 @@ class MutableProperty[T](implicit val manifest: Manifest[T]) extends Property[T]
    *
    * Defaults to Nil.
    */
-  var validations: List[(T) => Option[String]] = _
+  var validations: List[(T) => Option[String]] = Nil
 
   /**
    * Defines whether the defaultFunction should be used as the backing value. This defaults to true
@@ -84,6 +91,11 @@ class MutableProperty[T](implicit val manifest: Manifest[T]) extends Property[T]
    */
   var defaultFunction: () => T = _
 
+  def this(initial: T)(implicit manifest: Manifest[T]) = {
+    this () (manifest)
+    apply(initial)
+  }
+
   def value_=(v: T) = apply(v)
 
   def apply() = {
@@ -91,6 +103,8 @@ class MutableProperty[T](implicit val manifest: Manifest[T]) extends Property[T]
       defaultFunction()
     } else if (getter != null) {
       getter()
+    } else if (isTransaction) {
+      transactionValue
     } else {
       v
     }
@@ -103,14 +117,19 @@ class MutableProperty[T](implicit val manifest: Manifest[T]) extends Property[T]
         val oldValue = getter()
         setter(value)
         oldValue
+      } else if (isTransaction) {
+        transactionValue = value
+        this.v
       } else {
         val oldValue = this.v
         this.v = value
         oldValue
       }
-      default = false
-      if (change.shouldFire) {
-        change.fire(ChangeEvent(oldValue, value))
+      default = false // TODO: this is problematic with transactions...
+      if (!isTransaction) {
+        if (change.shouldFire) {
+          change.fire(ChangeEvent(oldValue, value))
+        }
       }
     }
   }
@@ -128,7 +147,8 @@ class MutableProperty[T](implicit val manifest: Manifest[T]) extends Property[T]
       var failure = false
       def validate(validator: (T) => Option[String]) = {
         validator(v) match {
-          case Some(message) => {   // Fire validation fail event per validation fail
+          case Some(message) => {
+            // Fire validation fail event per validation fail
             if (validationFailure.shouldFire) {
               validationFailure.fire(ValidationFailEvent(v, message))
             }
