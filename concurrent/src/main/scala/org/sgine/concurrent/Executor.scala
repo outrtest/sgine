@@ -36,11 +36,13 @@ import java.util.concurrent.{Callable, Executors}
 object Executor {
   private lazy val executor = Executors.newCachedThreadPool()
 
-  def future[T](f: () => T) = executor.submit(new C(f))
+  def future[T](f: () => T) = executor.submit(new C[T](f))
 
   def execute[T](f: () => T): Unit = execute(new R(f))
 
   def invoke[T](f: => T): Unit = execute(() => f)
+
+  def invokeFuture[T](f: => T) = executor.submit(new C[T](() => f))
 
   def execute(r: Runnable): Unit = executor.execute(r)
 
@@ -51,4 +53,5 @@ object Executor {
   class R[T](f: () => T) extends Runnable {
     def run = f()
   }
+
 }
