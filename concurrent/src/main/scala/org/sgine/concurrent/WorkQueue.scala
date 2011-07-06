@@ -36,13 +36,25 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import annotation.tailrec
 
 /**
+ * WorkQueue provides a backing concurrent queue to store a backlog of work to be done and can be invoked arbitrarily
+ * based on the needs of the implementation.
  *
+ * Enqueueing work can be done via the companion object: WorkQueue.enqueue(workQueue, function).
+ *
+ * NOTE: Implementations must make calls to doWork() and/or doAllWork() or the queue will never be processed.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait WorkQueue {
   private lazy val queue = new ConcurrentLinkedQueue[() => Any]
 
+  /**
+   * Polls the queue for the first-in unit of work to be done and then executes it.
+   *
+   * NOTE: If the unit of work throws an exception it will be propagated to the caller.
+   *
+   * @return true if work was done, false if the queue is empty
+   */
   protected final def doWork() = {
     if (!queue.isEmpty) {
       queue.poll() match {
@@ -57,6 +69,12 @@ trait WorkQueue {
     }
   }
 
+  /**
+   * Continues to poll the queue for the first-in unit of work to be done and then executes it until there is no more
+   * work left in the queue.
+   *
+   * NOTE: If the unit of work throws an exception it will be propagated to the caller.
+   */
   @tailrec
   protected final def doAllWork(): Unit = {
     if (doWork()) {
@@ -66,5 +84,8 @@ trait WorkQueue {
 }
 
 object WorkQueue {
+  /**
+   * Enqueue some work to be done in the future by <code>workQueue</code>
+   */
   def enqueue(workQueue: WorkQueue, f: () => Any) = workQueue.queue.add(f)
 }

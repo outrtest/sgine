@@ -33,17 +33,37 @@ package org.sgine.concurrent
 
 import java.util.concurrent.{Callable, Executors}
 
+/**
+ * Executor is a light-weight wrapper around a Java ExecutorService backred by a cached thread-pool.
+ */
 object Executor {
   private lazy val executor = Executors.newCachedThreadPool()
 
+  /**
+   * Invokes the function on the ExecutorService asynchronously returning a Future[T] with the return value.
+   *
+   * @return Future[T]
+   */
   def future[T](f: () => T) = executor.submit(new C[T](f))
 
+  /**
+   * Executes the function on the ExecutorService asynchronously.
+   */
   def execute[T](f: () => T): Unit = execute(new R(f))
 
+  /**
+   * Synonymous to the execute method apart from the difference in function signature.
+   */
   def invoke[T](f: => T): Unit = execute(() => f)
 
+  /**
+   * Synonymous to the future method apart from the difference in function signature.
+   */
   def invokeFuture[T](f: => T) = executor.submit(new C[T](() => f))
 
+  /**
+   * Executes a Runnable in the future.
+   */
   def execute(r: Runnable): Unit = executor.execute(r)
 
   class C[T](f: () => T) extends Callable[T] {
