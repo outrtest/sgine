@@ -35,9 +35,10 @@ package org.sgine.event
 import org.sgine.{Priority, ProcessingMode}
 import java.lang.ref.SoftReference
 import java.lang.ThreadLocal
+import org.sgine.concurrent.WorkQueue
 
 /**
- * 
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 6/21/11
@@ -45,9 +46,18 @@ import java.lang.ThreadLocal
 class EventHandler[T](listener: T => Any,
                       val processingMode: ProcessingMode,
                       val priority: Double = Priority.Normal,
-                      val recursion: Recursion = Recursion.Current)
+                      val recursion: Recursion = Recursion.Current,
+                      val workQueue: WorkQueue = null)
                      (implicit val manifest: Manifest[T]) extends Ordered[EventHandler[T]] {
   def invoke(event: T, currentTarget: Listenable) = {
+    if (workQueue != null) {
+      WorkQueue.enqueue(workQueue, () => invokeFunction(event, currentTarget))
+    } else {
+      invokeFunction(event, currentTarget)
+    }
+  }
+
+  private val invokeFunction = (event: T, currentTarget: Listenable) => {
     EventHandler.currentTarget.set(currentTarget)
     EventHandler.currentHandler.set(this)
     listener(event)
@@ -77,8 +87,8 @@ object EventHandler {
   def soft[T](processingMode: ProcessingMode = ProcessingMode.Synchronous,
               priority: Double = Priority.Normal,
               recursion: Recursion = Recursion.Current)
-              (listener: T => Any)
-              (implicit manifest: Manifest[T]) = {
+             (listener: T => Any)
+             (implicit manifest: Manifest[T]) = {
     val ref = new SoftReference(listener)
     val softListener = (event: T) => {
       val listener = ref.get
