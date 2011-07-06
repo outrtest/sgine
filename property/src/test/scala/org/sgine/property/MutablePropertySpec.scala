@@ -4,6 +4,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 import org.sgine.transaction._
 import org.sgine.concurrent.Executor
+import java.lang.RuntimeException
 
 /**
  *
@@ -94,6 +95,19 @@ class MutablePropertySpec extends FlatSpec with ShouldMatchers {
       }.get
       other should equal("Initial")
     }
+    p.value should equal("In Transaction")
+    intercept[ExpectedRuntimeException] {
+      transaction {
+        p.value = "Me failure!"
+        p.value should equal("Me failure!")
+        val other = Executor.invokeFuture {
+          p.value
+        }.get
+        other should equal("In Transaction")
+        throw new ExpectedRuntimeException()
+      }
+    }
+    p.value should equal("In Transaction")
   }
 
   it should "filter values" in {
@@ -103,3 +117,5 @@ class MutablePropertySpec extends FlatSpec with ShouldMatchers {
     p.value should equal("Hello")
   }
 }
+
+class ExpectedRuntimeException extends RuntimeException

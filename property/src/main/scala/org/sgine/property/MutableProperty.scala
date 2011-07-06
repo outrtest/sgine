@@ -163,4 +163,6 @@ with Transactable[T] {
       true
     }
   }
+
+  protected def commit(value: T) = apply(value)
 }
