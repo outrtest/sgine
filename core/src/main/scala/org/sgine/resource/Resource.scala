@@ -35,13 +35,19 @@ package org.sgine.resource
 import java.net.URL
 
 /**
- * 
+ * Resource represents a path-based lookup system for URLs along with additional convenience functionality.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Resource private(val url: URL) {
+  /**
+   * The parent resource to this resource
+   */
   lazy val parent = new Resource(new URL(url.toString.substring(0, url.toString.lastIndexOf("/"))))
 
+  /**
+   * Generates a child Resource based on the name passed.
+   */
   def child(name: String) = new Resource(new URL(url.toString + "/" + name))
 
   override def toString() = "Resource(" + url + ")"
@@ -52,25 +58,41 @@ object Resource {
   addPath("")
   addPath("", FileResourceFinder)
 
+  /**
+   * Adds a search path for resource lookup.
+   */
   def addPath(path: String, finder: ResourceFinder = ClassLoaderResourceFinder) = {
-		var p = path
-		if ((!p.endsWith("/")) && (!p.endsWith("\\"))) {		// Make sure path ends with slash
-			p = p + "/"
-		}
-		paths = ResourcePath(path, finder) :: paths
-	}
+    var p = path
+    if ((!p.endsWith("/")) && (!p.endsWith("\\"))) {
+      // Make sure path ends with slash
+      p = p + "/"
+    }
+    paths = ResourcePath(path, finder) :: paths
+  }
 
-	def apply(url: URL) = new Resource(url)
+  /**
+   * Generates a Resource based on an explicit URL.
+   */
+  def apply(url: URL) = new Resource(url)
 
-	def apply(name: String): Resource = {
-		for (p <- paths) {
-			p.find(name) match {
-				case Some(u) => return new Resource(u)
-				case None =>
-			}
-		}
-		throw new RuntimeException("Resource lookup failed: " + name)
-	}
+  /**
+   * Searches the Resource paths for the resource delineated by the given <code>name</code>.
+   *
+   * Throws a runtime exception if lookup fails.
+   *
+   * @return Resource
+   */
+  def apply(name: String) = get(name).getOrElse(throw new RuntimeException("Resource lookup failed: " + name))
 
-	def apply(file: java.io.File) = new Resource(file.toURI.toURL)
+  /**
+   * Searches the Resource paths for the resource delineated by the given <code>name</code>
+   *
+   * @return Option[Resource]
+   */
+  def get(name: String) = paths.toStream.flatMap(rp => rp.find(name)).headOption
+
+  /**
+   * Generates a Resource based on the supplied File.
+   */
+  def apply(file: java.io.File) = new Resource(file.toURI.toURL)
 }

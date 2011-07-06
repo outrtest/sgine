@@ -67,28 +67,30 @@ package org.sgine.resource
 import java.net.URL
 
 /**
- * 
+ * ResourceFinder, as the name suggests, attempts to find a Resource.
+ *
+ * ResourceFinder instances should be registered with Resource.addPath.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait ResourceFinder {
-	def find(path: String, name: String): Option[URL]
+  def find(path: String, name: String): Option[Resource]
 }
 
 object ClassLoaderResourceFinder extends ResourceFinder {
-	def find(path: String, name: String) = getClass.getClassLoader.getResource(path + name) match {
-		case null => None
-		case u: URL => Some(u)
-	}
+  def find(path: String, name: String) = getClass.getClassLoader.getResource(path + name) match {
+    case null => None
+    case u: URL => Some(Resource(u))
+  }
 }
 
 object FileResourceFinder extends ResourceFinder {
-	def find(path: String, name: String) = {
-		val f = new java.io.File(path, name)
-		if (f.exists) {
-			Some(f.toURI.toURL)
-		} else {
-			None
-		}
-	}
+  def find(path: String, name: String) = {
+    val f = new java.io.File(path, name)
+    if (f.exists) {
+      Some(Resource(f.toURI.toURL))
+    } else {
+      None
+    }
+  }
 }
