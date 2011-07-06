@@ -33,7 +33,8 @@
 package org.sgine.transaction
 
 /**
- *
+ * Transaction represents an objectified transaction state. Used internally by the package object and should not be
+ * utilized directly.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
@@ -41,18 +42,20 @@ class Transaction {
   private[transaction] var map = Map.empty[Transactable[_], TransactionState[_]]
 
   def commit[T]() = {
-    map.foreach(t => t._1.asInstanceOf[Transactable[T]].commit(t._2.asInstanceOf[TransactionState[T]].current))
+    map.foreach(t => t._2.commit())
+    map = Map.empty[Transactable[_], TransactionState[_]]
   }
 
   def rollback[T]() = {
-    map.foreach(t => t._1.asInstanceOf[Transactable[T]].rollback(t._2.asInstanceOf[TransactionState[T]].current))
+    map.foreach(t => t._2.rollback())
+    Map.empty[Transactable[_], TransactionState[_]]
   }
 }
 
 case class TransactionState[T](transactable: Transactable[T], previous: T, current: T) {
-  def commit() = transactable.commit(current)
+  def commit() = Transactable.commit(transactable, current)
 
-  def rollback() = transactable.rollback(previous)
+  def rollback() = Transactable.rollback(transactable, previous)
 
   def newState(newValue: T) = new TransactionState[T](transactable, previous, newValue)
 }
