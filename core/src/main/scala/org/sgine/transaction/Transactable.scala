@@ -33,20 +33,52 @@
 package org.sgine.transaction
 
 /**
- *
+ * Transactable mix-in provides support for transactions.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Transactable[T] {
-  def isTransaction = org.sgine.transaction.isTransaction
+  /**
+   * Convenience method pointing to transaction.isTransaction
+   *
+   * @see org.sgine.transaction.isTransaction
+   */
+  final def isTransaction = org.sgine.transaction.isTransaction
 
+  /**
+   * Retrieves the current value of this Transactable
+   */
   protected[transaction] def value: T
 
+  /**
+   * Sets the transaction value for this Transactable.
+   *
+   * @throws RuntimeException if not in transaction.
+   */
   protected[transaction] def transactionValue_=(value: T) = org.sgine.transaction.current(this, value)
 
+  /**
+   * Gets the transaction value for this Transactable.
+   *
+   * @throws RuntimeException if not in transaction.
+   */
   protected[transaction] def transactionValue: T = org.sgine.transaction.current(this)
 
-  protected[transaction] def commit(value: T) = {}
+  /**
+   * Commits the supplied value to this Transactable. This will be called by the transaction and should never be
+   * invoked manually.
+   */
+  protected def commit(value: T): Unit
 
-  protected[transaction] def rollback(value: T) = {}
+  /**
+   * Rolls back to the supplied value for this Transactable. This will be called by the transaction and should never
+   * be invoked manually.
+   */
+  protected def rollback(value: T) = {}
+}
+
+object Transactable {
+  private[transaction] def commit[T](transactable: Transactable[T], value: T) = transactable.commit(value)
+
+  private[transaction] def rollback[T](transactable: Transactable[T], value: T) = transactable.rollback(value)
 }
