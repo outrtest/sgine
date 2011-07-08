@@ -32,12 +32,14 @@
 
 package org.sgine.scene
 
+import org.sgine.event.Listenable
+
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 7/2/11
  */
-trait Container[T] extends Element {
+trait Container[T] extends Listenable {
   def children: Seq[T]
 }

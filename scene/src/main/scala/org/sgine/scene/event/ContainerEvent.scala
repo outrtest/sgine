@@ -30,13 +30,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.scene
+package org.sgine.scene.event
 
-import org.sgine.event.Listenable
+import org.sgine.event.Event
+import org.sgine.scene.Container
 
 /**
- * ImmutableContainer defines a simple collection wrapper for a pre-defined list of children.
+ * ContainerEvent
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class ImmutableContainer[T](val children: Seq[T], override val parent: Listenable = null) extends Container[T]
+trait ContainerEvent extends Event {
+  def parent: Container[_]
+
+  def child: Any
+}
+
+case class ChildAddedEvent(parent: Container[_], child: Any) extends ContainerEvent
+
+case class ChildRemovedEvent(parent: Container[_], child: Any) extends ContainerEvent
