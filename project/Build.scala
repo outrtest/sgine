@@ -38,6 +38,7 @@ object SgineBuild extends Build {
   lazy val event = Project("event", file("event"), settings = createSettings("sgine-event"))
     .dependsOn(concurrent, core)
   lazy val math = Project("math", file("math"), settings = createSettings("sgine-math"))
+    .dependsOn(core)
   lazy val openglGenerator = Project("opengl-generator", file("opengl/generator"), settings = createSettings("sgine-opengl-generator"))
     .settings(libraryDependencies ++= Seq(
     "org.lwjgl" % "lwjgl" % "2.7.1",
