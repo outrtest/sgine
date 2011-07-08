@@ -58,4 +58,5 @@ object SgineBuild extends Build {
   lazy val render = Project("render", file("render"), settings = createSettings("sgine-render"))
     .dependsOn(math, openglApi, openglAndroid, openglLwjgl)
   lazy val scene = Project("scene", file("scene"), settings = createSettings("sgine-scene"))
+    .dependsOn(event)
 }
