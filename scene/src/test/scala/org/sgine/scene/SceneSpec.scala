@@ -32,17 +32,94 @@
 
 package org.sgine.scene
 
-import org.scalatest.FlatSpec
+import event.{ChildRemovedEvent, ChildAddedEvent}
 import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.WordSpec
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class SceneSpec extends FlatSpec with ShouldMatchers {
-  "ImmutableContainer" should "have three elements" in {
-    val container = new ImmutableContainer(List("One", "Two", "Three"))
-    container.children.length should equal(3)
+class SceneSpec extends WordSpec with ShouldMatchers {
+  "ImmutableContainer" when {
+    "created" should {
+      val container = new ImmutableContainer(List("One", "Two", "Three"))
+      "have three elements" in {
+        container.children.length should be(3)
+      }
+    }
+  }
+
+  "MutableContainer" when {
+    "created" should {
+      val container = new MutableContainer[String]()
+      var added: ChildAddedEvent = null
+      var removed: ChildRemovedEvent = null
+      container.containerChange.synchronous {
+        case event: ChildAddedEvent => added = event
+        case event: ChildRemovedEvent => removed = event
+      }
+      "be empty" in {
+        container.children.length should be(0)
+      }
+      "add one element" in {
+        container += "One"
+      }
+      "have one element" in {
+        container.children.length should be(1)
+      }
+      "have the correct element" in {
+        container.children.head should be("One")
+      }
+      "throw a ChildAddedEvent" in {
+        added should not be (null)
+      }
+      "reference the correct parent in the event" in {
+        added.parent should be(container)
+      }
+      "reference the corrent child in the event" in {
+        added.child should be("One")
+      }
+      "add another element" in {
+        added = null
+        container += "Two"
+      }
+      "have two elements" in {
+        container.children.length should be(2)
+      }
+      "have the correct elements" in {
+        container.children.head should be("One")
+        container.children.tail.head should be("Two")
+      }
+      "throw another ChildAddedEvent" in {
+        added should not be (null)
+      }
+      "reference the correct parent in the second add event" in {
+        added.parent should be(container)
+      }
+      "reference the corrent child in the second add event" in {
+        added.child should be("Two")
+      }
+      "remove an element" in {
+        added = null
+        container -= "One"
+      }
+      "have one element again" in {
+        container.children.length should be(1)
+      }
+      "have the correct element again" in {
+        container.children.head should be("Two")
+      }
+      "throw a ChildRemovedEvent" in {
+        removed should not be (null)
+      }
+      "reference the correct parent in the remove event" in {
+        removed.parent should be(container)
+      }
+      "reference the correct child in the remove event" in {
+        removed.child should be("One")
+      }
+    }
   }
 }

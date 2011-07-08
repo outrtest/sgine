@@ -32,11 +32,29 @@
 
 package org.sgine.scene
 
+import collection.mutable.ListBuffer
+import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEventSupport}
 import org.sgine.event.Listenable
 
 /**
- * ImmutableContainer defines a simple collection wrapper for a pre-defined list of children.
+ * MutableContainer provides synchronized modification access to 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class ImmutableContainer[T](val children: Seq[T], override val parent: Listenable = null) extends Container[T]
+class MutableContainer[T](override val parent: Listenable = null) extends Container[T] with ContainerEventSupport {
+  private val buffer = new ListBuffer[T]
+
+  def children = buffer.toList
+
+  def +=(child: T) = synchronized {
+    buffer += child
+
+    if (containerChange.shouldFire) containerChange.fire(new ChildAddedEvent(this, child))
+  }
+
+  def -=(child: T) = synchronized {
+    buffer -= child
+
+    if (containerChange.shouldFire) containerChange.fire(new ChildRemovedEvent(this, child))
+  }
+}

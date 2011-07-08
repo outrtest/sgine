@@ -30,13 +30,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.scene
+package org.sgine.scene.event
+
+import org.sgine.event.{Listenable, EventSupport}
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Element {
-  def parent: Element
+trait ContainerEventSupport extends Listenable {
+  def containerChange = ContainerEventSupport(this)
 }
+
+object ContainerEventSupport extends EventSupport[ContainerEvent]
