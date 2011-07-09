@@ -35,7 +35,9 @@ package org.sgine.scene.event
 import org.sgine.event.{Listenable, EventSupport}
 
 /**
+ * ContainerEventSupport handles events related to container hierarchy.
  *
+ * EventSupport.alwaysFire is defaulted to true to always fire events.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
@@ -43,4 +45,6 @@ trait ContainerEventSupport extends Listenable {
   def containerChange = ContainerEventSupport(this)
 }
 
-object ContainerEventSupport extends EventSupport[ContainerEvent]
+object ContainerEventSupport extends EventSupport[ContainerEvent] {
+  alwaysFire = true
+}

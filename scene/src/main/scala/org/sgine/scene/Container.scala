@@ -41,5 +41,9 @@ import org.sgine.event.Listenable
  * Date: 7/2/11
  */
 trait Container[T] extends Listenable {
+  protected[scene] var _parent: Listenable = null
+
+  override def parent = _parent
+
   def children: Seq[T]
 }
