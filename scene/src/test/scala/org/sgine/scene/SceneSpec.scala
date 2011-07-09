@@ -52,21 +52,21 @@ class SceneSpec extends WordSpec with ShouldMatchers {
   }
 
   "MutableContainer" when {
+    val container = new MutableContainer[String]()
+    var added: ChildAddedEvent = null
+    var removed: ChildRemovedEvent = null
+    container.containerChange.synchronous {
+      case event: ChildAddedEvent => added = event
+      case event: ChildRemovedEvent => removed = event
+    }
     "created" should {
-      val container = new MutableContainer[String]()
-      var added: ChildAddedEvent = null
-      var removed: ChildRemovedEvent = null
-      container.containerChange.synchronous {
-        case event: ChildAddedEvent => added = event
-        case event: ChildRemovedEvent => removed = event
-      }
       "be empty" in {
         container.children.length should be(0)
       }
-      "add one element" in {
-        container += "One"
-      }
+    }
+    "adding \"One\"" should {
       "have one element" in {
+        container += "One"
         container.children.length should be(1)
       }
       "have the correct element" in {
@@ -81,11 +81,11 @@ class SceneSpec extends WordSpec with ShouldMatchers {
       "reference the corrent child in the event" in {
         added.child should be("One")
       }
-      "add another element" in {
+    }
+    "adding \"Two\"" should {
+      "have two elements" in {
         added = null
         container += "Two"
-      }
-      "have two elements" in {
         container.children.length should be(2)
       }
       "have the correct elements" in {
@@ -101,11 +101,11 @@ class SceneSpec extends WordSpec with ShouldMatchers {
       "reference the corrent child in the second add event" in {
         added.child should be("Two")
       }
-      "remove an element" in {
+    }
+    "removing \"One\"" should {
+      "have one element again" in {
         added = null
         container -= "One"
-      }
-      "have one element again" in {
         container.children.length should be(1)
       }
       "have the correct element again" in {
@@ -119,6 +119,137 @@ class SceneSpec extends WordSpec with ShouldMatchers {
       }
       "reference the correct child in the remove event" in {
         removed.child should be("One")
+      }
+    }
+  }
+
+  "ContainerView" when {
+    val container = new ImmutableContainer(List("One", "Two", "Three"))
+    val container2 = new MutableContainer[AnyRef]()
+    val container3 = new MutableContainer[String]()
+    val container4 = new MutableContainer[String]()
+    val container5 = new MutableContainer[String]()
+
+    val containerView = new ContainerView[String](container)
+    val containerView2 = new ContainerView[String](container2)
+    val query = (s: String) => s.length > 3
+    val containerView3 = new ContainerView[String](container3, query)
+    val sort = (s1: String, s2: String) => s1.compare(s2)
+    val containerView4 = new ContainerView[String](container4, sort = sort)
+    var filterLength = 3
+    val filter = (s: String) => s.length > filterLength
+    val containerView5 = new ContainerView[String](container5, filter = filter)
+
+    val ic = new ImmutableContainer[String](List("Uno"))
+
+    "created on a container with three elements" should {
+      "have three elements" in {
+        containerView.size should be(3)
+      }
+    }
+    "created on an empty container" should {
+      "have no elements" in {
+        containerView2.size should be(0)
+      }
+    }
+    "adding \"One\" to the container" should {
+      "have one element" in {
+        container2 += "One"
+        containerView2.size should be(1)
+      }
+    }
+    "adding \"Two\" to the container" should {
+      "have two elements" in {
+        container2 += "Two"
+        containerView2.size should be(2)
+      }
+    }
+    "removing \"One\" from the container" should {
+      "have one element" in {
+        container2 -= "One"
+        containerView2.size should be(1)
+      }
+      "have \"Two\" as the only item" in {
+        containerView2.head should be("Two")
+      }
+    }
+    "adding an ImmutableContainer(\"Uno\")" should {
+      "have two elements" in {
+        container2 += ic
+        containerView2.size should be(2)
+      }
+      "define the parent container correctly" in {
+        ic.parent should be(container2)
+      }
+      "reference \"Two\" and \"Uno\" as the only elements" in {
+        containerView2.head should be("Two")
+        containerView2.tail.head should be("Uno")
+      }
+    }
+    "removing an ImmutableContainer(\"Uno\")" should {
+      "have one element" in {
+        container2 -= ic
+        containerView2.size should be(1)
+      }
+      "define the parent container as null" in {
+        ic.parent should be(null)
+      }
+      "reference \"Two\" as the only element" in {
+        containerView2.head should be("Two")
+      }
+    }
+    "adding items to a queried view" should {
+      "have one element" in {
+        container3 += "Three"
+        containerView3.size should be(1)
+      }
+      "exclude an item via query" in {
+        container3 += "Two"
+        containerView3.size should be(1)
+      }
+    }
+    "adding items to a sorted view" should {
+      "have three elements" in {
+        container4 += "One"
+        container4 += "Two"
+        container4 += "Three"
+        containerView4.size should be(3)
+      }
+      "be sorted correctly" in {
+        containerView4.head should be("One")
+        containerView4.tail.head should be("Three")
+        containerView4.tail.tail.head should be("Two")
+      }
+    }
+    "adding items to a filtered view" should {
+      "have one element visible after three inserts" in {
+        container5 += "One"
+        container5 += "Two"
+        container5 += "Three"
+        containerView5.size should be(1)
+      }
+      "have \"Three\" as the only visible element" in {
+        containerView5.head should be("Three")
+      }
+      "have three elements after updating filter" in {
+        filterLength = 0
+        containerView5.refreshFilter()
+        containerView5.size should be(3)
+      }
+      "have one element again after updating filter" in {
+        filterLength = 3
+        containerView5.refreshFilter()
+        containerView5.size should be(1)
+      }
+      "have zero elements after updating filter" in {
+        filterLength = 10
+        containerView5.refreshFilter()
+        containerView5.size should be(0)
+      }
+      "have three elements again after updating filter" in {
+        filterLength = 0
+        containerView5.refreshFilter()
+        containerView5.size should be(3)
       }
     }
   }

@@ -34,14 +34,13 @@ package org.sgine.scene
 
 import collection.mutable.ListBuffer
 import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEventSupport}
-import org.sgine.event.Listenable
 
 /**
  * MutableContainer provides synchronized modification access to 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class MutableContainer[T](override val parent: Listenable = null) extends Container[T] with ContainerEventSupport {
+class MutableContainer[T] extends Container[T] with ContainerEventSupport {
   private val buffer = new ListBuffer[T]
 
   def children = buffer.toList
@@ -49,11 +48,21 @@ class MutableContainer[T](override val parent: Listenable = null) extends Contai
   def +=(child: T) = synchronized {
     buffer += child
 
+    child match {
+      case container: Container[_] => container._parent = this
+      case _ =>
+    }
+
     if (containerChange.shouldFire) containerChange.fire(new ChildAddedEvent(this, child))
   }
 
   def -=(child: T) = synchronized {
     buffer -= child
+
+    child match {
+      case container: Container[_] => container._parent = null
+      case _ =>
+    }
 
     if (containerChange.shouldFire) containerChange.fire(new ChildRemovedEvent(this, child))
   }
