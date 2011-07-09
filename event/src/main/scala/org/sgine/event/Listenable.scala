@@ -1,8 +1,8 @@
 package org.sgine.event
 
 import annotation.tailrec
-import org.sgine.ProcessingMode
-import org.sgine.concurrent.Concurrent
+import org.sgine.{Priority, ProcessingMode}
+import org.sgine.concurrent.{WorkQueue, Time, Concurrent}
 
 /**
  *
@@ -12,6 +12,12 @@ import org.sgine.concurrent.Concurrent
  */
 trait Listenable extends Concurrent {
   def parent: Listenable = null
+
+  /**
+   * Provides the ability to add listeners directly to this Listenable instance. It is generally preferable to use the
+   * EventSupport mechanism instead for better type-safety and validation.
+   */
+  lazy val listeners = new Listeners(this)
 
   protected var map = Map.empty[Class[_], List[EventHandler[_]]]
 
@@ -114,5 +120,67 @@ trait Listenable extends Concurrent {
     } else {
       false
     }
+  }
+}
+
+class Listeners(listenable: Listenable) {
+  def +=[T](listener: T => Any)(implicit manifest: Manifest[T]): EventHandler[T] = {
+    this += new EventHandler(listener, ProcessingMode.Synchronous)(manifest)
+  }
+
+  def +=[T](handler: EventHandler[T]): EventHandler[T] = {
+    listenable.addHandler(handler)
+    handler
+  }
+
+  def -=[T](handler: EventHandler[T]): EventHandler[T] = {
+    listenable.removeHandler(handler)
+    handler
+  }
+
+  def size[T](implicit manifest: Manifest[T]): Int = listenable.size(manifest.erasure)
+
+  def clear[T]()(implicit manifest: Manifest[T]): Unit = listenable.clear(manifest.erasure)
+
+  def synchronous[T](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    val handler = new EventHandler[T](f, ProcessingMode.Synchronous)(manifest)
+    this += handler
+    handler
+  }
+
+  def asynchronous[T](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    val handler = new EventHandler[T](f, ProcessingMode.Asynchronous)(manifest)
+    this += handler
+    handler
+  }
+
+  def concurrent[T](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    val handler = new EventHandler[T](f, ProcessingMode.Concurrent)(manifest)
+    this += handler
+    handler
+  }
+
+  def listen[T](processingMode: ProcessingMode = ProcessingMode.Synchronous,
+                priority: Double = Priority.Normal,
+                recursion: Recursion = Recursion.Current,
+                workQueue: WorkQueue = null)
+               (f: PartialFunction[T, Any])
+               (implicit manifest: Manifest[T]): EventHandler[T] = {
+    val handler = new EventHandler[T](f, processingMode, priority, recursion, workQueue)(manifest)
+    this += handler
+    handler
+  }
+
+  def hasListeners[T](implicit manifest: Manifest[T]): Boolean = listenable.hasListeners(manifest.erasure)
+
+  def waitFor[T](time: Double)(implicit manifest: Manifest[T]) = {
+    var response: Option[T] = None
+    val handler = new EventHandler((t: T) => response = Some(t), ProcessingMode.Synchronous)(manifest)
+    this += handler
+    Time.waitFor(time) {
+      response != None
+    }
+    this -= handler
+    response
   }
 }

@@ -32,58 +32,9 @@
 
 package org.sgine.event
 
-import org.sgine.ProcessingMode
-import org.sgine.concurrent.Time
-
 /**
  * Bus provides a single Listenable to listen for any kind of event.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object Bus extends Listenable {
-    def +=[T](listener: T => Any)(implicit manifest: Manifest[T]): EventHandler[T] = {
-    this += new EventHandler(listener, ProcessingMode.Synchronous)(manifest)
-  }
-
-  def +=[T](handler: EventHandler[T]): EventHandler[T] = {
-    addHandler(handler)
-    handler
-  }
-
-  def -=[T](handler: EventHandler[T]): EventHandler[T] = {
-    removeHandler(handler)
-    handler
-  }
-
-  def size[T](implicit manifest: Manifest[T]): Int = size(manifest.erasure)
-
-  def clear[T]()(implicit manifest: Manifest[T]): Unit = clear(manifest.erasure)
-
-  def synchronous[T](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Synchronous)(manifest)
-    this += handler
-  }
-
-  def asynchronous[T](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Asynchronous)(manifest)
-    this += handler
-  }
-
-  def concurrent[T](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Concurrent)(manifest)
-    this += handler
-  }
-
-  def hasListeners[T](implicit manifest: Manifest[T]): Boolean = hasListeners(manifest.erasure)
-
-  def waitFor[T](time: Double)(implicit manifest: Manifest[T]) = {
-    var response: Option[T] = None
-    val handler = new EventHandler((t: T) => response = Some(t), ProcessingMode.Synchronous)(manifest)
-    this += handler
-    Time.waitFor(time) {
-      response != None
-    }
-    this -= handler
-    response
-  }
-}
+object Bus extends Listenable
