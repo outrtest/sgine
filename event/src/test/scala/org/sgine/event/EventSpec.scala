@@ -39,7 +39,7 @@ import org.sgine.concurrent.{Executor, Time}
 import org.sgine.{Priority, ProcessingMode}
 
 /**
- * 
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 6/21/11
@@ -146,7 +146,7 @@ class EventSpec extends FlatSpec with ShouldMatchers {
   it should "invoke messages on the Bus" in {
     test.uber.clear()
     count.set(0)
-    Bus.synchronous[UberEvent] {
+    Bus.listeners.synchronous[UberEvent] {
       case event => count.addAndGet(1)
     }
     test.uber.fire(new UberEvent)
