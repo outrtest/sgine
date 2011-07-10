@@ -32,14 +32,19 @@
 
 package org.sgine.scene
 
+import org.sgine.event.Listenable
+
 /**
- * ImmutableContainer defines a simple collection wrapper for a pre-defined list of children.
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class ImmutableContainer[T](val children: Seq[T]) extends Container[T] {
-  children.foreach {
-    case element: Element => element._parent = this
-    case _ =>
-  }
+trait Element extends Listenable {
+  protected[scene] var _parent: Listenable = null
+
+  override def parent = _parent
+}
+
+object Element {
+  def assignParent(element: Element, parent: Listenable) = element._parent = parent
 }
