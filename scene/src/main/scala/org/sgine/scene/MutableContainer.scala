@@ -49,7 +49,7 @@ class MutableContainer[T] extends Container[T] with ContainerEventSupport {
     buffer += child
 
     child match {
-      case container: Container[_] => container._parent = this
+      case element: Element => element._parent = this
       case _ =>
     }
 
@@ -60,7 +60,7 @@ class MutableContainer[T] extends Container[T] with ContainerEventSupport {
     buffer -= child
 
     child match {
-      case container: Container[_] => container._parent = null
+      case element: Element => element._parent = null
       case _ =>
     }
 
