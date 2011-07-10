@@ -32,20 +32,51 @@
 
 package org.sgine.property
 
-import org.sgine.scene.Element
+import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.WordSpec
 
 /**
- * Property provides an abstraction and hierarchical control over object and an alternative methodology to getter/setter
- * principles. The base Property trait provides a read-only mechanism to access values.
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * @see MutableProperty
  */
-trait Property[T] extends (() => T) with Element {
-  implicit val manifest: Manifest[T]
-  protected[property] var _name: String = null
-
-  def name = _name
-
-  def value = apply()
+class PropertyContainerSpec extends WordSpec with ShouldMatchers {
+  "PropertyContainer" when {
+    "created with two properties" should {
+      val container = new PropertyContainer {
+        val p1 = new ImmutableProperty[String]("Hello")
+        val p2 = new MutableProperty[String]("Goodbye")
+      }
+      "have a length of two" in {
+        container.properties.length should equal(2)
+      }
+      "have p1 as the first property" in {
+        container.properties(0) should equal(container.p1)
+      }
+      "have p2 as the second property" in {
+        container.properties(1) should equal(container.p2)
+      }
+      "have p1's parent as the container" in {
+        container.p1.parent should equal(container)
+      }
+      "have p2's parent as the container" in {
+        container.p2.parent should equal(container)
+      }
+      "have p1's name as \"p1\"" in {
+        container.p1.name should equal("p1")
+      }
+      "have p2's name as \"p2\"" in {
+        container.p2.name should equal("p2")
+      }
+      "properly lookup p1 by name" in {
+        container.property("p1") should equal(Some(container.p1))
+      }
+      "properly lookup p2 by name" in {
+        container.property("p2") should equal(Some(container.p2))
+      }
+      "fail to lookup p3 by name" in {
+        container.property("p3") should equal(None)
+      }
+    }
+  }
 }
