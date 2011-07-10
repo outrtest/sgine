@@ -55,9 +55,12 @@ object SgineBuild extends Build {
   lazy val openglNehe = Project("opengl-nehe", file("opengl/nehe"), settings = createSettings("sgine-opengl-nehe"))
     .dependsOn(openglApi, openglLwjgl)
   lazy val property = Project("property", file("property"), settings = createSettings("sgine-property"))
-    .dependsOn(event)
+    .dependsOn(event, scene)
+    .settings(libraryDependencies += "com.googlecode.reflective" %% "reflective" % "1.0")
   lazy val render = Project("render", file("render"), settings = createSettings("sgine-render"))
     .dependsOn(math, openglApi, openglAndroid, openglLwjgl)
   lazy val scene = Project("scene", file("scene"), settings = createSettings("sgine-scene"))
     .dependsOn(event)
+  lazy val ui = Project("ui", file("ui"), settings = createSettings("sgine-ui"))
+    .dependsOn(core, event, math, openglApi, openglLwjgl, property, render, scene)
 }
