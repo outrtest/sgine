@@ -32,20 +32,44 @@
 
 package org.sgine.property
 
+import org.sgine.event.Listenable
 import org.sgine.scene.Element
 
+import com.googlecode.reflective._
+import annotation.tailrec
+
 /**
- * Property provides an abstraction and hierarchical control over object and an alternative methodology to getter/setter
- * principles. The base Property trait provides a read-only mechanism to access values.
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * @see MutableProperty
  */
-trait Property[T] extends (() => T) with Element {
-  implicit val manifest: Manifest[T]
-  protected[property] var _name: String = null
+trait PropertyContainer extends Listenable with Element with DelayedInit {
+  private var _properties: Seq[Property[_]] = Nil
 
-  def name = _name
+  def properties: Seq[Property[_]] = _properties
 
-  def value = apply()
+  def property(name: String) = properties.find(p => p.name == name)
+
+  def delayedInit(x: => Unit) = {
+    x
+    _properties = loadProperties(getClass.methods).reverse
+  }
+
+  @tailrec
+  private final def loadProperties(methods: List[EnhancedMethod], properties: List[Property[_]] = Nil): List[Property[_]] = {
+    if (methods.isEmpty) {
+      properties
+    } else {
+      val method = methods.head
+      val list = if (method.args.isEmpty && classOf[Property[_]].isAssignableFrom(method.returnType.`type`.javaClass)) {
+        val property = method[Property[_]](this)
+        property._name = method.name
+        Element.assignParent(property, this)
+        property :: properties
+      } else {
+        properties
+      }
+      loadProperties(methods.tail, list)
+    }
+  }
 }
