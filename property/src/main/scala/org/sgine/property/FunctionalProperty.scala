@@ -41,3 +41,7 @@ package org.sgine.property
 class FunctionalProperty[T](f: () => T)(implicit val manifest: Manifest[T]) extends Property[T] {
   def apply() = f()
 }
+
+object FunctionalProperty {
+  def apply[T](f: => T)(implicit manifest: Manifest[T]) = new FunctionalProperty[T](() => f)(manifest)
+}
