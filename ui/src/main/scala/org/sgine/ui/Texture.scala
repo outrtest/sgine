@@ -33,35 +33,41 @@
 package org.sgine.ui
 
 import org.sgine.render.{Texture => RenderTexture}
+import java.nio.ByteBuffer
+import de.matthiasmann.twl.utils.PNGDecoder
 import org.sgine.resource.Resource
-import org.sgine.property.{FunctionalProperty, MutableProperty}
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Texture {
-  val resource = new MutableProperty[Resource]()
-
-  val width = FunctionalProperty[Double] {
-    renderTexture match {
-      case null => 0.0
-      case t => t.width
-    }
+class Texture private(val resource: Resource, val width: Int, val height: Int, val mipmap: Boolean) {
+  private var buffer: ByteBuffer = _
+  lazy val renderTexture = {
+    val rt = RenderTexture(width, height, mipmap, buffer)
+    ByteBufferPool.release(buffer)
+    buffer = null
+    rt
   }
+}
 
-  def height = FunctionalProperty[Double] {
-    renderTexture match {
-      case null => 0.0
-      case t => t.height
+object Texture {
+  /**
+   * Loads the image from the URL. Currently only supports PNG files.
+   */
+  def apply(resource: Resource, mipmap: Boolean = true) = {
+    val input = resource.url.openStream()
+    try {
+      val decoder = new PNGDecoder(input)
+      val buffer = ByteBufferPool.request(decoder.getWidth * decoder.getHeight * 4)
+			decoder.decode(buffer, decoder.getWidth * 4, PNGDecoder.Format.RGBA)
+			buffer.flip()
+      val texture = new Texture(resource, decoder.getWidth, decoder.getHeight, mipmap)
+      texture.buffer = buffer
+      texture
+    } finally {
+      input.close()
     }
-  }
-
-  def renderTexture: RenderTexture = null
-
-  // TODO: implement
-
-  def update() = {
   }
 }

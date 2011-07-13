@@ -48,15 +48,20 @@ trait TexturedComponent extends ShapeComponent {
   // TODO: support texture coords
 
   dirtyUpdate[ChangeEvent[Texture]](texture) {
-    shape.updateTexture(texture().renderTexture,
-      Vertices.rectCoords(0.0, 0.0, texture.width, texture.height, texture.renderTexture))
+    if (texture.renderTexture != null) {
+      shape.updateTexture(texture.renderTexture,
+        Vertices.rectCoords(0.0, 0.0, texture.width, texture.height, texture.renderTexture))
+    } else {
+      println("Retry!")
+      false
+    }
   }
 
-  override protected def update() = {
-    val t = texture()
-    if (t != null) {
-      t.update()
-    }
+  override protected[ui] def update() = {
+//    val t = texture()
+//    if (t != null) {
+//      t.update()
+//    }
     super.update()
   }
 }

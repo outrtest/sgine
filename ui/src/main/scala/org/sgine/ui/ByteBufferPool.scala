@@ -32,36 +32,50 @@
 
 package org.sgine.ui
 
-import org.sgine.concurrent.WorkQueue
-import java.util.concurrent.atomic.AtomicBoolean
-import org.sgine.event.{EventHandler, Listenable}
+import annotation.tailrec
+import java.nio.{ByteOrder, ByteBuffer}
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.ConcurrentLinkedQueue
+import org.sgine.concurrent.AtomicInt
 
 /**
- *
+ * Pool of ByteBuffers
  *
  * @author Matt Hicks <mhicks@sgine.org>
+ * Date: 7/12/11
  */
-trait RenderableComponent extends Component with WorkQueue with DirtyUpdatable {
-  protected def init() = {
+object ByteBufferPool {
+  private val _created = new AtomicInt(0)
+  def created = _created.get
+  var maximum = 10
+  private val queue = new ConcurrentLinkedQueue[ByteBuffer]()
+
+  def request(size: Int): ByteBuffer = {
+    queue.poll() match {
+      case null => {
+        if (_created.incrementIfLessThan(maximum)) {
+          create(size)
+        } else {
+          Thread.sleep(1)
+          request(size)
+        }
+      }
+      case bb if (bb.capacity >= size) => bb
+      case bb => {
+        try { // Attempt to release the direct ByteBuffer
+          bb.getClass.getMethod("cleaner").invoke(bb).asInstanceOf[sun.misc.Cleaner].clean()
+        } catch {
+          case throwable => // Ignore
+        }
+        create(size)
+      }
+    }
   }
 
-  override protected def update() = {
-    super.update()
-
-    doAllWork() // Do all work enqueued in the WorkQueue
+  def release(bb: ByteBuffer) = {
+    bb.clear()
+    queue.add(bb)
   }
 
-  protected def render() = {
-  }
-
-  protected def dispose() = {
-  }
-}
-
-object RenderableComponent {
-  def render(component: RenderableComponent) = {
-    // TODO: support init and dispose
-    component.update()
-    component.render()
-  }
+  private def create(size: Int) = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder())
 }

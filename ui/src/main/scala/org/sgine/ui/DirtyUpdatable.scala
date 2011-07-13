@@ -32,36 +32,51 @@
 
 package org.sgine.ui
 
-import org.sgine.concurrent.WorkQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import org.sgine.event.{EventHandler, Listenable}
 
 /**
- *
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait RenderableComponent extends Component with WorkQueue with DirtyUpdatable {
-  protected def init() = {
+trait DirtyUpdatable {
+  private var dirtyFlags: List[DirtyFlag] = Nil
+
+    /**
+   * Allows flagging of specific events <code>E</code> on <code>listenables</code> to fire the function <code>f</code>
+   * in the <code>update</code> method.  If the function <code>f</code> returns false, the flag will be reset and
+   * attempted again in the next update.
+   */
+  protected def dirtyUpdate[E](listenables: Listenable*)(f: => Any)(implicit manifest: Manifest[E]) = {
+    val dirtyFlag = new DirtyFlag(f)
+    val handler = EventHandler[E]() {
+      case evt => dirtyFlag.flag.set(true)
+    }
+    listenables.foreach(l => l.listeners += handler)
+    synchronized {
+      dirtyFlags = dirtyFlag :: dirtyFlags
+    }
   }
 
-  override protected def update() = {
-    super.update()
-
-    doAllWork() // Do all work enqueued in the WorkQueue
-  }
-
-  protected def render() = {
-  }
-
-  protected def dispose() = {
+  protected def update() = {
+    dirtyFlags.foreach(DirtyFlag.invokeDirtyFlag)
   }
 }
 
-object RenderableComponent {
-  def render(component: RenderableComponent) = {
-    // TODO: support init and dispose
-    component.update()
-    component.render()
+class DirtyFlag(f: => Any) {
+  val flag = new AtomicBoolean(false)
+
+  def invoke() = f
+}
+
+object DirtyFlag {
+  private[ui] val invokeDirtyFlag = (dirtyFlag: DirtyFlag) => {
+    if (dirtyFlag.flag.get()) {
+      dirtyFlag.flag.set(false)
+      if (dirtyFlag.invoke() == false) {
+        dirtyFlag.flag.set(true)    // Reset flag if false is returned by function
+      }
+    }
   }
 }
