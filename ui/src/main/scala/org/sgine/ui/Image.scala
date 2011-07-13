@@ -32,23 +32,41 @@
 
 package org.sgine.ui
 
-import org.sgine.property.MutableProperty
 import org.sgine.render.{Vertices, Shape}
 import org.sgine.event.ChangeEvent
+import org.sgine.resource.Resource
+
+import org.sgine.property._
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Image extends ShapeComponent with MatrixComponent {
+class Image extends ShapeComponent with TexturedComponent with MatrixComponent {
   val width = new MutableProperty[Double](0.0)
   val height = new MutableProperty[Double](0.0)
+
+  texture.change.synchronous {
+    case evt => {
+      width := texture.width
+      height := texture.height
+    }
+  }
 
   protected val shape = Shape(Vertices.rect(width(), height()))
 
   // Update the shape vertices when width or height changes
   dirtyUpdate[ChangeEvent[Double]](width, height) {
     shape.updateVertices(Vertices.rect(width(), height()))
+  }
+}
+
+object Image {
+  def apply(resource: Resource, mipmap: Boolean = true) = {
+    val image = new Image()
+    val texture = Texture(resource, mipmap)
+    image.texture := texture
+    image
   }
 }
