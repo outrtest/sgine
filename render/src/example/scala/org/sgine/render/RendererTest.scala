@@ -40,9 +40,9 @@ import org.sgine.math.Matrix4
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object RendererTest extends RenderApplication {
-  private val triangleMatrix = Matrix4.Identity.translate(x = -1.5, z = -6.0)
+  private val triangleMatrix = Matrix4.Identity.translate(x = -1.5, z = -160.0).scale(15.0, 15.0)
   private val triangleShape = Shape(Vertices.triangle())
-  private val quadMatrix = Matrix4.Identity.translate(x = 1.5, z = -6.0)
+  private val quadMatrix = Matrix4.Identity.translate(x = 1.5, z = -160.0).scale(15.0, 15.0)
   private val quadShape = Shape(Vertices.quad())
 
   def update() = {

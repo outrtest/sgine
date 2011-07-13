@@ -164,7 +164,7 @@ object RotationTest extends RenderApplication {
     val delta = (current - time).toDouble / TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS).toDouble
     time = current
     rotate += delta * 0.5
-    quadMatrix.identity.scale(x = 0.05, y = 0.05, z = 0.05).rotateX(rotate).rotateY(rotate).translate(z = -10.0)
+    quadMatrix.identity.scale(x = 0.5, y = 0.5, z = 0.5).rotateX(rotate).rotateY(rotate).translate(z = -150.0)
   }
 
   def render() = {
