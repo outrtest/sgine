@@ -50,7 +50,9 @@ trait Renderer extends Disposable {
 
   def create() = {
     Renderer.renderer.set(this)
-    application.bodyFunction()
+    if (application.bodyFunction != null) {
+      application.bodyFunction()
+    }
   }
 
   protected[render] def createShape(vertices: Seq[Double], dynamic: Boolean): Shape
