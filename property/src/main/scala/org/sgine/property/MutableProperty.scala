@@ -99,6 +99,8 @@ with Transactable[T] {
   }
 
   def value_=(v: T) = apply(v)
+  
+  def :=(v: T) = apply(v)
 
   def apply() = {
     if (default && defaultFunction != null) {
