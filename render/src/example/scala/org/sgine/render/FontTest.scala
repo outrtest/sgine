@@ -106,7 +106,7 @@ import org.sgine.resource.Resource
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object FontTest extends RenderApplication {
-  private val textMatrix = Matrix4.Identity.scale(x = 0.032, y = 0.032).translate(z = -10.0)
+  private val textMatrix = Matrix4.Identity.scale(x = 0.32, y = 0.32).translate(z = -250.0)
   private val textShape = Shape(Nil)
   val font = BitmapFont(Resource("Arial64.fnt"))
   font("Hello World!", textShape)

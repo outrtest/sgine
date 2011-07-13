@@ -73,7 +73,7 @@ import org.sgine.resource.Resource
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object ImageTest extends RenderApplication {
-  private val quadMatrix = Matrix4.Identity.scale(x = 0.01, y = 0.01).translate(z = -10.0)
+  private val quadMatrix = Matrix4.Identity.scale(x = 0.1, y = 0.1).translate(z = -105.0)
   private val coords = List(
     0.0, 0.0,
     1.0, 0.0,

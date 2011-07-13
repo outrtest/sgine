@@ -82,7 +82,7 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
   def resize(width: Int, height: Int) = {
     glViewport(0, 0, width, height)
 
-    gluPerspective(45.0f, width.toFloat / height.toFloat, 0.1f, 100.0f)
+    gluPerspective(45.0f, width.toFloat / height.toFloat, 100.0f, 2000.0f)
 
     glMatrixMode(GL_MODELVIEW)
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
