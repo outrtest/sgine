@@ -143,8 +143,22 @@ class EventSpec extends FlatSpec with ShouldMatchers {
     count.get should equal(101)
   }
 
+  it should "propagate message to the child handler for Recursion.Parents" in {
+    test.uber.clear()
+    count.set(0)
+    val child = new ChildTest(test)
+    test.children = List(child)
+    val h1 = EventHandler[UberEvent](recursion = Recursion.Parents) {
+      case evt => count.addAndGet(1000)
+    }
+    child.uber += h1
+    test.uber.fire(new UberEvent)
+    count.get should equal(1000)
+  }
+
   it should "invoke messages on the Bus" in {
     test.uber.clear()
+    test.children = Nil
     count.set(0)
     Bus.listeners.synchronous[UberEvent] {
       case event => count.addAndGet(1)
@@ -156,7 +170,7 @@ class EventSpec extends FlatSpec with ShouldMatchers {
 
 class ChildTest(override val parent: Test) extends UberEventSupport
 
-class Test extends StringEventSupport with UberEventSupport
+class Test(var children: Seq[Listenable] = Nil) extends StringEventSupport with UberEventSupport with ListenableContainer
 
 trait UberEventSupport extends Listenable {
   def uber = UberEventSupport(this)
