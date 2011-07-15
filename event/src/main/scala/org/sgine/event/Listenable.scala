@@ -19,7 +19,7 @@ trait Listenable extends Concurrent {
    */
   lazy val listeners = new Listeners(this)
 
-  protected var map = Map.empty[Class[_], List[EventHandler[_]]]
+  protected[event] var map = Map.empty[Class[_], List[EventHandler[_]]]
 
   protected[event] def addHandler[T](handler: EventHandler[T]) = {
     synchronized {
@@ -70,20 +70,20 @@ trait Listenable extends Concurrent {
       case event: Event => event._target = this
       case _ =>
     }
-    fireRecursive[T](clazz, event, Recursion.Current)
+    fireRecursiveChildren[T](clazz, event, Recursion.Current)
+
+    if (!isCancelled(event)) {
+      fireRecursiveParents[T](clazz, event)
+    }
 
     // Fire event on the Bus
-    val cancelled = event match {
-      case event: Event => event.cancelled
-      case _ => false
-    }
-    if (!cancelled) {
+    if (!isCancelled(event)) {
       val listeners = Bus.map.getOrElse(clazz, Nil).asInstanceOf[List[EventHandler[T]]]
       Bus.invoke(event, listeners, Recursion.Current)
     }
   }
 
-  private def fireRecursive[T](clazz: Class[T], event: T, recursion: Recursion): Unit = {
+  private def fireRecursiveChildren[T](clazz: Class[T], event: T, recursion: Recursion): Unit = {
     val listeners = map.getOrElse(clazz, Nil).asInstanceOf[List[EventHandler[T]]]
     event match {
       case event: Event => event._currentTarget = this
@@ -91,16 +91,25 @@ trait Listenable extends Concurrent {
     }
     if (!invoke(event, listeners, recursion)) {
       if (parent != null) {
-        parent.fireRecursive(clazz, event, Recursion.Children)
+        parent.fireRecursiveChildren(clazz, event, Recursion.Children)
       }
     }
+  }
+
+  protected def fireRecursiveParents[T](clazz: Class[T], event: T): Unit = {
+    // Does nothing
+  }
+
+  private def isCancelled[T](event: T) = event match {
+    case event: Event => event.cancelled
+    case _ => false
   }
 
   @tailrec
   private[event] final def invoke[T](event: T, listeners: List[EventHandler[T]], recursion: Recursion): Boolean = {
     if (!listeners.isEmpty) {
       val handler = listeners.head
-      if (recursion == Recursion.Current || recursion == handler.recursion) {
+      if (recursion == Recursion.Current || recursion == handler.recursion || handler.recursion == Recursion.All) {
         handler.processingMode match {
           case ProcessingMode.Synchronous => handler.invoke(event, this)
           case ProcessingMode.Asynchronous => asynchronous(handler.invoke(event, this))

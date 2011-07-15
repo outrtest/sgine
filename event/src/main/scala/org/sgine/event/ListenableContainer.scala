@@ -32,34 +32,31 @@
 
 package org.sgine.event
 
-import org.sgine.{Enumerated, EnumEntry}
-
 /**
- * Recursion defines the propagation of events received for an EventHandler.
+ * ListenableContainer defines the basis for listenables that have children. This trait must be mixed in for the
+ * Recursion.Parents enum to be useful.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-sealed class Recursion extends EnumEntry
+trait ListenableContainer extends Listenable {
+  protected def children: Seq[Listenable]
 
-object Recursion extends Enumerated[Recursion] {
-  /**
-   * EventHandler is invoked when events occur only the current Listenable
-   * it is attached to.
-   */
-  val Current = new Recursion
-  /**
-   * EventHandler is invoked when events occur on the current Listenable as
-   * well as all of its children.
-   */
-  val Children = new Recursion
-  /**
-   * EventHandler is invoked when events occur on the current Listenable as
-   * well as all of its parents.
-   */
-  val Parents = new Recursion
-  /**
-   * EventHandler is invoked when events occur on the current Listenable as
-   * well as all of its parents and children.
-   */
-  val All = new Recursion
+  override protected def fireRecursiveParents[T](clazz: Class[T], event: T): Unit = {
+    fireRecursively[T](clazz, event, children)
+  }
+
+  private def fireRecursively[T](clazz: Class[T], event: T, children: Seq[Listenable]): Unit = {
+    if (!children.isEmpty) {
+      val child = children.head
+      val listeners = child.map.getOrElse(clazz, Nil).asInstanceOf[List[EventHandler[T]]]
+      event match {
+        case event: Event => event._currentTarget = child
+        case _ =>
+      }
+      println("Invoking on: " + child + " - " + listeners.size)
+      if (!child.invoke(event, listeners, Recursion.Parents)) {
+        fireRecursively(clazz, event, children.tail)
+      }
+    }
+  }
 }
