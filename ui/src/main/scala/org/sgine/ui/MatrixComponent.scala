@@ -32,40 +32,13 @@
 
 package org.sgine.ui
 
-import org.sgine.event.ChangeEvent
 import org.sgine.math.mutable.Matrix4
-import org.sgine.property.{PropertyContainer, MutableProperty}
-import org.sgine.render.Renderer
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends RenderableComponent {
-
-  object scale extends PropertyContainer {
-    val x = new MutableProperty[Double](1.0)
-    val y = new MutableProperty[Double](1.0)
-    val z = new MutableProperty[Double](1.0)
-  }
-
-  object position extends PropertyContainer {
-    val x = new MutableProperty[Double](0.0)
-    val y = new MutableProperty[Double](0.0)
-    val z = new MutableProperty[Double](0.0)
-  }
-
-  protected val matrix = Matrix4.Identity.mutable
-
-  // Update the matrix when information changes
-  dirtyUpdate[ChangeEvent[Double]](scale.x, scale.y, scale.z, position.x, position.y, position.x) {
-    matrix.scale(scale.x(), scale.y(), scale.z())
-    matrix.translate(position.x(), position.y(), position.z())
-  }
-
-  override def render() = {
-    Renderer().loadMatrix(matrix)
-    super.render()
-  }
+trait MatrixComponent {
+  protected[ui] val matrix = Matrix4.Identity.mutable
 }

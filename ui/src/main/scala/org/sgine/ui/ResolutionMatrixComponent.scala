@@ -32,52 +32,26 @@
 
 package org.sgine.ui
 
-import java.util.concurrent.atomic.AtomicBoolean
-import org.sgine.event.{EventHandler, Listenable}
+import org.sgine.property.MutableProperty
+import org.sgine.event.ChangeEvent
+import org.sgine.math.Matrix4
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
+ * Date: 7/13/11
  */
-trait DirtyUpdatable {
-  private var dirtyFlags: List[DirtyFlag] = Nil
+trait ResolutionMatrixComponent extends MatrixComponent with DirtyUpdatable {
+  val width = new MutableProperty[Double](1024.0)
+  val height = new MutableProperty[Double](768.0)
 
-    /**
-   * Allows flagging of specific events <code>E</code> on <code>listenables</code> to fire the function <code>f</code>
-   * in the <code>update</code> method.  If the function <code>f</code> returns false, the flag will be reset and
-   * attempted again in the next update. This method returns the DirtyFlag instance created.
-   */
-  protected def dirtyUpdate[E](listenables: Listenable*)(f: => Any)(implicit manifest: Manifest[E]) = {
-    val dirtyFlag = new DirtyFlag(f)
-    val handler = EventHandler[E]() {
-      case evt => dirtyFlag.flag.set(true)
-    }
-    listenables.foreach(l => l.listeners += handler)
-    synchronized {
-      dirtyFlags = dirtyFlag :: dirtyFlags
-    }
-    dirtyFlag
+  val matrixDirty = dirtyUpdate[ChangeEvent[Double]](width, height) {
+    val scale = 165.5 / 768.0
+    matrix(Matrix4.Identity)
+    matrix.scale(scale, scale, scale)
+    matrix.translate(z = -200.0)
   }
 
-  protected def update() = {
-    dirtyFlags.foreach(DirtyFlag.invokeDirtyFlag)
-  }
-}
-
-class DirtyFlag(f: => Any) {
-  val flag = new AtomicBoolean(false)
-
-  def invoke() = f
-}
-
-object DirtyFlag {
-  private[ui] val invokeDirtyFlag = (dirtyFlag: DirtyFlag) => {
-    if (dirtyFlag.flag.get()) {
-      dirtyFlag.flag.set(false)
-      if (dirtyFlag.invoke() == false) {
-        dirtyFlag.flag.set(true)    // Reset flag if false is returned by function
-      }
-    }
-  }
+  matrixDirty.invoke()
 }
