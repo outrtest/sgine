@@ -30,40 +30,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.scene
+package org.sgine.property
 
-import collection.mutable.ListBuffer
-import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEventSupport}
+import org.sgine.scene.Element
+import org.sgine.event.Listenable
 
 /**
- * MutableContainer provides synchronized modification access to 
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class MutableContainer[T] extends Container[T] with ContainerEventSupport {
-  private val buffer = new ListBuffer[T]
-
-  def children = buffer.toList
-
-  def +=(child: T) = synchronized {
-    buffer += child
-
-    child match {
-      case element: Element => Element.assignParent(element, this)
-      case _ =>
-    }
-
-    if (containerChange.shouldFire) containerChange.fire(new ChildAddedEvent(this, child))
-  }
-
-  def -=(child: T) = synchronized {
-    buffer -= child
-
-    child match {
-      case element: Element => Element.assignParent(element, null)
-      case _ =>
-    }
-
-    if (containerChange.shouldFire) containerChange.fire(new ChildRemovedEvent(this, child))
-  }
+trait PropertyElement extends Element {
+  override val parent: Property[Listenable] = new MutableProperty[Listenable]()
 }

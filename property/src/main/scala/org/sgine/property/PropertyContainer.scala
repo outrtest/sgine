@@ -32,7 +32,6 @@
 
 package org.sgine.property
 
-import org.sgine.event.Listenable
 import org.sgine.scene.Element
 
 import com.googlecode.reflective._
@@ -43,7 +42,7 @@ import annotation.tailrec
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait PropertyContainer extends Listenable with Element with DelayedInit {
+trait PropertyContainer extends PropertyElement with DelayedInit {
   private var _properties: Seq[Property[_]] = Nil
 
   def properties: Seq[Property[_]] = _properties
@@ -61,7 +60,7 @@ trait PropertyContainer extends Listenable with Element with DelayedInit {
       properties
     } else {
       val method = methods.head
-      val list = if (method.args.isEmpty && classOf[Property[_]].isAssignableFrom(method.returnType.`type`.javaClass)) {
+      val list = if (isValidPropertyMethod(method)) {
         val property = method[Property[_]](this)
         property._name = method.name
         Element.assignParent(property, this)
@@ -71,5 +70,11 @@ trait PropertyContainer extends Listenable with Element with DelayedInit {
       }
       loadProperties(methods.tail, list)
     }
+  }
+
+  private final def isValidPropertyMethod(method: EnhancedMethod) = {
+    method.args.isEmpty &&
+    classOf[Property[_]].isAssignableFrom(method.returnType.`type`.javaClass) &&
+    method.name != "parent"
   }
 }

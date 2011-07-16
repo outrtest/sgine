@@ -39,7 +39,7 @@ package org.sgine.scene
  */
 class ImmutableContainer[T](val children: Seq[T]) extends Container[T] {
   children.foreach {
-    case element: Element => element._parent = this
+    case element: Element => Element.assignParent(element, this)
     case _ =>
   }
 }
