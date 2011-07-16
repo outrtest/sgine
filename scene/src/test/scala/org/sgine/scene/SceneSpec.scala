@@ -179,7 +179,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         containerView2.size should be(2)
       }
       "define the parent container correctly" in {
-        ic.parent should be(container2)
+        ic.parent() should be(container2)
       }
       "reference \"Two\" and \"Uno\" as the only elements" in {
         containerView2.head should be("Two")
@@ -192,7 +192,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         containerView2.size should be(1)
       }
       "define the parent container as null" in {
-        ic.parent should be(null)
+        ic.parent() should be(null)
       }
       "reference \"Two\" as the only element" in {
         containerView2.head should be("Two")

@@ -57,10 +57,10 @@ class PropertyContainerSpec extends WordSpec with ShouldMatchers {
         container.properties(1) should equal(container.p2)
       }
       "have p1's parent as the container" in {
-        container.p1.parent should equal(container)
+        container.p1.parent() should equal(container)
       }
       "have p2's parent as the container" in {
-        container.p2.parent should equal(container)
+        container.p2.parent() should equal(container)
       }
       "have p1's name as \"p1\"" in {
         container.p1.name should equal("p1")

@@ -168,7 +168,9 @@ class EventSpec extends FlatSpec with ShouldMatchers {
   }
 }
 
-class ChildTest(override val parent: Test) extends UberEventSupport
+class ChildTest(_parent: Test) extends UberEventSupport {
+  override val parent = () => _parent
+}
 
 class Test(var children: Seq[Listenable] = Nil) extends StringEventSupport with UberEventSupport with ListenableContainer
 

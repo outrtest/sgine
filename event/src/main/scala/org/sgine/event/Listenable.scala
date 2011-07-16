@@ -11,7 +11,7 @@ import org.sgine.concurrent.{WorkQueue, Time, Concurrent}
  * Date: 6/21/11
  */
 trait Listenable extends Concurrent {
-  def parent: Listenable = null
+  val parent: () => Listenable = () => null
 
   /**
    * Provides the ability to add listeners directly to this Listenable instance. It is generally preferable to use the
@@ -90,8 +90,8 @@ trait Listenable extends Concurrent {
       case _ =>
     }
     if (!invoke(event, listeners, recursion)) {
-      if (parent != null) {
-        parent.fireRecursiveChildren(clazz, event, Recursion.Children)
+      if (parent() != null) {
+        parent().fireRecursiveChildren(clazz, event, Recursion.Children)
       }
     }
   }
