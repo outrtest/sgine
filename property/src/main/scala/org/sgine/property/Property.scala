@@ -33,6 +33,7 @@
 package org.sgine.property
 
 import org.sgine.scene.Element
+import org.sgine.event.ChangeEventSupport
 
 /**
  * Property provides an abstraction and hierarchical control over object and an alternative methodology to getter/setter
@@ -41,7 +42,7 @@ import org.sgine.scene.Element
  * @author Matt Hicks <mhicks@sgine.org>
  * @see MutableProperty
  */
-trait Property[T] extends (() => T) with Element {
+trait Property[T] extends (() => T) with Element with ChangeEventSupport[T] {
   implicit val manifest: Manifest[T]
   protected[property] var _name: String = null
 

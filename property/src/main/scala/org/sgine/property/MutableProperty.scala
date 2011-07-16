@@ -36,7 +36,8 @@ import event.{ValidationFailEvent, ValidationFailEventSupport}
 import java.util.concurrent.atomic.AtomicReference
 
 import org.sgine.transaction.Transactable
-import org.sgine.event.{Listenable, Bindable, ChangeEvent, ChangeEventSupport}
+import org.sgine.event.{Listenable, Bindable, ChangeEvent}
+import org.sgine.scene.Element
 
 /**
  * MutableProperty represents a property that is mutable. Additionally, many features are supported herein:
@@ -50,11 +51,10 @@ import org.sgine.event.{Listenable, Bindable, ChangeEvent, ChangeEventSupport}
  */
 class MutableProperty[T](p: Listenable = null)(implicit val manifest: Manifest[T]) extends Property[T]
 with ((T) => Any)
-with ChangeEventSupport[T]
 with ValidationFailEventSupport
 with Bindable[T]
 with Transactable[T] {
-  _parent = p
+  Element.assignParent(this, p)
 
   lazy private val ref = new AtomicReference[T]
 
