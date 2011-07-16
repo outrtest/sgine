@@ -230,6 +230,30 @@ trait Matrix4 extends Traversable[Double] {
       m30, m31, m32, m33)
   }
 
+  def mult(m: Matrix4) = {
+    apply(
+      m00 * m.m00 + m01 * m.m10 + m02 * m.m20 + m03 * m.m30,
+      m00 * m.m01 + m01 * m.m11 + m02 * m.m21 + m03 * m.m31,
+      m00 * m.m02 + m01 * m.m12 + m02 * m.m22 + m03 * m.m32,
+      m00 * m.m03 + m01 * m.m13 + m02 * m.m23 + m03 * m.m33,
+
+      m10 * m.m00 + m11 * m.m10 + m12 * m.m20 + m13 * m.m30,
+      m10 * m.m01 + m11 * m.m11 + m12 * m.m21 + m13 * m.m31,
+      m10 * m.m02 + m11 * m.m12 + m12 * m.m22 + m13 * m.m32,
+      m10 * m.m03 + m11 * m.m13 + m12 * m.m23 + m13 * m.m33,
+
+      m20 * m.m00 + m21 * m.m10 + m22 * m.m20 + m23 * m.m30,
+      m20 * m.m01 + m21 * m.m11 + m22 * m.m21 + m23 * m.m31,
+      m20 * m.m02 + m21 * m.m12 + m22 * m.m22 + m23 * m.m32,
+      m20 * m.m03 + m21 * m.m13 + m22 * m.m23 + m23 * m.m33,
+
+      m30 * m.m00 + m31 * m.m10 + m32 * m.m20 + m33 * m.m30,
+      m30 * m.m01 + m31 * m.m11 + m32 * m.m21 + m33 * m.m31,
+      m30 * m.m02 + m31 * m.m12 + m32 * m.m22 + m33 * m.m32,
+      m30 * m.m03 + m31 * m.m13 + m32 * m.m23 + m33 * m.m33
+    )
+  }
+
   def foreach[U](f: Double => U) = forindexed(0, f)
 
   @tailrec
