@@ -42,7 +42,7 @@ import org.sgine.event.Listenable
 trait Element extends Listenable {
   protected[scene] var _parent: Listenable = null
 
-  override def parent = _parent
+  override val parent = () => _parent
 }
 
 object Element {

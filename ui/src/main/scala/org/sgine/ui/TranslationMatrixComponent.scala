@@ -66,7 +66,7 @@ trait TranslationMatrixComponent extends RenderableComponent with MatrixComponen
   val matrixDirty = dirtyUpdate[ChangeEvent[Double]](scale.x, scale.y, scale.z, position.x, position.y, position.x) {
     matrix(Matrix4.Identity)
     if (matrixHierarchy()) {
-      multMatrixHierarchy(parent)
+      multMatrixHierarchy(parent())
     }
     matrix.scale(scale.x(), scale.y(), scale.z())
     matrix.translate(position.x(), position.y(), position.z())
@@ -77,7 +77,7 @@ trait TranslationMatrixComponent extends RenderableComponent with MatrixComponen
   private def multMatrixHierarchy(listenable: Listenable): Unit = listenable match {
     case null => // Reached the top
     case tmc: TranslationMatrixComponent if (tmc.matrixHierarchy()) => {
-      multMatrixHierarchy(tmc.parent)
+      multMatrixHierarchy(tmc.parent())
       matrix.mult(tmc.matrix)
     }
     case mc: MatrixComponent => {
@@ -85,7 +85,7 @@ trait TranslationMatrixComponent extends RenderableComponent with MatrixComponen
       matrix.mult(mc.matrix)
     }
     case l => {
-      multMatrixHierarchy(l.parent)
+      multMatrixHierarchy(l.parent())
     }
   }
 
