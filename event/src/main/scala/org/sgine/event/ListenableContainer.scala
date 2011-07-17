@@ -53,7 +53,6 @@ trait ListenableContainer extends Listenable {
         case event: Event => event._currentTarget = child
         case _ =>
       }
-      println("Invoking on: " + child + " - " + listeners.size)
       if (!child.invoke(event, listeners, Recursion.Parents)) {
         fireRecursively(clazz, event, children.tail)
       }

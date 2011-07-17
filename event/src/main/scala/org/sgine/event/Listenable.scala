@@ -13,6 +13,12 @@ import org.sgine.concurrent.{WorkQueue, Time, Concurrent}
 trait Listenable extends Concurrent {
   val parent: () => Listenable = () => null
 
+  def ancestorByType[T <: Listenable](implicit manifest: Manifest[T]): Option[T] = parent() match {
+    case null => None
+    case ancestor if (manifest.erasure.isAssignableFrom(ancestor.getClass)) => Some(ancestor.asInstanceOf[T])
+    case ancestor => ancestor.ancestorByType[T](manifest)
+  }
+
   /**
    * Provides the ability to add listeners directly to this Listenable instance. It is generally preferable to use the
    * EventSupport mechanism instead for better type-safety and validation.
@@ -65,7 +71,7 @@ trait Listenable extends Concurrent {
 
   protected[event] def shouldFire(clazz: Class[_]) = hasListeners(clazz)
 
-  protected[event] def fire[T](clazz: Class[T], event: T) = {
+  protected[event] def fire[T](clazz: Class[T], event: T): Unit = {
     event match {
       case event: Event => event._target = this
       case _ =>

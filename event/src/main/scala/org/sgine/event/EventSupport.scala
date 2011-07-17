@@ -32,8 +32,8 @@
 
 package org.sgine.event
 
-import org.sgine.ProcessingMode
-import org.sgine.concurrent.Time
+import org.sgine.{Priority, ProcessingMode}
+import org.sgine.concurrent.{WorkQueue, Time}
 
 /**
  *
@@ -81,6 +81,16 @@ class EventSupport[T](_listenable: Listenable = null) {
 
   def concurrent(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
     val handler = new EventHandler[T](f, ProcessingMode.Concurrent)(manifest)
+    this += handler
+  }
+
+  def listen(processingMode: ProcessingMode = ProcessingMode.Synchronous,
+                priority: Double = Priority.Normal,
+                recursion: Recursion = Recursion.Current,
+                workQueue: WorkQueue = null)
+               (f: PartialFunction[T, Any])
+               (implicit manifest: Manifest[T]): EventHandler[T] = {
+    val handler = new EventHandler[T](f, processingMode, priority, recursion, workQueue)(manifest)
     this += handler
   }
 
