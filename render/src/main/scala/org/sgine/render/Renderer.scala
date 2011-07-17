@@ -34,10 +34,10 @@ package org.sgine.render
 
 import implementation.opengl.OpenGLRenderer
 import org.sgine.math.Matrix4
-import org.sgine.Disposable
 import org.sgine.opengl.lwjgl.LWJGLController
 import java.lang.ThreadLocal
 import java.nio.ByteBuffer
+import org.sgine.{Color, Disposable}
 
 /**
  * Renderer implementation is defined by the current rendering platform available.
@@ -60,6 +60,8 @@ trait Renderer extends Disposable {
   protected[render] def createTexture(width: Int, height: Int, buffer: ByteBuffer, mipmap: Boolean): Texture
 
   def loadMatrix(matrix: Matrix4): Unit
+
+  def loadColor(color: Color): Unit
 }
 
 object Renderer {
