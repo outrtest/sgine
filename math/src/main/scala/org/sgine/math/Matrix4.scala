@@ -254,12 +254,12 @@ trait Matrix4 extends Traversable[Double] {
     )
   }
 
-  def foreach[U](f: Double => U) = forindexed(0, f)
+  def foreach[U](f: Double => U) = forIndexed(0, f)
 
   @tailrec
-  private def forindexed[U](index: Int, f: Double => U): Unit = {
+  private def forIndexed[U](index: Int, f: Double => U): Unit = {
     f(apply(index))
-    if (index < 15) forindexed(index + 1, f)
+    if (index < 15) forIndexed(index + 1, f)
   }
 
   override def size = 16
