@@ -30,17 +30,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.ui
+package org.sgine.ui.event
 
-import layout.Layout
-import org.sgine.scene.MutableContainer
-import org.sgine.property.MutableProperty
+import org.sgine.event.{EventSupport, Listenable}
 
 /**
- * Container is a convenience class wrapping MutableContainer with the generic type of Component.
+ * ColorChangeEventSupport gives support for throwing ColorChangeEvents.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Container extends MutableContainer[Component] with TranslationMatrixComponent with ColorComponent {
-  val layout = new MutableProperty[Layout]()
+trait ColorChangeEventSupport extends Listenable {
+  def colorChange = ColorChangeEventSupport(this)
+}
+
+object ColorChangeEventSupport extends EventSupport[ColorChangeEvent] {
+  alwaysFire = true
 }

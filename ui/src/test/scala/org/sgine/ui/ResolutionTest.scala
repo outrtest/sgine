@@ -32,11 +32,25 @@
 
 package org.sgine.ui
 
+import org.sgine.scene.MutableContainer
+import org.sgine.property.MutableProperty
+
 /**
  * ResolutionTest tests the functionality of ResolutionMatrixComponent.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object ResolutionTest extends UI {
-  this += Image("1024.png")
+  val i1024 = Image("1024.png")
+  i1024.color.alpha := 0.5
+  this += i1024
+  val c640 = new MutableContainer[Component] with ResolutionMatrixComponent with Component {
+    val test = new MutableProperty[String]()
+  }
+  c640.width := 640
+  c640.height := 480
+  this += c640
+  val i640 = Image("640.png")
+  i640.color.alpha := 0.5
+  c640 += i640
 }
