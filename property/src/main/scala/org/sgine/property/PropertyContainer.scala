@@ -43,11 +43,14 @@ import annotation.tailrec
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait PropertyContainer extends PropertyElement with DelayedInit {
-  private var _properties: Seq[Property[_]] = Nil
+  private var _properties: List[Property[_]] = Nil
+  private var propertyMap = Map.empty[String, Property[_]]
 
-  def properties: Seq[Property[_]] = _properties
+  def properties = _properties
 
   def property(name: String) = properties.find(p => p.name == name)
+
+  def name(p: Property[_]) = propertyMap.find(t => t._2 == p).map(t => t._1).getOrElse(null)
 
   def delayedInit(x: => Unit) = {
     x
@@ -62,8 +65,8 @@ trait PropertyContainer extends PropertyElement with DelayedInit {
       val method = methods.head
       val list = if (isValidPropertyMethod(method)) {
         val property = method[Property[_]](this)
-        property._name = method.name
         Element.assignParent(property, this)
+        propertyMap += method.name -> property
         property :: properties
       } else {
         properties
@@ -74,7 +77,6 @@ trait PropertyContainer extends PropertyElement with DelayedInit {
 
   private final def isValidPropertyMethod(method: EnhancedMethod) = {
     method.args.isEmpty &&
-    classOf[Property[_]].isAssignableFrom(method.returnType.`type`.javaClass) &&
-    method.name != "parent"
+    classOf[Property[_]].isAssignableFrom(method.returnType.`type`.javaClass)
   }
 }

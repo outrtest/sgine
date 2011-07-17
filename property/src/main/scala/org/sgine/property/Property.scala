@@ -44,9 +44,11 @@ import org.sgine.event.ChangeEventSupport
  */
 trait Property[T] extends (() => T) with Element with ChangeEventSupport[T] {
   implicit val manifest: Manifest[T]
-  protected[property] var _name: String = null
 
-  def name = _name
+  def name = parent() match {
+    case pc: PropertyContainer => pc.name(this)
+    case _ => null
+  }
 
   def value = apply()
 }
