@@ -132,7 +132,7 @@ with Transactable[T] {
       default = false // TODO: this is problematic with transactions...
       if (!isTransaction) {
         if (change.shouldFire) {
-          change.fire(ChangeEvent(oldValue, value))
+          change.fire(ChangeEvent(name, oldValue, value))
         }
       }
     }
