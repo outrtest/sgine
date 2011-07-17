@@ -47,14 +47,14 @@ class PropertyContainerSpec extends WordSpec with ShouldMatchers {
         val p1 = new ImmutableProperty[String]("Hello")
         val p2 = new MutableProperty[String]("Goodbye")
       }
-      "have a length of two" in {
-        container.properties.length should equal(2)
+      "have a length of three (including \"parent\")" in {
+        container.properties.length should equal(3)
       }
-      "have p1 as the first property" in {
-        container.properties(0) should equal(container.p1)
+      "have p1 as the second property (after \"parent\")" in {
+        container.properties(1) should equal(container.p1)
       }
-      "have p2 as the second property" in {
-        container.properties(1) should equal(container.p2)
+      "have p2 as the third property" in {
+        container.properties(2) should equal(container.p2)
       }
       "have p1's parent as the container" in {
         container.p1.parent() should equal(container)
