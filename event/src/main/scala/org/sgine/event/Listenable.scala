@@ -96,6 +96,7 @@ trait Listenable extends Concurrent {
       case _ =>
     }
     if (!invoke(event, listeners, recursion)) {
+      if (parent == null) throw new RuntimeException("Parent should never be null for " + getClass.getName)
       if (parent() != null) {
         parent().fireRecursiveChildren(clazz, event, Recursion.Children)
       }
