@@ -1,3 +1,5 @@
+package org.sgine.math.immutable
+
 /*
  * Copyright (c) 2011 Sgine
  * All rights reserved.
@@ -30,9 +32,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.immutable
-
-import org.sgine.{Color => C}
+import org.sgine.math.{Color => C}
 
 /**
  * 
@@ -47,6 +47,6 @@ class Color(val red: Double = 0.0, val green: Double = 0.0, val blue: Double = 0
             alpha: Double = this.alpha
              ) = new Color(red, green, blue, alpha)
 
-  def toMutable = new org.sgine.mutable.Color(red, green, blue, alpha)
+  def toMutable = new org.sgine.math.mutable.Color(red, green, blue, alpha)
   def toImmutable = this
 }

@@ -30,9 +30,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine
+package org.sgine.math
 
 import annotation.tailrec
+import org.sgine.{EnumEntry, Enumerated}
 
 /**
  * 
@@ -72,8 +73,8 @@ trait Color extends Traversable[Double] with EnumEntry {
 
   override val size = 4
 
-  def toMutable: org.sgine.mutable.Color
-  def toImmutable: org.sgine.immutable.Color
+  def toMutable: org.sgine.math.mutable.Color
+  def toImmutable: org.sgine.math.immutable.Color
 
   def add(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 0.0) = {
     apply(this.red + red, this.green + green, this.blue + blue, this.alpha + alpha)
