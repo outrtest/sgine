@@ -32,14 +32,11 @@
 
 package org.sgine.ui
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
-
 /**
- *
+ * ResolutionTest tests the functionality of ResolutionMatrixComponent.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+object ResolutionTest extends UI {
+  this += Image("1024.png")
 }

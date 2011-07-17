@@ -33,8 +33,7 @@
 package org.sgine.ui
 
 import org.sgine.concurrent.WorkQueue
-import java.util.concurrent.atomic.AtomicBoolean
-import org.sgine.event.{EventHandler, Listenable}
+import org.sgine.render.Renderer
 
 /**
  *
@@ -45,13 +44,17 @@ trait RenderableComponent extends Component with WorkQueue with DirtyUpdatable {
   protected def init() = {
   }
 
-  override protected def update() = {
+  override def update() = {
     super.update()
 
     doAllWork() // Do all work enqueued in the WorkQueue
   }
 
   protected def render() = {
+    this match {
+      case mc: MatrixComponent => Renderer().loadMatrix(mc.matrix)
+      case _ =>
+    }
   }
 
   protected def dispose() = {
@@ -61,7 +64,6 @@ trait RenderableComponent extends Component with WorkQueue with DirtyUpdatable {
 object RenderableComponent {
   def render(component: RenderableComponent) = {
     // TODO: support init and dispose
-    component.update()
     component.render()
   }
 }

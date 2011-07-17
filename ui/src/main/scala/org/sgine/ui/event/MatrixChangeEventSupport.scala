@@ -30,16 +30,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.ui
+package org.sgine.ui.event
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
+import org.sgine.event.{EventSupport, Listenable}
 
 /**
- *
+ * MatrixChangeEventSupport gives support for throwing MatrixChangeEvents.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+trait MatrixChangeEventSupport extends Listenable {
+  def matrixChange = MatrixChangeEventSupport(this)
+}
+
+object MatrixChangeEventSupport extends EventSupport[MatrixChangeEvent] {
+  alwaysFire = true
 }

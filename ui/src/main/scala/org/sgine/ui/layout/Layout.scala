@@ -30,16 +30,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.ui
+package org.sgine.ui.layout
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
+import org.sgine.ui.Container
 
 /**
- *
+ * Layout updates the layout of a container.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+trait Layout {
+  def layout(container: Container)
 }

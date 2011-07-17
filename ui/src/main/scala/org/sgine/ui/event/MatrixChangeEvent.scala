@@ -30,16 +30,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.ui
+package org.sgine.ui.event
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
+import org.sgine.event.Event
 
 /**
- *
+ * MatrixChangeEvent is thrown when the backing Matrix4 of a MatrixComponent is changed.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
-}
+class MatrixChangeEvent extends Event

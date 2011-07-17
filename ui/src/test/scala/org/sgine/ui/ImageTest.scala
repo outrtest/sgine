@@ -32,14 +32,11 @@
 
 package org.sgine.ui
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
-
 /**
- *
+ * Displays an image on the screen.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+object ImageTest extends UI {
+  this += Image("sgine.png")
 }
