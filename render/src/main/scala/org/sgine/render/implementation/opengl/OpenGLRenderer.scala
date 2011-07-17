@@ -37,6 +37,7 @@ import org.sgine.opengl.GL._
 import org.sgine.opengl.GLDisplay
 import org.sgine.render.{RenderApplication, Renderer}
 import java.nio.ByteBuffer
+import org.sgine.Color
 
 /**
  * 
@@ -49,6 +50,10 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
   def loadMatrix(matrix: Matrix4) = {
     matrix.toBuffer(matrixBuffer)
     glLoadMatrix(matrixBuffer)
+  }
+
+  def loadColor(color: Color) = {
+    glColor4f(color.red.toFloat, color.green.toFloat, color.blue.toFloat, color.alpha.toFloat)
   }
 
   protected[render] def createShape(vertices: Seq[Double], dynamic: Boolean) = {
