@@ -63,7 +63,7 @@ trait TranslationMatrixComponent extends Component with DirtyUpdatable with Matr
   }
 
   // Update the matrix when information changes
-  val matrixDirty = dirtyUpdate[ChangeEvent[Double]]("translationMatrixDirty", scale.x, scale.y, scale.z, position.x, position.y, position.z) {
+  private val matrixDirty = dirtyUpdate[ChangeEvent[Double]]("translationMatrixDirty", scale.x, scale.y, scale.z, position.x, position.y, position.z) {
     matrix(Matrix4.Identity)
     if (matrixHierarchy()) {
       multMatrixHierarchy(parent())
@@ -91,7 +91,7 @@ trait TranslationMatrixComponent extends Component with DirtyUpdatable with Matr
   }
   parent.change.listen(recursion = Recursion.Parents) {
     case evt if (evt.name == "parent") => updateParentMatrixHandler()
-    case evt => new RuntimeException("Ignoring: " + evt.name).printStackTrace()
+    case _ =>
   }
   updateParentMatrixHandler()
   matrixDirty.flag.set(true)

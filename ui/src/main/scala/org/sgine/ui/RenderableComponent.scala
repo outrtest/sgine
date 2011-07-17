@@ -55,6 +55,10 @@ trait RenderableComponent extends Component with WorkQueue with DirtyUpdatable {
       case mc: MatrixComponent => Renderer().loadMatrix(mc.matrix)
       case _ =>
     }
+    this match {
+      case cc: ColorComponent => Renderer().loadColor(cc.backingColor)
+      case _ =>
+    }
   }
 
   protected def dispose() = {

@@ -56,5 +56,5 @@ trait ResolutionMatrixComponent extends MatrixComponent with DirtyUpdatable {
     matrixChange.fire(new MatrixChangeEvent)
   }
 
-  matrixDirty.invoke()
+  matrixDirty.flag.set(true)
 }

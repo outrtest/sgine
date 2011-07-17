@@ -43,7 +43,7 @@ import org.sgine.property._
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Image extends ShapeComponent with TexturedComponent with TranslationMatrixComponent {
+class Image extends ShapeComponent with TexturedComponent with TranslationMatrixComponent with ColorComponent {
   val width = new MutableProperty[Double](0.0)
   val height = new MutableProperty[Double](0.0)
 
