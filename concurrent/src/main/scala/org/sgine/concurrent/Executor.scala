@@ -31,13 +31,20 @@
  */
 package org.sgine.concurrent
 
-import java.util.concurrent.{Callable, Executors}
+import java.util.concurrent.{ThreadFactory, Callable, Executors}
+import java.lang.Thread
 
 /**
  * Executor is a light-weight wrapper around a Java ExecutorService backred by a cached thread-pool.
  */
 object Executor {
-  private lazy val executor = Executors.newCachedThreadPool()
+  private lazy val executor = Executors.newCachedThreadPool(new ThreadFactory {
+    def newThread(r: Runnable) = {
+      val t = new Thread(r)
+      t.setDaemon(true)
+      t
+    }
+  })
 
   /**
    * Invokes the function on the ExecutorService asynchronously returning a Future[T] with the return value.
