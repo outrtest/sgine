@@ -38,4 +38,4 @@ package org.sgine.event
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 7/2/11
  */
-case class ChangeEvent[T](oldValue: T, newValue: T) extends Event
+case class ChangeEvent[T](name: String, oldValue: T, newValue: T) extends Event
