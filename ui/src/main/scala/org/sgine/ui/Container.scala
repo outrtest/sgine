@@ -32,14 +32,15 @@
 
 package org.sgine.ui
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
+import layout.Layout
+import org.sgine.scene.MutableContainer
+import org.sgine.property.MutableProperty
 
 /**
- *
+ * Container is a convenience class wrapping MutableContainer with the generic type of Component.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+class Container extends MutableContainer[Component] with TranslationMatrixComponent {
+  val layout = new MutableProperty[Layout]()
 }

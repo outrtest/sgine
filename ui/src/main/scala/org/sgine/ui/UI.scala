@@ -32,14 +32,45 @@
 
 package org.sgine.ui
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
+import org.sgine.property.{MutableProperty, Property, ImmutableProperty}
+import org.sgine.render.{RenderApplication, Renderer}
+import org.sgine.scene.{MutableContainer, ContainerView}
+import org.sgine.Updatable
 
 /**
- *
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+class UI extends MutableContainer[Component] with ResolutionMatrixComponent {
+  val updatableView = new ImmutableProperty(new ContainerView[Updatable](this))
+  val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
+  val renderer: Property[Renderer] = new MutableProperty[Renderer]()
+
+  def windowSize = 1024 -> 768
+
+  private object renderApplication extends RenderApplication {
+    private val updateComponent = (u: Updatable) => u.update()
+    private val renderComponent = (c: RenderableComponent) => RenderableComponent.render(c)
+
+    def update() = {
+      UI.this.update()
+      updatableView.foreach(updateComponent)
+    }
+
+    def render() = rendererView.foreach(renderComponent)
+
+    def dispose() = {}
+
+    override def title = {
+      val className = UI.this.getClass.getSimpleName
+      className.substring(0, className.length - 1)
+    }
+
+    override def screenSize = windowSize
+  }
+
+  final def main(args: Array[String]): Unit = {
+    renderer.asInstanceOf[MutableProperty[Renderer]](Renderer(renderApplication, windowSize._1, windowSize._2))
+  }
 }

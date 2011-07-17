@@ -33,12 +33,13 @@
 package org.sgine.ui
 
 import org.sgine.property.{MutableProperty, PropertyContainer}
+import org.sgine.Updatable
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Component extends PropertyContainer {
+trait Component extends PropertyContainer with Updatable {
   val visible = new MutableProperty(true)
 }

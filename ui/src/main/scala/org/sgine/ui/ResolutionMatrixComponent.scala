@@ -32,6 +32,7 @@
 
 package org.sgine.ui
 
+import event.MatrixChangeEvent
 import org.sgine.property.MutableProperty
 import org.sgine.event.ChangeEvent
 import org.sgine.math.Matrix4
@@ -46,11 +47,13 @@ trait ResolutionMatrixComponent extends MatrixComponent with DirtyUpdatable {
   val width = new MutableProperty[Double](1024.0)
   val height = new MutableProperty[Double](768.0)
 
-  val matrixDirty = dirtyUpdate[ChangeEvent[Double]](width, height) {
-    val scale = 165.5 / 768.0
+  val matrixDirty = dirtyUpdate[ChangeEvent[Double]]("resolutionMatrixDirty", width, height) {
+    val scale = 165.5 / height()
     matrix(Matrix4.Identity)
     matrix.scale(scale, scale, scale)
     matrix.translate(z = -200.0)
+
+    matrixChange.fire(new MatrixChangeEvent)
   }
 
   matrixDirty.invoke()

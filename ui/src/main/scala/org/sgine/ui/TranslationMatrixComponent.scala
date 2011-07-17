@@ -32,10 +32,10 @@
 
 package org.sgine.ui
 
+import event.MatrixChangeEvent
 import org.sgine.property.{MutableProperty, PropertyContainer}
 import org.sgine.math.mutable.Matrix4
-import org.sgine.render.Renderer
-import org.sgine.event.{Listenable, ChangeEvent}
+import org.sgine.event.{Recursion, EventHandler, Listenable, ChangeEvent}
 
 /**
  * 
@@ -43,7 +43,7 @@ import org.sgine.event.{Listenable, ChangeEvent}
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 7/13/11
  */
-trait TranslationMatrixComponent extends RenderableComponent with MatrixComponent {
+trait TranslationMatrixComponent extends Component with DirtyUpdatable with MatrixComponent {
   /**
    * Determines whether parent MatrixComponents should be multiplied against this
    * matrix upon change.
@@ -63,34 +63,42 @@ trait TranslationMatrixComponent extends RenderableComponent with MatrixComponen
   }
 
   // Update the matrix when information changes
-  val matrixDirty = dirtyUpdate[ChangeEvent[Double]](scale.x, scale.y, scale.z, position.x, position.y, position.x) {
+  val matrixDirty = dirtyUpdate[ChangeEvent[Double]]("translationMatrixDirty", scale.x, scale.y, scale.z, position.x, position.y, position.z) {
     matrix(Matrix4.Identity)
     if (matrixHierarchy()) {
       multMatrixHierarchy(parent())
     }
     matrix.scale(scale.x(), scale.y(), scale.z())
     matrix.translate(position.x(), position.y(), position.z())
+    matrixChange.fire(new MatrixChangeEvent)
   }
-  
-  matrixDirty.invoke()
+  private val parentMatrixHandler = EventHandler[MatrixChangeEvent]() {
+    case evt => matrixDirty.flag.set(true)
+  }
+  private var parentMatrixComponent: MatrixComponent = null
+  private def updateParentMatrixHandler() = {
+    val newParentMatrixComponent = ancestorByType[MatrixComponent].getOrElse(null)
+    if (newParentMatrixComponent != parentMatrixComponent) {
+      if (parentMatrixComponent != null) {
+        parentMatrixComponent.matrixChange -= parentMatrixHandler
+      }
+      if (newParentMatrixComponent != null) {
+        newParentMatrixComponent.matrixChange += parentMatrixHandler
+      }
+      parentMatrixComponent = newParentMatrixComponent
+      matrixDirty.flag.set(true)
+    }
+  }
+  parent.change.listen(recursion = Recursion.Parents) {
+    case evt if (evt.name == "parent") => updateParentMatrixHandler()
+    case evt => new RuntimeException("Ignoring: " + evt.name).printStackTrace()
+  }
+  updateParentMatrixHandler()
+  matrixDirty.flag.set(true)
 
   private def multMatrixHierarchy(listenable: Listenable): Unit = listenable match {
     case null => // Reached the top
-    case tmc: TranslationMatrixComponent if (tmc.matrixHierarchy()) => {
-      multMatrixHierarchy(tmc.parent())
-      matrix.mult(tmc.matrix)
-    }
-    case mc: MatrixComponent => {
-      println(mc.matrix)
-      matrix.mult(mc.matrix)
-    }
-    case l => {
-      multMatrixHierarchy(l.parent())
-    }
-  }
-
-  override def render() = {
-    Renderer().loadMatrix(matrix)
-    super.render()
+    case mc: MatrixComponent => matrix.mult(mc.matrix)
+    case l => multMatrixHierarchy(l.parent())
   }
 }

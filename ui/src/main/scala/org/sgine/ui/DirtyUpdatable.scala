@@ -34,13 +34,14 @@ package org.sgine.ui
 
 import java.util.concurrent.atomic.AtomicBoolean
 import org.sgine.event.{EventHandler, Listenable}
+import org.sgine.Updatable
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait DirtyUpdatable {
+trait DirtyUpdatable extends Updatable {
   private var dirtyFlags: List[DirtyFlag] = Nil
 
     /**
@@ -48,8 +49,8 @@ trait DirtyUpdatable {
    * in the <code>update</code> method.  If the function <code>f</code> returns false, the flag will be reset and
    * attempted again in the next update. This method returns the DirtyFlag instance created.
    */
-  protected def dirtyUpdate[E](listenables: Listenable*)(f: => Any)(implicit manifest: Manifest[E]) = {
-    val dirtyFlag = new DirtyFlag(f)
+  protected def dirtyUpdate[E](name: String, listenables: Listenable*)(f: => Any)(implicit manifest: Manifest[E]) = {
+    val dirtyFlag = new DirtyFlag(name)(f)
     val handler = EventHandler[E]() {
       case evt => dirtyFlag.flag.set(true)
     }
@@ -60,12 +61,12 @@ trait DirtyUpdatable {
     dirtyFlag
   }
 
-  protected def update() = {
+  def update() = {
     dirtyFlags.foreach(DirtyFlag.invokeDirtyFlag)
   }
 }
 
-class DirtyFlag(f: => Any) {
+class DirtyFlag(val name: String)(f: => Any) {
   val flag = new AtomicBoolean(false)
 
   def invoke() = f

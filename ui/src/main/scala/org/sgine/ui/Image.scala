@@ -54,10 +54,10 @@ class Image extends ShapeComponent with TexturedComponent with TranslationMatrix
     }
   }
 
-  protected val shape = Shape(Vertices.rect(width(), height()))
+  protected lazy val shape = Shape(Vertices.rect(width(), height()))
 
   // Update the shape vertices when width or height changes
-  dirtyUpdate[ChangeEvent[Double]](width, height) {
+  dirtyUpdate[ChangeEvent[Double]]("imageSize", width, height) {
     shape.updateVertices(Vertices.rect(width(), height()))
   }
 }
