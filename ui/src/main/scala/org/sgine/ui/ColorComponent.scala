@@ -34,7 +34,7 @@ package org.sgine.ui
 
 import event.{ColorChangeEvent, ColorChangeEventSupport}
 import org.sgine.property._
-import org.sgine.Color
+import org.sgine.math.Color
 import org.sgine.event.{Recursion, EventHandler, Listenable, ChangeEvent}
 
 /**

@@ -37,7 +37,7 @@ import org.sgine.opengl.GL._
 import org.sgine.opengl.GLDisplay
 import org.sgine.render.{RenderApplication, Renderer}
 import java.nio.ByteBuffer
-import org.sgine.Color
+import org.sgine.math.Color
 
 /**
  * 
