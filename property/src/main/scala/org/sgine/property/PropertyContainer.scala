@@ -36,13 +36,14 @@ import org.sgine.scene.Element
 
 import com.googlecode.reflective._
 import annotation.tailrec
+import org.sgine.ExtendedDelayedInit
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait PropertyContainer extends PropertyElement with DelayedInit {
+trait PropertyContainer extends PropertyElement with ExtendedDelayedInit {
   private var _properties: List[Property[_]] = Nil
   private var propertyMap = Map.empty[String, Property[_]]
 
@@ -52,8 +53,8 @@ trait PropertyContainer extends PropertyElement with DelayedInit {
 
   def name(p: Property[_]) = propertyMap.find(t => t._2 == p).map(t => t._1).getOrElse(null)
 
-  def delayedInit(x: => Unit) = {
-    x
+  override def postInit() = {
+    super.postInit()
     _properties = loadProperties(getClass.methods).reverse
   }
 
@@ -65,9 +66,14 @@ trait PropertyContainer extends PropertyElement with DelayedInit {
       val method = methods.head
       val list = if (isValidPropertyMethod(method)) {
         val property = method[Property[_]](this)
-        Element.assignParent(property, this)
-        propertyMap += method.name -> property
-        property :: properties
+        if (property == null) {
+          new RuntimeException("Property: " + method.name + " is null for " + getClass.getName).printStackTrace()
+          properties
+        } else {
+          Element.assignParent(property, this)
+          propertyMap += method.name -> property
+          property :: properties
+        }
       } else {
         properties
       }

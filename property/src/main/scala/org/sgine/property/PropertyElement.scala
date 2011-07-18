@@ -34,7 +34,6 @@ package org.sgine.property
 
 import org.sgine.scene.Element
 import org.sgine.event.Listenable
-
 /**
  * 
  *
