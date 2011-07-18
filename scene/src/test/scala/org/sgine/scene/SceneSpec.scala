@@ -123,6 +123,32 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
   }
 
+  "StaticContainer" when {
+    class Test
+    class Test2 extends Test
+    class Test3 extends Test2
+    val container = new StaticContainer[Test] {
+      val one = new Test
+      val two = new Test2
+      val three = new Test3
+    }
+    "created as val with three elements" should {
+      "have three elements" in {
+        container.children.length should be(3)
+      }
+    }
+    object container2 extends StaticContainer[Test] {
+      val one = new Test
+      val two = new Test2
+      val three = new Test3
+    }
+    "created as object with three elements" should {
+      "have three elements" in {
+        container2.children.length should be(3)
+      }
+    }
+  }
+
   "ContainerView" when {
     val container = new ImmutableContainer(List("One", "Two", "Three"))
     val container2 = new MutableContainer[AnyRef]()

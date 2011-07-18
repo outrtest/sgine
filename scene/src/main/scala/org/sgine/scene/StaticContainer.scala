@@ -30,16 +30,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.ui
+package org.sgine.scene
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
+import com.googlecode.reflective._
+import org.sgine.ExtendedDelayedInit
 
 /**
- *
+ * StaticContainer expects all children to be defined within the class itself and uses Reflection to add the children to
+ * the container.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends Component with MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+class StaticContainer[T](implicit manifest: Manifest[T]) extends Container[T] with ExtendedDelayedInit {
+  private var _children: List[T] = Nil
+
+  def children = _children
+
+  override def postInit() = {
+    super.postInit()
+    _children = loadElements(getClass.methods, Nil).reverse
+  }
+
+  private def loadElements(methods: List[EnhancedMethod], list: List[T]): List[T] = {
+    if (!methods.isEmpty) {
+      val m = methods.head
+      val l = if (m.args.isEmpty && manifest.erasure.isAssignableFrom(m.returnType.`type`.javaClass) && m.name != "toString") {
+        val element = m[T](this)
+        element :: list
+      } else {
+        list
+      }
+
+      loadElements(methods.tail, l)
+    } else {
+      list
+    }
+  }
 }

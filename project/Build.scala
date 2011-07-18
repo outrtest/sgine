@@ -41,9 +41,9 @@ object SgineBuild extends Build {
     .dependsOn(core)
   lazy val openglGenerator = Project("opengl-generator", file("opengl/generator"), settings = createSettings("sgine-opengl-generator"))
     .settings(libraryDependencies ++= Seq(
-    "org.lwjgl" % "lwjgl" % "2.7.1",
-    "com.googlecode.reflective" %% "reflective" % "1.0"
-  ))
+      "org.lwjgl" % "lwjgl" % "2.7.1",
+      "com.googlecode.reflective" %% "reflective" % "1.0"
+    ))
     .dependsOn(core)
   lazy val openglApi = Project("opengl-api", file("opengl/api"), settings = createSettings("sgine-opengl-api"))
     .dependsOn(core)
@@ -60,6 +60,7 @@ object SgineBuild extends Build {
   lazy val render = Project("render", file("render"), settings = createSettings("sgine-render"))
     .dependsOn(math, openglApi, openglAndroid, openglLwjgl)
   lazy val scene = Project("scene", file("scene"), settings = createSettings("sgine-scene"))
+    .settings(libraryDependencies += "com.googlecode.reflective" %% "reflective" % "1.0")
     .dependsOn(event)
   lazy val ui = Project("ui", file("ui"), settings = createSettings("sgine-ui"))
     .dependsOn(core, event, math, openglApi, openglLwjgl, property, render, scene)

@@ -32,25 +32,46 @@
 
 package org.sgine.ui
 
-import org.sgine.scene.MutableContainer
-import org.sgine.property.MutableProperty
+import org.sgine.scene.StaticContainer
 
 /**
  * ResolutionTest tests the functionality of ResolutionMatrixComponent.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object ResolutionTest extends UI {
-  val i1024 = Image("1024.png")
-  i1024.color.alpha := 0.5
-  this += i1024
-  val c640 = new MutableContainer[Component] with ResolutionMatrixComponent with Component {
-    val test = new MutableProperty[String]()
+object ResolutionTest {//extends UI {
+//  this += new StaticContainer[Component] with ResolutionMatrixComponent {
+//    width := 1024
+//    height := 768
+//
+//    val image = Image("1024.png")
+//  }
+  val c640 = new ResolutionContainer()
+////    width := 640
+////    height := 480
+////
+//    val image = Image("640.png")
+//  }
+//  val i1024 = Image("1024.png")
+//  i1024.color.alpha := 0.5
+//  this += i1024
+//  val c640 = new MutableContainer[Component] with ResolutionMatrixComponent with Component {
+//    val test = new MutableProperty[String]()
+//  }
+//  c640.width := 640
+//  c640.height := 480
+//  this += c640
+//  val i640 = Image("640.png")
+//  i640.color.alpha := 0.5
+//  c640 += i640
+
+  println("Property: " + c640.parent())
+
+  def main(args: Array[String]) = {
+    println("After...")
   }
-  c640.width := 640
-  c640.height := 480
-  this += c640
-  val i640 = Image("640.png")
-  i640.color.alpha := 0.5
-  c640 += i640
+}
+
+class ResolutionContainer extends StaticContainer[Component] with ResolutionMatrixComponent {
+  val image = Image("640.png")
 }

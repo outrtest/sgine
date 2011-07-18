@@ -30,16 +30,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.ui
+package org.sgine.scene
 
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
+import collection.mutable.ListBuffer
+import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEventSupport}
 
 /**
- *
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends Component with MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+class AbstractMutableContainer[T] extends Container[T] with ContainerEventSupport {
+  private val buffer = new ListBuffer[T]
+
+  def children = buffer.toList
+
+  protected def +=(child: T) = synchronized {
+    buffer += child
+
+    child match {
+      case element: Element => Element.assignParent(element, this)
+      case _ =>
+    }
+
+    if (containerChange.shouldFire) containerChange.fire(new ChildAddedEvent(this, child))
+  }
+
+  protected def -=(child: T) = synchronized {
+    buffer -= child
+
+    child match {
+      case element: Element => Element.assignParent(element, null)
+      case _ =>
+    }
+
+    if (containerChange.shouldFire) containerChange.fire(new ChildRemovedEvent(this, child))
+  }
 }

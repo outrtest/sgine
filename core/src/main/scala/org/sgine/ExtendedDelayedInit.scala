@@ -30,16 +30,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.ui
-
-import event.MatrixChangeEventSupport
-import org.sgine.math.mutable.Matrix4
+package org.sgine
 
 /**
+ * ExtendedDelayedInit allows mixing in of DelayedInit into multiple exclusive traits while maintaining the ability to
+ * mix them back together.
  *
+ * Override the preInit and postInit methods to provide distinct functionality.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends Component with MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+trait ExtendedDelayedInit extends DelayedInit {
+  protected def preInit() = {}
+
+  protected def postInit() = {}
+
+  final def delayedInit(x: => Unit) = {
+    preInit()
+    x
+    postInit()
+  }
 }
