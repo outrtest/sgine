@@ -33,7 +33,7 @@
 package org.sgine.scene
 
 import com.googlecode.reflective._
-import org.sgine.ExtendedDelayedInit
+import org.sgine.{ScalaDelayedInitBug, ExtendedDelayedInit}
 
 /**
  * StaticContainer expects all children to be defined within the class itself and uses Reflection to add the children to
@@ -54,8 +54,12 @@ class StaticContainer[T](implicit manifest: Manifest[T]) extends Container[T] wi
   private def loadElements(methods: List[EnhancedMethod], list: List[T]): List[T] = {
     if (!methods.isEmpty) {
       val m = methods.head
-      val l = if (m.args.isEmpty && manifest.erasure.isAssignableFrom(m.returnType.`type`.javaClass) && m.name != "toString") {
+      val l = if (m.args.isEmpty &&
+                  manifest.erasure.isAssignableFrom(m.returnType.`type`.javaClass) &&
+                  m.name.indexOf('$') == -1 &&
+                  m.name != "toString") {
         val element = m[T](this)
+        if (element == null) throw new ScalaDelayedInitBug
         element :: list
       } else {
         list
