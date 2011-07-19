@@ -38,15 +38,15 @@ package org.sgine.ui
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object ResolutionTest extends UI {
+  color.alpha := 0.5
+
   this += new Container() {
-    color.alpha := 0.5
     resolution(640, 480)
 
     this += Image("640.png")
   }
 
   this += new Container() {
-    color.alpha := 0.5
     resolution(1024, 768)
 
     this += Image("1024.png")

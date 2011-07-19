@@ -84,7 +84,9 @@ trait ColorComponent extends Component with DirtyUpdatable with ColorChangeEvent
 
   private def multColorHierarchy(listenable: Listenable): Unit = listenable match {
     case null => // Reached the top
-    case cc: ColorComponent => backingColor.multiply(cc.color.red, cc.color.green, cc.color.blue, cc.color.alpha)
+    case cc: ColorComponent => {
+      backingColor.multiply(cc.backingColor.red, cc.backingColor.green, cc.backingColor.blue, cc.backingColor.alpha)
+    }
     case l => multColorHierarchy(l.parent())
   }
 }
