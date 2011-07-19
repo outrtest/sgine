@@ -36,7 +36,7 @@ import org.sgine.scene.Element
 
 import com.googlecode.reflective._
 import annotation.tailrec
-import org.sgine.ExtendedDelayedInit
+import org.sgine.{ScalaDelayedInitBug, ExtendedDelayedInit}
 
 /**
  *
@@ -67,8 +67,7 @@ trait PropertyContainer extends PropertyElement with ExtendedDelayedInit {
       val list = if (isValidPropertyMethod(method)) {
         val property = method[Property[_]](this)
         if (property == null) {
-          new RuntimeException("Property: " + method.name + " is null for " + getClass.getName).printStackTrace()
-          properties
+          throw new ScalaDelayedInitBug()
         } else {
           Element.assignParent(property, this)
           propertyMap += method.name -> property
