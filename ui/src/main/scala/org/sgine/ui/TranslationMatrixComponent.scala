@@ -54,12 +54,25 @@ trait TranslationMatrixComponent extends Component with DirtyUpdatable with Matr
     val x = new MutableProperty[Double](1.0)
     val y = new MutableProperty[Double](1.0)
     val z = new MutableProperty[Double](1.0)
+
+    def apply(value: Double = 1.0) = {
+      x := value
+      y := value
+      z := value
+    }
   }
 
   object position extends PropertyContainer {
     val x = new MutableProperty[Double](0.0)
     val y = new MutableProperty[Double](0.0)
     val z = new MutableProperty[Double](0.0)
+  }
+
+  def resolution(width: Double, height: Double) = {
+    val scale = 165.5 / height
+    this.scale(scale)
+    position.z := -200.0
+    matrixHierarchy := false
   }
 
   // Update the matrix when information changes
@@ -94,7 +107,6 @@ trait TranslationMatrixComponent extends Component with DirtyUpdatable with Matr
     case _ =>
   }
   updateParentMatrixHandler()
-  matrixDirty.flag.set(true)
 
   private def multMatrixHierarchy(listenable: Listenable): Unit = listenable match {
     case null => // Reached the top

@@ -32,6 +32,8 @@
 
 package org.sgine
 
+import concurrent.Executor
+
 /**
  * ExtendedDelayedInit allows mixing in of DelayedInit into multiple exclusive traits while maintaining the ability to
  * mix them back together.
@@ -48,6 +50,22 @@ trait ExtendedDelayedInit extends DelayedInit {
   final def delayedInit(x: => Unit) = {
     preInit()
     x
-    postInit()
+    tryPostInit()
+  }
+
+  private def tryPostInit(): Unit = {
+    try {
+      postInit()
+    } catch {
+      case exc: ScalaDelayedInitBug => {
+        println("*** ScalaDelayedInitBug Work-Around! ***")
+        Executor.invoke {
+          Thread.sleep(100)
+          tryPostInit()
+        }
+      }
+    }
   }
 }
+
+class ScalaDelayedInitBug extends RuntimeException

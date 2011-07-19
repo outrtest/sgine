@@ -34,7 +34,7 @@ package org.sgine.ui
 
 import org.sgine.property.{MutableProperty, Property, ImmutableProperty}
 import org.sgine.render.{RenderApplication, Renderer}
-import org.sgine.scene.{MutableContainer, ContainerView}
+import org.sgine.scene.ContainerView
 import org.sgine.Updatable
 
 /**
@@ -42,12 +42,26 @@ import org.sgine.Updatable
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class UI extends MutableContainer[Component] with ResolutionMatrixComponent {
+class UI extends Container {
   val updatableView = new ImmutableProperty(new ContainerView[Updatable](this))
   val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
   val renderer: Property[Renderer] = new MutableProperty[Renderer]()
 
+  /**
+   * The window bounds for drawing the content within in pixels.
+   *
+   * Defaults to 1024 -> 768
+   */
   def windowSize = 1024 -> 768
+
+  /**
+   * The translated screen size for pixel mapping.
+   *
+   * Defaults to 1024.0 -> 768.0
+   */
+  def screenSize = 1024.0 -> 768.0
+
+  resolution(screenSize._1, screenSize._2)
 
   private object renderApplication extends RenderApplication {
     private val updateComponent = (u: Updatable) => u.update()
