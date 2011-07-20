@@ -31,20 +31,21 @@
  */
 package org.sgine.concurrent
 
-import java.util.concurrent.{ThreadFactory, Callable, Executors}
 import java.lang.Thread
-
+import java.util.concurrent.{TimeUnit, ThreadFactory, Callable, Executors}
 /**
  * Executor is a light-weight wrapper around a Java ExecutorService backred by a cached thread-pool.
  */
 object Executor {
-  private lazy val executor = Executors.newCachedThreadPool(new ThreadFactory {
+  private lazy val threadFactory = new ThreadFactory {
     def newThread(r: Runnable) = {
       val t = new Thread(r)
       t.setDaemon(true)
       t
     }
   })
+  private lazy val executor = Executors.newCachedThreadPool(threadFactory)
+  private lazy val scheduler = Executors.newScheduledThreadPool(2, threadFactory)
 
   /**
    * Invokes the function on the ExecutorService asynchronously returning a Future[T] with the return value.
@@ -72,6 +73,19 @@ object Executor {
    * Executes a Runnable in the future.
    */
   def execute(r: Runnable): Unit = executor.execute(r)
+
+  // TODO: the following methods need to fire off to future and execute to free up "scheduler" and a new Future needs to
+  // be created to support it.
+
+  def schedule[T](delay: Double)(f: => T) = scheduler.schedule(new C[T](() => f), Time.millis(delay), TimeUnit.MILLISECONDS)
+
+  def scheduleAtFixedRate[T](initialDelay: Double, period: Double)(f: => T) = {
+    scheduler.scheduleAtFixedRate(new R[T](() => f), Time.millis(initialDelay), Time.millis(period), TimeUnit.MILLISECONDS)
+  }
+
+  def scheduleWithFixedDelay[T](initialDelay: Double, delay: Double)(f: => T) = {
+    scheduler.scheduleWithFixedDelay(new R[T](() => f), Time.millis(initialDelay), Time.millis(delay), TimeUnit.MILLISECONDS)
+  }
 
   class C[T](f: () => T) extends Callable[T] {
     def call = f()
