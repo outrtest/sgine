@@ -41,14 +41,13 @@ import org.sgine.{ScalaDelayedInitBug, ExtendedDelayedInit}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class StaticContainer[T](implicit manifest: Manifest[T]) extends Container[T] with ExtendedDelayedInit {
-  private var _children: List[T] = Nil
-
-  def children = _children
-
+class StaticContainer[T](implicit manifest: Manifest[T]) extends MutableContainer[T] with ExtendedDelayedInit {
   override def postInit() = {
     super.postInit()
-    _children = loadElements(getClass.methods, Nil).reverse
+    val children = loadElements(getClass.methods, Nil).reverse
+    children.foreach(child => {
+      contents += child
+    })
   }
 
   private def loadElements(methods: List[EnhancedMethod], list: List[T]): List[T] = {

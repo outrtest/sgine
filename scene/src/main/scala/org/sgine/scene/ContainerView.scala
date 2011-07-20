@@ -88,7 +88,7 @@ class ContainerView[T](val container: Container[_],
     // TODO: validate thread-safety
     queue.clear()
     excluded.clear()
-    validateRecursive(container.children)
+    validateRecursive(container.contents)
 
     refreshFilter()
     refreshSort()
@@ -137,7 +137,7 @@ class ContainerView[T](val container: Container[_],
   }
 
   @tailrec
-  private def validateRecursive(children: Seq[_]): Unit = {
+  private def validateRecursive(children: Iterable[_]): Unit = {
     if (!children.isEmpty) {
       val child = children.head
       validateChild(child.asInstanceOf[AnyRef])
@@ -154,13 +154,13 @@ class ContainerView[T](val container: Container[_],
     }
 
     child match {
-      case container: Container[_] => validateRecursive(container.children)
+      case container: Container[_] => validateRecursive(container.contents)
       case _ =>
     }
   }
 
   @tailrec
-  private def invalidateRecursive(children: Seq[_]): Unit = {
+  private def invalidateRecursive(children: Iterable[_]): Unit = {
     if (!children.isEmpty) {
       val child = children.head
       invalidateChild(child.asInstanceOf[AnyRef])
@@ -173,7 +173,7 @@ class ContainerView[T](val container: Container[_],
     queue -= child.asInstanceOf[T]
 
     child match {
-      case container: Container[_] => invalidateRecursive(container.children)
+      case container: Container[_] => invalidateRecursive(container.contents)
       case _ =>
     }
   }
