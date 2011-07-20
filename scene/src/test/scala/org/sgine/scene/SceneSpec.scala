@@ -46,7 +46,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     "created" should {
       val container = new ImmutableContainer(List("One", "Two", "Three"))
       "have three elements" in {
-        container.children.length should be(3)
+        container.contents.length should be(3)
       }
     }
   }
@@ -61,16 +61,16 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
     "created" should {
       "be empty" in {
-        container.children.length should be(0)
+        container.contents.length should be(0)
       }
     }
     "adding \"One\"" should {
       "have one element" in {
-        container += "One"
-        container.children.length should be(1)
+        container.contents += "One"
+        container.contents.length should be(1)
       }
       "have the correct element" in {
-        container.children.head should be("One")
+        container.contents.head should be("One")
       }
       "throw a ChildAddedEvent" in {
         added should not be (null)
@@ -85,12 +85,12 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     "adding \"Two\"" should {
       "have two elements" in {
         added = null
-        container += "Two"
-        container.children.length should be(2)
+        container.contents += "Two"
+        container.contents.length should be(2)
       }
       "have the correct elements" in {
-        container.children.head should be("One")
-        container.children.tail.head should be("Two")
+        container.contents.head should be("One")
+        container.contents.tail.head should be("Two")
       }
       "throw another ChildAddedEvent" in {
         added should not be (null)
@@ -105,11 +105,11 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     "removing \"One\"" should {
       "have one element again" in {
         added = null
-        container -= "One"
-        container.children.length should be(1)
+        container.contents -= "One"
+        container.contents.length should be(1)
       }
       "have the correct element again" in {
-        container.children.head should be("Two")
+        container.contents.head should be("Two")
       }
       "throw a ChildRemovedEvent" in {
         removed should not be (null)
@@ -134,7 +134,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
     "created as val with three elements" should {
       "have three elements" in {
-        container.children.length should be(3)
+        container.contents.length should be(3)
       }
     }
     object container2 extends StaticContainer[Test] {
@@ -144,7 +144,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
     "created as object with three elements" should {
       "have three elements" in {
-        container2.children.length should be(3)
+        container2.contents.length should be(3)
       }
     }
   }
@@ -180,19 +180,19 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
     "adding \"One\" to the container" should {
       "have one element" in {
-        container2 += "One"
+        container2.contents += "One"
         containerView2.size should be(1)
       }
     }
     "adding \"Two\" to the container" should {
       "have two elements" in {
-        container2 += "Two"
+        container2.contents += "Two"
         containerView2.size should be(2)
       }
     }
     "removing \"One\" from the container" should {
       "have one element" in {
-        container2 -= "One"
+        container2.contents -= "One"
         containerView2.size should be(1)
       }
       "have \"Two\" as the only item" in {
@@ -201,7 +201,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
     "adding an ImmutableContainer(\"Uno\")" should {
       "have two elements" in {
-        container2 += ic
+        container2.contents += ic
         containerView2.size should be(2)
       }
       "define the parent container correctly" in {
@@ -214,7 +214,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
     "removing an ImmutableContainer(\"Uno\")" should {
       "have one element" in {
-        container2 -= ic
+        container2.contents -= ic
         containerView2.size should be(1)
       }
       "define the parent container as null" in {
@@ -226,19 +226,19 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
     "adding items to a queried view" should {
       "have one element" in {
-        container3 += "Three"
+        container3.contents += "Three"
         containerView3.size should be(1)
       }
       "exclude an item via query" in {
-        container3 += "Two"
+        container3.contents += "Two"
         containerView3.size should be(1)
       }
     }
     "adding items to a sorted view" should {
       "have three elements" in {
-        container4 += "One"
-        container4 += "Two"
-        container4 += "Three"
+        container4.contents += "One"
+        container4.contents += "Two"
+        container4.contents += "Three"
         containerView4.size should be(3)
       }
       "be sorted correctly" in {
@@ -249,9 +249,9 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
     "adding items to a filtered view" should {
       "have one element visible after three inserts" in {
-        container5 += "One"
-        container5 += "Two"
-        container5 += "Three"
+        container5.contents += "One"
+        container5.contents += "Two"
+        container5.contents += "Three"
         containerView5.size should be(1)
       }
       "have \"Three\" as the only visible element" in {

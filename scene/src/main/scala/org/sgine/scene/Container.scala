@@ -39,5 +39,5 @@ package org.sgine.scene
  * Date: 7/2/11
  */
 trait Container[T] extends Element {
-  def children: Seq[T]
+  def contents: Seq[T]
 }

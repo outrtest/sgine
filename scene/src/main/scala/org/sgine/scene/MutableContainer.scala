@@ -32,13 +32,44 @@
 
 package org.sgine.scene
 
+import collection.mutable.ListBuffer
+import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEventSupport}
+
 /**
- * MutableContainer provides synchronized modification access to 
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class MutableContainer[T] extends AbstractMutableContainer[T] {
-  override def +=(child: T) = super.+=(child)
+class MutableContainer[T] extends Container[T] with ContainerEventSupport {
+  private val buffer = new ListBuffer[T]
 
-  override def -=(child: T) = super.-=(child)
+  object contents extends Seq[T] {
+    def iterator = buffer.iterator
+
+    def apply(index: Int) = buffer(index)
+
+    def length = buffer.length
+
+    def +=(child: T) = synchronized {
+      buffer += child
+
+      child match {
+        case element: Element => Element.assignParent(element, MutableContainer.this)
+        case _ =>
+      }
+
+      if (containerChange.shouldFire) containerChange.fire(new ChildAddedEvent(MutableContainer.this, child))
+    }
+
+    def -=(child: T) = synchronized {
+      buffer -= child
+
+      child match {
+        case element: Element => Element.assignParent(element, null)
+        case _ =>
+      }
+
+      if (containerChange.shouldFire) containerChange.fire(new ChildRemovedEvent(MutableContainer.this, child))
+    }
+  }
 }

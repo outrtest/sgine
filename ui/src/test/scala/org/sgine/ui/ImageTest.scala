@@ -38,5 +38,5 @@ package org.sgine.ui
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object ImageTest extends UI {
-  this += Image("sgine.png")
+  contents += Image("sgine.png")
 }
