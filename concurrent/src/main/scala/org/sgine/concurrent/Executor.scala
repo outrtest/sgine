@@ -43,7 +43,7 @@ object Executor {
       t.setDaemon(true)
       t
     }
-  })
+  }
   private lazy val executor = Executors.newCachedThreadPool(threadFactory)
   private lazy val scheduler = Executors.newScheduledThreadPool(2, threadFactory)
 
