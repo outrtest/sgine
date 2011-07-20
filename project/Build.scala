@@ -31,7 +31,7 @@ object SgineBuild extends Build {
   lazy val root = Project("root", file("."), settings = createSettings("sgine-root"))
     .settings(publishArtifact in Compile := false, publishArtifact in Test := false)
     .aggregate(concurrent, core, event, math, openglGenerator, openglApi, openglLwjgl, openglAndroid, openglNehe,
-    property, render, scene)
+    property, render, scene, ui)
   lazy val concurrent = Project("concurrent", file("concurrent"), settings = createSettings("sgine-concurrent"))
     .dependsOn(core)
   lazy val core = Project("core", file("core"), settings = createSettings("sgine-core"))
