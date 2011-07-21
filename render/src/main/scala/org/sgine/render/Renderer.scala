@@ -68,8 +68,9 @@ object Renderer {
   private val renderer = new ThreadLocal[Renderer]
 
   def apply(application: RenderApplication, width: Int = 1024, height: Int = 768) = {
-    val renderer = new OpenGLRenderer(application)
-    val controller = LWJGLController(renderer, width, height, application.title)
+    val canvas = new java.awt.Canvas()
+    val renderer = new OpenGLRenderer(application, canvas)
+    val controller = LWJGLController(renderer, width, height, application.title, canvas)
     renderer
   }
 
