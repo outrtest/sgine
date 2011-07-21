@@ -36,11 +36,10 @@ import org.sgine.opengl.{GLController, GLDisplay}
 import java.util.concurrent.atomic.AtomicBoolean
 import org.lwjgl.opengl.{PixelFormat, Display}
 
-import org.sgine.opengl.GL._
 import java.awt.{BorderLayout, Frame, Canvas}
-import java.awt.event.{FocusAdapter, ComponentEvent, ComponentAdapter}
+import java.awt.event.{ComponentEvent, ComponentAdapter}
 
-class LWJGLController(val display: GLDisplay, val canvas: Canvas = new java.awt.Canvas) extends GLController {
+class LWJGLController(val display: GLDisplay, val canvas: Canvas) extends GLController {
   // Set to true when the AWT canvas has been resized
   private val resized = new AtomicBoolean()
 
@@ -89,8 +88,8 @@ class LWJGLController(val display: GLDisplay, val canvas: Canvas = new java.awt.
 }
 
 object LWJGLController {
-  def apply(display: GLDisplay, width: Int, height: Int, title: String) = {
-    val controller = new LWJGLController(display)
+  def apply(display: GLDisplay, width: Int, height: Int, title: String, canvas: Canvas = new Canvas()) = {
+    val controller = new LWJGLController(display, canvas)
 
     val frame = new Frame
     frame.setSize(width, height)
