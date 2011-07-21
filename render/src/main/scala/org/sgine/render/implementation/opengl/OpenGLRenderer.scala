@@ -38,13 +38,17 @@ import org.sgine.opengl.GLDisplay
 import org.sgine.render.{RenderApplication, Renderer}
 import java.nio.ByteBuffer
 import org.sgine.math.Color
+import org.lwjgl.input.{Mouse => GLMouse}
+import java.awt.Canvas
+import org.sgine.input.event.MouseEvent
+import org.sgine.input.Mouse
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class OpenGLRenderer(val application: RenderApplication) extends Renderer with GLDisplay {
+class OpenGLRenderer(val application: RenderApplication, canvas: Canvas) extends Renderer with GLDisplay {
   private val matrixBuffer = Matrix4.floatBuffer
 
   def loadMatrix(matrix: Matrix4) = {
@@ -81,6 +85,10 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
 
+    if (!GLMouse.isCreated) {
+      GLMouse.create()
+    }
+
     super.create()
   }
 
@@ -97,8 +105,38 @@ class OpenGLRenderer(val application: RenderApplication) extends Renderer with G
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
+    updateMouse()
+
     application.update()
     application.render()
+  }
+
+  private def updateMouse(): Unit = {
+    if (GLMouse.next()) {
+      val button = GLMouse.getEventButton
+      val state = GLMouse.getEventButtonState
+      val wheel = GLMouse.getEventDWheel
+      val x = GLMouse.getEventX
+      val y = GLMouse.getEventY
+      val dx = GLMouse.getEventDX
+      val dy = GLMouse.getEventDY
+
+      val windowX = x / (canvas.getWidth / 2.0) - 1.0
+      val windowY = y / (canvas.getHeight / 2.0) - 1.0
+      val windowDX = dx / (canvas.getWidth / 2.0)
+      val windowDY = dy / (canvas.getHeight / 2.0)
+
+      val nearHeight = 1.0
+      val normalizedX = nearHeight * windowX
+      val normalizedY = nearHeight * windowY
+      val normalizedDX = nearHeight * windowDX
+      val normalizedDY = nearHeight * windowDY
+
+      val evt = MouseEvent(button, state, wheel, normalizedX, normalizedY, normalizedDX, normalizedDY)
+      Mouse.mouseEvent.fire(evt)
+
+      updateMouse()
+    }
   }
 
   def dispose() = {
