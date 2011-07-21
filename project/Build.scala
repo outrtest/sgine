@@ -30,13 +30,15 @@ object SgineBuild extends Build {
 
   lazy val root = Project("root", file("."), settings = createSettings("sgine-root"))
     .settings(publishArtifact in Compile := false, publishArtifact in Test := false)
-    .aggregate(concurrent, core, event, math, openglGenerator, openglApi, openglLwjgl, openglAndroid, openglNehe,
+    .aggregate(concurrent, core, event, input, math, openglGenerator, openglApi, openglLwjgl, openglAndroid, openglNehe,
     property, render, scene, ui)
   lazy val concurrent = Project("concurrent", file("concurrent"), settings = createSettings("sgine-concurrent"))
     .dependsOn(core)
   lazy val core = Project("core", file("core"), settings = createSettings("sgine-core"))
   lazy val event = Project("event", file("event"), settings = createSettings("sgine-event"))
     .dependsOn(concurrent, core)
+  lazy val input = Project("input", file("input"), settings = createSettings("sgine-input"))
+    .dependsOn(core, event)
   lazy val math = Project("math", file("math"), settings = createSettings("sgine-math"))
     .dependsOn(core)
   lazy val openglGenerator = Project("opengl-generator", file("opengl/generator"), settings = createSettings("sgine-opengl-generator"))
@@ -58,7 +60,7 @@ object SgineBuild extends Build {
     .dependsOn(event, scene)
     .settings(libraryDependencies += "com.googlecode.reflective" %% "reflective" % "1.0")
   lazy val render = Project("render", file("render"), settings = createSettings("sgine-render"))
-    .dependsOn(math, openglApi, openglAndroid, openglLwjgl)
+    .dependsOn(input, math, openglApi, openglAndroid, openglLwjgl)
   lazy val scene = Project("scene", file("scene"), settings = createSettings("sgine-scene"))
     .settings(libraryDependencies += "com.googlecode.reflective" %% "reflective" % "1.0")
     .dependsOn(event)
