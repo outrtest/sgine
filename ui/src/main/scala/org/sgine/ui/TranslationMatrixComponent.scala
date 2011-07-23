@@ -34,7 +34,7 @@ package org.sgine.ui
 
 import event.MatrixChangeEvent
 import org.sgine.property.{MutableProperty, PropertyContainer}
-import org.sgine.math.mutable.Matrix4
+import org.sgine.math.Matrix4
 import org.sgine.event.{Recursion, EventHandler, Listenable, ChangeEvent}
 
 /**
@@ -77,12 +77,7 @@ trait TranslationMatrixComponent extends Component with DirtyUpdatable with Matr
 
   // Update the matrix when information changes
   private val matrixDirty = dirtyUpdate[ChangeEvent[Double]]("translationMatrixDirty", scale.x, scale.y, scale.z, position.x, position.y, position.z) {
-    matrix(Matrix4.Identity)
-    if (matrixHierarchy()) {
-      multMatrixHierarchy(parent())
-    }
-    matrix.scale(scale.x(), scale.y(), scale.z())
-    matrix.translate(position.x(), position.y(), position.z())
+    updateMatrix(matrix)
     matrixChange.fire(new MatrixChangeEvent)
   }
   private val parentMatrixHandler = EventHandler[MatrixChangeEvent]() {
@@ -112,5 +107,14 @@ trait TranslationMatrixComponent extends Component with DirtyUpdatable with Matr
     case null => // Reached the top
     case mc: MatrixComponent => matrix.mult(mc.matrix)
     case l => multMatrixHierarchy(l.parent())
+  }
+
+  protected def updateMatrix(matrix: Matrix4): Unit = {
+    matrix(Matrix4.Identity)
+    if (matrixHierarchy()) {
+      multMatrixHierarchy(parent())
+    }
+    matrix.scale(scale.x(), scale.y(), scale.z())
+    matrix.translate(position.x(), position.y(), position.z())
   }
 }
