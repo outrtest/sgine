@@ -32,14 +32,19 @@
 
 package org.sgine.ui
 
-import event.MatrixChangeEventSupport
 import org.sgine.math.Matrix4
 
 /**
- *
+ * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait MatrixComponent extends Component with MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+class Camera {
+  val view = Matrix4.Identity
+  val projection = Matrix4.Identity(
+    m00 = 0.01, m10 = 0.0, m20 = 0.0, m30 = 0.0,
+    m01 = 0.0, m11 = 0.01, m21 = 0.0, m31 = 0.0,
+    m02 = 0.0, m12 = 0.0, m22 = -0.0020100502512562816, m32 = 0.0,
+    m03 = 0.0, m13 = 0.0, m23 = -1.0100502512562815, m33 = 1.0
+  )
 }

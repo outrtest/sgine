@@ -36,6 +36,7 @@ import org.sgine.property.{MutableProperty, Property, ImmutableProperty}
 import org.sgine.render.{RenderApplication, Renderer}
 import org.sgine.scene.ContainerView
 import org.sgine.Updatable
+import org.sgine.math.Matrix4
 
 /**
  * 
@@ -60,6 +61,13 @@ class UI extends Container {
    * Defaults to 1024.0 -> 768.0
    */
   def screenSize = 1024.0 -> 768.0
+
+  val camera = new Camera()
+
+  override protected def updateMatrix(matrix: Matrix4) = {
+    super.updateMatrix(matrix)
+    matrix.concatenate(camera.view)
+  }
 
   resolution(screenSize._1, screenSize._2)
 

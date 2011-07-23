@@ -254,6 +254,41 @@ trait Matrix4 extends Traversable[Double] {
     )
   }
 
+  def concatenate(m: Matrix4) = {
+    apply(
+      m00 * m.m00 + m01 * m.m10 + m02 * m.m20,
+      m00 * m.m01 + m01 * m.m11 + m02 * m.m21,
+      m00 * m.m02 + m01 * m.m12 + m02 * m.m22,
+      m00 * m.m03 + m01 * m.m13 + m02 * m.m23 + m03,
+
+      m10 * m.m00 + m11 * m.m10 + m12 * m.m20,
+      m10 * m.m01 + m11 * m.m11 + m12 * m.m21,
+      m10 * m.m02 + m11 * m.m12 + m12 * m.m22,
+      m10 * m.m03 + m11 * m.m13 + m12 * m.m23 + m13,
+
+      m20 * m.m00 + m21 * m.m10 + m22 * m.m20,
+      m20 * m.m01 + m21 * m.m11 + m22 * m.m21,
+      m20 * m.m02 + m21 * m.m12 + m22 * m.m22,
+      m20 * m.m03 + m21 * m.m13 + m22 * m.m23 + m23,
+
+      m30 * m.m00 + m31 * m.m10 + m32 * m.m20,
+      m30 * m.m01 + m31 * m.m11 + m32 * m.m21,
+      m30 * m.m02 + m31 * m.m12 + m32 * m.m22,
+      m30 * m.m03 + m31 * m.m13 + m32 * m.m23 + m33
+    )
+  }
+
+  def inverseTransformation() = {
+    val t00 = 1.0
+    val t01 = 1.0
+    val t02 = 0.0
+    val t10 = 1.0
+    val t11 = 1.0
+    val t12 = 0.0
+
+    apply(m00 = t00, m01 = t01, m02 = t02, m10 = t10, m11 = t11, m12 = t12)
+  }
+
   def foreach[U](f: Double => U) = forIndexed(0, f)
 
   @tailrec
