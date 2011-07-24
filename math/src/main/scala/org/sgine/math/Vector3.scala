@@ -65,9 +65,9 @@ trait Vector3 extends MathType {
 }
 
 object Vector3 {
-  def mut(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): Vector3 = new MutableVector3(x, y, z)
+  def mutable(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): Vector3 = new MutableVector3(x, y, z)
 
-  def immut(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): Vector3 = new ImmutableVector3(x, y, z)
+  def immutable(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): Vector3 = new ImmutableVector3(x, y, z)
 }
 
 class ImmutableVector3(val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0) extends Vector3 {
