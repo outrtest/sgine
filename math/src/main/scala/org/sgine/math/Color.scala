@@ -73,8 +73,8 @@ trait Color extends Traversable[Double] with EnumEntry {
 
   override val size = 4
 
-  def toMutable: org.sgine.math.mutable.Color
-  def toImmutable: org.sgine.math.immutable.Color
+  def toMutable: org.sgine.math.mutable.MutableColor
+  def toImmutable: org.sgine.math.immutable.ImmutableColor
 
   def add(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 0.0) = {
     apply(this.red + red, this.green + green, this.blue + blue, this.alpha + alpha)
@@ -241,11 +241,11 @@ object Color extends Enumerated[Color] {
 
 	val Clear = immut(0x00fffff)
 
-  def mut(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 1.0): mutable.Color = {
-    new mutable.Color(red, green, blue, alpha)
+  def mut(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 1.0): mutable.MutableColor = {
+    new mutable.MutableColor(red, green, blue, alpha)
   }
 
-  def mut(value: Long): mutable.Color = {
+  def mut(value: Long): mutable.MutableColor = {
     val alpha = (value >> 24 & 0xff) / 255.0
 		val red = (value >> 16 & 0xff) / 255.0
 		val green = (value >> 8 & 0xff) / 255.0
@@ -253,20 +253,20 @@ object Color extends Enumerated[Color] {
     mut(red, green, blue, alpha)
   }
 
-  def mut(red: Int, green: Int, blue: Int, alpha: Int): mutable.Color = {
+  def mut(red: Int, green: Int, blue: Int, alpha: Int): mutable.MutableColor = {
     mut(red / 255.0, green / 255.0, blue / 255.0, alpha / 255.0)
   }
 
-  def mut(hex: String): mutable.Color = {
+  def mut(hex: String): mutable.MutableColor = {
     val (red, green, blue, alpha) = convertHex(hex)
-    new mutable.Color(red, green, blue, alpha)
+    new mutable.MutableColor(red, green, blue, alpha)
   }
 
-  def immut(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 1.0): immutable.Color = {
-    new immutable.Color(red, green, blue, alpha)
+  def immut(red: Double = 0.0, green: Double = 0.0, blue: Double = 0.0, alpha: Double = 1.0): immutable.ImmutableColor = {
+    new immutable.ImmutableColor(red, green, blue, alpha)
   }
 
-  def immut(value: Long): immutable.Color = {
+  def immut(value: Long): immutable.ImmutableColor = {
     val alpha = (value >> 24 & 0xff) / 255.0
 		val red = (value >> 16 & 0xff) / 255.0
 		val green = (value >> 8 & 0xff) / 255.0
@@ -274,13 +274,13 @@ object Color extends Enumerated[Color] {
     immut(red, green, blue, alpha)
   }
 
-  def immut(red: Int, green: Int, blue: Int, alpha: Int): immutable.Color = {
+  def immut(red: Int, green: Int, blue: Int, alpha: Int): immutable.ImmutableColor = {
     immut(red / 255.0, green / 255.0, blue / 255.0, alpha / 255.0)
   }
 
-  def immut(hex: String): immutable.Color = {
+  def immut(hex: String): immutable.ImmutableColor = {
     val (red, green, blue, alpha) = convertHex(hex)
-    new immutable.Color(red, green, blue, alpha)
+    new immutable.ImmutableColor(red, green, blue, alpha)
   }
 
   private def convertHex(hex: String): (Double, Double, Double, Double) = {

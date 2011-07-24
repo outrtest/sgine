@@ -1,5 +1,3 @@
-package org.sgine.math.mutable
-
 /*
  * Copyright (c) 2011 Sgine
  * All rights reserved.
@@ -32,28 +30,60 @@ package org.sgine.math.mutable
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.sgine.math.{Color => C}
+package org.sgine.math
+
+import annotation.tailrec
+import immutable.ImmutableVector4
+import mutable.MutableVector4
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Color(var red: Double = 0.0, var green: Double = 0.0, var blue: Double = 0.0, var alpha: Double = 1.0) extends C {
-  def apply(
-            red: Double = this.red,
-            green: Double = this.green,
-            blue: Double = this.blue,
-            alpha: Double = this.alpha
-             ) = {
-    this.red = red
-    this.green = green
-    this.blue = blue
-    this.alpha = alpha
+trait Vector4 extends Traversable[Double] {
+  def x: Double
+  def y: Double
+  def z: Double
+  def w: Double
 
-    this
+  def apply(x: Double = this.x, y: Double = this.y, z: Double = this.z, w: Double = this.w): Vector4
+
+  def apply(index: Int) = index match {
+    case 0 => x
+    case 1 => y
+    case 2 => z
+    case 3 => w
+    case _ => throw new IndexOutOfBoundsException("Index " + index + " is greater than Vector4 bounds (3)")
   }
 
-  def toMutable = this
-  def toImmutable = new org.sgine.math.immutable.Color(red, green, blue, alpha)
+  def apply(v: Vector4): Vector4 = apply(v.x, v.y, v.z, v.w)
+
+  def foreach[U](f: Double => U) = forIndexed(0, f)
+
+  @tailrec
+  private def forIndexed[U](index: Int, f: Double => U): Unit = {
+    f(apply(index))
+    if (index < 3) forIndexed(index + 1, f)
+  }
+
+  override def size = 4
+
+  override def toString() = "Vector4(x = " + x + ", y = " + y + ", z = " + z + ", w = " + w + ")"
+
+  def mutable: Vector4
+
+  def immutable: Vector4
+
+  def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z, w: Double = this.w): Vector4
+
+  def isMutable: Boolean
+
+  final def isImmutable = !isMutable
+}
+
+object Vector4 {
+  def mut(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, w: Double = 0.0): Vector4 = new MutableVector4(x, y, z, w)
+
+  def immut(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, w: Double = 0.0): Vector4 = new ImmutableVector4(x, y, z, w)
 }

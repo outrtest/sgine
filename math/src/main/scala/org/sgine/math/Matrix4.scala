@@ -23,8 +23,8 @@
  * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
  * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES LOSS OF USE, DATA, OR
+ * PROFITS OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -59,6 +59,25 @@ trait Matrix4 extends Traversable[Double] {
   def m32: Double
   def m33: Double
 
+  def apply(
+           m00: Double = this.m00,
+           m01: Double = this.m01,
+           m02: Double = this.m02,
+           m03: Double = this.m03,
+           m10: Double = this.m10,
+           m11: Double = this.m11,
+           m12: Double = this.m12,
+           m13: Double = this.m13,
+           m20: Double = this.m20,
+           m21: Double = this.m21,
+           m22: Double = this.m22,
+           m23: Double = this.m23,
+           m30: Double = this.m30,
+           m31: Double = this.m31,
+           m32: Double = this.m32,
+           m33: Double = this.m33
+           ): Matrix4
+
   def apply(index: Int) = index match {
     case 0 => m00
     case 1 => m10
@@ -78,25 +97,6 @@ trait Matrix4 extends Traversable[Double] {
     case 15 => m33
     case _ => throw new IndexOutOfBoundsException("Index " + index + " is greater than Matrix4 bounds (15)")
   }
-
-  def apply(
-             m00: Double = this.m00,
-             m01: Double = this.m01,
-             m02: Double = this.m02,
-             m03: Double = this.m03,
-             m10: Double = this.m10,
-             m11: Double = this.m11,
-             m12: Double = this.m12,
-             m13: Double = this.m13,
-             m20: Double = this.m20,
-             m21: Double = this.m21,
-             m22: Double = this.m22,
-             m23: Double = this.m23,
-             m30: Double = this.m30,
-             m31: Double = this.m31,
-             m32: Double = this.m32,
-             m33: Double = this.m33
-             ): Matrix4
 
   def apply(m: Matrix4): Matrix4 = apply(
     m.m00, m.m01, m.m02, m.m03,
@@ -202,20 +202,20 @@ trait Matrix4 extends Traversable[Double] {
     val d22 = cx * cy
 
     val t00 = m00 * d00 + m01 * d10 + m02 * d20
-    val t01 = m00 * d01 + m01 * d11 + m02 * d21;
-    val t02 = m00 * d02 + m01 * d12 + m02 * d22;
+    val t01 = m00 * d01 + m01 * d11 + m02 * d21
+    val t02 = m00 * d02 + m01 * d12 + m02 * d22
 
-    val t10 = m10 * d00 + m11 * d10 + m12 * d20;
-    val t11 = m10 * d01 + m11 * d11 + m12 * d21;
-    val t12 = m10 * d02 + m11 * d12 + m12 * d22;
+    val t10 = m10 * d00 + m11 * d10 + m12 * d20
+    val t11 = m10 * d01 + m11 * d11 + m12 * d21
+    val t12 = m10 * d02 + m11 * d12 + m12 * d22
 
-    val t20 = m20 * d00 + m21 * d10 + m22 * d20;
-    val t21 = m20 * d01 + m21 * d11 + m22 * d21;
-    val t22 = m20 * d02 + m21 * d12 + m22 * d22;
+    val t20 = m20 * d00 + m21 * d10 + m22 * d20
+    val t21 = m20 * d01 + m21 * d11 + m22 * d21
+    val t22 = m20 * d02 + m21 * d12 + m22 * d22
 
-    val t30 = m30 * d00 + m31 * d10 + m32 * d20;
-    val t31 = m30 * d01 + m31 * d11 + m32 * d21;
-    val t32 = m30 * d02 + m31 * d12 + m32 * d22;
+    val t30 = m30 * d00 + m31 * d10 + m32 * d20
+    val t31 = m30 * d01 + m31 * d11 + m32 * d21
+    val t32 = m30 * d02 + m31 * d12 + m32 * d22
 
     apply(t00, t01, t02, m03,
       t10, t11, t12, m13,
@@ -278,6 +278,43 @@ trait Matrix4 extends Traversable[Double] {
     )
   }
 
+  def invert() = {
+    val a0 = m00 * m11 - m01 * m10
+    val a1 = m00 * m12 - m02 * m10
+    val a2 = m00 * m13 - m03 * m10
+    val a3 = m01 * m12 - m02 * m11
+    val a4 = m01 * m13 - m03 * m11
+    val a5 = m02 * m13 - m03 * m12
+    val b0 = m20 * m31 - m21 * m30
+    val b1 = m20 * m32 - m22 * m30
+    val b2 = m20 * m33 - m23 * m30
+    val b3 = m21 * m32 - m22 * m31
+    val b4 = m21 * m33 - m23 * m31
+    val b5 = m22 * m33 - m23 * m32
+    
+    val t00 = +m11 * b5 - m12 * b4 + m13 * b3
+    val t10 = -m10 * b5 + m12 * b2 - m13 * b1
+    val t20 = +m10 * b4 - m11 * b2 + m13 * b0
+    val t30 = -m10 * b3 + m11 * b1 - m12 * b0
+    val t01 = -m01 * b5 + m02 * b4 - m03 * b3
+    val t11 = +m00 * b5 - m02 * b2 + m03 * b1
+    val t21 = -m00 * b4 + m01 * b2 - m03 * b0
+    val t31 = +m00 * b3 - m01 * b1 + m02 * b0
+    val t02 = +m31 * a5 - m32 * a4 + m33 * a3
+    val t12 = -m30 * a5 + m32 * a2 - m33 * a1
+    val t22 = +m30 * a4 - m31 * a2 + m33 * a0
+    val t32 = -m30 * a3 + m31 * a1 - m32 * a0
+    val t03 = -m21 * a5 + m22 * a4 - m23 * a3
+    val t13 = +m20 * a5 - m22 * a2 + m23 * a1
+    val t23 = -m20 * a4 + m21 * a2 - m23 * a0
+    val t33 = +m20 * a3 - m21 * a1 + m22 * a0
+
+    apply(t00, t01, t02, t03,
+          t10, t11, t12, t13,
+          t20, t21, t22, t23,
+          t30, t31, t32, t33)
+  }
+
   def inverseTransformation() = {
     val t00 = 1.0
     val t01 = 1.0
@@ -328,11 +365,34 @@ trait Matrix4 extends Traversable[Double] {
 
     buffer.toString()
   }
+
+  def mutable: Matrix4
+
+  def immutable: Matrix4
+
+  def copy(
+    m00: Double = this.m00,
+    m01: Double = this.m01,
+    m02: Double = this.m02,
+    m03: Double = this.m03,
+    m10: Double = this.m10,
+    m11: Double = this.m11,
+    m12: Double = this.m12,
+    m13: Double = this.m13,
+    m20: Double = this.m20,
+    m21: Double = this.m21,
+    m22: Double = this.m22,
+    m23: Double = this.m23,
+    m30: Double = this.m30,
+    m31: Double = this.m31,
+    m32: Double = this.m32,
+    m33: Double = this.m33
+  ): Matrix4
 }
 
 object Matrix4 {
-  val Zero = new immutable.Matrix4()
-  val Identity = new immutable.Matrix4(m00 = 1.0, m11 = 1.0, m22 = 1.0, m33 = 1.0)
+  val Zero = new immutable.ImmutableMatrix4()
+  val Identity = new immutable.ImmutableMatrix4(m00 = 1.0, m11 = 1.0, m22 = 1.0, m33 = 1.0)
 
   /**
    * Creates a new java.nio.DoubleBuffer capable of storing a Matrix4

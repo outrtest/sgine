@@ -1,5 +1,3 @@
-package org.sgine.math.immutable
-
 /*
  * Copyright (c) 2011 Sgine
  * All rights reserved.
@@ -32,21 +30,30 @@ package org.sgine.math.immutable
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.sgine.math.{Color => C}
+package org.sgine.math.mutable
+
+import org.sgine.math.Vector3
+import org.sgine.math.immutable.ImmutableVector3
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Color(val red: Double = 0.0, val green: Double = 0.0, val blue: Double = 0.0, val alpha: Double = 1.0) extends C {
-  def apply(
-            red: Double = this.red,
-            green: Double = this.green,
-            blue: Double = this.blue,
-            alpha: Double = this.alpha
-             ) = new Color(red, green, blue, alpha)
+class MutableVector3(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) extends Vector3 {
+  def apply(x: Double = this.x, y: Double = this.y, z: Double = this.z) = {
+    this.x = x
+    this.y = y
+    this.z = z
 
-  def toMutable = new org.sgine.math.mutable.Color(red, green, blue, alpha)
-  def toImmutable = this
+    this
+  }
+
+  def mutable = this
+
+  def immutable = new ImmutableVector3(x, y, z)
+
+  def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z) = new MutableVector3(x, y, z)
+
+  def isMutable = true
 }
