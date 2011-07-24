@@ -254,6 +254,24 @@ trait Matrix4 extends MathType {
     )
   }
 
+  def multHorizontal(v: Vector4) = {
+    apply(
+      m00 * v.x, m01 * v.x, m02 * v.x, m03 * v.x,
+      m10 * v.y, m11 * v.y, m12 * v.y, m13 * v.y,
+      m20 * v.z, m21 * v.z, m22 * v.z, m23 * v.z,
+      m30 * v.w, m31 * v.w, m32 * v.w, m33 * v.w
+    )
+  }
+
+  def multVertical(v: Vector4) = {
+    apply(
+      m00 * v.x, m01 * v.y, m02 * v.z, m03 * v.w,
+      m10 * v.x, m11 * v.y, m12 * v.z, m13 * v.w,
+      m20 * v.x, m21 * v.y, m22 * v.z, m23 * v.w,
+      m30 * v.x, m31 * v.y, m32 * v.z, m33 * v.w
+    )
+  }
+
   def concatenate(m: Matrix4) = {
     apply(
       m00 * m.m00 + m01 * m.m10 + m02 * m.m20,
