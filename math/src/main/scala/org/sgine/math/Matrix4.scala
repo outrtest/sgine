@@ -325,6 +325,23 @@ trait Matrix4 extends MathType {
 
     apply(m00 = t00, m01 = t01, m02 = t02, m10 = t10, m11 = t11, m12 = t12)
   }
+  
+  def determinate() = {
+    val a0 = m00 * m11 - m01 * m10
+    val a1 = m00 * m12 - m02 * m10
+    val a2 = m00 * m13 - m03 * m10
+    val a3 = m01 * m12 - m02 * m11
+    val a4 = m01 * m13 - m03 * m11
+    val a5 = m02 * m13 - m03 * m12
+    val b0 = m20 * m31 - m21 * m30
+    val b1 = m20 * m32 - m22 * m30
+    val b2 = m20 * m33 - m23 * m30
+    val b3 = m21 * m32 - m22 * m31
+    val b4 = m21 * m33 - m23 * m31
+    val b5 = m22 * m33 - m23 * m32
+
+    a0 * b5 - a1 * b4 + a2 * b3 + a3 * b2 - a4 * b1 + a5 * b0
+  }
 
   override def size = 16
 
