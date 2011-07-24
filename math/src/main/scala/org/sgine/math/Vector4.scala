@@ -67,6 +67,18 @@ trait Vector4 extends MathType {
 }
 
 object Vector4 {
+  lazy val Zero = immutable(0.0, 0.0, 0.0, 0.0)
+  lazy val One = immutable(1.0, 1.0, 1.0, 1.0)
+  lazy val NegativeOne = immutable(-1.0, -1.0, -1.0, -1.0)
+  lazy val X = immutable(1.0, 0.0, 0.0, 0.0)
+  lazy val NegativeX = immutable(-1.0, 0.0, 0.0, 0.0)
+  lazy val Y = immutable(0.0, 1.0, 0.0, 0.0)
+  lazy val NegativeY = immutable(0.0, -1.0, 0.0, 0.0)
+  lazy val Z = immutable(0.0, 0.0, 1.0, 0.0)
+  lazy val NegativeZ = immutable(0.0, 0.0, -1.0, 0.0)
+  lazy val W = immutable(0.0, 0.0, 0.0, 1.0)
+  lazy val NegativeW = immutable(0.0, 0.0, 0.0, -1.0)
+
   def mutable(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, w: Double = 0.0): Vector4 = new MutableVector4(x, y, z, w)
 
   def immutable(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, w: Double = 0.0): Vector4 = new ImmutableVector4(x, y, z, w)
