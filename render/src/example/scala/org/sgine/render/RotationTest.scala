@@ -106,7 +106,7 @@ import org.sgine.resource.Resource
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object RotationTest extends RenderApplication {
-  private var quadMatrix = Matrix4.Identity.mutable
+  private var quadMatrix = Matrix4.Identity.toMutable
   private val coords = List(
     // Front
     0.0, 0.0,

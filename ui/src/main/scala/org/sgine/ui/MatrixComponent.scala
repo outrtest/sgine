@@ -41,5 +41,5 @@ import org.sgine.math.Matrix4
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait MatrixComponent extends Component with MatrixChangeEventSupport {
-  protected[ui] val matrix = Matrix4.Identity.mutable
+  protected[ui] val matrix = Matrix4.Identity.toMutable
 }
