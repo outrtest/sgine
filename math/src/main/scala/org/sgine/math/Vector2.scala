@@ -32,16 +32,12 @@
 
 package org.sgine.math
 
-import annotation.tailrec
-import immutable.ImmutableVector2
-import mutable.MutableVector2
-
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Vector2 extends Traversable[Double] {
+trait Vector2 extends MathType {
   def x: Double
   def y: Double
 
@@ -55,31 +51,48 @@ trait Vector2 extends Traversable[Double] {
 
   def apply(v: Vector2): Vector2 = apply(v.x, v.y)
 
-  def foreach[U](f: Double => U) = forIndexed(0, f)
-
-  @tailrec
-  private def forIndexed[U](index: Int, f: Double => U): Unit = {
-    f(apply(index))
-    if (index < 1) forIndexed(index + 1, f)
-  }
-
   override def size = 2
 
   override def toString() = "Vector2(x = " + x + ", y = " + y + ")"
 
-  def mutable: Vector2
+  def toMutable: Vector2
 
-  def immutable: Vector2
+  def toImmutable: Vector2
 
   def copy(x: Double = this.x, y: Double = this.y): Vector2
-
-  def isMutable: Boolean
-
-  final def isImmutable = !isMutable
 }
 
 object Vector2 {
   def mut(x: Double = 0.0, y: Double = 0.0): Vector2 = new MutableVector2(x, y)
 
   def immut(x: Double = 0.0, y: Double = 0.0): Vector2 = new ImmutableVector2(x, y)
+}
+
+class ImmutableVector2(val x: Double = 0.0, val y: Double = 0.0) extends Vector2 {
+  def apply(x: Double = this.x, y: Double = this.y) = new ImmutableVector2(x, y)
+
+  def toMutable = new MutableVector2(x, y)
+
+  def toImmutable = this
+
+  def copy(x: Double = this.x, y: Double = this.y) = new ImmutableVector2(x, y)
+
+  def isMutable = false
+}
+
+class MutableVector2(var x: Double = 0.0, var y: Double = 0.0) extends Vector2 {
+  def apply(x: Double = this.x, y: Double = this.y) = {
+    this.x = x
+    this.y = y
+
+    this
+  }
+
+  def toMutable = this
+
+  def toImmutable = new ImmutableVector2(x, y)
+
+  def copy(x: Double = this.x, y: Double = this.y) = new MutableVector2(x, y)
+
+  def isMutable = true
 }

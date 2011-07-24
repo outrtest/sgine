@@ -32,16 +32,12 @@
 
 package org.sgine.math
 
-import annotation.tailrec
-import immutable.ImmutableVector3
-import mutable.MutableVector3
-
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Vector3 extends Traversable[Double] {
+trait Vector3 extends MathType {
   def x: Double
   def y: Double
   def z: Double
@@ -57,31 +53,49 @@ trait Vector3 extends Traversable[Double] {
 
   def apply(v: Vector3): Vector3 = apply(v.x, v.y, v.z)
 
-  def foreach[U](f: Double => U) = forIndexed(0, f)
-
-  @tailrec
-  private def forIndexed[U](index: Int, f: Double => U): Unit = {
-    f(apply(index))
-    if (index < 2) forIndexed(index + 1, f)
-  }
-
   override def size = 3
 
   override def toString() = "Vector3(x = " + x + ", y = " + y + ", z = " + z + ")"
 
-  def mutable: Vector3
+  def toMutable: Vector3
 
-  def immutable: Vector3
+  def toImmutable: Vector3
 
   def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z): Vector3
-
-  def isMutable: Boolean
-
-  final def isImmutable = !isMutable
 }
 
 object Vector3 {
   def mut(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): Vector3 = new MutableVector3(x, y, z)
 
   def immut(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): Vector3 = new ImmutableVector3(x, y, z)
+}
+
+class ImmutableVector3(val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0) extends Vector3 {
+  def apply(x: Double = this.x, y: Double = this.y, z: Double = this.z) = new ImmutableVector3(x, y, z)
+
+  def toMutable = new MutableVector3(x, y, z)
+
+  def toImmutable = this
+
+  def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z) = new ImmutableVector3(x, y, z)
+
+  def isMutable = false
+}
+
+class MutableVector3(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) extends Vector3 {
+  def apply(x: Double = this.x, y: Double = this.y, z: Double = this.z) = {
+    this.x = x
+    this.y = y
+    this.z = z
+
+    this
+  }
+
+  def toMutable = this
+
+  def toImmutable = new ImmutableVector3(x, y, z)
+
+  def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z) = new MutableVector3(x, y, z)
+
+  def isMutable = true
 }

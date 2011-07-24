@@ -32,16 +32,12 @@
 
 package org.sgine.math
 
-import annotation.tailrec
-import immutable.ImmutableVector4
-import mutable.MutableVector4
-
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Vector4 extends Traversable[Double] {
+trait Vector4 extends MathType {
   def x: Double
   def y: Double
   def z: Double
@@ -59,31 +55,54 @@ trait Vector4 extends Traversable[Double] {
 
   def apply(v: Vector4): Vector4 = apply(v.x, v.y, v.z, v.w)
 
-  def foreach[U](f: Double => U) = forIndexed(0, f)
-
-  @tailrec
-  private def forIndexed[U](index: Int, f: Double => U): Unit = {
-    f(apply(index))
-    if (index < 3) forIndexed(index + 1, f)
-  }
-
   override def size = 4
 
   override def toString() = "Vector4(x = " + x + ", y = " + y + ", z = " + z + ", w = " + w + ")"
 
-  def mutable: Vector4
+  def toMutable: Vector4
 
-  def immutable: Vector4
+  def toImmutable: Vector4
 
   def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z, w: Double = this.w): Vector4
-
-  def isMutable: Boolean
-
-  final def isImmutable = !isMutable
 }
 
 object Vector4 {
   def mut(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, w: Double = 0.0): Vector4 = new MutableVector4(x, y, z, w)
 
   def immut(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, w: Double = 0.0): Vector4 = new ImmutableVector4(x, y, z, w)
+}
+
+class ImmutableVector4(val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0, val w: Double = 0.0) extends Vector4 {
+  def apply(x: Double = this.x, y: Double = this.y, z: Double = this.z, w: Double = this.w) = new ImmutableVector4(x, y, z, w)
+
+  def toMutable = new MutableVector4(x, y, z, w)
+
+  def toImmutable = this
+
+  def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z, w: Double = this.w) = {
+    new ImmutableVector4(x, y, z, w)
+  }
+
+  def isMutable = false
+}
+
+class MutableVector4(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0, var w: Double = 0.0) extends Vector4 {
+  def apply(x: Double = this.x, y: Double = this.y, z: Double = this.z, w: Double = this.w) = {
+    this.x = x
+    this.y = y
+    this.z = z
+    this.w = w
+
+    this
+  }
+
+  def toMutable = this
+
+  def toImmutable = new ImmutableVector4(x, y, z, w)
+
+  def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z, w: Double = this.w) = {
+    new MutableVector4(x, y, z, w)
+  }
+
+  def isMutable = true
 }
