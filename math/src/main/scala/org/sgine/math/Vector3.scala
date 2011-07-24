@@ -32,6 +32,8 @@
 
 package org.sgine.math
 
+import scala.math._
+
 /**
  * 
  *
@@ -62,6 +64,19 @@ trait Vector3 extends MathType {
   def toImmutable: Vector3
 
   def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z): Vector3
+
+  def normalize() = {
+    val ls = lengthSquared()
+    if (abs(ls) > Double.MinPositiveValue) {
+      multiply(1.0 / sqrt(ls))
+    } else {
+      this
+    }
+  }
+
+  def multiply(value: Double) = apply(x * value, y * value, z * value)
+
+  def lengthSquared() = x * x + y * y + z * z
 }
 
 object Vector3 {
