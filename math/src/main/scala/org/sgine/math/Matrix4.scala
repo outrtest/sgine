@@ -386,6 +386,50 @@ object Matrix4 {
   lazy val Zero = new ImmutableMatrix4()
   lazy val Identity = new ImmutableMatrix4(m00 = 1.0, m11 = 1.0, m22 = 1.0, m33 = 1.0)
 
+  def immutable(
+    m00: Double = 0.0,
+    m01: Double = 0.0,
+    m02: Double = 0.0,
+    m03: Double = 0.0,
+    m10: Double = 0.0,
+    m11: Double = 0.0,
+    m12: Double = 0.0,
+    m13: Double = 0.0,
+    m20: Double = 0.0,
+    m21: Double = 0.0,
+    m22: Double = 0.0,
+    m23: Double = 0.0,
+    m30: Double = 0.0,
+    m31: Double = 0.0,
+    m32: Double = 0.0,
+    m33: Double = 0.0
+  ) = new ImmutableMatrix4(m00, m01, m02, m03,
+                            m10, m11, m12, m13,
+                            m10, m21, m22, m23,
+                            m30, m31, m32, m33)
+
+  def mutable(
+    m00: Double = 0.0,
+    m01: Double = 0.0,
+    m02: Double = 0.0,
+    m03: Double = 0.0,
+    m10: Double = 0.0,
+    m11: Double = 0.0,
+    m12: Double = 0.0,
+    m13: Double = 0.0,
+    m20: Double = 0.0,
+    m21: Double = 0.0,
+    m22: Double = 0.0,
+    m23: Double = 0.0,
+    m30: Double = 0.0,
+    m31: Double = 0.0,
+    m32: Double = 0.0,
+    m33: Double = 0.0
+  ) = new MutableMatrix4(m00, m01, m02, m03,
+                          m10, m11, m12, m13,
+                          m10, m21, m22, m23,
+                          m30, m31, m32, m33)
+
   /**
    * Creates a new java.nio.DoubleBuffer capable of storing a Matrix4
    */
