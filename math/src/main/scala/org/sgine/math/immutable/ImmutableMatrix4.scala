@@ -13,8 +13,8 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
  *
- *  Neither the name of 'Sgine' nor the names of its contributors 
- *   may be used to endorse or promote products derived from this software 
+ *  Neither the name of 'Sgine' nor the names of its contributors
+ *   may be used to endorse or promote products derived from this software
  *   without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -30,7 +30,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.math.mutable
+package org.sgine.math.immutable
 
 import org.sgine.math.{Matrix4 => M4}
 
@@ -39,13 +39,13 @@ import org.sgine.math.{Matrix4 => M4}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Matrix4 (var m00: Double = 0.0, var m01: Double = 0.0, var m02: Double = 0.0, var m03: Double = 0.0,
-               var m10: Double = 0.0, var m11: Double = 0.0, var m12: Double = 0.0, var m13: Double = 0.0,
-               var m20: Double = 0.0, var m21: Double = 0.0, var m22: Double = 0.0, var m23: Double = 0.0,
-               var m30: Double = 0.0, var m31: Double = 0.0, var m32: Double = 0.0, var m33: Double = 0.0
+class ImmutableMatrix4 (val m00: Double = 0.0, val m01: Double = 0.0, val m02: Double = 0.0, val m03: Double = 0.0,
+               val m10: Double = 0.0, val m11: Double = 0.0, val m12: Double = 0.0, val m13: Double = 0.0,
+               val m20: Double = 0.0, val m21: Double = 0.0, val m22: Double = 0.0, val m23: Double = 0.0,
+               val m30: Double = 0.0, val m31: Double = 0.0, val m32: Double = 0.0, val m33: Double = 0.0
               ) extends M4 {
   /**
-   * Modifies the local copy of this matrix.
+   * Creates a new Matrix4 with the modified values.
    */
   def apply(
     m00: Double = this.m00,
@@ -64,37 +64,45 @@ class Matrix4 (var m00: Double = 0.0, var m01: Double = 0.0, var m02: Double = 0
     m31: Double = this.m31,
     m32: Double = this.m32,
     m33: Double = this.m33
-  ) = {
-    this.m00 = m00
-    this.m01 = m01
-    this.m02 = m02
-    this.m03 = m03
-    this.m10 = m10
-    this.m11 = m11
-    this.m12 = m12
-    this.m13 = m13
-    this.m20 = m20
-    this.m21 = m21
-    this.m22 = m22
-    this.m23 = m23
-    this.m30 = m30
-    this.m31 = m31
-    this.m32 = m32
-    this.m33 = m33
+  ) = new ImmutableMatrix4(m00, m01, m02, m03,
+                  m10, m11, m12, m13,
+                  m10, m21, m22, m23,
+                  m30, m31, m32, m33)
 
-    this
-  }
+  def immutable = this
 
   /**
-   * Creates a new immutable instance of this Matrix4
+   * Creates a new mutable instance of this Matrix4
    */
-  def immutable = new org.sgine.math.immutable.Matrix4(m00, m01, m02, m03,
-                                                       m10, m11, m12, m13,
-                                                       m20, m21, m22, m23,
-                                                       m30, m31, m32, m33)
+  def mutable = new org.sgine.math.mutable.MutableMatrix4(m00, m01, m02, m03,
+                                                   m10, m11, m12, m13,
+                                                   m20, m21, m22, m23,
+                                                   m30, m31, m32, m33)
+
+  def copy(
+    m00: Double = this.m00,
+    m01: Double = this.m01,
+    m02: Double = this.m02,
+    m03: Double = this.m03,
+    m10: Double = this.m10,
+    m11: Double = this.m11,
+    m12: Double = this.m12,
+    m13: Double = this.m13,
+    m20: Double = this.m20,
+    m21: Double = this.m21,
+    m22: Double = this.m22,
+    m23: Double = this.m23,
+    m30: Double = this.m30,
+    m31: Double = this.m31,
+    m32: Double = this.m32,
+    m33: Double = this.m33
+  ) = new org.sgine.math.immutable.ImmutableMatrix4(m00, m01, m02, m03,
+                                                   m10, m11, m12, m13,
+                                                   m20, m21, m22, m23,
+                                                   m30, m31, m32, m33)
 }
 
-object Matrix4 {
+object ImmutableMatrix4 {
   val Zero = M4.Zero
   val Identity = M4.Identity
 }
