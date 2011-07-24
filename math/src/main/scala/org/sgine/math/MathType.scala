@@ -30,30 +30,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.math.mutable
+package org.sgine.math
 
-import org.sgine.math.Vector3
-import org.sgine.math.immutable.ImmutableVector3
+import annotation.tailrec
 
 /**
  * 
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class MutableVector3(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) extends Vector3 {
-  def apply(x: Double = this.x, y: Double = this.y, z: Double = this.z) = {
-    this.x = x
-    this.y = y
-    this.z = z
+trait MathType extends Traversable[Double] {
+  /**
+   * True if this type is mutable.
+   */
+  def isMutable: Boolean
 
-    this
+  /**
+   * Converts this to a mutable type if it is not already. Calling this on an already mutable type simply returns the
+   * same instance.
+   */
+  def toMutable: MathType
+
+  /**
+   * Converts this to an immutable type if it is not already. Calling this on an already immutable type simply returns
+   * the same instance.
+   */
+  def toImmutable: MathType
+  def apply(index: Int): Double
+
+  final def isImmutable = !isMutable
+
+  final def foreach[U](f: Double => U) = forIndexed(0, f)
+
+  @tailrec
+  private def forIndexed[U](index: Int, f: Double => U): Unit = {
+    f(apply(index))
+    if (index < size - 1) forIndexed(index + 1, f)
   }
-
-  def mutable = this
-
-  def immutable = new ImmutableVector3(x, y, z)
-
-  def copy(x: Double = this.x, y: Double = this.y, z: Double = this.z) = new MutableVector3(x, y, z)
-
-  def isMutable = true
 }
