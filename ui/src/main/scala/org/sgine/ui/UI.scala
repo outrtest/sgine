@@ -37,6 +37,9 @@ import org.sgine.render.{RenderApplication, Renderer}
 import org.sgine.scene.ContainerView
 import org.sgine.Updatable
 import org.sgine.math.Matrix4
+import org.sgine.input.Mouse
+import org.sgine.event.EventHandler
+import org.sgine.input.event.MouseEvent
 
 /**
  * 
@@ -46,6 +49,7 @@ import org.sgine.math.Matrix4
 class UI extends Container {
   val updatableView = new ImmutableProperty(new ContainerView[Updatable](this))
   val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
+  val boundingView = new ImmutableProperty(new ContainerView[MatrixComponent](this))    // TODO: switch to BoundingComponent
   val renderer: Property[Renderer] = new MutableProperty[Renderer]()
 
   /**
@@ -70,6 +74,16 @@ class UI extends Container {
   }
 
   resolution(screenSize._1, screenSize._2)
+
+  Mouse.mouseEvent += EventHandler()(processMouseEvent _)
+
+  private def processMouseEvent(evt: MouseEvent) = {
+    boundingView().foreach(pickTest)
+  }
+
+  private val pickTest = (mc: MatrixComponent) => {
+//    val origin = 
+  }
 
   private object renderApplication extends RenderApplication {
     private val updateComponent = (u: Updatable) => u.update()
