@@ -65,6 +65,16 @@ trait Vector3 extends MathType {
 }
 
 object Vector3 {
+  lazy val Zero = immutable(0.0, 0.0, 0.0)
+  lazy val One = immutable(1.0, 1.0, 1.0)
+  lazy val NegativeOne = immutable(-1.0, -1.0, -1.0)
+  lazy val X = immutable(1.0, 0.0, 0.0)
+  lazy val NegativeX = immutable(-1.0, 0.0, 0.0)
+  lazy val Y = immutable(0.0, 1.0, 0.0)
+  lazy val NegativeY = immutable(0.0, -1.0, 0.0)
+  lazy val Z = immutable(0.0, 0.0, 1.0)
+  lazy val NegativeZ = immutable(0.0, 0.0, -1.0)
+
   def mutable(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): Vector3 = new MutableVector3(x, y, z)
 
   def immutable(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0): Vector3 = new ImmutableVector3(x, y, z)

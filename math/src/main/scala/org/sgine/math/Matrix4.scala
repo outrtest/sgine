@@ -383,8 +383,8 @@ trait Matrix4 extends MathType {
 }
 
 object Matrix4 {
-  val Zero = new ImmutableMatrix4()
-  val Identity = new ImmutableMatrix4(m00 = 1.0, m11 = 1.0, m22 = 1.0, m33 = 1.0)
+  lazy val Zero = new ImmutableMatrix4()
+  lazy val Identity = new ImmutableMatrix4(m00 = 1.0, m11 = 1.0, m22 = 1.0, m33 = 1.0)
 
   /**
    * Creates a new java.nio.DoubleBuffer capable of storing a Matrix4
