@@ -78,6 +78,27 @@ trait Vector4 extends MathType {
 
   def multiply(value: Double) = apply(x * value, y * value, z * value, w * value)
 
+  def multiply(m: Matrix4) = {
+    apply(
+      x * m.m00 + y * m.m10 + z * m.m20 + w * m.m30,
+      x * m.m01 + y * m.m11 + z * m.m21 + w * m.m31,
+      x * m.m02 + y * m.m12 + z * m.m22 + w * m.m32,
+      x * m.m03 + y * m.m13 + z * m.m23 + w * m.m33
+    )
+  }
+
+  def -(v: Vector4) = apply(x - v.x, y - v.y, z - v.z, w - v.w)
+
+  def matrixColumn(column: Int, matrix: Matrix4) = {
+    val start = column * 4
+    apply(matrix(start), matrix(start + 1), matrix(start + 2), matrix(start + 3))
+  }
+
+  def matrixRow(row: Int, matrix: Matrix4) = {
+    val offset = row
+    apply(matrix(offset), matrix(offset + 4), matrix(offset + 8), matrix(offset + 12))
+  }
+
   def lengthSquared() = x * x + y * y + z * z + w * w
 }
 
