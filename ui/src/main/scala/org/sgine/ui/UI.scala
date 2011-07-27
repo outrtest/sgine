@@ -36,10 +36,10 @@ import org.sgine.property.{MutableProperty, Property, ImmutableProperty}
 import org.sgine.render.{RenderApplication, Renderer}
 import org.sgine.scene.ContainerView
 import org.sgine.Updatable
-import org.sgine.math.Matrix4
 import org.sgine.input.Mouse
 import org.sgine.event.EventHandler
 import org.sgine.input.event.MouseEvent
+import org.sgine.math.{Vector4, Matrix4}
 
 /**
  * 
@@ -78,11 +78,18 @@ class UI extends Container {
   Mouse.mouseEvent += EventHandler()(processMouseEvent _)
 
   private def processMouseEvent(evt: MouseEvent) = {
-    boundingView().foreach(pickTest)
-  }
+    val pickTest = (mc: MatrixComponent) => {
+    }
 
-  private val pickTest = (mc: MatrixComponent) => {
-//    val origin = 
+    val nearPoint = Vector4.immutable(evt.x, evt.y, 0.0, 1.0).multiply(camera.inverseViewProjection)
+    val cameraPosition = Vector4.Zero.matrixColumn(3, camera.view.invert())
+    val rayDirection = nearPoint - cameraPosition
+    println("Event: " + evt)
+    println("\tNear Point: " + nearPoint)
+    println("\tCamera Position: " + cameraPosition)
+    println("\tRay Direction: " + rayDirection)
+
+    boundingView().foreach(pickTest)
   }
 
   private object renderApplication extends RenderApplication {
