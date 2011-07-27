@@ -48,6 +48,6 @@ class Camera {
     m03 = 0.0, m13 = 0.0, m23 = -1.0100502512562815, m33 = 1.0
   )
 
-  private val viewProjection = projection.mult(view)
-  private val inverseViewProjection = projection.invert().mult(view.invert())
+  val viewProjection = projection.mult(view)
+  val inverseViewProjection = viewProjection.invert()
 }
