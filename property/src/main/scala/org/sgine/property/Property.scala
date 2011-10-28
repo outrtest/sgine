@@ -43,7 +43,7 @@ import org.sgine.event.ChangeEventSupport
  * @see MutableProperty
  */
 trait Property[T] extends (() => T) with Element with ChangeEventSupport[T] {
-  implicit val manifest: Manifest[T]
+  implicit def manifest: Manifest[T]
 
   def name = parent() match {
     case pc: PropertyContainer => pc.name(this)

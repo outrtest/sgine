@@ -49,11 +49,12 @@ import org.sgine.scene.Element
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class MutableProperty[T](p: Listenable = null)(implicit val manifest: Manifest[T]) extends Property[T]
-with ((T) => Any)
-with ValidationFailEventSupport
-with Bindable[T]
-with Transactable[T] {
+class MutableProperty[T](p: Listenable = null)(implicit val manifest: Manifest[T])
+    extends Property[T]
+    with ((T) => Any)
+    with ValidationFailEventSupport
+    with Bindable[T]
+    with Transactable[T] {
   Element.assignParent(this, p)
 
   lazy private val ref = new AtomicReference[T]
@@ -99,32 +100,42 @@ with Transactable[T] {
   }
 
   def value_=(v: T) = apply(v)
-  
+
   def :=(v: T) = apply(v)
 
   def apply() = {
     if (default && defaultFunction != null) {
       defaultFunction()
-    } else if (getter != null) {
+    }
+    else if (getter != null) {
       getter()
-    } else if (isTransaction) {
+    }
+    else if (isTransaction) {
       transactionValue
-    } else {
+    }
+    else {
       v
     }
   }
 
   def apply(v: T) = {
     if (isValid(v)) {
-      val value = if (filter != null) filter(v) else v
+      val value = if (filter != null) {
+        filter(v)
+      }
+      else {
+        v
+      }
       val oldValue = if (setter != null) {
         val oldValue = getter()
         setter(value)
         oldValue
-      } else if (isTransaction) {
+      }
+      else if (isTransaction) {
         transactionValue = value
         this.v
-      } else {
+      }
+      else {
         val oldValue = this.v
         this.v = value
         oldValue
@@ -163,7 +174,8 @@ with Transactable[T] {
       }
       validations.foreach(validate)
       !failure
-    } else {
+    }
+    else {
       true
     }
   }
