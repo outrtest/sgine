@@ -1,7 +1,7 @@
 package org.sgine.ui
 
-import com.badlogic.gdx.{Gdx, ApplicationListener}
-import org.sgine.property.{PropertyParent, Property}
+import com.badlogic.gdx.ApplicationListener
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -10,22 +10,26 @@ import org.sgine.property.{PropertyParent, Property}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class UI extends PropertyParent {
+class UI extends Container with DelayedInit {
+  private var initialize: () => Unit = _
+
   /**
    * Window title
    */
-  val title = Property[String](getClass.getSimpleName)
+  def title = getClass.getSimpleName
+
   /**
    * Window width
    */
-  val width = Property[Int](1024)
+  def width = 1024
+
   /**
    * Window height
    */
-  val height = Property[Int](768)
+  def height = 768
 
-  title.onChange {
-    if (Gdx.graphics != null) Gdx.graphics.setTitle(title())
+  def delayedInit(x: => Unit) = {
+    initialize = () => x
   }
 
   final def main(args: Array[String]): Unit = {
@@ -37,20 +41,29 @@ class UI extends PropertyParent {
       classOf[Int],
       classOf[Boolean])
     constructor.newInstance(listener,
-      title.value,
-      width.value.asInstanceOf[AnyRef],
-      height.value.asInstanceOf[AnyRef],
+      title,
+      width.asInstanceOf[AnyRef],
+      height.asInstanceOf[AnyRef],
       false.asInstanceOf[AnyRef])
   }
 
   private object listener extends ApplicationListener {
+    lazy val batch = new SpriteBatch()
+
     def create() = {
+      Component.batch.set(batch)
+      if (initialize != null) {
+        initialize()
+      }
     }
 
     def resize(width: Int, height: Int) = {
     }
 
     def render() = {
+      batch.begin()
+      UI.this.render()
+      batch.end()
     }
 
     def pause() = {
