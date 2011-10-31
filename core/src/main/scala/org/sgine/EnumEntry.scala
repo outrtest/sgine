@@ -14,4 +14,6 @@ trait EnumEntry[T] extends NamedChild {
     case c: Combined[_] => c.equals(this)
     case _ => super.equals(obj)
   }
+
+  override def toString = "%s.%s(%s)".format(parent.name, name, ordinal)
 }

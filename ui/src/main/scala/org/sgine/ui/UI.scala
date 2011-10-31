@@ -1,7 +1,9 @@
 package org.sgine.ui
 
-import com.badlogic.gdx.ApplicationListener
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.{InputProcessor, Gdx, ApplicationListener}
+import org.sgine.input.{Key, Keyboard}
+import org.sgine.input.event.{KeyUpEvent, KeyTypeEvent, KeyDownEvent}
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -47,11 +49,12 @@ class UI extends Container with DelayedInit {
       false.asInstanceOf[AnyRef])
   }
 
-  private object listener extends ApplicationListener {
+  private object listener extends ApplicationListener with InputProcessor {
     lazy val batch = new SpriteBatch()
 
     def create() = {
       Component.batch.set(batch)
+      Gdx.input.setInputProcessor(this)
       if (initialize != null) {
         initialize()
       }
@@ -74,6 +77,31 @@ class UI extends Container with DelayedInit {
 
     def dispose() = {
     }
+
+    def keyDown(keyCode: Int) = {
+      Keyboard.keyEvent.fire(KeyDownEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      true
+    }
+
+    def keyTyped(c: Char) = {
+      Keyboard.keyEvent.fire(KeyTypeEvent(c))
+      true
+    }
+
+    def keyUp(keyCode: Int) = {
+      Keyboard.keyEvent.fire(KeyUpEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      true
+    }
+
+    def scrolled(amount: Int) = false
+
+    def touchDown(x: Int, y: Int, pointer: Int, button: Int) = false
+
+    def touchDragged(x: Int, y: Int, pointer: Int) = false
+
+    def touchMoved(x: Int, y: Int) = false
+
+    def touchUp(x: Int, y: Int, pointer: Int, button: Int) = false
   }
 
 }

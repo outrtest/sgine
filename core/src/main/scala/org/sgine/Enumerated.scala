@@ -13,6 +13,8 @@ import util.Random
 trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
   private lazy val r = new Random()
 
+  lazy val name = getClass.getSimpleName.replaceAll("\\$", "")
+
   val values = new NamingFilter[E](this)
 
   def random = values(r.nextInt(values.length))
