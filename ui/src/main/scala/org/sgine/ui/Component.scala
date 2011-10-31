@@ -13,6 +13,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 trait Component extends PropertyParent {
   val visible = Property[Boolean](true)
 
+  object location extends PropertyParent {
+    val x = Property[Double]()
+    val y = Property[Double]()
+  }
+
+  object size extends PropertyParent {
+    val width = Property[Double]()
+    val height = Property[Double]()
+  }
+
   def render(): Unit
 }
 

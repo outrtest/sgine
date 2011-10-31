@@ -34,19 +34,22 @@ object SgineBuild extends Build {
         Seq(dir / "concurrent" / "src" / "main" / "scala",
           dir / "core" / "src" / "main" / "scala",
           dir / "event" / "src" / "main" / "scala",
+          dir / "input" / "src" / "main" / "scala",
           dir / "property" / "src" / "main" / "scala",
           dir / "reflect" / "src" / "main" / "scala",
           dir / "scene" / "src" / "main" / "scala",
           dir / "ui" / "src" / "main" / "scala"
         )
     })
-    .aggregate(concurrent, core, event, property, reflect, scene, ui)
+    .aggregate(concurrent, core, event, input, property, reflect, scene, ui)
   lazy val concurrent = Project("concurrent", file("concurrent"), settings = createSettings("sgine-concurrent"))
     .dependsOn(core, reflect)
   lazy val core = Project("core", file("core"), settings = createSettings("sgine-core"))
     .dependsOn(reflect)
   lazy val event = Project("event", file("event"), settings = createSettings("sgine-event"))
     .dependsOn(concurrent, core)
+  lazy val input = Project("input", file("input"), settings = createSettings("sgine-input"))
+    .dependsOn(core, event)
   lazy val property = Project("property", file("property"), settings = createSettings("sgine-property"))
     .dependsOn(event, scene)
   lazy val reflect = Project("reflect", file("reflect"), settings = createSettings("sgine-reflect"))
@@ -54,5 +57,5 @@ object SgineBuild extends Build {
   lazy val scene = Project("scene", file("scene"), settings = createSettings("sgine-scene"))
     .dependsOn(event)
   lazy val ui = Project("ui", file("ui"), settings = createSettings("sgine-ui"))
-    .dependsOn(core, event, property, scene)
+    .dependsOn(core, event, input, property, scene)
 }
