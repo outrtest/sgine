@@ -9,7 +9,7 @@ import org.sgine._
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Image extends Component {
+class Image extends RenderableComponent {
   val texture = Property[Texture]()
 
   object textureRegion extends PropertyParent {
