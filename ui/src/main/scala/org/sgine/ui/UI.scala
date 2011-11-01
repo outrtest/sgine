@@ -6,6 +6,7 @@ import org.sgine.input.{Key, Keyboard}
 import org.sgine.input.event.{KeyUpEvent, KeyTypeEvent, KeyDownEvent}
 import org.sgine.property.ImmutableProperty
 import org.sgine.scene.ContainerView
+import com.badlogic.gdx.graphics.GL10
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -68,6 +69,7 @@ class UI extends Container with DelayedInit {
     }
 
     def render() = {
+      Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT) // TODO: optional?
       batch.begin()
       rendererView.value.foreach(renderRenderable)
       batch.end()
