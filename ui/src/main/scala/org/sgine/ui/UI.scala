@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.{InputProcessor, Gdx, ApplicationListener}
 import org.sgine.input.{Key, Keyboard}
 import org.sgine.input.event.{KeyUpEvent, KeyTypeEvent, KeyDownEvent}
+import org.sgine.property.ImmutableProperty
+import org.sgine.scene.ContainerView
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -13,12 +15,14 @@ import org.sgine.input.event.{KeyUpEvent, KeyTypeEvent, KeyDownEvent}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class UI extends Container with DelayedInit {
+  lazy val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
+
   private var initialize: () => Unit = _
 
   /**
    * Window title
    */
-  def title = getClass.getSimpleName
+  def title = getClass.getSimpleName.replaceAll("\\$", "")
 
   /**
    * Window width
@@ -65,9 +69,11 @@ class UI extends Container with DelayedInit {
 
     def render() = {
       batch.begin()
-      UI.this.render()
+      rendererView.value.foreach(renderRenderable)
       batch.end()
     }
+
+    private val renderRenderable = (renderable: RenderableComponent) => renderable.render()
 
     def pause() = {
     }
@@ -79,7 +85,8 @@ class UI extends Container with DelayedInit {
     }
 
     def keyDown(keyCode: Int) = {
-      Keyboard.keyEvent.fire(KeyDownEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      Keyboard.keyEvent.fire(KeyDownEvent(Key.byKeyCode(keyCode)
+          .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 
@@ -89,7 +96,8 @@ class UI extends Container with DelayedInit {
     }
 
     def keyUp(keyCode: Int) = {
-      Keyboard.keyEvent.fire(KeyUpEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      Keyboard.keyEvent.fire(KeyUpEvent(Key.byKeyCode(keyCode)
+          .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 

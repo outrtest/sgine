@@ -4,7 +4,6 @@ import org.sgine.property.{PropertyParent, Property}
 import java.lang.ThreadLocal
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-
 /**
  *
  *
@@ -23,7 +22,6 @@ trait Component extends PropertyParent {
     val height = Property[Double]()
   }
 
-  def render(): Unit
 }
 
 object Component {
