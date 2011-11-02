@@ -22,6 +22,8 @@ trait Component extends PropertyParent {
     val height = Property[Double]()
   }
 
+  def destroy() = {
+  }
 }
 
 object Component {

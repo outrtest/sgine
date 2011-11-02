@@ -15,6 +15,10 @@ object Property {
     p
   }
 
+  def apply[T](f: => T) = new Property[T] {
+    def apply() = f
+  }
+
   def volatile[T]() = new StandardProperty[T] with VolatileVariableBacking[T]
 
   def atomic[T]() = new StandardProperty[T] with AtomicBacking[T]

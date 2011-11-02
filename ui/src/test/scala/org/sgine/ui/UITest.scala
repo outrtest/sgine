@@ -1,6 +1,7 @@
 package org.sgine.ui
 
 import org.sgine._
+import input.event.KeyTypeEvent
 import org.sgine.input.Keyboard
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.Texture
@@ -13,9 +14,9 @@ import com.badlogic.gdx.graphics.Texture
 object UITest extends UI {
   Texture.setEnforcePotImages(false)
 
-  val image = new Image()
-  image.load(Resource("backdrop_mountains.jpg"))
-  contents += image
+  //  val image = new Image()
+  //  image.load(Resource("backdrop_mountains.jpg"))
+  //  contents += image
 
   val label = new Label()
   label.location.x := 300.0
@@ -24,7 +25,13 @@ object UITest extends UI {
   label.font := new BitmapFont(Resource("arial18.fnt"), false)
   contents += label
 
+  val media = new Media()
+  media.resource := "test.avi"
+  contents += media
+  media.play()
+
   Keyboard.keyEvent.synchronous {
+    case evt: KeyTypeEvent if (evt.character == 'p') => media.pause()
     case evt => println("KeyEvent: %s".format(evt))
   }
 }
