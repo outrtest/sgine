@@ -2,11 +2,13 @@ package org.sgine.ui
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.{InputProcessor, Gdx, ApplicationListener}
-import org.sgine.input.{Key, Keyboard}
-import org.sgine.input.event.{KeyUpEvent, KeyTypeEvent, KeyDownEvent}
 import org.sgine.property.ImmutableProperty
 import org.sgine.scene.ContainerView
 import com.badlogic.gdx.graphics.GL10
+import org.sgine.input.{Mouse, MouseButton, Key, Keyboard}
+import org.sgine.input.event._
+
+import scala.math._
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -103,15 +105,46 @@ class UI extends Container with DelayedInit {
       true
     }
 
-    def scrolled(amount: Int) = false
+    def scrolled(amount: Int) = {
+      Mouse.mouseEvent.fire(MouseWheelEvent(amount, Mouse.x(), Mouse.x(), 0.0, 0.0))
+      true
+    }
 
-    def touchDown(x: Int, y: Int, pointer: Int, button: Int) = false
+    def touchDown(x: Int, y: Int, pointer: Int, button: Int) = {
+      val dx = abs(x - Mouse.x())
+      val dy = abs(y - Mouse.y())
+      Mouse.mouseEvent.fire(MousePressEvent(MouseButton(button), x, y, dx, dy))
+      Mouse.x := x
+      Mouse.y := y
+      true
+    }
 
-    def touchDragged(x: Int, y: Int, pointer: Int) = false
+    def touchDragged(x: Int, y: Int, pointer: Int) = {
+      val dx = abs(x - Mouse.x())
+      val dy = abs(y - Mouse.y())
+      Mouse.mouseEvent.fire(MouseDragEvent(x, y, dx, dy))
+      Mouse.x := x
+      Mouse.y := y
+      true
+    }
 
-    def touchMoved(x: Int, y: Int) = false
+    def touchMoved(x: Int, y: Int) = {
+      val dx = abs(x - Mouse.x())
+      val dy = abs(y - Mouse.y())
+      Mouse.mouseEvent.fire(MouseMoveEvent(x, y, dx, dy))
+      Mouse.x := x
+      Mouse.y := y
+      true
+    }
 
-    def touchUp(x: Int, y: Int, pointer: Int, button: Int) = false
+    def touchUp(x: Int, y: Int, pointer: Int, button: Int) = {
+      val dx = abs(x - Mouse.x())
+      val dy = abs(y - Mouse.y())
+      Mouse.mouseEvent.fire(MouseReleaseEvent(MouseButton(button), x, y, dx, dy))
+      Mouse.x := x
+      Mouse.y := y
+      true
+    }
   }
 
 }

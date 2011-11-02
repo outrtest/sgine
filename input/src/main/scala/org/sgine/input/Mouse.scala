@@ -35,20 +35,25 @@ package org.sgine.input
 import event.MouseEventSupport
 import org.sgine.event.Listenable
 import org.sgine.{Enumerated, EnumEntry}
+import org.sgine.property.Property
 
 /**
  * Mouse represents the singleton of the mouse object.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
+sealed class Mouse extends EnumEntry[Mouse]
+
 object Mouse extends Listenable with Enumerated[Mouse] with MouseEventSupport {
+  val x = Property[Int](0)
+  val y = Property[Int](0)
+
   val Move = new Mouse
   val Press = new Mouse
   val Release = new Mouse
+  val Drag = new Mouse
   val Over = new Mouse
   val Out = new Mouse
   val Click = new Mouse
   val Wheel = new Mouse
 }
-
-sealed class Mouse extends EnumEntry[Mouse]
