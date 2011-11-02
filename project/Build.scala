@@ -16,7 +16,8 @@ object SgineBuild extends Build {
         val nexus = "http://nexus.scala-tools.org/content/repositories/"
         if (version.trim.endsWith("SNAPSHOT")) {
           Some("snapshots" at nexus + "snapshots/")
-        } else {
+        }
+        else {
           Some("releases" at nexus + "releases/")
         }
     },
@@ -28,7 +29,7 @@ object SgineBuild extends Build {
   private def createSettings(_name: String) = baseSettings ++ Seq(name := _name)
 
   lazy val root = Project("root", file("."), settings = createSettings("sgine-root"))
-    .settings(publishArtifact in Compile := false, publishArtifact in Test := false,
+      .settings(publishArtifact in Compile := false, publishArtifact in Test := false,
     unmanagedSourceDirectories in Compile <<= baseDirectory apply {
       dir =>
         Seq(dir / "concurrent" / "src" / "main" / "scala",
@@ -41,21 +42,23 @@ object SgineBuild extends Build {
           dir / "ui" / "src" / "main" / "scala"
         )
     })
-    .aggregate(concurrent, core, event, input, property, reflect, scene, ui)
-  lazy val concurrent = Project("concurrent", file("concurrent"), settings = createSettings("sgine-concurrent"))
-    .dependsOn(core, reflect)
+      .aggregate(concurrent, core, event, input, property, reflect, scene, ui)
+  lazy val concurrent = Project("concurrent", file("concurrent"),
+    settings = createSettings("sgine-concurrent"))
+      .dependsOn(core, reflect)
   lazy val core = Project("core", file("core"), settings = createSettings("sgine-core"))
-    .dependsOn(reflect)
+      .dependsOn(reflect)
   lazy val event = Project("event", file("event"), settings = createSettings("sgine-event"))
-    .dependsOn(concurrent, core)
+      .dependsOn(concurrent, core)
   lazy val input = Project("input", file("input"), settings = createSettings("sgine-input"))
-    .dependsOn(core, event)
-  lazy val property = Project("property", file("property"), settings = createSettings("sgine-property"))
-    .dependsOn(event, scene)
+      .dependsOn(core, event, property)
+  lazy val property = Project("property", file("property"),
+    settings = createSettings("sgine-property"))
+      .dependsOn(event, scene)
   lazy val reflect = Project("reflect", file("reflect"), settings = createSettings("sgine-reflect"))
-    .settings(libraryDependencies += "com.thoughtworks.paranamer" % "paranamer" % "2.4")
+      .settings(libraryDependencies += "com.thoughtworks.paranamer" % "paranamer" % "2.4")
   lazy val scene = Project("scene", file("scene"), settings = createSettings("sgine-scene"))
-    .dependsOn(event)
+      .dependsOn(event)
   lazy val ui = Project("ui", file("ui"), settings = createSettings("sgine-ui"))
-    .dependsOn(core, event, input, property, scene)
+      .dependsOn(core, event, input, property, scene)
 }
