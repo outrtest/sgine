@@ -32,8 +32,8 @@
 
 package org.sgine.input.event
 
-import org.sgine.input.Mouse
 import org.sgine.event.Event
+import org.sgine.input.{MouseButton, Mouse}
 
 /**
  * MouseEvents
@@ -42,60 +42,41 @@ import org.sgine.event.Event
  */
 trait MouseEvent extends Event {
   def state: Mouse
+
   def x: Double
+
   def y: Double
+
   def deltaX: Double
+
   def deltaY: Double
 }
 
-object MouseEvent {
-  def apply(button: Int, state: Boolean, wheel: Int, x: Double, y: Double, dx: Double, dy: Double): MouseEvent = {
-    if (button == -1) {
-      // Not a button event
-      if (wheel != 0) {
-        // Wheel
-        MouseWheelEvent(wheel, x, y, dx, dy)
-      } else {
-        // Move
-        MouseMoveEvent(x, y, dx, dy)
-      }
-    } else if (button == -2) {
-      // MouseOver
-      MouseOverEvent(x, y, dx, dy)
-    } else if (button == -3) {
-      // MouseOut
-      MouseOutEvent(x, y, dx, dy)
-    } else {
-      // Button event
-      if (state) {
-        // Pressed
-        MousePressEvent(button, x, y, dx, dy)
-      } else {
-        // Released
-        MouseReleaseEvent(button, x, y, dx, dy)
-      }
-    }
-  }
-}
-
 trait MouseButtonEvent extends MouseEvent {
-  def button: Int
+  def button: MouseButton
 }
 
-case class MousePressEvent(button: Int, x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseButtonEvent {
+case class MousePressEvent(button: MouseButton, x: Double, y: Double, deltaX: Double,
+    deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Press
 }
 
-case class MouseReleaseEvent(button: Int, x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseButtonEvent {
+case class MouseReleaseEvent(button: MouseButton, x: Double, y: Double, deltaX: Double,
+    deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Release
 }
 
-case class MouseClickEvent(button: Int, x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseButtonEvent {
+case class MouseClickEvent(button: MouseButton, x: Double, y: Double, deltaX: Double,
+    deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Click
 }
 
 case class MouseMoveEvent(x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Move
+}
+
+case class MouseDragEvent(x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
+  val state = Mouse.Drag
 }
 
 case class MouseOverEvent(x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
@@ -106,6 +87,7 @@ case class MouseOutEvent(x: Double, y: Double, deltaX: Double, deltaY: Double) e
   val state = Mouse.Out
 }
 
-case class MouseWheelEvent(wheel: Int, x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
+case class MouseWheelEvent(wheel: Int, x: Double, y: Double, deltaX: Double, deltaY: Double)
+    extends MouseEvent {
   val state = Mouse.Wheel
 }

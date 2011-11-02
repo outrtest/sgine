@@ -12,17 +12,22 @@ trait NamedChild {
 
   protected def parent: NamingParent
 
-  protected lazy val companion = Class.forName(typeClass.getName + "$").getField("MODULE$").get(this)
+  protected lazy val companion = Class.forName(typeClass.getName + "$").getField("MODULE$")
+      .get(this)
 
   private lazy val method = parent.method(this)
 
   lazy val name = method.name
-  lazy val ordinal = determineOrdinal()
+
+  def ordinal = _ordinal
+
+  private lazy val _ordinal = determineOrdinal()
 
   private def findTypeClass(clazz: Class[_] = getClass): Class[_] = {
     if (clazz.getName.indexOf("$anon$") != -1) {
       findTypeClass(clazz.getSuperclass)
-    } else {
+    }
+    else {
       clazz
     }
   }
@@ -30,14 +35,17 @@ trait NamedChild {
   private def determineOrdinal(count: Int = 0, list: List[EnhancedMethod] = parent.fields): Int = {
     if (list.isEmpty) {
       -1
-    } else {
+    }
+    else {
       val method = list.head
       if (this.method == method) {
         count
-      } else {
+      }
+      else {
         val index = if (typeClass.isAssignableFrom(method.returnType.`type`.javaClass)) {
           count + 1
-        } else {
+        }
+        else {
           count
         }
         determineOrdinal(index, list.tail)
