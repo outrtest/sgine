@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 class Label extends RenderableComponent {
   val text = Property[String]()
   val font = Property[BitmapFont]()
+  val wrapWidth = Property[Double](0.0)
 
   text.onChange {
     updateSize()
@@ -18,12 +19,21 @@ class Label extends RenderableComponent {
   font.onChange {
     updateSize()
   }
+  wrapWidth.onChange {
+    updateSize()
+  }
 
   def render() = {
     val text = this.text()
     val font = this.font()
     if (text != null && !text.isEmpty && font != null) {
-      font.draw(Component.batch.get(), text, location.x().toFloat, location.y().toFloat)
+      if (wrapWidth() > 0.0) {
+        font.drawWrapped(Component.batch.get(), text, location.x().toFloat, location.y().toFloat,
+          wrapWidth().toFloat)
+      }
+      else {
+        font.draw(Component.batch.get(), text, location.x().toFloat, location.y().toFloat)
+      }
     }
   }
 
@@ -31,7 +41,13 @@ class Label extends RenderableComponent {
     val text = this.text()
     val font = this.font()
     if (text != null && !text.isEmpty && font != null) {
-      val bounds = font.getBounds(text)
+      val wrapWidth = this.wrapWidth()
+      val bounds = if (wrapWidth > 0.0) {
+        font.getWrappedBounds(text, wrapWidth.toFloat)
+      }
+      else {
+        font.getBounds(text)
+      }
       size.width := bounds.width
       size.height := bounds.height
     }
