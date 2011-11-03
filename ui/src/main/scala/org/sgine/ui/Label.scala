@@ -28,11 +28,12 @@ class Label extends RenderableComponent {
     val font = this.font()
     if (text != null && !text.isEmpty && font != null) {
       if (wrapWidth() > 0.0) {
-        font.drawWrapped(Component.batch.get(), text, location.x().toFloat, location.y().toFloat,
-          wrapWidth().toFloat)
+        font.drawWrapped(Component.batch.get(), text, location.x().toFloat,
+          location.y().toFloat + size.height().toFloat, wrapWidth().toFloat)
       }
       else {
-        font.draw(Component.batch.get(), text, location.x().toFloat, location.y().toFloat)
+        font.draw(Component.batch.get(), text, location.x().toFloat,
+          location.y().toFloat + size.height().toFloat)
       }
     }
   }

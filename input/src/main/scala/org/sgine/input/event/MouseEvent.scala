@@ -50,6 +50,8 @@ trait MouseEvent extends Event {
   def deltaX: Double
 
   def deltaY: Double
+
+  def duplicate(): MouseEvent
 }
 
 trait MouseButtonEvent extends MouseEvent {
@@ -59,35 +61,51 @@ trait MouseButtonEvent extends MouseEvent {
 case class MousePressEvent(button: MouseButton, x: Double, y: Double, deltaX: Double,
     deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Press
+
+  def duplicate() = copy()
 }
 
 case class MouseReleaseEvent(button: MouseButton, x: Double, y: Double, deltaX: Double,
     deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Release
+
+  def duplicate() = copy()
 }
 
 case class MouseClickEvent(button: MouseButton, x: Double, y: Double, deltaX: Double,
     deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Click
+
+  def duplicate() = copy()
 }
 
 case class MouseMoveEvent(x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Move
+
+  def duplicate() = copy()
 }
 
 case class MouseDragEvent(x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Drag
+
+  def duplicate() = copy()
 }
 
 case class MouseOverEvent(x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Over
+
+  def duplicate() = copy()
 }
 
 case class MouseOutEvent(x: Double, y: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Out
+
+  def duplicate() = copy()
 }
 
 case class MouseWheelEvent(wheel: Int, x: Double, y: Double, deltaX: Double, deltaY: Double)
     extends MouseEvent {
   val state = Mouse.Wheel
+
+  def duplicate() = copy()
 }

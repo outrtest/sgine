@@ -18,6 +18,7 @@ import scala.math._
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class UI extends Container with DelayedInit {
+  lazy val componentsView = new ImmutableProperty(new ContainerView[Component](this))
   lazy val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
 
   private var initialize: () => Unit = _
@@ -37,8 +38,39 @@ class UI extends Container with DelayedInit {
    */
   def height = 768
 
+  lazy val pickFunction = (current: Component, c: Component) => if (c
+      .hitTest(Mouse.x(), abs(Mouse.y() - height))) {
+    c
+  }
+  else {
+    current
+  }
+
+  private def pickComponents(evt: MouseEvent, components: Iterable[Component]): Unit = {
+    val x = evt.x
+    val y = abs(evt.y - height)
+    val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
+    if (hit != null) {
+      hit.mouseEvent.fire(evt.duplicate())
+    }
+    if (evt.isInstanceOf[MouseMoveEvent] && Component.mouse() != hit) {
+      val old = Component.mouse()
+      Component.mouse := hit
+      if (old != null) {
+        old.mouseEvent.fire(MouseOutEvent(evt.x, evt.y, evt.deltaX, evt.deltaY))
+      }
+      if (hit != null) {
+        hit.mouseEvent.fire(MouseOverEvent(evt.x, evt.y, evt.deltaX, evt.deltaY))
+      }
+    }
+  }
+
   def delayedInit(x: => Unit) = {
     initialize = () => x
+
+    Mouse.mouseEvent.synchronous {
+      case evt => pickComponents(evt, componentsView())
+    }
   }
 
   final def main(args: Array[String]): Unit = {
@@ -131,6 +163,7 @@ class UI extends Container with DelayedInit {
     def touchMoved(x: Int, y: Int) = {
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
+      // TODO: support deferred mouse events
       Mouse.mouseEvent.fire(MouseMoveEvent(x, y, dx, dy))
       Mouse.x := x
       Mouse.y := y
