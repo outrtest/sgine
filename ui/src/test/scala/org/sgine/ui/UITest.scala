@@ -28,14 +28,16 @@ object UITest extends UI {
   text.location.y := 300.0
   text.wrapWidth := 150.0
   text.text :=
-      "This is lots of text that should wrap to multiple lines properly. Let's see if it does.\n\nThis should have broken to a new line...did it?"
+    "This is lots of text that should wrap to multiple lines properly. Let's see if it does.\n\nThis should have broken to a new line...did it?"
   text.font := label.font()
   contents += text
 
-  //  val media = new Media()
-  //  media.resource := "test.avi"
-  //  contents += media
-  //  media.play()
+  val media = new Media()
+  media.location.x := 400.0
+  media.location.y := 400.0
+  media.resource := "test.avi"
+  contents += media
+  media.play()
 
   //  Keyboard.keyEvent.synchronous {
   //    case evt: KeyTypeEvent if (evt.character == 'p') => media.pause()
