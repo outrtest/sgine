@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.{InputProcessor, Gdx, ApplicationListener}
 import org.sgine.property.ImmutableProperty
 import org.sgine.scene.ContainerView
-import com.badlogic.gdx.graphics.GL10
 import org.sgine.input.{Mouse, MouseButton, Key, Keyboard}
 import org.sgine.input.event._
 
 import scala.math._
+import com.badlogic.gdx.graphics.{Texture, GL10}
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -38,11 +38,9 @@ class UI extends Container with DelayedInit {
    */
   def height = 768
 
-  lazy val pickFunction = (current: Component, c: Component) => if (c
-      .hitTest(Mouse.x(), abs(Mouse.y() - height))) {
+  lazy val pickFunction = (current: Component, c: Component) => if (c.hitTest(Mouse.x(), abs(Mouse.y() - height))) {
     c
-  }
-  else {
+  } else {
     current
   }
 
@@ -66,6 +64,9 @@ class UI extends Container with DelayedInit {
   }
 
   def delayedInit(x: => Unit) = {
+    size.width := width
+    size.height := height
+
     initialize = () => x
 
     Mouse.mouseEvent.synchronous {
@@ -74,6 +75,8 @@ class UI extends Container with DelayedInit {
   }
 
   final def main(args: Array[String]): Unit = {
+    Texture.setEnforcePotImages(false) // No need to enforce power-of-two images
+
     // Work-around so we don't need LWJGL functionality in separate project
     val clazz = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplication")
     val constructor = clazz.getConstructor(classOf[ApplicationListener],
@@ -122,7 +125,7 @@ class UI extends Container with DelayedInit {
 
     def keyDown(keyCode: Int) = {
       Keyboard.keyEvent.fire(KeyDownEvent(Key.byKeyCode(keyCode)
-          .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+        .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 
@@ -133,7 +136,7 @@ class UI extends Container with DelayedInit {
 
     def keyUp(keyCode: Int) = {
       Keyboard.keyEvent.fire(KeyUpEvent(Key.byKeyCode(keyCode)
-          .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+        .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 

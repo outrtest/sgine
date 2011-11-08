@@ -3,6 +3,7 @@ package org.sgine.ui
 import com.badlogic.gdx.graphics.Texture
 import org.sgine.property._
 import org.sgine._
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 /**
  *
@@ -13,10 +14,10 @@ class Image extends RenderableComponent {
   val texture = Property[Texture]()
 
   object textureRegion extends PropertyParent {
-    val x = Property[Int]()
-    val y = Property[Int]()
-    val width = Property[Int]()
-    val height = Property[Int]()
+    val x = Property[Int](0)
+    val y = Property[Int](0)
+    val width = Property[Int](0)
+    val height = Property[Int](0)
   }
 
   texture.onChange {
@@ -36,8 +37,8 @@ class Image extends RenderableComponent {
     size.height := 480
   }
 
-  def render() = {
-    Component.batch.get().draw(texture,
+  protected def draw(batch: SpriteBatch) = {
+    batch.draw(texture,
       location.x().toFloat,
       location.y().toFloat,
       size.width().toFloat,

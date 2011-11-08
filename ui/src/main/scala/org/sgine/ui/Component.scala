@@ -15,13 +15,13 @@ trait Component extends PropertyParent with MouseEventSupport {
   val mouseEnabled = Property[Boolean](true)
 
   object location extends PropertyParent {
-    val x = Property[Double]()
-    val y = Property[Double]()
+    val x = Property[Double](0.0)
+    val y = Property[Double](0.0)
   }
 
   object size extends PropertyParent {
-    val width = Property[Double]()
-    val height = Property[Double]()
+    val width = Property[Double](0.0)
+    val height = Property[Double](0.0)
   }
 
   def hitTest(x: Double, y: Double) = {

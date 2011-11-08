@@ -6,6 +6,8 @@ import com.sun.jna.Memory
 import uk.co.caprica.vlcj.player.events.VideoOutputEventListener
 import uk.co.caprica.vlcj.player.{VideoTrackInfo, MediaPlayer, MediaPlayerFactory}
 import org.sgine.property.{MutableProperty, Property}
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import java.io.File
 
 /**
  *
@@ -15,9 +17,23 @@ import org.sgine.property.{MutableProperty, Property}
 class Media extends RenderableComponent {
   val resource = Property[String]()
   val loaded = Property[Boolean]()
+  val position = Property[Double] {
+    if (mediaPlayer != null) {
+      mediaPlayer.getPosition
+    } else {
+      0.0
+    }
+  }
 
   resource.onChange {
+    stop()
     load()
+
+    createMediaPlayer()
+    pixmap = new Pixmap(information.width(), information.height(), Pixmap.Format.RGBA8888)
+    texture = new Texture(pixmap)
+    //    mediaPlayer.playMedia(resource())
+    mediaPlayer.prepareMedia(resource())
   }
 
   @volatile private var texture: Texture = _
@@ -26,18 +42,16 @@ class Media extends RenderableComponent {
 
   def load() = Media.load(this)
 
-  def play() = {
-    stop()
-    load()
+  def snapshot(file: File) = mediaPlayer.saveSnapshot(file)
 
-    createMediaPlayer()
-    pixmap = new Pixmap(information.width(), information.height(), Pixmap.Format.RGBA8888)
-    texture = new Texture(pixmap)
-    mediaPlayer.playMedia(resource())
+  def play() = if (mediaPlayer != null) {
+    mediaPlayer.play()
   }
 
+  def setPosition(position: Double) = mediaPlayer.setPosition(position.toFloat)
+
   def pause() = if (mediaPlayer != null) {
-    mediaPlayer.pause()
+    mediaPlayer.setPause(true)
   }
 
   def stop() = {
@@ -95,13 +109,13 @@ class Media extends RenderableComponent {
     pixmap = null
   }
 
-  def render() = {
+  protected def draw(batch: SpriteBatch) = {
     if (updates) {
       updates = false
       texture.draw(pixmap, 0, 0)
     }
     if (texture != null) {
-      Component.batch.get().draw(texture, location.x().toFloat, location.y().toFloat)
+      batch.draw(texture, location.x().toFloat, location.y().toFloat)
     }
   }
 
@@ -115,7 +129,7 @@ class Media extends RenderableComponent {
 object Media {
   private var media: Media = _
 
-  private val factory = new MediaPlayerFactory()
+  private val factory = new MediaPlayerFactory("--no-video-title-show")
   private val mediaPlayer = Media.factory.newDirectMediaPlayer(1, 1, new RenderCallback {
     def display(nativeBuffer: Memory) = {
     }
