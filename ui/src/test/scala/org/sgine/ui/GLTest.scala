@@ -1,11 +1,10 @@
 package org.sgine.ui
 
-import org.lwjgl.opengl.GL11._
 import com.badlogic.gdx.{ApplicationListener, Gdx}
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
-import com.badlogic.gdx.graphics.GL11._
-import java.nio.{ByteOrder, ByteBuffer}
+import com.badlogic.gdx.graphics.GL10._
 import com.badlogic.gdx.graphics.{FPSLogger, OrthographicCamera, Texture}
+import render.ArrayBuffer
 
 object GLTest extends ApplicationListener {
 
@@ -37,7 +36,9 @@ object GLTest extends ApplicationListener {
 
     fps.log()
 
-    buffer.draw()
+    //    buffer.draw()
+    buffer.bind()
+    buffer.drawVertices()
   }
 
   def resize(p1: Int, p2: Int) = {
@@ -54,39 +55,5 @@ object GLTest extends ApplicationListener {
     Texture.setEnforcePotImages(false) // No need to enforce power-of-two images
 
     new LwjglApplication(this, "GLTest", 1024, 768, false)
-  }
-}
-
-class ArrayBuffer(vertices: Seq[Double]) {
-  lazy val id = init()
-  lazy val size = vertices.length * 4
-
-  import Gdx.{gl11 => gl}
-
-  private def init() = {
-    val id = ArrayBuffer.genBuffer()
-    gl.glBindBuffer(GL_ARRAY_BUFFER, id)
-    gl.glBufferData(GL_ARRAY_BUFFER, size, null, GL_STATIC_DRAW)
-    val buffer = ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder())
-    vertices.foreach(d => buffer.putFloat(d.toFloat))
-    buffer.flip()
-    gl.glBufferSubData(GL_ARRAY_BUFFER, 0, size, buffer)
-    id
-  }
-
-  def draw() = {
-    gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
-    gl.glEnableClientState(GL_VERTEX_ARRAY)
-    gl.glBindBuffer(GL_ARRAY_BUFFER, id)
-    gl.glVertexPointer(3, GL_FLOAT, 0, 0)
-    gl.glDrawArrays(GL_TRIANGLES, 0, vertices.size / 3)
-  }
-}
-
-object ArrayBuffer {
-  def genBuffer() = {
-    val array = new Array[Int](1)
-    Gdx.gl11.glGenBuffers(1, array, 0)
-    array(0)
   }
 }
