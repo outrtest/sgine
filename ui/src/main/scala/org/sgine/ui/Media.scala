@@ -6,7 +6,6 @@ import com.sun.jna.Memory
 import uk.co.caprica.vlcj.player.events.VideoOutputEventListener
 import uk.co.caprica.vlcj.player.{VideoTrackInfo, MediaPlayer, MediaPlayerFactory}
 import org.sgine.property.{MutableProperty, Property}
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import java.io.File
 
 /**
@@ -20,7 +19,8 @@ class Media extends RenderableComponent {
   val position = Property[Double] {
     if (mediaPlayer != null) {
       mediaPlayer.getPosition
-    } else {
+    }
+    else {
       0.0
     }
   }
@@ -81,41 +81,45 @@ class Media extends RenderableComponent {
     if (mediaPlayer != null) {
       mediaPlayer.release()
     }
-    mediaPlayer = Media.factory.newDirectMediaPlayer("RGBA", information.width(), information.height(), information.width() * 4, new RenderCallback {
-      def display(nativeBuffer: Memory) = {
-        if (pixmap != null) {
-          try {
-            val videoBuffer = (information.width() * information.height() * 4) + 32
-            val buffer = pixmap.getPixels
-            val b = nativeBuffer.getByteBuffer(0, videoBuffer)
-            buffer.clear()
-            b.position(b.limit() - 32) // Remove last 32 bytes
-            b.flip()
-            buffer.put(b)
-            buffer.flip()
-            updates = true
-          } catch {
-            case exc => {
-              exc.printStackTrace()
-              System.exit(1)
+    mediaPlayer = Media.factory
+        .newDirectMediaPlayer("RGBA", information.width(), information.height(),
+      information.width() * 4, new RenderCallback {
+        def display(nativeBuffer: Memory) = {
+          if (pixmap != null) {
+            try {
+              val videoBuffer = (information.width() * information.height() * 4) + 32
+              val buffer = pixmap.getPixels
+              val b = nativeBuffer.getByteBuffer(0, videoBuffer)
+              buffer.clear()
+              b.position(b.limit() - 32) // Remove last 32 bytes
+              b.flip()
+              buffer.put(b)
+              buffer.flip()
+              updates = true
+            }
+            catch {
+              case exc => {
+                exc.printStackTrace()
+                System.exit(1)
+              }
             }
           }
         }
-      }
-    })
+      })
   }
 
   resource.onChange {
     pixmap = null
   }
 
-  protected def draw(batch: SpriteBatch) = {
+  protected def draw() = {
     if (updates) {
       updates = false
       texture.draw(pixmap, 0, 0)
     }
     if (texture != null) {
-      batch.draw(texture, location.x().toFloat, location.y().toFloat)
+      // TODO: fix to work with ArrayBuffer
+      //      batch.draw(texture, location.x().toFloat, location.y().toFloat)
     }
   }
 

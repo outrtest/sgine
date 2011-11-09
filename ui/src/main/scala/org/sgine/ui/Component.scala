@@ -1,7 +1,5 @@
 package org.sgine.ui
 
-import java.lang.ThreadLocal
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import org.sgine.input.event.MouseEventSupport
 import org.sgine.property.{PropertyParent, Property}
 import org.sgine.{Listenable, UpdatableInvocation}
@@ -53,6 +51,5 @@ trait Component extends PropertyParent with MouseEventSupport with UpdatableInvo
 }
 
 object Component {
-  val batch = new ThreadLocal[SpriteBatch]
   val mouse = Property[Component]()
 }

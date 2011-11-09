@@ -3,7 +3,6 @@ package org.sgine.ui
 import com.badlogic.gdx.graphics.Texture
 import org.sgine.property._
 import org.sgine._
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 /**
  *
@@ -37,18 +36,19 @@ class Image extends RenderableComponent {
     size.height := 480
   }
 
-  protected def draw(batch: SpriteBatch) = {
-    batch.draw(texture,
-      location.x().toFloat,
-      location.y().toFloat,
-      size.width().toFloat,
-      size.height().toFloat,
-      textureRegion.x(),
-      textureRegion.y(),
-      textureRegion.width(),
-      textureRegion.height(),
-      false,
-      false
-    )
+  protected def draw() = {
+    // TODO: fix to work with ArrayBuffer
+    //    batch.draw(texture,
+    //      location.x().toFloat,
+    //      location.y().toFloat,
+    //      size.width().toFloat,
+    //      size.height().toFloat,
+    //      textureRegion.x(),
+    //      textureRegion.y(),
+    //      textureRegion.width(),
+    //      textureRegion.height(),
+    //      false,
+    //      false
+    //    )
   }
 }
