@@ -9,6 +9,7 @@ import org.sgine.input.event._
 
 import scala.math._
 import com.badlogic.gdx.graphics.{Texture, GL10}
+import org.sgine.Updatable
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -20,6 +21,7 @@ import com.badlogic.gdx.graphics.{Texture, GL10}
 class UI extends Container with DelayedInit {
   lazy val componentsView = new ImmutableProperty(new ContainerView[Component](this))
   lazy val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
+  lazy val updatablesView = new ImmutableProperty(new ContainerView[Updatable](this))
 
   private var initialize: () => Unit = _
 
@@ -38,9 +40,11 @@ class UI extends Container with DelayedInit {
    */
   def height = 768
 
-  lazy val pickFunction = (current: Component, c: Component) => if (c.hitTest(Mouse.x(), abs(Mouse.y() - height))) {
+  lazy val pickFunction = (current: Component, c: Component) => if (c
+      .hitTest(Mouse.x(), abs(Mouse.y() - height))) {
     c
-  } else {
+  }
+  else {
     current
   }
 
@@ -107,10 +111,16 @@ class UI extends Container with DelayedInit {
 
     def render() = {
       Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT) // TODO: optional?
+      delta = Gdx.graphics.getDeltaTime.toDouble
+      updatablesView.value.foreach(updateUpdatables)
       batch.begin()
       rendererView.value.foreach(renderRenderable)
       batch.end()
     }
+
+    private var delta = 0.0
+
+    private val updateUpdatables = (updatable: Updatable) => updatable.update(delta)
 
     private val renderRenderable = (renderable: RenderableComponent) => renderable.render()
 
@@ -125,7 +135,7 @@ class UI extends Container with DelayedInit {
 
     def keyDown(keyCode: Int) = {
       Keyboard.keyEvent.fire(KeyDownEvent(Key.byKeyCode(keyCode)
-        .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+          .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 
@@ -136,7 +146,7 @@ class UI extends Container with DelayedInit {
 
     def keyUp(keyCode: Int) = {
       Keyboard.keyEvent.fire(KeyUpEvent(Key.byKeyCode(keyCode)
-        .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+          .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 

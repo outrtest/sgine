@@ -1,16 +1,17 @@
 package org.sgine.ui
 
-import org.sgine.property.{PropertyParent, Property}
 import java.lang.ThreadLocal
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import org.sgine.input.event.MouseEventSupport
+import org.sgine.property.{PropertyParent, Property}
+import org.sgine.{Listenable, UpdatableInvocation}
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Component extends PropertyParent with MouseEventSupport {
+trait Component extends PropertyParent with MouseEventSupport with UpdatableInvocation {
   val visible = Property[Boolean](true)
   val mouseEnabled = Property[Boolean](true)
 
@@ -35,6 +36,16 @@ trait Component extends PropertyParent with MouseEventSupport {
     else {
       false
     }
+  }
+
+  def onUpdate(listenables: Listenable[_]*)(f: => Unit) = {
+    val function = () => f
+    listenables.foreach(l => {
+      val listener = (oldValue: Any, newValue: Any) => {
+        delayedHandling(l, function)
+      }
+      l.listeners += listener
+    })
   }
 
   def destroy() = {
