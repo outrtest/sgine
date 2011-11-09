@@ -16,6 +16,7 @@ trait Component extends PropertyParent with MouseEventSupport with UpdatableInvo
   object location extends PropertyParent {
     val x = Property[Double](0.0)
     val y = Property[Double](0.0)
+    val z = Property[Double](0.0)
   }
 
   object size extends PropertyParent {

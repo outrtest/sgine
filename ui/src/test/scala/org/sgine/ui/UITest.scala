@@ -41,5 +41,6 @@ object UITest extends UI {
 
   val shape = new ShapeComponent()
   shape.vertices := Vertex.rect(100.0, 100.0)
+  shape.location.x := 250.0
   contents += shape
 }
