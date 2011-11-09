@@ -1,7 +1,7 @@
 package org.sgine.ui
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import render.ArrayBuffer
+import org.sgine.property.Property
 
 /**
  *
@@ -11,6 +11,14 @@ import render.ArrayBuffer
 class ShapeComponent extends RenderableComponent {
   private val arrayBuffer = new ArrayBuffer(false)
 
-  protected def draw(batch: SpriteBatch) = {
+  val vertices = Property[Seq[Double]](Nil)
+
+  onUpdate(vertices) {
+    arrayBuffer.data = vertices.value
+  }
+
+  protected def draw() = {
+    arrayBuffer.bind()
+    arrayBuffer.drawVertices()
   }
 }

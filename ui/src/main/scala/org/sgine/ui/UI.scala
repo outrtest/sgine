@@ -1,15 +1,14 @@
 package org.sgine.ui
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.{InputProcessor, Gdx, ApplicationListener}
-import org.sgine.property.ImmutableProperty
 import org.sgine.scene.ContainerView
 import org.sgine.input.{Mouse, MouseButton, Key, Keyboard}
 import org.sgine.input.event._
 
 import scala.math._
-import com.badlogic.gdx.graphics.{Texture, GL10}
 import org.sgine.Updatable
+import org.sgine.property.{Property, ImmutableProperty}
+import com.badlogic.gdx.graphics.{OrthographicCamera, Camera, Texture, GL10}
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -22,6 +21,16 @@ class UI extends Container with DelayedInit {
   lazy val componentsView = new ImmutableProperty(new ContainerView[Component](this))
   lazy val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
   lazy val updatablesView = new ImmutableProperty(new ContainerView[Updatable](this))
+
+  lazy val camera = Property[Camera](new OrthographicCamera(width, height))
+  lazy val verticalSync = Property[Boolean](true)
+
+  onUpdate(camera) {
+    camera().update()
+  }
+  onUpdate(verticalSync) {
+    Gdx.graphics.setVSync(verticalSync())
+  }
 
   private var initialize: () => Unit = _
 
@@ -96,10 +105,9 @@ class UI extends Container with DelayedInit {
   }
 
   private object listener extends ApplicationListener with InputProcessor {
-    lazy val batch = new SpriteBatch()
-
     def create() = {
-      Component.batch.set(batch)
+      Gdx.graphics.setVSync(verticalSync())
+      camera().update()
       Gdx.input.setInputProcessor(this)
       if (initialize != null) {
         initialize()
@@ -110,12 +118,11 @@ class UI extends Container with DelayedInit {
     }
 
     def render() = {
-      Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT) // TODO: optional?
+      Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT) // TODO: optional?
       delta = Gdx.graphics.getDeltaTime.toDouble
       updatablesView.value.foreach(updateUpdatables)
-      batch.begin()
+      camera()(Gdx.gl11)
       rendererView.value.foreach(renderRenderable)
-      batch.end()
     }
 
     private var delta = 0.0
