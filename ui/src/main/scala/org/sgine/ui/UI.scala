@@ -9,6 +9,7 @@ import scala.math._
 import org.sgine.Updatable
 import org.sgine.property.{Property, ImmutableProperty}
 import com.badlogic.gdx.graphics.{OrthographicCamera, Camera, Texture, GL10}
+import java.lang.ThreadLocal
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -106,6 +107,7 @@ class UI extends Container with DelayedInit {
 
   private object listener extends ApplicationListener with InputProcessor {
     def create() = {
+      UI.instance.set(UI.this)
       Gdx.graphics.setVSync(verticalSync())
       camera().update()
       Gdx.input.setInputProcessor(this)
@@ -200,4 +202,10 @@ class UI extends Container with DelayedInit {
     }
   }
 
+}
+
+object UI {
+  private val instance = new ThreadLocal[UI]
+
+  def apply() = instance.get()
 }
