@@ -22,4 +22,39 @@ object TextureCoordinates {
       right, top
     )
   }
+
+  def rect(flipHorizontal: Boolean = false, flipVertical: Boolean = false) = {
+    val left = if (flipHorizontal) {
+      1.0
+    }
+    else {
+      0.0
+    }
+    val right = if (flipHorizontal) {
+      0.0
+    }
+    else {
+      1.0
+    }
+    val top = if (flipVertical) {
+      1.0
+    }
+    else {
+      0.0
+    }
+    val bottom = if (flipVertical) {
+      0.0
+    }
+    else {
+      1.0
+    }
+    List(
+      left, top,
+      right, top,
+      left, bottom,
+      right, bottom,
+      left, bottom,
+      right, top
+    )
+  }
 }
