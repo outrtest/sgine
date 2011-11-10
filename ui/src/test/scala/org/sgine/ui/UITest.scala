@@ -1,6 +1,6 @@
 package org.sgine.ui
 
-import input.event.MouseOverEvent
+import org.sgine.input.event.MouseOverEvent
 
 /**
  *

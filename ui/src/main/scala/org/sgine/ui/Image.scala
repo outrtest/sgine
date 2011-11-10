@@ -45,7 +45,7 @@ class Image extends RenderableComponent {
     val vertices = Vertex.rect(size.width(), size.height())
     val textureCoordinates = TextureCoordinates
         .rectCoords(textureRegion.x(), textureRegion.y(), textureRegion.width(),
-      textureRegion.height(), texture())
+      textureRegion.height(), texture.getWidth, texture.getHeight)
     arrayBuffer.data = vertices ::: textureCoordinates
   }
 

@@ -1,18 +1,17 @@
 package org.sgine.ui.render
 
-import com.badlogic.gdx.graphics.Texture
-
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object TextureCoordinates {
-  def rectCoords(x: Double, y: Double, width: Double, height: Double, texture: Texture) = {
-    val left = x / texture.getWidth
-    val right = (x + width) / texture.getWidth
-    val top = y / texture.getHeight
-    val bottom = (y + height) / texture.getHeight
+  def rectCoords(x: Double, y: Double, width: Double, height: Double, textureWidth: Double,
+      textureHeight: Double) = {
+    val left = x / textureWidth
+    val right = (x + width) / textureWidth
+    val top = y / textureHeight
+    val bottom = (y + height) / textureHeight
     List(
       left, top,
       right, top,

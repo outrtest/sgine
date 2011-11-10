@@ -1,6 +1,7 @@
 package org.sgine.ui.font
 
 import xml.Elem
+import org.sgine.ui.render.{TextureCoordinates, Vertex}
 
 /**
  *
@@ -11,7 +12,12 @@ case class BitmapFontGlyph(id: Int,
     x: Int, y: Int,
     width: Int, height: Int,
     xOffset: Int, yOffset: Int,
-    xAdvance: Int, page: Int, channel: Int)
+    xAdvance: Int, page: Int, channel: Int) {
+  def vertices(x: Double, y: Double, z: Double) = Vertex.quad(x, y + height, x + width, y, z)
+
+  def coords(textureWidth: Double, textureHeight: Double) = TextureCoordinates
+      .rectCoords(this.x, this.y, width, height, textureWidth, textureHeight)
+}
 
 object BitmapFontGlyph {
   def apply(elem: Elem): BitmapFontGlyph = {
