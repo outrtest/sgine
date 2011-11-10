@@ -10,5 +10,7 @@ import org.sgine.Resource
  */
 object LabelExample extends UI {
   val font = BitmapFont(Resource("arial64.fnt"))
-  println(font)
+  val shape = new ShapeComponent()
+  font.text("Hello", shape)
+  contents += shape
 }
