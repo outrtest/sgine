@@ -3,6 +3,7 @@ package org.sgine.ui
 import com.badlogic.gdx.graphics.Texture
 import org.sgine.property._
 import org.sgine._
+import render.{TextureCoordinates, Vertex, ArrayBuffer}
 
 /**
  *
@@ -10,7 +11,14 @@ import org.sgine._
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Image extends RenderableComponent {
+  private val arrayBuffer = new ArrayBuffer(false)
+
   val texture = Property[Texture]()
+
+  def this(resource: Resource) = {
+    this ()
+    load(resource)
+  }
 
   object textureRegion extends PropertyParent {
     val x = Property[Int](0)
@@ -28,27 +36,35 @@ class Image extends RenderableComponent {
     textureRegion.height := texture().getHeight
   }
 
+  onUpdate(texture,
+    textureRegion.x,
+    textureRegion.y,
+    textureRegion.width,
+    textureRegion.height,
+    size.width,
+    size.height) {
+    updateArrayBuffer()
+  }
+
+  private def updateArrayBuffer() = {
+    val vertices = Vertex.rect(size.width(), size.height())
+    val textureCoordinates = TextureCoordinates
+        .rectCoords(textureRegion.x(), textureRegion.y(), textureRegion.width(),
+      textureRegion.height(), texture())
+    arrayBuffer.data = vertices ::: textureCoordinates
+  }
+
   def load(resource: Resource) = {
     texture := new Texture(resource)
-    textureRegion.width := 800
-    textureRegion.height := 480
-    size.width := 800
-    size.height := 480
   }
 
   protected def draw() = {
-    // TODO: fix to work with ArrayBuffer
-    //    batch.draw(texture,
-    //      location.x().toFloat,
-    //      location.y().toFloat,
-    //      size.width().toFloat,
-    //      size.height().toFloat,
-    //      textureRegion.x(),
-    //      textureRegion.y(),
-    //      textureRegion.width(),
-    //      textureRegion.height(),
-    //      false,
-    //      false
-    //    )
+    val texture = this.texture()
+    if (texture != null) {
+      texture.bind()
+      arrayBuffer.bind()
+      arrayBuffer.bindTextureCoordinates(18)
+      arrayBuffer.drawVertices(0, 9)
+    }
   }
 }
