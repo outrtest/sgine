@@ -1,7 +1,5 @@
 package org.sgine.ui
 
-import org.sgine._
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import input.event.MouseOverEvent
 
 /**
@@ -14,7 +12,7 @@ object UITest extends UI {
   label.location.x := 300.0
   label.location.y := 500.0
   label.text := "Hello World!"
-  label.font := new BitmapFont(Resource("arial18.fnt"), false)
+  //  label.font := font
   //  contents += label
 
   val text = new Label()

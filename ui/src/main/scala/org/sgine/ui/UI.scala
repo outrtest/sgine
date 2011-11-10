@@ -8,8 +8,8 @@ import org.sgine.input.event._
 import scala.math._
 import org.sgine.Updatable
 import org.sgine.property.{Property, ImmutableProperty}
-import com.badlogic.gdx.graphics.{OrthographicCamera, Camera, Texture, GL10}
 import java.lang.ThreadLocal
+import com.badlogic.gdx.graphics._
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -61,6 +61,7 @@ class UI extends Container with DelayedInit {
   private def pickComponents(evt: MouseEvent, components: Iterable[Component]): Unit = {
     val x = evt.x
     val y = abs(evt.y - height)
+    val ray = camera().getPickRay(x.toFloat, y.toFloat) // TODO: use instead
     val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
     if (hit != null) {
       hit.mouseEvent.fire(evt.duplicate())
@@ -86,6 +87,18 @@ class UI extends Container with DelayedInit {
     Mouse.mouseEvent.synchronous {
       case evt => pickComponents(evt, componentsView())
     }
+  }
+
+  final def orthographic(width: Double = this.width, height: Double = this.height) = {
+    camera := new OrthographicCamera(width.toFloat, height.toFloat)
+  }
+
+  final def perspective(fov: Double = 45.0, nearPlane: Double = 0.1, farPlane: Double = 1000.0) = {
+    val aspectRatio = width / height
+    val c = new PerspectiveCamera(fov.toFloat, 2.0f * aspectRatio, 2.0f)
+    c.near = nearPlane.toFloat
+    c.far = farPlane.toFloat
+    camera := c
   }
 
   final def main(args: Array[String]): Unit = {
