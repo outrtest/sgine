@@ -3,7 +3,8 @@ package org.sgine.ui
 import org.sgine._
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import input.event.MouseOverEvent
-import render.Vertex
+import com.badlogic.gdx.graphics.Texture
+import render.{TextureCoordinates, Vertex}
 
 /**
  *
@@ -12,7 +13,7 @@ import render.Vertex
  */
 object UITest extends UI {
   val image = new Image()
-  image.load(Resource("backdrop_mountains.jpg"))
+  //  image.load(Resource("backdrop_mountains.jpg"))
   image.mouseEvent.asynchronous {
     case evt: MouseOverEvent => println("Image: " + evt)
     case _ =>
@@ -39,8 +40,11 @@ object UITest extends UI {
   }
   //  contents += text
 
+  val texture = new Texture(Resource("sgine.png"))
+
   val shape = new ShapeComponent()
-  shape.vertices := Vertex.rect(100.0, 100.0)
-  shape.location.x := 250.0
+  shape.texture := texture
+  shape.textureCoordinates := TextureCoordinates.rectCoords(0.0, 0.0, 400.0, 96.0, texture)
+  shape.vertices := Vertex.rect(400.0, 96.0)
   contents += shape
 }

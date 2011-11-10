@@ -109,6 +109,14 @@ class UI extends Container with DelayedInit {
     def create() = {
       UI.instance.set(UI.this)
       Gdx.graphics.setVSync(verticalSync())
+      Gdx.gl11.glShadeModel(GL10.GL_SMOOTH)
+      Gdx.gl11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+      Gdx.gl11.glClearDepthf(1.0f)
+      Gdx.gl11.glEnable(GL10.GL_BLEND)
+      Gdx.gl11.glEnable(GL10.GL_DEPTH_TEST)
+      Gdx.gl11.glDepthFunc(GL10.GL_LEQUAL)
+      Gdx.gl11.glEnable(GL10.GL_TEXTURE_2D)
+      Gdx.gl11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA)
       camera().update()
       Gdx.input.setInputProcessor(this)
       if (initialize != null) {

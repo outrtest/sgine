@@ -56,7 +56,7 @@ class ArrayBuffer(val dynamic: Boolean) {
 
   def bindTextureCoordinates(offset: Int = 0) = {
     GL.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY)
-    GL.glTexCoordPointer(2, GL10.GL_FLOAT, 0, offset) // TODO: verify this
+    GL.glTexCoordPointer(2, GL10.GL_FLOAT, 0, offset * 4)
   }
 
   def drawVertices(index: Int = 0, vertices: Int = size / 3) = {
