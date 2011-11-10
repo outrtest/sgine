@@ -15,11 +15,6 @@ class Image extends RenderableComponent {
 
   val texture = Property[Texture]()
 
-  def this(resource: Resource) = {
-    this ()
-    load(resource)
-  }
-
   object textureRegion extends PropertyParent {
     val x = Property[Int](0)
     val y = Property[Int](0)
@@ -66,5 +61,15 @@ class Image extends RenderableComponent {
       arrayBuffer.bindTextureCoordinates(18)
       arrayBuffer.drawVertices(0, 9)
     }
+  }
+}
+
+object Image {
+  def apply(resource: String): Image = apply(Resource(resource))
+
+  def apply(resource: Resource): Image = {
+    val image = new Image()
+    image.load(resource)
+    image
   }
 }
