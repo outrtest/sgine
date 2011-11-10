@@ -34,16 +34,16 @@ case class BitmapFont(face: String,
     val coords = new ListBuffer[Double]
     var x = 0.0
     val page = pages.head // TODO: support multiple pages
-    var p = 0
+    var p: BitmapFontGlyph = null
     for (c <- text) {
       val glyph = glyphs(c)
-      vertices ++= glyph.vertices(x, 0.0, 0.0)
+      vertices ++= glyph.vertices(x + glyph.xOffset, 0.0, 0.0)
       coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
       x += glyph.xAdvance
-      if (kerning && p != 0) {
-        x += this.kerning(p, c)
+      if (kerning && p != null) {
+        x += this.kerning(p.id, c)
       }
-      p = c
+      p = glyph
     }
     shape.vertices := vertices.toList
     shape.textureCoordinates := coords.toList
