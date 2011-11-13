@@ -82,7 +82,7 @@ class Media extends RenderableComponent {
       mediaPlayer.release()
     }
     mediaPlayer = Media.factory
-        .newDirectMediaPlayer("RGBA", information.width(), information.height(),
+      .newDirectMediaPlayer("RGBA", information.width(), information.height(),
       information.width() * 4, new RenderCallback {
         def display(nativeBuffer: Memory) = {
           if (pixmap != null) {
