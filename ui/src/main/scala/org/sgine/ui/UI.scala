@@ -10,6 +10,7 @@ import org.sgine.Updatable
 import org.sgine.property.{Property, ImmutableProperty}
 import java.lang.ThreadLocal
 import com.badlogic.gdx.graphics._
+import com.badlogic.gdx.math.collision.Ray
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -50,18 +51,26 @@ class UI extends Container with DelayedInit {
    */
   def height = 768
 
-  lazy val pickFunction = (current: Component, c: Component) => if (c
-      .hitTest(Mouse.x(), abs(Mouse.y() - height))) {
+  //  lazy val pickFunction = (current: Component, c: Component) => if (c
+  //      .hitTest(Mouse.x(), abs(Mouse.y() - height))) {
+  //    c
+  //  }
+  //  else {
+  //    current
+  //  }
+
+  private var currentRay: Ray = _
+
+  lazy val pickFunction = (current: Component, c: Component) => if (c.hitTest(currentRay)) {
     c
-  }
-  else {
+  } else {
     current
   }
 
   private def pickComponents(evt: MouseEvent, components: Iterable[Component]): Unit = {
     val x = evt.x
     val y = abs(evt.y - height)
-    val ray = camera().getPickRay(x.toFloat, y.toFloat) // TODO: use instead
+    currentRay = camera().getPickRay(x.toFloat, y.toFloat)
     val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
     if (hit != null) {
       hit.mouseEvent.fire(evt.duplicate())
@@ -165,7 +174,7 @@ class UI extends Container with DelayedInit {
 
     def keyDown(keyCode: Int) = {
       Keyboard.keyEvent.fire(KeyDownEvent(Key.byKeyCode(keyCode)
-          .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+        .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 
@@ -176,7 +185,7 @@ class UI extends Container with DelayedInit {
 
     def keyUp(keyCode: Int) = {
       Keyboard.keyEvent.fire(KeyUpEvent(Key.byKeyCode(keyCode)
-          .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+        .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 

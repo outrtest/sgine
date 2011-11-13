@@ -1,6 +1,5 @@
 package org.sgine.ui
 
-import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.Gdx
 
 /**
@@ -9,13 +8,6 @@ import com.badlogic.gdx.Gdx
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait RenderableComponent extends Component {
-  private val matrix = new Matrix4()
-
-  onUpdate(location.x, location.y, location.z) {
-    matrix.idt()
-    matrix.translate(location.x().toFloat, location.y().toFloat, location.z().toFloat)
-  }
-
   final def render() = {
     UI().camera()(Gdx.gl11)
     Gdx.gl11.glMultMatrixf(matrix.getValues, 0)
