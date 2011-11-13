@@ -47,10 +47,12 @@ trait Component extends PropertyParent with MouseEventSupport with UpdatableInvo
   }
 
   def hitTest(ray: Ray) = {
-    Component.tempVector1.set((location.x() - (size.width() / 2.0)).toFloat, (location.y() - (size.height() / 2.0)).toFloat, location.z().toFloat)
-    Component.tempVector2.set((location.x() + (size.width() / 2.0)).toFloat, (location.y() + (size.height() / 2.0)).toFloat, location.z().toFloat)
+    val w = (size.width() / 2.0).toFloat
+    val h = (size.height() / 2.0).toFloat
+    Component.tempVector1.set(-w, -h, 0.0f)
+    Component.tempVector2.set(w, h, 0.0f)
     Component.tempBoundingBox.set(Component.tempVector1, Component.tempVector2)
-    //    Component.tempBoundingBox.mul(matrix)     // Need to multiply the parent matrix, not the component matrix
+    Component.tempBoundingBox.mul(matrix)
     Intersector.intersectRayBoundsFast(ray, Component.tempBoundingBox)
   }
 
