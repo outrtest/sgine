@@ -3,8 +3,8 @@ package org.sgine.bind
 import org.sgine.Listenable
 
 /**
- * Bindable is an inheritable trait on mutable objects that allows binding to Listenable objects to reflect the changes
- * back to the Bindable.
+ * Bindable is an inheritable trait on mutable objects that allows binding to Listenable objects to
+ * reflect the changes back to the Bindable.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
