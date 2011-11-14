@@ -38,21 +38,21 @@ case class BitmapFont(face: String,
     val page = pages.head
     val f: (Double, Double, BitmapFontGlyph) => Unit = (x: Double, y: Double,
         glyph: BitmapFontGlyph) => {
-      vertices ++= glyph.vertices(x + glyph.xOffset, y, 0.0)
+      vertices ++= glyph.vertices(offsetX + x + glyph.xOffset, offsetY + y, 0.0)
       coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
     }
-    process(offsetX, offsetY, text, kerning, f)
+    process(text, kerning, f)
     shape.vertices := vertices.toList
     shape.textureCoordinates := coords.toList
     shape.texture := page.texture
   }
 
-  def measure(text: String, kerning: Boolean = true) = process(0.0, 0.0, text, kerning)
+  def measure(text: String, kerning: Boolean = true) = process(text, kerning)
 
-  def process(offsetX: Double, offsetY: Double, text: String, kerning: Boolean = true,
+  def process(text: String, kerning: Boolean = true,
       f: (Double, Double, BitmapFontGlyph) => Unit = null) = {
-    var x = offsetX
-    var y = offsetY
+    var x = 0.0
+    var y = 0.0
     var p: BitmapFontGlyph = null
     for (c <- text) {
       val glyph = glyphs(c)
@@ -103,5 +103,50 @@ object BitmapFont {
     }
     BitmapFont(face, size, bold, italic, charset, unicode, stretchH, smooth, aa, padding, spacing,
       lineHeight, base, scaleW, scaleH, pages, glyphs, kerning, packed)
+  }
+}
+
+class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
+  type Drawer = (Double, Double, BitmapFontGlyph) => Unit
+
+  private var x = 0.0
+  private var y = 0.0
+  private val b = new StringBuilder
+  private var drawer: Drawer = _
+  private var wrap: Double = _
+
+  def process(text: String, drawer: Drawer, wrap: Double) = {
+    // Reset
+    x = 0.0
+    y = 0.0
+    b.clear()
+    this.drawer = drawer
+    this.wrap = wrap
+
+    // Process text
+    for (c <- text) {
+      if (c == '\n') {
+        drawCurrent()
+        drawNewLine()
+      }
+      else if (c.isWhitespace) {
+        drawCurrent()
+      }
+    }
+  }
+
+  def drawCurrent() = if (!b.isEmpty) {
+    val (width, _) = font.measure(b.toString(), kerning)
+    if (width > wrap) {
+      drawNewLine()
+    }
+    font.process(b.toString(), kerning, drawer)
+    x += width
+    b.clear()
+  }
+
+  def drawNewLine() = {
+    x = 0.0
+    y += font.lineHeight
   }
 }
