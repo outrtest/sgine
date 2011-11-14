@@ -35,7 +35,8 @@ package org.sgine.concurrent
 import actors.DaemonActor
 
 /**
- * Concurrent trait mixes in convenience functionality to invoke functions asynchronously and concurrently.
+ * Concurrent trait mixes in convenience functionality to invoke functions asynchronously and
+ * concurrently.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
