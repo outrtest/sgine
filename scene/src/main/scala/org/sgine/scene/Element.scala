@@ -41,6 +41,38 @@ import org.sgine.event.Listenable
  */
 trait Element extends Listenable {
   override val parent: () => Element = new ElementParent()
+
+  def ancestor[T](f: T => Unit)(implicit manifest: Manifest[T]): Unit = {
+    val p = parent()
+    if (p != null) {
+      if (manifest.erasure.isAssignableFrom(p.getClass)) {
+        f(p.asInstanceOf[T])
+      }
+      else {
+        p.ancestor(f)(manifest)
+      }
+    }
+  }
+
+  def ancestors[T](f: T => Unit)(implicit manifest: Manifest[T]): Unit = {
+    val p = parent()
+    if (p != null) {
+      if (manifest.erasure.isAssignableFrom(p.getClass)) {
+        f(p.asInstanceOf[T])
+      }
+      p.ancestor(f)(manifest)
+    }
+  }
+
+  def apply[T](f: T => Unit)(implicit manifest: Manifest[T]): Boolean = {
+    if (manifest.erasure.isAssignableFrom(getClass)) {
+      f(this.asInstanceOf[T])
+      true
+    }
+    else {
+      false
+    }
+  }
 }
 
 class ElementParent extends Function0[Element] with Function1[Element, Unit] {

@@ -40,4 +40,13 @@ package org.sgine.scene
  */
 trait Container[T] extends Element {
   def contents: Seq[T]
+
+  def descendants[T](f: T => Unit)(implicit manifest: Manifest[T]): Unit = {
+    contents.foreach(child => child match {
+      case e: Element => e(f)
+    })
+    contents.foreach(child => child match {
+      case c: Container[_] => c.descendants(f)
+    })
+  }
 }
