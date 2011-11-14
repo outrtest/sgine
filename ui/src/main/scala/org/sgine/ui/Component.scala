@@ -5,13 +5,17 @@ import org.sgine.property.{PropertyParent, Property}
 import org.sgine.{Listenable, UpdatableInvocation}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
+import org.sgine.scene.Element
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Component extends PropertyParent with MouseEventSupport with UpdatableInvocation {
+trait Component
+    extends PropertyParent with MouseEventSupport with UpdatableInvocation with Element {
+  override val parent = Property[Component]()
+
   protected val matrix = new Matrix4()
 
   onUpdate(location.x, location.y, location.z) {

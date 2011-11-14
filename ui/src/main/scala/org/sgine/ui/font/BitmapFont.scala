@@ -20,7 +20,7 @@ case class BitmapFont(face: String,
     smooth: Int,
     aa: Int,
     padding: String,
-    spacing: String,
+    spacing: Array[Int],
     lineHeight: Int,
     base: Int,
     scaleW: Int,
@@ -33,16 +33,18 @@ case class BitmapFont(face: String,
     val vertices = new ListBuffer[Double]
     val coords = new ListBuffer[Double]
     var x = 0.0
+    var y = 0.0
     val page = pages.head // TODO: support multiple pages
     var p: BitmapFontGlyph = null
     for (c <- text) {
       val glyph = glyphs(c)
-      vertices ++= glyph.vertices(x + glyph.xOffset, 0.0, 0.0)
-      coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
-      x += glyph.xAdvance
       if (kerning && p != null) {
         x += this.kerning(p.id, c)
       }
+      vertices ++= glyph.vertices(x + glyph.xOffset, y, 0.0)
+      coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
+      //      x += glyph.width + spacing(0) + spacing(1)    // TODO: everything else uses xAdvance, but it doesn't look right
+      x += glyph.xAdvance
       p = glyph
     }
     shape.vertices := vertices.toList
@@ -69,7 +71,7 @@ object BitmapFont {
     val smooth = (info \ "@smooth").text.toInt
     val aa = (info \ "@aa").text.toInt
     val padding = (info \ "@padding").text
-    val spacing = (info \ "@spacing").text
+    val spacing = (info \ "@spacing").text.split(",").map(s => s.trim.toInt)
     val common = (xml \ "common").head
     val lineHeight = (common \ "@lineHeight").text.toInt
     val base = (common \ "@base").text.toInt

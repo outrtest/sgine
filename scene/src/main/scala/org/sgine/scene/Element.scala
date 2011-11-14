@@ -40,17 +40,18 @@ import org.sgine.event.Listenable
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Element extends Listenable {
-  override val parent: () => Listenable = new ElementParent()
+  override val parent: () => Element = new ElementParent()
 }
 
-class ElementParent extends Function0[Listenable] with Function1[Listenable, Unit] {
-  private var parent: Listenable = null
+class ElementParent extends Function0[Element] with Function1[Element, Unit] {
+  private var parent: Element = null
 
   def apply() = parent
 
-  def apply(parent: Listenable) = this.parent = parent
+  def apply(parent: Element) = this.parent = parent
 }
 
 object Element {
-  def assignParent(element: Element, parent: Listenable) = element.parent.asInstanceOf[(Listenable) => Unit](parent)
+  def assignParent(element: Element, parent: Listenable) = element.parent
+      .asInstanceOf[(Listenable) => Unit](parent)
 }
