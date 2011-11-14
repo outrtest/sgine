@@ -39,42 +39,69 @@ import annotation.tailrec
  * AtomicInt extends the functionality of AtomicInteger to provide additional convenience functionality.
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 7/12/11
  */
 class AtomicInt(initial: Int) extends AtomicInteger(initial) {
+  /**
+   * Modifies the value atomicly without locking if the resulting value of the function is Some.
+   */
   @tailrec
   final def modify(f: Int => Option[Int]): Boolean = {
     val current = get()
     f(current) match {
       case Some(value) => if (compareAndSet(current, value)) {
         true
-      } else {
+      }
+      else {
         modify(f)
       }
       case None => false
     }
   }
 
+  /**
+   * Increments and returns the new value
+   */
   def ++ = incrementAndGet()
 
+  /**
+   * Decrements and returns the new value
+   */
   def -- = decrementAndGet()
 
+  /**
+   * Adds the value and returns the new value
+   */
   def +=(value: Int) = addAndGet(value)
 
+  /**
+   * Subtracts the value and returns the new value
+   */
   def -=(value: Int) = addAndGet(-value)
 
+  /**
+   * Increments the value if the current value is less than the max value supplied.
+   *
+   * This method is thread-safe without locking.
+   */
   def incrementIfLessThan(max: Int) = modify((value: Int) => {
     if (value < max) {
       Some(value + 1)
-    } else {
+    }
+    else {
       None
     }
   })
 
+  /**
+   * Decrements the value if the current value is greater than the max value supplied.
+   *
+   * This method is thread-safe without locking.
+   */
   def decrementIfGreaterThan(min: Int) = modify((value: Int) => {
     if (value > min) {
       Some(value - 1)
-    } else {
+    }
+    else {
       None
     }
   })

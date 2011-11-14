@@ -30,26 +30,41 @@ case class BitmapFont(face: String,
     kernings: Map[(Int, Int), BitmapFontKerning],
     packed: Int) {
   def text(text: String, shape: ShapeComponent, kerning: Boolean = true) = {
+    val (mx, my) = measure(text, kerning)
     val vertices = new ListBuffer[Double]
     val coords = new ListBuffer[Double]
-    var x = 0.0
-    var y = 0.0
-    val page = pages.head // TODO: support multiple pages
+    var offsetX = -(mx / 2.0)
+    var offsetY = -(my / 2.0)
+    val page = pages.head
+    val f: (Double, Double, BitmapFontGlyph) => Unit = (x: Double, y: Double,
+        glyph: BitmapFontGlyph) => {
+      vertices ++= glyph.vertices(x + glyph.xOffset, y, 0.0)
+      coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
+    }
+    process(offsetX, offsetY, text, kerning, f)
+    shape.vertices := vertices.toList
+    shape.textureCoordinates := coords.toList
+    shape.texture := page.texture
+  }
+
+  def measure(text: String, kerning: Boolean = true) = process(0.0, 0.0, text, kerning)
+
+  def process(offsetX: Double, offsetY: Double, text: String, kerning: Boolean = true,
+      f: (Double, Double, BitmapFontGlyph) => Unit = null) = {
+    var x = offsetX
+    var y = offsetY
     var p: BitmapFontGlyph = null
     for (c <- text) {
       val glyph = glyphs(c)
       if (kerning && p != null) {
         x += this.kerning(p.id, c)
       }
-      vertices ++= glyph.vertices(x + glyph.xOffset, y, 0.0)
-      coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
-      //      x += glyph.width + spacing(0) + spacing(1)    // TODO: everything else uses xAdvance, but it doesn't look right
+      if (f != null) {
+        f(x, y, glyph)
+      }
       x += glyph.xAdvance
-      p = glyph
     }
-    shape.vertices := vertices.toList
-    shape.textureCoordinates := coords.toList
-    shape.texture := page.texture
+    x -> lineHeight
   }
 
   def kerning(first: Int, second: Int) = kernings.get(first -> second).map(k => k.amount)
@@ -83,6 +98,9 @@ object BitmapFont {
         .map(g => g.id -> g).toMap
     val kerning = (xml \ "kernings" \ "kerning").map(n => BitmapFontKerning(n.asInstanceOf[Elem]))
         .map(k => (k.first, k.second) -> k).toMap
+    if (pages.length != 1) {
+      throw new RuntimeException("No support for multiple pages yet.")
+    }
     BitmapFont(face, size, bold, italic, charset, unicode, stretchH, smooth, aa, padding, spacing,
       lineHeight, base, scaleW, scaleH, pages, glyphs, kerning, packed)
   }

@@ -45,6 +45,9 @@ trait Bindable[T] extends ((T) => Any) {
   private lazy val listener = (event: ChangeEvent[T]) => apply(event.newValue.asInstanceOf[T])
   private lazy val bindingHandler = new EventHandler(listener, ProcessingMode.Synchronous)
 
+  /**
+   *
+   */
   def bind(to: ChangeEventSupport[T]) = {
     to.change += bindingHandler
   }

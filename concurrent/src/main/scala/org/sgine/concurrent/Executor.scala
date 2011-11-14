@@ -36,6 +36,8 @@ import java.util.concurrent.{TimeUnit, ThreadFactory, Callable, Executors}
 
 /**
  * Executor is a light-weight wrapper around a Java ExecutorService backred by a cached thread-pool.
+ *
+ * @author Matt Hicks <mhicks@sgine.org>
  */
 object Executor {
   private lazy val threadFactory = new ThreadFactory {
@@ -78,14 +80,18 @@ object Executor {
   // TODO: the following methods need to fire off to future and execute to free up "scheduler" and a new Future needs to
   // be created to support it.
 
-  def schedule[T](delay: Double)(f: => T) = scheduler.schedule(new C[T](() => f), Time.millis(delay), TimeUnit.MILLISECONDS)
+  def schedule[T](delay: Double)(f: => T) = scheduler
+      .schedule(new C[T](() => f), Time.millis(delay), TimeUnit.MILLISECONDS)
 
   def scheduleAtFixedRate[T](initialDelay: Double, period: Double)(f: => T) = {
-    scheduler.scheduleAtFixedRate(new R[T](() => f), Time.millis(initialDelay), Time.millis(period), TimeUnit.MILLISECONDS)
+    scheduler.scheduleAtFixedRate(new R[T](() => f), Time.millis(initialDelay), Time.millis(period),
+      TimeUnit.MILLISECONDS)
   }
 
   def scheduleWithFixedDelay[T](initialDelay: Double, delay: Double)(f: => T) = {
-    scheduler.scheduleWithFixedDelay(new R[T](() => f), Time.millis(initialDelay), Time.millis(delay), TimeUnit.MILLISECONDS)
+    scheduler
+        .scheduleWithFixedDelay(new R[T](() => f), Time.millis(initialDelay), Time.millis(delay),
+      TimeUnit.MILLISECONDS)
   }
 
   class C[T](f: () => T) extends Callable[T] {
