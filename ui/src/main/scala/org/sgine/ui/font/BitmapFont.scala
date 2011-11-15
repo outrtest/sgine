@@ -5,6 +5,8 @@ import xml.{Elem, XML}
 import org.sgine.ui.ShapeComponent
 import collection.mutable.ListBuffer
 
+import scala.math._
+
 /**
  *
  *
@@ -47,12 +49,39 @@ case class BitmapFont(face: String,
     shape.texture := page.texture
   }
 
+  def textWrap(text: String, wrap: Double, shape: ShapeComponent, kerning: Boolean = true) = {
+    val (mx, my) = measureWrap(text, wrap, kerning)
+    val vertices = new ListBuffer[Double]
+    val coords = new ListBuffer[Double]
+    var offsetX = -(mx / 2.0)
+    var offsetY = -(my / 2.0)
+    val page = pages.head
+    val f: (Double, Double, BitmapFontGlyph) => Unit = (x: Double, y: Double,
+        glyph: BitmapFontGlyph) => {
+      vertices ++= glyph.vertices(offsetX + x + glyph.xOffset, offsetY + y, 0.0)
+      coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
+    }
+    processWrap(text, wrap, kerning, f)
+    shape.vertices := vertices.toList
+    shape.textureCoordinates := coords.toList
+    shape.texture := page.texture
+  }
+
   def measure(text: String, kerning: Boolean = true) = process(text, kerning)
 
+  def measureWrap(text: String, wrap: Double, kerning: Boolean = true) = processWrap(text, wrap, kerning)
+
+  def processWrap(text: String, wrap: Double, kerning: Boolean = true, f: (Double, Double, BitmapFontGlyph) => Unit = null) = {
+    val g = new TextGenerator(this, kerning)
+    g.process(text, f, wrap)
+    g.size
+  }
+
   def process(text: String, kerning: Boolean = true,
-      f: (Double, Double, BitmapFontGlyph) => Unit = null) = {
-    var x = 0.0
-    var y = 0.0
+      f: (Double, Double, BitmapFontGlyph) => Unit = null,
+      xOffset: Double = 0.0, yOffset: Double = 0.0) = {
+    var x = xOffset
+    var y = yOffset
     var p: BitmapFontGlyph = null
     for (c <- text) {
       val glyph = glyphs(c)
@@ -115,6 +144,8 @@ class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
   private var drawer: Drawer = _
   private var wrap: Double = _
 
+  private var maxWidth = 0.0
+
   def process(text: String, drawer: Drawer, wrap: Double) = {
     // Reset
     x = 0.0
@@ -122,31 +153,42 @@ class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
     b.clear()
     this.drawer = drawer
     this.wrap = wrap
+    maxWidth = 0.0
 
     // Process text
     for (c <- text) {
       if (c == '\n') {
         drawCurrent()
         drawNewLine()
-      }
-      else if (c.isWhitespace) {
+      } else if (c.isWhitespace) {
         drawCurrent()
+        b.append(c)
+        drawCurrent(true)   // Draw the space on the current line
+      } else {
+        b.append(c)
       }
     }
+    drawCurrent()
   }
 
-  def drawCurrent() = if (!b.isEmpty) {
+  def drawCurrent(noBreak: Boolean = false) = if (!b.isEmpty) {
     val (width, _) = font.measure(b.toString(), kerning)
-    if (width > wrap) {
+    val newLine = if (width > wrap) {
       drawNewLine()
+      true
+    } else {
+      false
     }
-    font.process(b.toString(), kerning, drawer)
+    font.process(b.toString(), kerning, drawer, x, y)
     x += width
     b.clear()
   }
 
   def drawNewLine() = {
+    maxWidth = max(x, maxWidth)
     x = 0.0
-    y += font.lineHeight
+    y -= font.lineHeight
   }
+
+  def size = maxWidth -> y
 }
