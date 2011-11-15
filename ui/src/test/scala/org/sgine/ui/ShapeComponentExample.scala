@@ -14,9 +14,9 @@ object ShapeComponentExample extends UI {
   val texture = new Texture(Resource("sgine.png"))
 
   val shape = new ShapeComponent()
-  shape.texture := texture
-  shape.textureCoordinates :=
+  shape._texture := texture
+  shape._textureCoordinates :=
     TextureCoordinates.rectCoords(0.0, 0.0, 400.0, 96.0, texture.getWidth, texture.getHeight)
-  shape.vertices := Vertex.rect(400.0, 96.0)
+  shape._vertices := Vertex.rect(400.0, 96.0)
   contents += shape
 }

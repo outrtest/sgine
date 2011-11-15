@@ -12,20 +12,20 @@ import com.badlogic.gdx.graphics.Texture
 class ShapeComponent extends RenderableComponent {
   private val arrayBuffer = new ArrayBuffer(false)
 
-  val vertices = Property[List[Double]](Nil)
-  val texture = Property[Texture](null)
-  val textureCoordinates = Property[List[Double]](Nil)
+  protected[ui] val _vertices = Property[List[Double]](Nil)
+  protected[ui] val _texture = Property[Texture](null)
+  protected[ui] val _textureCoordinates = Property[List[Double]](Nil)
 
   private var verticesLength = 0
 
-  onUpdate(vertices, textureCoordinates) {
-    arrayBuffer.data = vertices() ::: textureCoordinates()
-    verticesLength = vertices().length
+  onUpdate(_vertices, _textureCoordinates) {
+    arrayBuffer.data = _vertices() ::: _textureCoordinates()
+    verticesLength = _vertices().length
   }
 
   protected def draw() = {
-    val texture = this.texture()
-    val textureCoordinates = this.textureCoordinates()
+    val texture = _texture()
+    val textureCoordinates = _textureCoordinates()
 
     if (texture != null) {
       texture.bind()
