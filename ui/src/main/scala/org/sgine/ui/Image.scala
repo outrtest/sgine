@@ -11,6 +11,7 @@ import render.{TextureCoordinates, Vertex, ArrayBuffer}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Image extends RenderableComponent {
+  // TODO: extend ShapeComponent instead of RenderableComponent
   private val arrayBuffer = new ArrayBuffer(false)
 
   val texture = Property[Texture]()

@@ -3,11 +3,11 @@ package org.sgine.ui.font
 import scala.math._
 
 /**
- *
+ * TextGenerator works with a BitmapFont to place glyphs positionally using wrapping.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
+class TextGenerator(var font: BitmapFont) {
   type Drawer = (Double, Double, BitmapFontGlyph) => Unit
 
   private var x = 0.0
@@ -16,19 +16,19 @@ class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
   private val b = new StringBuilder
 
   var drawer: Drawer = _
-  var wrap: Double = _
+  var wrap = Double.MaxValue
+  var kerning = true
 
-  def measure(text: String) = {
+  def measure(text: String) = synchronized {
     drawer = null
     process(text)
     size
   }
 
-  def draw(text: String, drawer: Drawer) = {
+  def draw(text: String, drawer: Drawer) = synchronized {
     this.drawer = drawer
     process(text)
   }
-
 
   private def process(text: String) = {
     // Reset
@@ -57,7 +57,7 @@ class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
     }
   }
 
-  def drawCurrent(noBreak: Boolean = false) = if (!b.isEmpty) {
+  private def drawCurrent(noBreak: Boolean = false) = if (!b.isEmpty) {
     val width = processBlock(b.toString(), null)
     if (x > 0.0 && width > wrap) {
       createNewLine()
@@ -67,7 +67,7 @@ class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
     b.clear()
   }
 
-  def createNewLine() = {
+  private def createNewLine() = {
     maxWidth = max(x, maxWidth)
     x = 0.0
     y -= font.lineHeight
@@ -75,7 +75,7 @@ class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
 
   def size = maxWidth -> -y
 
-  def processBlock(text: String,
+  private def processBlock(text: String,
               drawer: Drawer,
               xOffset: Double = 0.0,
               yOffset: Double = 0.0) = {

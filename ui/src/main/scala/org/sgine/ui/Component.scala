@@ -62,13 +62,11 @@ trait Component
 
   def onUpdate(listenables: Listenable[_]*)(f: => Unit) = {
     val function = () => f
-    listenables.foreach(l => {
-      val listener = (oldValue: Any, newValue: Any) => {
-        delayedHandling(l, function)
-      }
-      l.listeners += listener
-    })
+    val listener = (oldValue: Any, newValue: Any) => delayedHandling(function, function)
+    listenables.foreach(l => l.listeners += listener)
   }
+
+  def onChange(listenables: Listenable[_]*)(f: => Unit) = listenables.foreach(l => l.onChange(f))
 
   def destroy() = {
   }
