@@ -2,10 +2,6 @@ package org.sgine.ui.font
 
 import org.sgine.Resource
 import xml.{Elem, XML}
-import org.sgine.ui.ShapeComponent
-import collection.mutable.ListBuffer
-
-import scala.math._
 
 /**
  *
@@ -31,6 +27,7 @@ case class BitmapFont(face: String,
     glyphs: Map[Int, BitmapFontGlyph],
     kernings: Map[(Int, Int), BitmapFontKerning],
     packed: Int) {
+  /*
   def text(text: String, shape: ShapeComponent, kerning: Boolean = true) = {
     val (mx, my) = measure(text, kerning)
     val vertices = new ListBuffer[Double]
@@ -94,10 +91,11 @@ case class BitmapFont(face: String,
       x += glyph.xAdvance
     }
     x -> lineHeight
-  }
+  }*/
 
-  def kerning(first: Int, second: Int) = kernings.get(first -> second).map(k => k.amount)
-      .getOrElse(0)
+  def kerning(first: Int, second: Int) = {
+    kernings.get(first -> second).map(k => k.amount).getOrElse(0)
+  }
 }
 
 object BitmapFont {
@@ -133,62 +131,4 @@ object BitmapFont {
     BitmapFont(face, size, bold, italic, charset, unicode, stretchH, smooth, aa, padding, spacing,
       lineHeight, base, scaleW, scaleH, pages, glyphs, kerning, packed)
   }
-}
-
-class TextGenerator(font: BitmapFont, kerning: Boolean = true) {
-  type Drawer = (Double, Double, BitmapFontGlyph) => Unit
-
-  private var x = 0.0
-  private var y = 0.0
-  private val b = new StringBuilder
-  private var drawer: Drawer = _
-  private var wrap: Double = _
-
-  private var maxWidth = 0.0
-
-  def process(text: String, drawer: Drawer, wrap: Double) = {
-    // Reset
-    x = 0.0
-    y = 0.0
-    b.clear()
-    this.drawer = drawer
-    this.wrap = wrap
-    maxWidth = 0.0
-
-    // Process text
-    for (c <- text) {
-      if (c == '\n') {
-        drawCurrent()
-        drawNewLine()
-      } else if (c.isWhitespace) {
-        drawCurrent()
-        b.append(c)
-        drawCurrent(true)   // Draw the space on the current line
-      } else {
-        b.append(c)
-      }
-    }
-    drawCurrent()
-  }
-
-  def drawCurrent(noBreak: Boolean = false) = if (!b.isEmpty) {
-    val (width, _) = font.measure(b.toString(), kerning)
-    val newLine = if (width > wrap) {
-      drawNewLine()
-      true
-    } else {
-      false
-    }
-    font.process(b.toString(), kerning, drawer, x, y)
-    x += width
-    b.clear()
-  }
-
-  def drawNewLine() = {
-    maxWidth = max(x, maxWidth)
-    x = 0.0
-    y -= font.lineHeight
-  }
-
-  def size = maxWidth -> y
 }
