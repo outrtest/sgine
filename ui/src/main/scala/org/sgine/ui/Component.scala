@@ -2,21 +2,22 @@ package org.sgine.ui
 
 import org.sgine.input.event.MouseEventSupport
 import org.sgine.property.{PropertyParent, Property}
-import org.sgine.{Listenable, UpdatableInvocation}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
 import org.sgine.scene.Element
+import org.sgine.{Updatable, Listenable, AsynchronousInvocation}
 
 /**
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Component
-    extends PropertyParent with MouseEventSupport with UpdatableInvocation with Element {
+trait Component extends PropertyParent with MouseEventSupport with Element with Updatable {
   override val parent = Property[Component]()
 
   protected val matrix = new Matrix4()
+
+  private val updateAsync = new AsynchronousInvocation()
 
   onUpdate(location.x, location.y, location.z) {
     matrix.idt() // TODO: use parent matrix instead
@@ -60,9 +61,15 @@ trait Component
     Intersector.intersectRayBoundsFast(ray, Component.tempBoundingBox)
   }
 
+  override def update(delta: Double) = {
+    super.update(delta)
+
+    updateAsync.invokeNow()
+  }
+
   def onUpdate(listenables: Listenable[_]*)(f: => Unit) = {
     val function = () => f
-    val listener = (oldValue: Any, newValue: Any) => delayedHandling(function, function)
+    val listener = (oldValue: Any, newValue: Any) => updateAsync.invokeLater(function)
     listenables.foreach(l => l.listeners += listener)
   }
 
