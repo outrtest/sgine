@@ -44,14 +44,14 @@ class TextComponent extends ShapeComponent {
   private var offsetY = 0.0
 
   private lazy val drawer: (Double, Double, BitmapFontGlyph) => Unit = (x: Double, y: Double, glyph: BitmapFontGlyph) => {
-    vertices ++= glyph.vertices(offsetX + x + glyph.xOffset, offsetY + y, 0.0)
+    val vx = offsetX + x + glyph.xOffset
+    val vy = offsetY + y + _font().lineHeight - (glyph.yOffset + glyph.height)
+    vertices ++= glyph.vertices(vx, vy, 0.0)
     coords ++= glyph.coords(tw, th)
   }
 
-  @volatile private var us = false
-
-  onUpdate(_text, _font, _wrapWidth) {
-    us = true   // TODO: figure out why I can't update the shapecomponent during update
+  onRender(_text, _font, _wrapWidth) {
+    updateShape()
   }
 
   def updateShape() = {
@@ -74,38 +74,5 @@ class TextComponent extends ShapeComponent {
       _textureCoordinates := coords.toList
       _texture := page.texture
     }
-  }
-
-  /*
-  val font = BitmapFont(Resource("arial64.fnt"))
-  val shape = new ShapeComponent()
-  val tg = new TextGenerator(font)
-  tg.wrap = 100.0
-  val text = "Hello World!"
-
-  val (mx, my) = tg.measure(text)
-  println("Measure: " + mx + "x" + my)
-  val vertices = new ListBuffer[Double]
-  val coords = new ListBuffer[Double]
-  var offsetX = -(mx / 2.0)
-  var offsetY = (my / 2.0)
-  val page = font.pages.head
-  val f: (Double, Double, BitmapFontGlyph) => Unit = (x: Double, y: Double,
-      glyph: BitmapFontGlyph) => {
-    vertices ++= glyph.vertices(offsetX + x + glyph.xOffset, offsetY + y, 0.0)
-    coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
-  }
-  tg.draw(text, f)
-  shape.vertices := vertices.toList
-  shape.textureCoordinates := coords.toList
-  shape.texture := page.texture
-   */
-  override protected def draw() = {
-    if (us) {
-      updateShape()
-      us = false
-    }
-
-    super.draw()
   }
 }

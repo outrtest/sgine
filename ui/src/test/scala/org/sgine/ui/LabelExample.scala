@@ -37,7 +37,7 @@ object LabelExample extends UI {
 
   val tc = new TextComponent()
   tc._font := font
-  tc._text := "Hello World!"
+  tc._text := "Goodbye World!"
   tc._wrapWidth := 100.0
 //  tc.updateShape()
   contents += tc
