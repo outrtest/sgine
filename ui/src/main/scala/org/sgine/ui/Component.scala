@@ -15,28 +15,32 @@ import org.sgine.{Updatable, Listenable, AsynchronousInvocation}
 trait Component extends PropertyParent with MouseEventSupport with Element with Updatable {
   override val parent = Property[Component]()
 
-  protected val matrix = new Matrix4()
+  protected[ui] val matrix = new Matrix4()
 
   private val updateAsync = new AsynchronousInvocation()
 
-  onUpdate(location.x, location.y, location.z) {
+  onUpdate(location.x, location.y, location.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z) {
     matrix.idt() // TODO: use parent matrix instead
     matrix.translate(location.x().toFloat, location.y().toFloat, location.z().toFloat)
+    matrix.rotate(rotation.x().toFloat, rotation.y().toFloat, rotation.z().toFloat, 1.0f)
+    matrix.scale(scale.x().toFloat, scale.y().toFloat, scale.z().toFloat)
+
+    println("T: %sx%sx%s, R: %sx%sx%s, S: %sx%sx%s".format(location.x(), location.y(), location.z(), rotation.x(), rotation.y(), rotation.z(), scale.x(), scale.y(), scale.z()))
   }
 
   val visible = Property[Boolean](true)
   val mouseEnabled = Property[Boolean](true)
 
-  object location extends PropertyParent {
-    val x = Property[Double](0.0)
-    val y = Property[Double](0.0)
-    val z = Property[Double](0.0)
-  }
+  object location extends Property3D(0.0, 0.0, 0.0)
 
   object size extends PropertyParent {
     val width = Property[Double](0.0)
     val height = Property[Double](0.0)
   }
+
+  object scale extends Property3D(1.0, 1.0, 1.0)
+
+  object rotation extends Property3D(0.0, 0.0, 0.0)
 
   def hitTest(x: Double, y: Double) = {
     if (visible() && mouseEnabled()) {
@@ -77,6 +81,24 @@ trait Component extends PropertyParent with MouseEventSupport with Element with 
 
   def destroy() = {
   }
+}
+
+class Property3D(dx: Double, dy: Double, dz: Double) extends PropertyParent {
+  val x = Property[Double](dx)
+  val y = Property[Double](dy)
+  val z = Property[Double](dz)
+
+  def default() = {
+    apply(dx, dy, dz)
+  }
+
+  def apply(x: Double = this.x(), y: Double = this.y(), z: Double = this.z()) = {
+    this.x := x
+    this.y := y
+    this.z := z
+  }
+
+  def set(value: Double) = apply(value, value, value)
 }
 
 object Component {
