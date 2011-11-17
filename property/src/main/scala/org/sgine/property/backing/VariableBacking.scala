@@ -1,7 +1,7 @@
 package org.sgine.property.backing
 
 /**
- *
+ * VariableBacking utilizes a standard var for the backing store.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

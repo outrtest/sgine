@@ -3,7 +3,7 @@ package org.sgine.property.backing
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- *
+ * AtomicBacking utilizes an AtomicReference for the backing store.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

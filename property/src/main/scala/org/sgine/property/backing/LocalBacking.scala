@@ -1,7 +1,7 @@
 package org.sgine.property.backing
 
 /**
- *
+ * LocalBacking utilizes a ThreadLocal for the backing store.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

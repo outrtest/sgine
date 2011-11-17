@@ -5,6 +5,8 @@ import org.sgine.bind.Bindable
 
 
 /**
+ * StandardProperty is the default implementation of mutable properties with change listening and
+ * interception.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

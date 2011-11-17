@@ -35,25 +35,33 @@ package org.sgine.scene
 import org.sgine.event.Listenable
 
 /**
- *
+ * Element is the base class for scene. Though not all items in a scene must mix in Element, doing
+ * so allows for parent / child relationships and other benefits.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Element extends Listenable {
   override val parent: () => Element = new ElementParent()
 
+  /**
+   * Processes up the ancestry tree through parents to find the first matching ancestor of the
+   * generic type T and invokes the supplied function on it.
+   */
   def ancestor[T](f: T => Unit)(implicit manifest: Manifest[T]): Unit = {
     val p = parent()
     if (p != null) {
       if (manifest.erasure.isAssignableFrom(p.getClass)) {
         f(p.asInstanceOf[T])
-      }
-      else {
+      } else {
         p.ancestor(f)(manifest)
       }
     }
   }
 
+  /**
+   * Processes up the ancestry tree through parents executing the supplied function on all parents
+   * that match the supplied generic type.
+   */
   def ancestors[T](f: T => Unit)(implicit manifest: Manifest[T]): Unit = {
     val p = parent()
     if (p != null) {
@@ -64,6 +72,11 @@ trait Element extends Listenable {
     }
   }
 
+  /**
+   * Invokes the supplied method if this class matches the supplied generic type.
+   *
+   * Returns true if the generic type matched.
+   */
   def apply[T](f: T => Unit)(implicit manifest: Manifest[T]): Boolean = {
     if (manifest.erasure.isAssignableFrom(getClass)) {
       f(this.asInstanceOf[T])
@@ -75,6 +88,9 @@ trait Element extends Listenable {
   }
 }
 
+/**
+ * ElementParent is the default implementation of parental lookup on an Element.
+ */
 class ElementParent extends Function0[Element] with Function1[Element, Unit] {
   private var parent: Element = null
 
@@ -84,6 +100,9 @@ class ElementParent extends Function0[Element] with Function1[Element, Unit] {
 }
 
 object Element {
+  /**
+   * Assigns the parent to an element.
+   */
   def assignParent(element: Element, parent: Listenable) = element.parent
       .asInstanceOf[(Listenable) => Unit](parent)
 }

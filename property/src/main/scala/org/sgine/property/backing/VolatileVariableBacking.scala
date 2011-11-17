@@ -1,7 +1,7 @@
 package org.sgine.property.backing
 
 /**
- *
+ * VolatileVariableBacking utilizes a volatile var for the backing store.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
