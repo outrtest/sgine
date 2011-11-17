@@ -14,6 +14,9 @@ class AsynchronousInvocation {
   private val lock = new ReentrantLock()
   private var set = Set.empty[() => Unit]
 
+  /**
+   * Invokes all waiting invocations within this method.
+   */
   def invokeNow() = {
     if (!set.isEmpty) {
       lock.lock()
@@ -26,6 +29,9 @@ class AsynchronousInvocation {
     }
   }
 
+  /**
+   * Invokes the supplied function later when invokeNow() is called.
+   */
   def invokeLater(f: () => Unit) = {
     lock.lock()
     try {

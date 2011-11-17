@@ -4,7 +4,7 @@ import org.sgine.Resource
 import xml.{Elem, XML}
 
 /**
- *
+ * BitmapFont represents a font that utilizes vertices and textures to display.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
@@ -27,72 +27,10 @@ case class BitmapFont(face: String,
     glyphs: Map[Int, BitmapFontGlyph],
     kernings: Map[(Int, Int), BitmapFontKerning],
     packed: Int) {
-  /*
-  def text(text: String, shape: ShapeComponent, kerning: Boolean = true) = {
-    val (mx, my) = measure(text, kerning)
-    val vertices = new ListBuffer[Double]
-    val coords = new ListBuffer[Double]
-    var offsetX = -(mx / 2.0)
-    var offsetY = -(my / 2.0)
-    val page = pages.head
-    val f: (Double, Double, BitmapFontGlyph) => Unit = (x: Double, y: Double,
-        glyph: BitmapFontGlyph) => {
-      vertices ++= glyph.vertices(offsetX + x + glyph.xOffset, offsetY + y, 0.0)
-      coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
-    }
-    process(text, kerning, f)
-    shape.vertices := vertices.toList
-    shape.textureCoordinates := coords.toList
-    shape.texture := page.texture
-  }
 
-  def textWrap(text: String, wrap: Double, shape: ShapeComponent, kerning: Boolean = true) = {
-    val (mx, my) = measureWrap(text, wrap, kerning)
-    val vertices = new ListBuffer[Double]
-    val coords = new ListBuffer[Double]
-    var offsetX = -(mx / 2.0)
-    var offsetY = -(my / 2.0)
-    val page = pages.head
-    val f: (Double, Double, BitmapFontGlyph) => Unit = (x: Double, y: Double,
-        glyph: BitmapFontGlyph) => {
-      vertices ++= glyph.vertices(offsetX + x + glyph.xOffset, offsetY + y, 0.0)
-      coords ++= glyph.coords(page.texture.getWidth, page.texture.getHeight)
-    }
-    processWrap(text, wrap, kerning, f)
-    shape.vertices := vertices.toList
-    shape.textureCoordinates := coords.toList
-    shape.texture := page.texture
-  }
-
-  def measure(text: String, kerning: Boolean = true) = process(text, kerning)
-
-  def measureWrap(text: String, wrap: Double, kerning: Boolean = true) = processWrap(text, wrap, kerning)
-
-  def processWrap(text: String, wrap: Double, kerning: Boolean = true, f: (Double, Double, BitmapFontGlyph) => Unit = null) = {
-    val g = new TextGenerator(this, kerning)
-    g.process(text, f, wrap)
-    g.size
-  }
-
-  def process(text: String, kerning: Boolean = true,
-      f: (Double, Double, BitmapFontGlyph) => Unit = null,
-      xOffset: Double = 0.0, yOffset: Double = 0.0) = {
-    var x = xOffset
-    var y = yOffset
-    var p: BitmapFontGlyph = null
-    for (c <- text) {
-      val glyph = glyphs(c)
-      if (kerning && p != null) {
-        x += this.kerning(p.id, c)
-      }
-      if (f != null) {
-        f(x, y, glyph)
-      }
-      x += glyph.xAdvance
-    }
-    x -> lineHeight
-  }*/
-
+  /**
+   * Determines kerning for the space between first and second or 0 if none.
+   */
   def kerning(first: Int, second: Int) = {
     kernings.get(first -> second).map(k => k.amount).getOrElse(0)
   }
@@ -100,6 +38,11 @@ case class BitmapFont(face: String,
 
 object BitmapFont {
   // TODO: support packed font
+  /**
+   * Loads a BitmapFont from the resource supplied.
+   *
+   * Currently only works with XML defined fonts.
+   */
   def apply(resource: Resource): BitmapFont = {
     val xml = XML.load(resource.handle.read())
     val info = (xml \ "info").head

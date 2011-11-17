@@ -12,6 +12,10 @@ import java.lang.ThreadLocal
 private class ReusableByteBuffer {
   private var byteBuffer: ByteBuffer = _
 
+  /**
+   * Verifies the backing ByteBuffer meets or exceeds teh specified capacity and creates a new
+   * buffer if necessary before returning it.
+   */
   def allocate(size: Int) = {
     if (byteBuffer == null || byteBuffer.capacity < size) {
       byteBuffer = ReusableByteBuffer.createBuffer(size)
@@ -25,12 +29,18 @@ private class ReusableByteBuffer {
 object ReusableByteBuffer {
   private val instance = new ThreadLocal[ReusableByteBuffer]
 
+  /**
+   * Makes use of a ByteBuffer of the specified size to be used by the supplied function.
+   */
   def apply(size: Int)(f: ByteBuffer => Unit) = {
     val rbb = get
     val bb = rbb.allocate(size)
     f(bb)
   }
 
+  /**
+   * Makes use of a ByteBuffer of the specified width and height to be used by the supplied function.
+   */
   def apply(width: Int, height: Int)(f: ByteBuffer => Unit) = {
     val rbb = get
     val bb = rbb.allocate(width * height * 4)

@@ -15,16 +15,37 @@ class TextGenerator(var font: BitmapFont) {
   private var maxWidth = 0.0
   private val b = new StringBuilder
 
+  /**
+   * The function invoked to draw the glyph to a specific location.
+   *
+   * May be null if no drawing is desired.
+   */
   var drawer: Drawer = _
+  /**
+   * The width necessary to be exceeded to cause the text to wrap to another line.
+   *
+   * Defaults to Double.MaxValue.
+   */
   var wrap = Double.MaxValue
+  /**
+   * Whether to apply kerning to drawn text.
+   *
+   * Defaults to true.
+   */
   var kerning = true
 
+  /**
+   * Measures the width and height of the supplied text with the specific values supplied.
+   */
   def measure(text: String) = synchronized {
     drawer = null
     process(text)
     size
   }
 
+  /**
+   * Draws the supplied text to the supplied Drawer.
+   */
   def draw(text: String, drawer: Drawer) = synchronized {
     this.drawer = drawer
     process(text)
@@ -73,6 +94,9 @@ class TextGenerator(var font: BitmapFont) {
     y -= font.lineHeight
   }
 
+  /**
+   * Returns the width and height for the last draw or measure execution.
+   */
   def size = maxWidth -> -y
 
   private def processBlock(text: String,

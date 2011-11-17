@@ -3,7 +3,8 @@ package org.sgine.workflow
 import annotation.tailrec
 
 /**
- *
+ * Asynchronous trait can be mixed into a Workflow to invoke all child workflow items simultaneously
+ * completing only when all child workflow items have completed.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

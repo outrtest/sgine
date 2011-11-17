@@ -1,7 +1,7 @@
 package org.sgine.workflow
 
 /**
- *
+ * Workflow processes child WorkflowItems either synchronously or asynchronously until completion.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
