@@ -3,7 +3,7 @@ package org.sgine.input
 import org.sgine.{Enumerated, EnumEntry}
 
 /**
- *
+ * MouseButton is an enum that represents a specific mouse button.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

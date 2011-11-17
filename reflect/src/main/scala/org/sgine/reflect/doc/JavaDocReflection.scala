@@ -8,7 +8,8 @@ import annotation.tailrec
 import org.sgine.reflect._
 
 /**
- *
+ * JavaDocReflection uses JavaDocs to parse information to determine documentation about classes and
+ * methods.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

@@ -6,7 +6,7 @@ import annotation.tailrec
 import org.sgine.reflect._
 
 /**
- *
+ * AndroidDocReflection adds support to process JavaDocs for Android API.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

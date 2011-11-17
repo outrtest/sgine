@@ -1,7 +1,7 @@
 package org.sgine.reflect.doc
 
 /**
- *
+ * MethodDocumentation represents documentation about a specific method.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

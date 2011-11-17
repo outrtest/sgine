@@ -36,20 +36,33 @@ import collection.mutable.ListBuffer
 import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEventSupport}
 
 /**
- *
+ * MutableContainer as the name suggests is a mutable implementation of Container.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class MutableContainer[T] extends Container[T] with ContainerEventSupport {
   private val buffer = new ListBuffer[T]
 
+  /**
+   * Represents the children of this container.
+   */
   object contents extends Seq[T] {
     def iterator = buffer.iterator
 
+    /**
+     * Lookup a child by index.
+     */
     def apply(index: Int) = buffer(index)
 
+    /**
+     * The number of children in this container.
+     */
     def length = buffer.length
 
+    /**
+     * Inserts a child into this container and assigns this container as the parent if the child is
+     * of type Element.
+     */
     def +=(child: T) = synchronized {
       buffer += child
 
@@ -61,6 +74,10 @@ class MutableContainer[T] extends Container[T] with ContainerEventSupport {
       if (containerChange.shouldFire) containerChange.fire(new ChildAddedEvent(MutableContainer.this, child))
     }
 
+    /**
+     * Removes the supplied child from this container and nullifies parent if the child is of type
+     * Element.
+     */
     def -=(child: T) = synchronized {
       buffer -= child
 
@@ -72,5 +89,4 @@ class MutableContainer[T] extends Container[T] with ContainerEventSupport {
       if (containerChange.shouldFire) containerChange.fire(new ChildRemovedEvent(MutableContainer.this, child))
     }
   }
-
 }

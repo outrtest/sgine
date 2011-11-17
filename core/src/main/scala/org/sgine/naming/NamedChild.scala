@@ -3,7 +3,8 @@ package org.sgine.naming
 import org.sgine.reflect.EnhancedMethod
 
 /**
- *
+ * NamedChild is used in conjunction with a NamingParent to determine the name of an underlying
+ * field used within the NamingParent.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
@@ -17,8 +18,14 @@ trait NamedChild {
 
   private lazy val method = parent.method(this)
 
+  /**
+   * The name of this field.
+   */
   lazy val name = method.name
 
+  /**
+   * The ordinal value of this field. This is not guaranteed to be in any specific order.
+   */
   def ordinal = _ordinal
 
   private lazy val _ordinal = determineOrdinal()

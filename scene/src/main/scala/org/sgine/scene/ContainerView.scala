@@ -84,6 +84,9 @@ class ContainerView[T](val container: Container[_],
     }
   }
 
+  /**
+   * Refreshes the entries of this ContainerView.
+   */
   def refresh() = {
     // TODO: validate thread-safety
     queue.clear()
@@ -94,6 +97,9 @@ class ContainerView[T](val container: Container[_],
     refreshSort()
   }
 
+  /**
+   * Refreshes the filtering of the ContainerView.
+   */
   def refreshFilter() = {
     // TODO: validate thread-safety
     if (filter != null) {
@@ -131,6 +137,9 @@ class ContainerView[T](val container: Container[_],
     }
   }
 
+  /**
+   * Refreshes the sorting of this view.
+   */
   def refreshSort() = {
     // TODO: validate thread-safety
     if (comparator != null && !queue.isEmpty) java.util.Arrays.sort(queue.localArray, 0, queue.length, comparator)

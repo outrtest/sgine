@@ -46,6 +46,9 @@ package object reflect {
     class2EnhancedClass(f.getClass).methods.find(m => m.name == "apply" && m.args.length == 6)
   }
 
+  /**
+   * Finds a method based on the absolute signature including class.
+   */
   def method(absoluteSignature: String) = {
     val absoluteMethodName = absoluteSignature.substring(0, absoluteSignature.indexOf('('))
     val className = absoluteMethodName.substring(0, absoluteMethodName.lastIndexOf('.'))

@@ -33,14 +33,20 @@
 package org.sgine.scene
 
 /**
- *
+ * Container maintains a collection of children T.
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 7/2/11
  */
 trait Container[T] extends Element {
+  /**
+   * The children associated to this Container.
+   */
   def contents: Seq[T]
 
+  /**
+   * Recursively iterates over all descendants to invoke the supplied function on all elements that
+   * match the generic type T.
+   */
   def descendants[T](f: T => Unit)(implicit manifest: Manifest[T]): Unit = {
     contents.foreach(child => child match {
       case e: Element => e(f)

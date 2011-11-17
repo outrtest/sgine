@@ -10,14 +10,29 @@ import java.lang.reflect.Method
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class EnhancedClass protected[reflect](val javaClass: Class[_]) {
+  /**
+   * The name of the class.
+   */
   def name = EnhancedClass.convertClass(javaClass)
 
+  /**
+   * All methods on this class.
+   */
   lazy val methods: List[EnhancedMethod] = javaClass.getMethods.toList.map(m => new EnhancedMethod(this, m))
 
+  /**
+   * Finds a method by the absoluteSignature.
+   */
   def methodBySignature(signature: String) = methods.find(m => m.absoluteSignature == signature || m.signature == signature)
 
+  /**
+   * Finds a method from the supplied name and args.
+   */
   def method(name: String, args: EnhancedClass*): Option[EnhancedMethod] = methods.find(m => m.name == name && m.argsMatch(args))
 
+  /**
+   * The companion class to this class if it exists.
+   */
   lazy val companion: Option[EnhancedClass] = try {
     Some(Class.forName(javaClass.getName + "$"))
   } catch {
@@ -52,6 +67,9 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
 }
 
 object EnhancedClass {
+  /**
+   * Converts primitive classes to wrapper classes.
+   */
   def convertClass(c: Class[_]) = c.getName match {
     case "boolean" => "Boolean"
     case "byte" => "Byte"

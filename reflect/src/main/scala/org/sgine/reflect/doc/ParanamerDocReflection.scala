@@ -8,7 +8,7 @@ import java.lang.reflect.Method
 import org.sgine.reflect._
 
 /**
- *
+ * ParanamerDocReflection uses Paranamer to introspect documentation details for classes and methods.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

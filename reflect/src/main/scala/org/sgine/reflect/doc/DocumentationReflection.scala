@@ -7,11 +7,15 @@ import io.Source
 import java.net.URL
 
 /**
- * Implementations of DocumentationReflection provide functionality to introspect the JavaDoc / ScalaDoc for a Class.
+ * Implementations of DocumentationReflection provide functionality to introspect the JavaDoc /
+ * ScalaDoc for a Class.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait DocumentationReflection {
+  /**
+   * Looks up MethodDocumentation for the supplied method.
+   */
   def method(m: Method): MethodDocumentation
 
   protected def between(string: String, offset: Int, pre: String, post: String) = {
@@ -75,8 +79,14 @@ object DocumentationReflection {
   register("javax.microedition", AndroidDocReflection)
   register("android", AndroidDocReflection)
 
+  /**
+   * Registers a DocMapper to a base package.
+   */
   def register(packageBase: String, docMapper: DocMapper) = packageMapping.put(packageBase, docMapper)
 
+  /**
+   * Looks up the DocumentationReflection object for the specific class.
+   */
   def apply(c: Class[_]) = findMatch(c.getName).apply(c)
 
   @tailrec
