@@ -12,10 +12,19 @@ import util.Random
 trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
   private lazy val r = new Random()
 
+  /**
+   * The name of this Enumerated.
+   */
   lazy val name = getClass.getSimpleName.replaceAll("\\$", "")
 
+  /**
+   * Retrieve an enum by index.
+   */
   def apply(index: Int) = values(index)
 
+  /**
+   * Collection of all the enums associated with this Enumerated.
+   */
   object values extends NamingFilter[E](this) {
     override def apply(index: Int) = {
       fields.map(m => m[E](parent)).find(v => v.ordinal == index)
@@ -23,12 +32,14 @@ trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
     }
   }
 
+  /**
+   * Retrieves a random enum.
+   */
   def random = values(r.nextInt(values.length))
 
   override protected def accept(method: EnhancedMethod) = if (method.name == "random") {
     false
-  }
-  else {
+  } else {
     super.accept(method)
   }
 }

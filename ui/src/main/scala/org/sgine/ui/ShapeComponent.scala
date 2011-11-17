@@ -5,7 +5,8 @@ import org.sgine.property.Property
 import com.badlogic.gdx.graphics.Texture
 
 /**
- *
+ * ShapeComponent is a base class for Components that need to render vertices and textures to the
+ * screen.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

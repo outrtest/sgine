@@ -7,6 +7,9 @@ package org.sgine
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Updatable {
+  /**
+   * Invoked with the amount of time that has elapsed since the last call of this method in seconds.
+   */
   def update(delta: Double) = {
   }
 }

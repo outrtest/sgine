@@ -8,5 +8,8 @@ import xml.Elem
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait XMLLoader[T] {
+  /**
+   * Converts from the supplied Elem to T.
+   */
   def apply(elem: Elem): T
 }

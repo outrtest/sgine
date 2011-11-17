@@ -1,7 +1,9 @@
 package org.sgine.workflow
 
 /**
+ * WorkflowItem is the core class that all aspects of Workflow must extend from.
  *
+ * A WorkflowItem defines a begin, act, and end.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
@@ -9,6 +11,9 @@ trait WorkflowItem {
   protected[workflow] var id: String = _
   protected[workflow] var finished = false
 
+  /**
+   * Called when this WorkflowItem is beginning.
+   */
   def begin() = {
     finished = false
     if (id != null) {
@@ -21,12 +26,18 @@ trait WorkflowItem {
    */
   def act(delta: Float): Boolean
 
+  /**
+   * Called when this WorkflowItem is ending.
+   */
   def end() = {
     if (id != null) {
       WorkflowItem.unregister(id)
     }
   }
 
+  /**
+   * Called explicitly to stop this workflow item if it is running.
+   */
   def stop() = {
     finished = true
   }
@@ -43,5 +54,8 @@ object WorkflowItem {
     items -= id
   }
 
+  /**
+   * Look up a currently executing WorkflowItem by id.
+   */
   def apply(id: String) = items(id)
 }

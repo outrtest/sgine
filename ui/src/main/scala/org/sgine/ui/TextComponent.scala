@@ -5,7 +5,7 @@ import org.sgine.property._
 import collection.mutable.ListBuffer
 
 /**
- * 
+ * TextComponent is a base class for all Components needing to draw text to the screen.
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
@@ -16,6 +16,9 @@ class TextComponent extends ShapeComponent {
 
   protected val generator = new TextGenerator(_font())
 
+  /**
+   * The measured size of the text.
+   */
   object measured extends PropertyParent {
     val width = Property[Double](0.0)
     val height = Property[Double](0.0)
@@ -54,7 +57,7 @@ class TextComponent extends ShapeComponent {
     updateShape()
   }
 
-  def updateShape() = {
+  private def updateShape() = {
     val t = _text()
     val f = _font()
     if (t != null && !t.isEmpty && f != null) {

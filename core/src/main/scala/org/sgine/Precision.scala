@@ -1,7 +1,7 @@
 package org.sgine
 
 /**
- *
+ * Precision is an enum defining numeric precisions and conversions.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

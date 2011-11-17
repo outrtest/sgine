@@ -1,11 +1,15 @@
 package org.sgine.ui.render
 
 /**
- *
+ * TextureCoordinates is a convenience class for generating common scenarios of texture coordinates.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object TextureCoordinates {
+  /**
+   * Creates texture coordinates for the section specified of a texture based on the dimensions of
+   * the texture supplied.
+   */
   def rectCoords(x: Double, y: Double, width: Double, height: Double, textureWidth: Double,
       textureHeight: Double) = {
     val left = x / textureWidth
@@ -22,29 +26,28 @@ object TextureCoordinates {
     )
   }
 
+  /**
+   * Generic generation of texture coordinates presuming use of the entire texture.
+   */
   def rect(flipHorizontal: Boolean = false, flipVertical: Boolean = false) = {
     val left = if (flipHorizontal) {
       1.0
-    }
-    else {
+    } else {
       0.0
     }
     val right = if (flipHorizontal) {
       0.0
-    }
-    else {
+    } else {
       1.0
     }
     val top = if (flipVertical) {
       1.0
-    }
-    else {
+    } else {
       0.0
     }
     val bottom = if (flipVertical) {
       0.0
-    }
-    else {
+    } else {
       1.0
     }
     List(

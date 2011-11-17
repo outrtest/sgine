@@ -20,11 +20,30 @@ import com.badlogic.gdx.math.collision.Ray
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class UI extends Container with DelayedInit {
+  /**
+   * ContainerView of all Components within this UI hierarchy.
+   */
   lazy val componentsView = new ImmutableProperty(new ContainerView[Component](this))
+  /**
+   * ContainerView of all RenderableComponents within this UI hierarchy.
+   */
   lazy val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
+  /**
+   * ContainerView of all Updatables within this UI hierarchy.
+   */
   lazy val updatablesView = new ImmutableProperty(new ContainerView[Updatable](this))
 
+  /**
+   * The camera to be used for displaying this UI.
+   *
+   * Defaults to an OrthographicCamera with the width and height defined by the UI.
+   */
   lazy val camera = Property[Camera](new OrthographicCamera(width, height))
+  /**
+   * Whether vertical synchronization should be enabled.
+   *
+   * Defaults to true.
+   */
   lazy val verticalSync = Property[Boolean](true)
 
   onUpdate(camera) {
@@ -50,14 +69,6 @@ class UI extends Container with DelayedInit {
    * Window height
    */
   def height = 768
-
-  //  lazy val pickFunction = (current: Component, c: Component) => if (c
-  //      .hitTest(Mouse.x(), abs(Mouse.y() - height))) {
-  //    c
-  //  }
-  //  else {
-  //    current
-  //  }
 
   private var currentRay: Ray = _
 
@@ -98,10 +109,16 @@ class UI extends Container with DelayedInit {
     }
   }
 
+  /**
+   * Convenience method to replace the camera with an OrthographicCamera.
+   */
   final def orthographic(width: Double = this.width, height: Double = this.height) = {
     camera := new OrthographicCamera(width.toFloat, height.toFloat)
   }
 
+  /**
+   * Convenience method to replace the camera with a PerspectiveCamera.
+   */
   final def perspective(fov: Double = 45.0, nearPlane: Double = 0.1, farPlane: Double = 1000.0) = {
     val aspectRatio = width / height
     val c = new PerspectiveCamera(fov.toFloat, 2.0f * aspectRatio, 2.0f)
@@ -231,11 +248,13 @@ class UI extends Container with DelayedInit {
       true
     }
   }
-
 }
 
 object UI {
   private val instance = new ThreadLocal[UI]
 
+  /**
+   * Returns UI the instance associated with the current thread.
+   */
   def apply() = instance.get()
 }
