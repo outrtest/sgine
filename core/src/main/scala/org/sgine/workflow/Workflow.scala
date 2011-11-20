@@ -1,13 +1,37 @@
 package org.sgine.workflow
 
+import org.sgine.{Finishable, Updatable}
+
+
 /**
  * Workflow processes child WorkflowItems either synchronously or asynchronously until completion.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Workflow protected(val items: List[WorkflowItem]) extends WorkflowItem {
+class Workflow protected(val items: List[WorkflowItem]) extends WorkflowItem with Updatable with Finishable {
   protected var currentItems = items
   protected var current: WorkflowItem = _
+
+  private var first = true
+
+  override final def update(delta: Double) = {
+    super.update(delta)
+    if (first) {
+      begin()
+      first = false
+    }
+    finished = act(delta.toFloat)
+    if (finished) {
+      end()
+      first = true
+    }
+  }
+
+  override def begin() = {
+    super.begin()
+    currentItems = items
+    current = null
+  }
 
   def act(delta: Float) = {
     if (current == null && !currentItems.isEmpty) {
@@ -26,9 +50,9 @@ class Workflow protected(val items: List[WorkflowItem]) extends WorkflowItem {
     }
   }
 
-  override def end() = {
-    super.end()
-    currentItems = items
-    current = null
-  }
+  def isFinished = finished
+}
+
+object Workflow {
+  def apply(workflowItems: WorkflowItem*) = new Workflow(workflowItems.toList)
 }
