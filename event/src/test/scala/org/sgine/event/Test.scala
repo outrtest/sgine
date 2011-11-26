@@ -1,3 +1,5 @@
+package org.sgine.event
+
 /*
  * Copyright (c) 2011 Sgine
  * All rights reserved.
@@ -30,23 +32,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sgine.event
-
-import annotation.tailrec
-
 /**
- * Bus provides a single Listenable to listen for any kind of event.
+ *
  *
  * @author Matt Hicks <mhicks@sgine.org>
+ * Date: 6/21/11
  */
-object Bus extends Listenable {
-  @tailrec
-  protected[event] def process[T](event: T, classes: List[Class[_]]): Unit = {
-    if (classes.nonEmpty) {
-      val clazz = classes.head
-      val listeners = Bus.map.getOrElse(clazz, Nil).asInstanceOf[List[EventHandler[T]]]
-      Bus.invoke(event, listeners, Recursion.Current)
-      process(event, classes.tail)
-    }
-  }
-}
+class Test(var children: Seq[Listenable] = Nil) extends StringEventSupport with UberEventSupport with ListenableContainer
