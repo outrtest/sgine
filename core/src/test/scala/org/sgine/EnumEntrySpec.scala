@@ -100,22 +100,22 @@ class EnumEntrySpec extends WordSpec with ShouldMatchers {
   }
 }
 
-sealed class TestEnum extends EnumEntry[TestEnum]
+sealed class TestEnum(override val ordinal: Int) extends EnumEntry[TestEnum]
 
 object TestEnum extends Enumerated[TestEnum] {
-  val One = new TestEnum()
-  val Two = new TestEnum()
-  val Three = new TestEnum()
+  val One = new TestEnum(0)
+  val Two = new TestEnum(1)
+  val Three = new TestEnum(2)
 }
 
-sealed class TestCombinableEnum extends EnumEntry[TestCombinableEnum]
+sealed class TestCombinableEnum(override val ordinal: Int) extends EnumEntry[TestCombinableEnum]
 
 object TestCombinableEnum extends EnumeratedCombinable[TestCombinableEnum] {
-  val Four = new TestCombinableEnum()
-  val Five = new TestCombinableEnum()
-  val Six = new TestCombinableEnum()
+  val Four = new TestCombinableEnum(0)
+  val Five = new TestCombinableEnum(1)
+  val Six = new TestCombinableEnum(2)
 
-  def combine(enums: TestCombinableEnum*) = new TestCombinableEnum with Combined[TestCombinableEnum] {
+  def combine(enums: TestCombinableEnum*) = new TestCombinableEnum(TestCombinableEnum.values.length) with Combined[TestCombinableEnum] {
     val combined = enums.toList
   }
 }

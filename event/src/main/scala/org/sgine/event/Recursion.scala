@@ -39,27 +39,27 @@ import org.sgine.{Enumerated, EnumEntry}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-sealed class Recursion extends EnumEntry[Recursion]
+sealed class Recursion(override val ordinal: Int) extends EnumEntry[Recursion]
 
 object Recursion extends Enumerated[Recursion] {
   /**
    * EventHandler is invoked when events occur only the current Listenable
    * it is attached to.
    */
-  val Current = new Recursion
+  val Current = new Recursion(0)
   /**
    * EventHandler is invoked when events occur on the current Listenable as
    * well as all of its children.
    */
-  val Children = new Recursion
+  val Children = new Recursion(1)
   /**
    * EventHandler is invoked when events occur on the current Listenable as
    * well as all of its parents.
    */
-  val Parents = new Recursion
+  val Parents = new Recursion(2)
   /**
    * EventHandler is invoked when events occur on the current Listenable as
    * well as all of its parents and children.
    */
-  val All = new Recursion
+  val All = new Recursion(3)
 }
