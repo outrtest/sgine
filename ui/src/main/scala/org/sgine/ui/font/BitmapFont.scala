@@ -2,8 +2,9 @@ package org.sgine.ui.font
 
 import org.sgine.Resource
 import xml.{Elem, XML}
-import org.sgine.ui.ShapeComponent
 import collection.mutable.ListBuffer
+
+import org.sgine.ui._
 
 /**
  *
@@ -11,24 +12,24 @@ import collection.mutable.ListBuffer
  * @author Matt Hicks <mhicks@sgine.org>
  */
 case class BitmapFont(face: String,
-    size: Int,
-    bold: Int,
-    italic: Int,
-    charset: String,
-    unicode: Int,
-    stretchH: Int,
-    smooth: Int,
-    aa: Int,
-    padding: String,
-    spacing: String,
-    lineHeight: Int,
-    base: Int,
-    scaleW: Int,
-    scaleH: Int,
-    pages: List[BitmapFontPage],
-    glyphs: Map[Int, BitmapFontGlyph],
-    kernings: Map[(Int, Int), BitmapFontKerning],
-    packed: Int) {
+                      size: Int,
+                      bold: Int,
+                      italic: Int,
+                      charset: String,
+                      unicode: Int,
+                      stretchH: Int,
+                      smooth: Int,
+                      aa: Int,
+                      padding: String,
+                      spacing: String,
+                      lineHeight: Int,
+                      base: Int,
+                      scaleW: Int,
+                      scaleH: Int,
+                      pages: List[BitmapFontPage],
+                      glyphs: Map[Int, BitmapFontGlyph],
+                      kernings: Map[(Int, Int), BitmapFontKerning],
+                      packed: Int) {
   def text(text: String, shape: ShapeComponent, kerning: Boolean = true) = {
     val vertices = new ListBuffer[Double]
     val coords = new ListBuffer[Double]
@@ -51,13 +52,13 @@ case class BitmapFont(face: String,
   }
 
   def kerning(first: Int, second: Int) = kernings.get(first -> second).map(k => k.amount)
-      .getOrElse(0)
+    .getOrElse(0)
 }
 
 object BitmapFont {
   // TODO: support packed font
   def apply(resource: Resource): BitmapFont = {
-    val xml = XML.load(resource.handle.read())
+    val xml = XML.load(resource.read())
     val info = (xml \ "info").head
     val face = (info \ "@face").text
     val size = (info \ "@size").text.toInt
@@ -78,9 +79,9 @@ object BitmapFont {
     val packed = (common \ "@packed").text.toInt
     val pages = (xml \ "pages" \ "page").map(n => BitmapFontPage(n.asInstanceOf[Elem])).toList
     val glyphs = (xml \ "chars" \ "char").map(n => BitmapFontGlyph(n.asInstanceOf[Elem]))
-        .map(g => g.id -> g).toMap
+      .map(g => g.id -> g).toMap
     val kerning = (xml \ "kernings" \ "kerning").map(n => BitmapFontKerning(n.asInstanceOf[Elem]))
-        .map(k => (k.first, k.second) -> k).toMap
+      .map(k => (k.first, k.second) -> k).toMap
     BitmapFont(face, size, bold, italic, charset, unicode, stretchH, smooth, aa, padding, spacing,
       lineHeight, base, scaleW, scaleH, pages, glyphs, kerning, packed)
   }
