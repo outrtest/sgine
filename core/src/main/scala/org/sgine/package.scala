@@ -5,7 +5,5 @@ package object sgine {
 
   type Listener[T] = (T, T) => Unit
 
-  implicit def resource2FileHandle(resource: Resource) = resource.handle
-
   implicit def double2Float(value: Double) = value.toFloat
 }
