@@ -64,6 +64,10 @@ trait Listenable extends Concurrent {
     map += clazz -> Nil
   }
 
+  protected[event] def clearAll() = synchronized {
+    map = Map.empty
+  }
+
   protected[event] def hasListeners(clazz: Class[_]) = map.get(clazz) match {
     case Some(list) if (!list.isEmpty) => true
     case _ => false
@@ -84,8 +88,25 @@ trait Listenable extends Concurrent {
 
     // Fire event on the Bus
     if (!isCancelled(event)) {
-      val listeners = Bus.map.getOrElse(clazz, Nil).asInstanceOf[List[EventHandler[T]]]
-      Bus.invoke(event, listeners, Recursion.Current)
+      Bus.process(event, classHierarchy(clazz))
+    }
+  }
+
+  private var classHierarchyMap = Map.empty[Class[_], List[Class[_]]]
+
+  private def classHierarchy(clazz: Class[_]) = {
+    classHierarchyMap.getOrElse(clazz, synchronized {
+      val hierarchy = generateClassHierarchy(clazz)
+      classHierarchyMap += clazz -> hierarchy
+      hierarchy
+    })
+  }
+
+  private def generateClassHierarchy(clazz: Class[_], list: List[Class[_]] = Nil): List[Class[_]] = {
+    if (clazz != null) {
+      generateClassHierarchy(clazz.getSuperclass, clazz :: clazz.getInterfaces.toList ::: list)
+    } else {
+      list.toSet.toList // Remove duplicates
     }
   }
 
@@ -157,6 +178,8 @@ class Listeners(listenable: Listenable) {
   def size[T](implicit manifest: Manifest[T]): Int = listenable.size(manifest.erasure)
 
   def clear[T]()(implicit manifest: Manifest[T]): Unit = listenable.clear(manifest.erasure)
+
+  def clearAll() = listenable.clearAll()
 
   def synchronous[T](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
     val handler = new EventHandler[T](f, ProcessingMode.Synchronous)(manifest)

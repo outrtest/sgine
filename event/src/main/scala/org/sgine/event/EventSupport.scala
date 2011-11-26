@@ -70,17 +70,23 @@ class EventSupport[T](_listenable: Listenable = null) {
   def clear()(implicit manifest: Manifest[T]) = listenable.clear(manifest.erasure)
 
   def synchronous(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Synchronous)(manifest)
+    val handler = new EventHandler[T](f.orElse {
+      case _ => // Fall-through
+    }, ProcessingMode.Synchronous)(manifest)
     this += handler
   }
 
   def asynchronous(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Asynchronous)(manifest)
+    val handler = new EventHandler[T](f.orElse {
+      case _ => // Fall-through
+    }, ProcessingMode.Asynchronous)(manifest)
     this += handler
   }
 
   def concurrent(f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    val handler = new EventHandler[T](f, ProcessingMode.Concurrent)(manifest)
+    val handler = new EventHandler[T](f.orElse {
+      case _ => // Fall-through
+    }, ProcessingMode.Concurrent)(manifest)
     this += handler
   }
 
@@ -90,7 +96,9 @@ class EventSupport[T](_listenable: Listenable = null) {
              workQueue: WorkQueue = null)
             (f: PartialFunction[T, Any])
             (implicit manifest: Manifest[T]): EventHandler[T] = {
-    val handler = new EventHandler[T](f, processingMode, priority, recursion, workQueue)(manifest)
+    val handler = new EventHandler[T](f.orElse {
+      case _ => // Fall-through
+    }, processingMode, priority, recursion, workQueue)(manifest)
     this += handler
   }
 

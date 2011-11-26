@@ -65,6 +65,13 @@ class EventSpec extends FlatSpec with ShouldMatchers {
     count.get should equal(1)
   }
 
+  it should "allow fall-through when no match is found" in {
+    test.strings.synchronous {
+      case exc if (true == false) => // Do nothing and fall-through
+    }
+    test.strings.fire("Test 2")
+  }
+
   it should "clear listeners" in {
     test.strings.clear()
     test.strings.hasListeners should equal(false)
@@ -155,29 +162,4 @@ class EventSpec extends FlatSpec with ShouldMatchers {
     test.uber.fire(new UberEvent)
     count.get should equal(1000)
   }
-
-  it should "invoke messages on the Bus" in {
-    test.uber.clear()
-    test.children = Nil
-    count.set(0)
-    Bus.listeners.synchronous[UberEvent] {
-      case event => count.addAndGet(1)
-    }
-    test.uber.fire(new UberEvent)
-    count.get should equal(1)
-  }
 }
-
-class ChildTest(_parent: Test) extends UberEventSupport {
-  override val parent = () => _parent
-}
-
-class Test(var children: Seq[Listenable] = Nil) extends StringEventSupport with UberEventSupport with ListenableContainer
-
-trait UberEventSupport extends Listenable {
-  def uber = UberEventSupport(this)
-}
-
-object UberEventSupport extends EventSupport[UberEvent]
-
-class UberEvent extends Event
