@@ -1,6 +1,7 @@
 package org.sgine.ui.font
 
 import org.sgine.Resource
+import org.sgine.ui._
 import xml.{Elem, XML}
 
 /**
@@ -9,24 +10,24 @@ import xml.{Elem, XML}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 case class BitmapFont(face: String,
-    size: Int,
-    bold: Int,
-    italic: Int,
-    charset: String,
-    unicode: Int,
-    stretchH: Int,
-    smooth: Int,
-    aa: Int,
-    padding: String,
-    spacing: Array[Int],
-    lineHeight: Int,
-    base: Int,
-    scaleW: Int,
-    scaleH: Int,
-    pages: List[BitmapFontPage],
-    glyphs: Map[Int, BitmapFontGlyph],
-    kernings: Map[(Int, Int), BitmapFontKerning],
-    packed: Int) {
+                      size: Int,
+                      bold: Int,
+                      italic: Int,
+                      charset: String,
+                      unicode: Int,
+                      stretchH: Int,
+                      smooth: Int,
+                      aa: Int,
+                      padding: String,
+                      spacing: Array[Int],
+                      lineHeight: Int,
+                      base: Int,
+                      scaleW: Int,
+                      scaleH: Int,
+                      pages: List[BitmapFontPage],
+                      glyphs: Map[Int, BitmapFontGlyph],
+                      kernings: Map[(Int, Int), BitmapFontKerning],
+                      packed: Int) {
 
   /**
    * Determines kerning for the space between first and second or 0 if none.
@@ -44,7 +45,7 @@ object BitmapFont {
    * Currently only works with XML defined fonts.
    */
   def apply(resource: Resource): BitmapFont = {
-    val xml = XML.load(resource.handle.read())
+    val xml = XML.load(resource.read())
     val info = (xml \ "info").head
     val face = (info \ "@face").text
     val size = (info \ "@size").text.toInt
@@ -65,9 +66,9 @@ object BitmapFont {
     val packed = (common \ "@packed").text.toInt
     val pages = (xml \ "pages" \ "page").map(n => BitmapFontPage(n.asInstanceOf[Elem])).toList
     val glyphs = (xml \ "chars" \ "char").map(n => BitmapFontGlyph(n.asInstanceOf[Elem]))
-        .map(g => g.id -> g).toMap
+      .map(g => g.id -> g).toMap
     val kerning = (xml \ "kernings" \ "kerning").map(n => BitmapFontKerning(n.asInstanceOf[Elem]))
-        .map(k => (k.first, k.second) -> k).toMap
+      .map(k => (k.first, k.second) -> k).toMap
     if (pages.length != 1) {
       throw new RuntimeException("No support for multiple pages yet.")
     }
