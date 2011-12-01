@@ -31,7 +31,7 @@ trait Listenable[E] {
     object asynchronous extends Listeners[E]
 
     object concurrent extends Listeners[E] {
-      override def +=(listener: Listener) = super.+=(new ConcurrentEventListener(listener))
+      override def +=(listener: EventListener[E]) = super.+=(new ConcurrentEventListener(listener))
 
       private class ConcurrentEventListener[E](listener: (E) => Unit, priority: Priority = Priority.Normal) extends EventListener[E](listener, priority) {
         override def apply(event: E) = Executor.invoke {
@@ -83,16 +83,14 @@ object Listenable {
 }
 
 trait Listeners[E] {
-  type Listener = (E) => Unit
+  protected[event] var _listeners: List[EventListener[E]] = Nil
 
-  protected[event] var _listeners: List[Listener] = Nil
-
-  def +=(listener: Listener) = synchronized {
+  def +=(listener: EventListener[E]) = synchronized {
     _listeners = (listener :: _listeners.reverse).reverse
     listener
   }
 
-  def -=(listener: Listener) = synchronized {
+  def -=(listener: EventListener[E]) = synchronized {
     _listeners = _listeners.filterNot(l => l == listener)
     listener
   }
@@ -103,38 +101,37 @@ trait Listeners[E] {
 
   def nonEmpty = !isEmpty
 
-  def apply(f: PartialFunction[E, Unit]) = this += Listenable.withFallthrough(f)
+  def apply(f: PartialFunction[E, Unit]) = this += EventListener()(f)
 
   def filtered[T](f: PartialFunction[T, Unit])(manifest: Manifest[T]) = {
-    val listener = Listenable.withFallthrough(f)
-    val function: Listener = {
+    val function = Listenable.withFallthrough(f)
+    val listener = EventListener[E]() {
       case event: AnyRef if (manifest.erasure.isAssignableFrom(event.getClass)) => {
-        listener(event.asInstanceOf[T])
+        function(event.asInstanceOf[T])
       }
     }
-    this += function
+    this += listener
   }
 
-  def once(f: PartialFunction[E, Unit]): Listener = {
-    var listener: Listener = null
-    listener = this += f.andThen[Unit] {
-      case _ => this -= listener
-    }.orElse[E, Unit] {
-      case _ => // Do nothing
+  def once(f: PartialFunction[E, Unit]) = {
+    var listener: EventListener[E] = null
+    listener = this += EventListener[E]() {
+      case event => f.andThen[Unit] {
+        case _ => this -= listener
+      }
     }
     listener
   }
 
   def waitFor[T <: E](time: Double, precision: Double = 0.01, start: Long = System.currentTimeMillis, errorOnTimeout: Boolean = false)(f: PartialFunction[E, T]): Option[T] = {
     var result: Option[T] = None
-    var listener: Listener = null
-    listener = this += f.andThen[Unit] {
-      case evt => {
-        result = Some(evt)
-      }
-    }.orElse[E, Unit] {
-      case _ => // Do nothing
+    val function = Listenable.withFallthrough(f.andThen[Unit] {
+      case r => result = Some(r)
+    })
+    val listener = this += EventListener[E]() {
+      case event => function(event)
     }
+
     Time.waitFor(time, precision, start, errorOnTimeout) {
       result != None
     }

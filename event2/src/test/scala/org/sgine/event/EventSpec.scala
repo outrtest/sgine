@@ -13,7 +13,9 @@ import org.sgine.concurrent.{Executor, Time}
 class EventSpec extends FlatSpec with ShouldMatchers {
   val sl = StringListenable
   val count = new AtomicInteger(0)
-  val incrementListener: (String) => Unit = (s: String) => count.addAndGet(1)
+  val incrementListener = EventListener[String]() {
+    case event => count.addAndGet(1)
+  }
 
   "StringListenable" should "have no listeners" in {
     validateAllEmpty()
