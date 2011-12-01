@@ -11,8 +11,6 @@ import org.sgine.Priority
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Listenable[E] {
-  type Listener = (E) => Unit
-
   protected val associations: List[Listenable[E]] = List(Bus())
 
   protected lazy val asynchronousActor = new DaemonActor {
@@ -33,7 +31,7 @@ trait Listenable[E] {
     object concurrent extends Listeners[E] {
       override def +=(listener: EventListener[E]) = super.+=(new ConcurrentEventListener(listener))
 
-      private class ConcurrentEventListener[E](listener: (E) => Unit, priority: Priority = Priority.Normal) extends EventListener[E](listener, priority) {
+      private class ConcurrentEventListener[E](listener: EventListener[E], priority: Priority = Priority.Normal) extends EventListener[E](listener.listener, priority) {
         override def apply(event: E) = Executor.invoke {
           listener(event)
         }
@@ -68,7 +66,7 @@ trait Listenable[E] {
     }
   }
 
-  def fireOn(event: E, listeners: List[Listener]): Unit = {
+  def fireOn(event: E, listeners: List[EventListener[E]]): Unit = {
     if (listeners.nonEmpty) {
       listeners.head(event)
       fireOn(event, listeners.tail)
