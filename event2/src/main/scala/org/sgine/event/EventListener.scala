@@ -7,7 +7,8 @@ import org.sgine.Priority
  * 
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class EventListener[E](listener: (E) => Unit, val priority: Priority = Priority.Normal) extends Function1[E, Unit] {
+class EventListener[E](val listener: (E) => Unit,
+                       val priority: Priority = Priority.Normal) {
   def apply(event: E) = listener(event)
 }
 
