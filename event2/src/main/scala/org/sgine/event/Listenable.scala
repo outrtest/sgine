@@ -3,6 +3,7 @@ package org.sgine.event
 import actors.DaemonActor
 import org.sgine.concurrent.{Time, Executor}
 import annotation.tailrec
+import org.sgine.Priority
 
 /**
  * Listenable can be mixed in to allow events to be fired on it.
@@ -25,25 +26,30 @@ trait Listenable[E] {
   }.start()
 
   object listeners {
+    object synchronous extends Listeners[E]
 
-    object synchronous extends DefaultListeners[E]
-
-    object asynchronous extends DefaultListeners[E]
+    object asynchronous extends Listeners[E]
 
     object concurrent extends Listeners[E] {
-      def +=(listener: Listener) = synchronous {
-        case event => Executor.invoke {
+      override def +=(listener: Listener) = super.+=(new ConcurrentEventListener(listener))
+
+      private class ConcurrentEventListener[E](listener: (E) => Unit, priority: Priority = Priority.Normal) extends EventListener[E](listener, priority) {
+        override def apply(event: E) = Executor.invoke {
           listener(event)
         }
       }
-
-      def -=(listener: Listener) = listeners.synchronous -= listener // TODO: support referencing inner
     }
 
+    def length = synchronous.length + asynchronous.length + concurrent.length
+
+    def isEmpty = synchronous.isEmpty && asynchronous.isEmpty && concurrent.isEmpty
+
+    def nonEmpty = !isEmpty
   }
 
   def fire(event: E) = {
     fireOn(event, listeners.synchronous._listeners)
+    fireOn(event, listeners.concurrent._listeners)
     if (listeners.asynchronous._listeners.nonEmpty) {
       asynchronousActor ! event
     }
@@ -79,9 +85,23 @@ object Listenable {
 trait Listeners[E] {
   type Listener = (E) => Unit
 
-  def +=(listener: Listener): Listener
+  protected[event] var _listeners: List[Listener] = Nil
 
-  def -=(listener: Listener): Listener
+  def +=(listener: Listener) = synchronized {
+    _listeners = (listener :: _listeners.reverse).reverse
+    listener
+  }
+
+  def -=(listener: Listener) = synchronized {
+    _listeners = _listeners.filterNot(l => l == listener)
+    listener
+  }
+
+  def length = _listeners.length
+
+  def isEmpty = _listeners.isEmpty
+
+  def nonEmpty = !isEmpty
 
   def apply(f: PartialFunction[E, Unit]) = this += Listenable.withFallthrough(f)
 
@@ -105,33 +125,20 @@ trait Listeners[E] {
     listener
   }
 
-  def waitFor(time: Double, precision: Double = 0.01, start: Long = System.currentTimeMillis, errorOnTimeout: Boolean = false)(f: PartialFunction[E, Unit]): Boolean = {
-    var invoked = false
+  def waitFor[T <: E](time: Double, precision: Double = 0.01, start: Long = System.currentTimeMillis, errorOnTimeout: Boolean = false)(f: PartialFunction[E, T]): Option[T] = {
+    var result: Option[T] = None
     var listener: Listener = null
     listener = this += f.andThen[Unit] {
-      case _ => {
-        this -= listener
-        invoked = true
+      case evt => {
+        result = Some(evt)
       }
     }.orElse[E, Unit] {
       case _ => // Do nothing
     }
     Time.waitFor(time, precision, start, errorOnTimeout) {
-      invoked
+      result != None
     }
-  }
-}
-
-class DefaultListeners[E] extends Listeners[E] {
-  protected[event] var _listeners: List[Listener] = Nil
-
-  def +=(listener: Listener) = synchronized {
-    _listeners = (listener :: _listeners.reverse).reverse
-    listener
-  }
-
-  def -=(listener: Listener) = synchronized {
-    _listeners = _listeners.filterNot(l => l == listener)
-    listener
+    this -= listener
+    result
   }
 }
