@@ -33,6 +33,7 @@
 package org.sgine.scene
 
 import org.sgine.event.Listenable
+import org.sgine.Child
 
 /**
  * Element is the base class for scene. Though not all items in a scene must mix in Element, doing
@@ -40,7 +41,7 @@ import org.sgine.event.Listenable
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Element extends Listenable {
+trait Element extends Listenable with Child[Element] {
   override val parent: () => Element = new ElementParent()
 
   // TODO: extend from Child

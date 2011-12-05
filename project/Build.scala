@@ -36,13 +36,14 @@ object SgineBuild extends Build {
           dir / "core" / "src" / "main" / "scala",
           dir / "event" / "src" / "main" / "scala",
           dir / "input" / "src" / "main" / "scala",
+          dir / "media" / "src" / "main" / "scala",
           dir / "property" / "src" / "main" / "scala",
           dir / "reflect" / "src" / "main" / "scala",
           dir / "scene" / "src" / "main" / "scala",
           dir / "ui" / "src" / "main" / "scala"
         )
     })
-    .aggregate(concurrent, core, event, input, property, reflect, scene, ui)
+    .aggregate(concurrent, core, event, input, media, property, reflect, scene, ui)
   lazy val concurrent = Project("concurrent", file("concurrent"),
     settings = createSettings("sgine-concurrent"))
     .dependsOn(core, reflect)

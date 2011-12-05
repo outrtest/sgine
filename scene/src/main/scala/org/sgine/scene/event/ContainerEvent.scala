@@ -40,7 +40,7 @@ import org.sgine.event.{Listenable, Event}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-abstract class ContainerEvent(target: Listenable) extends Event {
+abstract class ContainerEvent(val target: Listenable) extends Event {
   def parent: Container[_]
 
   def child: Any

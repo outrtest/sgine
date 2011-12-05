@@ -55,7 +55,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     val container = new MutableContainer[String]()
     var added: ChildAddedEvent = null
     var removed: ChildRemovedEvent = null
-    container.containerChange.synchronous {
+    container.listeners.synchronous {
       case event: ChildAddedEvent => added = event
       case event: ChildRemovedEvent => removed = event
     }

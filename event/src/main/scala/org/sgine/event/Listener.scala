@@ -12,7 +12,7 @@ trait Listener {
   def process(event: Event): Unit
 }
 
-class FunctionalListener[T >: Event](f: (T) => Any)(implicit manifest: Manifest[T]) extends Listener {
+class FunctionalListener[T <: Event](f: (T) => Any)(implicit manifest: Manifest[T]) extends Listener {
   def process(event: Event) = if (manifest.erasure.isAssignableFrom(event.getClass)) {
     received(event.asInstanceOf[T])
   }

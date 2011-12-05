@@ -1,7 +1,8 @@
 package org.sgine.ui
 
 import com.badlogic.gdx.Gdx
-import org.sgine.{Listenable, AsynchronousInvocation}
+import org.sgine.AsynchronousInvocation
+import org.sgine.event.{ChangeEvent, Listenable}
 
 /**
  * RenderableComponent is mixed into Components that render something to the screen.
@@ -32,9 +33,10 @@ trait RenderableComponent extends Component {
    * Adds change listeners to the Listenables to invoke the supplied function during the next render
    * cycle.
    */
-  def onRender(listenables: Listenable[_]*)(f: => Unit) = {
+  def onRender(listenables: Listenable*)(f: => Unit) = {
     val function = () => f
-    val listener = (oldValue: Any, newValue: Any) => renderAsync.invokeLater(function)
-    listenables.foreach(l => l.listeners += listener)
+    listenables.foreach(l => l.listeners.synchronous.filtered[ChangeEvent[_]] {
+      case event => renderAsync.invokeLater(function)
+    })
   }
 }

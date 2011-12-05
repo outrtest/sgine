@@ -64,7 +64,7 @@ trait Listenable {
     /**
      * Fired when an Event is received on an ancestor of this object (ex. parent, grandparent, etc.)
      */
-    def ancestor[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    def ancestor[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
       val listener = new FunctionalListener[T](Listener.withFallthrough(f))
       val node = new AncestorNode(Listenable.this, listener)
       Bus.add(node)
@@ -74,7 +74,7 @@ trait Listenable {
     /**
      * Fired when an Event is received on a descendant of this object (ex. child, grandchild, etc.)
      */
-    def descendant[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    def descendant[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
       val listener = new FunctionalListener[T](Listener.withFallthrough(f))
       val node = new DescendantNode(Listenable.this, listener)
       Bus.add(node)
@@ -84,7 +84,7 @@ trait Listenable {
     /**
      * Fired when an Event is received on a parent of this object
      */
-    def parent[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    def parent[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
       val listener = new FunctionalListener[T](Listener.withFallthrough(f))
       val node = new AncestorNode(Listenable.this, listener, 1)
       Bus.add(node)
@@ -94,7 +94,7 @@ trait Listenable {
     /**
      * Fired when an Event is received on a child of this object
      */
-    def child[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+    def child[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
       val listener = new FunctionalListener[T](Listener.withFallthrough(f))
       val node = new DescendantNode(Listenable.this, listener, 1)
       Bus.add(node)
