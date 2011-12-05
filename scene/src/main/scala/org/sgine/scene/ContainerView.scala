@@ -35,7 +35,6 @@ package org.sgine.scene
 import collection.mutable.ArrayBuffer
 import annotation.tailrec
 import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEvent}
-import org.sgine.ProcessingMode
 
 /**
  * ContainerView represents a flat view of the hierarchical elements of a container. The view should represent the
@@ -70,7 +69,7 @@ class ContainerView[T](val container: Container[_],
   refresh()
 
   // Add listeners
-  container.listeners.listen[ContainerEvent](ProcessingMode.Asynchronous, recursion = Recursion.Children) {
+  container.listeners.child[ContainerEvent] {
     case added: ChildAddedEvent => {
       validateChild(added.child.asInstanceOf[AnyRef])
       refreshFilter()

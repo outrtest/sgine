@@ -181,11 +181,59 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         Bus.remove(node)
       }
     }
+    "listening for an event on an parent" should {
+      var received = false
+      var node: Node = null
+      "add an ancestor listener to the child" in {
+        node = TestChildListenable.listeners.parent[Event] {
+          case event => received = true
+        }
+      }
+      "fire an event on the child" in {
+        TestChildListenable.fire(Event(TestChildListenable))
+      }
+      "not have received an event on the child" in {
+        received should equal(false)
+      }
+      "fire an event on the parent" in {
+        TestParentListenable.fire(Event(TestParentListenable))
+      }
+      "have received an event on the child" in {
+        received should equal(true)
+      }
+      "remove the node" in {
+        Bus.remove(node)
+      }
+    }
     "listening for an event on a descendant" should {
       var received = false
       var node: Node = null
       "add a descendant listener to the parent" in {
         node = TestParentListenable.listeners.descendant[Event] {
+          case event => received = true
+        }
+      }
+      "fire an event on the parent" in {
+        TestParentListenable.fire(Event(TestParentListenable))
+      }
+      "not receive an event on the child" in {
+        received should equal(false)
+      }
+      "fire an event on the child" in {
+        TestChildListenable.fire(Event(TestChildListenable))
+      }
+      "have received an event on the parent" in {
+        received should equal(true)
+      }
+      "remove the node" in {
+        Bus.remove(node)
+      }
+    }
+    "listening for an event on a child" should {
+      var received = false
+      var node: Node = null
+      "add a descendant listener to the parent" in {
+        node = TestParentListenable.listeners.child[Event] {
           case event => received = true
         }
       }

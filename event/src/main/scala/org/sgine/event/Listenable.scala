@@ -62,7 +62,7 @@ trait Listenable {
     }
 
     /**
-     * Fired when an Event is received
+     * Fired when an Event is received on an ancestor of this object (ex. parent, grandparent, etc.)
      */
     def ancestor[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
       val listener = new FunctionalListener[T](Listener.withFallthrough(f))
@@ -71,9 +71,32 @@ trait Listenable {
       node
     }
 
+    /**
+     * Fired when an Event is received on a descendant of this object (ex. child, grandchild, etc.)
+     */
     def descendant[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
       val listener = new FunctionalListener[T](Listener.withFallthrough(f))
       val node = new DescendantNode(Listenable.this, listener)
+      Bus.add(node)
+      node
+    }
+
+    /**
+     * Fired when an Event is received on a parent of this object
+     */
+    def parent[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+      val listener = new FunctionalListener[T](Listener.withFallthrough(f))
+      val node = new AncestorNode(Listenable.this, listener, 1)
+      Bus.add(node)
+      node
+    }
+
+    /**
+     * Fired when an Event is received on a child of this object
+     */
+    def child[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+      val listener = new FunctionalListener[T](Listener.withFallthrough(f))
+      val node = new DescendantNode(Listenable.this, listener, 1)
       Bus.add(node)
       node
     }
@@ -84,11 +107,11 @@ trait Listenable {
   Bus.add(node, ReferenceType.Weak)
 }
 
-class AncestorNode(descendant: Any, listener: Listener, val priority: Priority = Priority.Normal) extends Node {
+class AncestorNode(descendant: Any, listener: Listener, maxDepth: Int = Int.MaxValue, val priority: Priority = Priority.Normal) extends Node {
   def receive(message: Any) = {
     message match {
       case event: Event => event.target match {
-        case parent: Parent[_] if (parent.hasDescendant(descendant)) => listener.process(event)
+        case parent: Parent[_] if (parent.hasDescendant(descendant, maxDepth)) => listener.process(event)
         case _ => // Not a Child instance
       }
       case _ => // Not an Event
@@ -97,11 +120,11 @@ class AncestorNode(descendant: Any, listener: Listener, val priority: Priority =
   }
 }
 
-class DescendantNode(ancestor: Any, listener: Listener, val priority: Priority = Priority.Normal) extends Node {
+class DescendantNode(ancestor: Any, listener: Listener, maxDepth: Int = Int.MaxValue, val priority: Priority = Priority.Normal) extends Node {
   def receive(message: Any) = {
     message match {
       case event: Event => event.target match {
-        case child: Child[_] if (child.hasAncestor(ancestor)) => listener.process(event)
+        case child: Child[_] if (child.hasAncestor(ancestor, maxDepth)) => listener.process(event)
         case _ => // Not a Child instance
       }
       case _ => // Not an Event
