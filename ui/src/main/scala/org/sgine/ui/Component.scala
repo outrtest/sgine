@@ -1,18 +1,18 @@
 package org.sgine.ui
 
-import org.sgine.input.event.MouseEventSupport
 import org.sgine.property.{PropertyParent, Property}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
 import org.sgine.scene.Element
-import org.sgine.{Updatable, Listenable, AsynchronousInvocation}
+import org.sgine.{Updatable, AsynchronousInvocation}
+import org.sgine.event.{ChangeEvent, Listenable}
 
 /**
  * Component is the base class for all visual elements in UI.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Component extends PropertyParent with MouseEventSupport with Element with Updatable {
+trait Component extends PropertyParent with Listenable with Element with Updatable {
   /**
    * The parent associated with this Component.
    */
@@ -89,17 +89,20 @@ trait Component extends PropertyParent with MouseEventSupport with Element with 
    * Adds change listeners to the Listenables to invoke the supplied function during the next update
    * cycle.
    */
-  def onUpdate(listenables: Listenable[_]*)(f: => Unit) = {
+  def onUpdate(listenables: Listenable*)(f: => Unit) = {
     val function = () => f
-    val listener = (oldValue: Any, newValue: Any) => updateAsync.invokeLater(function)
-    listenables.foreach(l => l.listeners += listener)
+    listenables.foreach(l => l.listeners.synchronous.filtered[ChangeEvent[_]] {
+      case event => updateAsync.invokeLater(function)
+    })
   }
 
   /**
    * Adds change listeners to the Listenables to invoke the supplied function immediately when a
    * change occurs.
    */
-  def onChange(listenables: Listenable[_]*)(f: => Unit) = listenables.foreach(l => l.onChange(f))
+  def onChange(listenables: Listenable*)(f: => Unit) = listenables.foreach(l => l.listeners.synchronous.filtered[ChangeEvent[_]] {
+    case event => f
+  })
 
   /**
    * Called upon destruction of this Component.

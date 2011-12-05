@@ -41,11 +41,11 @@ class Listeners(listenable: Listenable) {
     }
   }
 
-  def filtered[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+  def filtered[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
     this += new FunctionalListener[T](Listener.withFallthrough(f))
   }
 
-  def once[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+  def once[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
     var listener: Listener = null
     listener = new FunctionalListener[T](Listener.withFallthrough(f.andThen[Any] {
       case _ => {
@@ -55,7 +55,7 @@ class Listeners(listenable: Listenable) {
     this += listener
   }
 
-  def waitFor[T >: Event, R](time: Double,
+  def waitFor[T <: Event, R](time: Double,
                              precision: Double = 0.01,
                              start: Long = System.currentTimeMillis,
                              errorOnTimeout: Boolean = false)

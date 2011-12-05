@@ -6,7 +6,7 @@ package org.sgine
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Parent[C] {
-  def children: List[C]
+  def children: Seq[C]
 
   /**
    * Returns true if the value passed is in the descendant hierarchy for this Parent.
@@ -22,7 +22,7 @@ trait Parent[C] {
    * Uses the supplied matching function to return the first descendant match given the specified type or None if no
    * match is found.
    */
-  def descendant[T](matcher: T => Boolean, maxDepth: Int = Int.MaxValue, children: List[C] = this.children)(implicit manifest: Manifest[T]): Option[T] = {
+  def descendant[T](matcher: T => Boolean, maxDepth: Int = Int.MaxValue, children: Seq[C] = this.children)(implicit manifest: Manifest[T]): Option[T] = {
     if (children.nonEmpty) {
       // if (manifest.erasure.isAssignableFrom(p.getClass) && matcher(p.asInstanceOf[T])) {
       val child = children.head

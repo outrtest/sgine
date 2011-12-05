@@ -11,7 +11,7 @@ import org.sgine.event._
  */
 class Binding[T](binded: Function1[T, Unit]) extends Listener {
   def process(event: Event) = event match {
-    case changeEvent: ChangeEvent[T] => binded(changeEvent.newValue)
+    case changeEvent: ChangeEvent[_] => binded(changeEvent.newValue.asInstanceOf[T])
     case _ => // Ignore everything else
   }
 }
