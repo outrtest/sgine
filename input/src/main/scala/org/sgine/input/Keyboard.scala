@@ -1,6 +1,5 @@
 package org.sgine.input
 
-import event.KeyEventSupport
 import org.sgine.event.Listenable
 
 /**
@@ -8,4 +7,4 @@ import org.sgine.event.Listenable
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object Keyboard extends Listenable with KeyEventSupport
+object Keyboard extends Listenable

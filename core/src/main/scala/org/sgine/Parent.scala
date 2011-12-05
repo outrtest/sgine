@@ -9,6 +9,11 @@ trait Parent[C] {
   def children: List[C]
 
   /**
+   * Returns true if the value passed is in the ancestry hierarchy for this Child.
+   */
+  def hasDescendant[T](value: T)(implicit manifest: Manifest[T]) = descendant((t: T) => t == value)(manifest) != None
+
+  /**
    * Uses the supplied matching function to return the first descendant match given the specified type or None if no
    * match is found.
    */

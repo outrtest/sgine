@@ -36,7 +36,6 @@ import collection.mutable.ArrayBuffer
 import annotation.tailrec
 import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEvent}
 import org.sgine.ProcessingMode
-import org.sgine.event.Recursion
 
 /**
  * ContainerView represents a flat view of the hierarchical elements of a container. The view should represent the

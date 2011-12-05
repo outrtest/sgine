@@ -32,20 +32,20 @@
 
 package org.sgine.scene.event
 
-import org.sgine.event.Event
 import org.sgine.scene.Container
+import org.sgine.event.{Listenable, Event}
 
 /**
  * ContainerEvent
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait ContainerEvent extends Event {
+abstract class ContainerEvent(target: Listenable) extends Event {
   def parent: Container[_]
 
   def child: Any
 }
 
-case class ChildAddedEvent(parent: Container[_], child: Any) extends ContainerEvent
+case class ChildAddedEvent(parent: Container[_], child: Any) extends ContainerEvent(parent)
 
-case class ChildRemovedEvent(parent: Container[_], child: Any) extends ContainerEvent
+case class ChildRemovedEvent(parent: Container[_], child: Any) extends ContainerEvent(parent)

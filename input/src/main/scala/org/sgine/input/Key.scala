@@ -2,7 +2,6 @@ package org.sgine.input
 
 import org.sgine.{Enumerated, EnumEntry}
 
-
 /**
  * Key represents keys on the keyboard.
  *
