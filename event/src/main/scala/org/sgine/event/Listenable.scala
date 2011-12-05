@@ -61,6 +61,9 @@ trait Listenable {
       override protected def createListener(listener: Listener) = new ConcurrentListener(listener)
     }
 
+    /**
+     * Fired when an Event is received
+     */
     def ancestor[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
       val listener = new FunctionalListener[T](Listener.withFallthrough(f))
       val node = new AncestorNode(Listenable.this, listener)
