@@ -1,7 +1,7 @@
 package org.sgine.bus
 
 /**
- *
+ * Filters out messages based on the evaluation done by the filter method.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */

@@ -49,6 +49,9 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
     node
   }
 
+  /**
+   * Removes a node based on the wrapping reference.
+   */
   def remove(ref: Reference[Node]) = synchronized {
     nodes = nodes.filterNot(n => n == ref)
     ref
@@ -100,10 +103,19 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
     }
   }
 
+  /**
+   * true if there are no Nodes attached to this Bus.
+   */
   def isEmpty = nodes.isEmpty
 
+  /**
+   * true if there are Nodes attached to this Bus.
+   */
   def nonEmpty = nodes.nonEmpty
 
+  /**
+   * The number of Nodes attached to this Bus.
+   */
   def length = nodes.length
 
   private val referenceSort = (r1: Reference[Node], r2: Reference[Node]) => {
@@ -121,4 +133,7 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
   private lazy val prioritySort = (n1: Node, n2: Node) => n1.priority.value > n2.priority.value
 }
 
+/**
+ * Default Bus and primary pipeline through which most messages pass.
+ */
 object Bus extends Bus(Priority.Normal)

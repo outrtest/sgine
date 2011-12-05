@@ -158,7 +158,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       }
     }
     "listening for an event on an ancestor" should {
-      var received = true
+      var received = false
       var node: Node = null
       "add an ancestor listener to the child" in {
         node = TestChildListenable.listeners.ancestor[Event] {
@@ -169,6 +169,24 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestParentListenable.fire(Event(TestParentListenable))
       }
       "have received an event on the child" in {
+        received should equal(true)
+      }
+      "remove the node" in {
+        Bus.remove(node)
+      }
+    }
+    "listening for an event on a descendant" should {
+      var received = false
+      var node: Node = null
+      "add a descendant listener to the parent" in {
+        node = TestParentListenable.listeners.descendant[Event] {
+          case event => received = true
+        }
+      }
+      "fire an event on the child" in {
+        TestChildListenable.fire(Event(TestChildListenable))
+      }
+      "have received an event on the parent" in {
         received should equal(true)
       }
       "remove the node" in {

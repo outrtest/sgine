@@ -1,7 +1,7 @@
 package org.sgine.input.event
 
-import org.sgine.event.Event
-import org.sgine.input.{KeyState, Key}
+import org.sgine.input.{Keyboard, KeyState, Key}
+import org.sgine.event.{Listenable, Event}
 
 /**
  * KeyEvents
@@ -12,14 +12,14 @@ sealed trait KeyEvent extends Event {
   def state: KeyState
 }
 
-case class KeyDownEvent(key: Key) extends KeyEvent {
+case class KeyDownEvent(key: Key, target: Listenable = Keyboard) extends KeyEvent {
   val state = KeyState.Down
 }
 
-case class KeyUpEvent(key: Key) extends KeyEvent {
+case class KeyUpEvent(key: Key, target: Listenable = Keyboard) extends KeyEvent {
   val state = KeyState.Up
 }
 
-case class KeyTypeEvent(character: Char) extends KeyEvent {
+case class KeyTypeEvent(character: Char, target: Listenable = Keyboard) extends KeyEvent {
   val state = KeyState.Typed
 }

@@ -4,10 +4,10 @@ import org.sgine.ref.ReferenceType
 import annotation.tailrec
 import actors.DaemonActor
 import org.sgine.bus._
-import org.sgine.{Child, Priority}
+import org.sgine.{Parent, Child, Priority}
 
 /**
- *
+ * Listenable can be mixed in to provide the ability for event management on an object.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  * Date: 12/2/11
@@ -67,6 +67,13 @@ trait Listenable {
       Bus.add(node)
       node
     }
+
+    def descendant[T >: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
+      val listener = new FunctionalListener[T](Listener.withFallthrough(f))
+      val node = new DescendantNode(Listenable.this, listener)
+      Bus.add(node)
+      node
+    }
   }
 
   def fire(event: Event) = Bus(event)
@@ -74,13 +81,27 @@ trait Listenable {
   Bus.add(node, ReferenceType.Weak)
 }
 
-class AncestorNode(ancestor: Any, listener: Listener, val priority: Priority = Priority.Normal) extends Node {
+class AncestorNode(descendant: Any, listener: Listener, val priority: Priority = Priority.Normal) extends Node {
   def receive(message: Any) = {
-    if (message.isInstanceOf[Event]) {
-      message match {
-        case child: Child[_] if (child.hasAncestor(ancestor)) => listener.process(message.asInstanceOf[Event])
-        case _ => // Ignore
+    message match {
+      case event: Event => event.target match {
+        case parent: Parent[_] if (parent.hasDescendant(descendant)) => listener.process(event)
+        case _ => // Not a Child instance
       }
+      case _ => // Not an Event
+    }
+    Routing.Continue
+  }
+}
+
+class DescendantNode(ancestor: Any, listener: Listener, val priority: Priority = Priority.Normal) extends Node {
+  def receive(message: Any) = {
+    message match {
+      case event: Event => event.target match {
+        case child: Child[_] if (child.hasAncestor(ancestor)) => listener.process(event)
+        case _ => // Not a Child instance
+      }
+      case _ => // Not an Event
     }
     Routing.Continue
   }

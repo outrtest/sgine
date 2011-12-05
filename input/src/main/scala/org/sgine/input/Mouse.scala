@@ -32,7 +32,6 @@
 
 package org.sgine.input
 
-import event.MouseEventSupport
 import org.sgine.event.Listenable
 import org.sgine.{Enumerated, EnumEntry}
 import org.sgine.property.Property
@@ -44,7 +43,7 @@ import org.sgine.property.Property
  */
 sealed class Mouse extends EnumEntry[Mouse]
 
-object Mouse extends Listenable with Enumerated[Mouse] with MouseEventSupport {
+object Mouse extends Listenable with Enumerated[Mouse] {
   val x = Property[Int](0)
   val y = Property[Int](0)
 
