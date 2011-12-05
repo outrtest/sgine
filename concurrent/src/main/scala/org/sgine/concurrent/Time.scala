@@ -55,7 +55,7 @@ object Time {
   /**
    * Invokes the wrapped function and returns the time in seconds it took to complete as a Double.
    */
-  def elapsed(f: => Unit): Double = {
+  def elapsed(f: => Any): Double = {
     val time = System.nanoTime
     f
     (System.nanoTime - time) / Precision.Nanoseconds.conversion

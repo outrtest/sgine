@@ -43,6 +43,8 @@ trait Container[T] extends Element {
    */
   def contents: Seq[T]
 
+  // TODO: extend from Parent
+
   /**
    * Recursively iterates over all descendants to invoke the supplied function on all elements that
    * match the generic type T.
