@@ -41,6 +41,8 @@ import annotation.tailrec
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class AtomicInt(initial: Int) extends AtomicInteger(initial) {
+  def apply() = get()
+
   /**
    * Modifies the value atomicly without locking if the resulting value of the function is Some.
    */

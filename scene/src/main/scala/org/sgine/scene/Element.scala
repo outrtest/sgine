@@ -43,6 +43,8 @@ import org.sgine.event.Listenable
 trait Element extends Listenable {
   override val parent: () => Element = new ElementParent()
 
+  // TODO: extend from Child
+
   /**
    * Processes up the ancestry tree through parents to find the first matching ancestor of the
    * generic type T and invokes the supplied function on it.
@@ -104,5 +106,5 @@ object Element {
    * Assigns the parent to an element.
    */
   def assignParent(element: Element, parent: Listenable) = element.parent
-      .asInstanceOf[(Listenable) => Unit](parent)
+    .asInstanceOf[(Listenable) => Unit](parent)
 }

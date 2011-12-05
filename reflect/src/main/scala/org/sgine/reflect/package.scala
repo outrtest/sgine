@@ -1,7 +1,7 @@
 package org.sgine
 
 import java.lang.reflect.Method
-import ref.SoftReference
+import scala.ref.SoftReference
 import java.util.concurrent.ConcurrentHashMap
 
 package object reflect {
