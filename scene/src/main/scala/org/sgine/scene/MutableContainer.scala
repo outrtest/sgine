@@ -33,14 +33,14 @@
 package org.sgine.scene
 
 import collection.mutable.ListBuffer
-import event.{ChildRemovedEvent, ChildAddedEvent, ContainerEventSupport}
+import event.{ChildRemovedEvent, ChildAddedEvent}
 
 /**
  * MutableContainer as the name suggests is a mutable implementation of Container.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class MutableContainer[T] extends Container[T] with ContainerEventSupport {
+class MutableContainer[T] extends Container[T] {
   private val buffer = new ListBuffer[T]
 
   /**
@@ -71,7 +71,7 @@ class MutableContainer[T] extends Container[T] with ContainerEventSupport {
         case _ =>
       }
 
-      if (containerChange.shouldFire) containerChange.fire(new ChildAddedEvent(MutableContainer.this, child))
+      fire(new ChildAddedEvent(MutableContainer.this, child))
     }
 
     /**
@@ -86,7 +86,8 @@ class MutableContainer[T] extends Container[T] with ContainerEventSupport {
         case _ =>
       }
 
-      if (containerChange.shouldFire) containerChange.fire(new ChildRemovedEvent(MutableContainer.this, child))
+      fire(new ChildRemovedEvent(MutableContainer.this, child))
     }
   }
+
 }
