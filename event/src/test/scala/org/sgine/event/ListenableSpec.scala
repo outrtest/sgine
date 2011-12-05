@@ -165,6 +165,12 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
           case event => received = true
         }
       }
+      "fire an event on the child" in {
+        TestChildListenable.fire(Event(TestChildListenable))
+      }
+      "not have received an event on the child" in {
+        received should equal(false)
+      }
       "fire an event on the parent" in {
         TestParentListenable.fire(Event(TestParentListenable))
       }
@@ -182,6 +188,12 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         node = TestParentListenable.listeners.descendant[Event] {
           case event => received = true
         }
+      }
+      "fire an event on the parent" in {
+        TestParentListenable.fire(Event(TestParentListenable))
+      }
+      "not receive an event on the child" in {
+        received should equal(false)
       }
       "fire an event on the child" in {
         TestChildListenable.fire(Event(TestChildListenable))
