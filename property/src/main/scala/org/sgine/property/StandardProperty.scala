@@ -19,7 +19,7 @@ trait StandardProperty[T] extends MutableProperty[T] with Listenable with Change
     val oldValue = getValue
     val newValue = change(oldValue, v)
     setValue(newValue)
-    ChangeEvent(this, oldValue, newValue)
+    fire(ChangeEvent(this, oldValue, newValue))
   }
 
   def apply() = getValue
