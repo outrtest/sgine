@@ -1,7 +1,7 @@
 package org.sgine.ui
 
 import org.sgine.property.MutableProperty
-import org.sgine.workflow.{WorkflowItem, Workflow}
+import org.sgine.workflow.{Asynchronous, WorkflowItem, Workflow}
 
 /**
  *
@@ -14,7 +14,7 @@ object AnimationExample extends UI {
   val image = Image("sgine.png")
   contents += image
 
-  val workflow = image.location.x and image.location.y moveTo 200.0 in 5.0
+  image.updates += image.location.x and image.location.y moveTo 200.0 in 5.0
 }
 
 case class PropertyAnimator(property: MutableProperty[Double], destination: Double = 0.0, time: Double = 0.0) extends WorkflowItem {
@@ -42,7 +42,7 @@ case class PropertyAnimator(property: MutableProperty[Double], destination: Doub
   }
 }
 
-case class PropertyAnimatorWorkflow(propertyAnimators: List[PropertyAnimator]) extends Workflow(propertyAnimators) {
+case class PropertyAnimatorWorkflow(propertyAnimators: List[PropertyAnimator]) extends Workflow(propertyAnimators) with Asynchronous {
   def moveTo(destination: Double) = {
     PropertyAnimatorWorkflow(propertyAnimators.map(pa => pa.copy(destination = destination)))
   }

@@ -4,15 +4,15 @@ import org.sgine.property.{PropertyParent, Property}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
 import org.sgine.scene.Element
-import org.sgine.{Updatable, AsynchronousInvocation}
 import org.sgine.event.{ChangeEvent, Listenable}
+import org.sgine.{Updater, Updatable, AsynchronousInvocation}
 
 /**
  * Component is the base class for all visual elements in UI.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Component extends PropertyParent with Listenable with Element with Updatable {
+trait Component extends PropertyParent with Listenable with Element with Updater {
   /**
    * The parent associated with this Component.
    */
@@ -31,7 +31,7 @@ trait Component extends PropertyParent with Listenable with Element with Updatab
     matrix.rotate(rotation.x().toFloat, rotation.y().toFloat, rotation.z().toFloat, 1.0f)
     matrix.scale(scale.x().toFloat, scale.y().toFloat, scale.z().toFloat)
 
-    println("T: %sx%sx%s, R: %sx%sx%s, S: %sx%sx%s".format(location.x(), location.y(), location.z(), rotation.x(), rotation.y(), rotation.z(), scale.x(), scale.y(), scale.z()))
+//    println("T: %sx%sx%s, R: %sx%sx%s, S: %sx%sx%s".format(location.x(), location.y(), location.z(), rotation.x(), rotation.y(), rotation.z(), scale.x(), scale.y(), scale.z()))
   }
 
   /**
@@ -66,6 +66,11 @@ trait Component extends PropertyParent with Listenable with Element with Updatab
    */
   object rotation extends Property3D(0.0, 0.0, 0.0)
 
+  object updates {
+    def +=(updatable: Updatable) = add(updatable)
+    def -=(updatable: Updatable) = remove(updatable)
+  }
+
   /**
    * Tests whether the supplied Ray intersects with this Component.
    */
@@ -85,10 +90,6 @@ trait Component extends PropertyParent with Listenable with Element with Updatab
     updateAsync.invokeNow()
   }
 
-  /**
-   * Adds change listeners to the Listenables to invoke the supplied function during the next update
-   * cycle.
-   */
   def onUpdate(listenables: Listenable*)(f: => Unit) = {
     val function = () => f
     listenables.foreach(l => l.listeners.synchronous.filtered[ChangeEvent[_]] {

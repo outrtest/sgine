@@ -20,6 +20,7 @@ trait Updater extends Updatable {
   private def doUpdate(delta: Double, list: List[Updatable]): Unit = {
     if (!list.isEmpty) {
       val u = list.head
+      u.update(delta)
       u match {
         case f: Finishable if (f.isFinished) => remove(u)
         case _ =>
