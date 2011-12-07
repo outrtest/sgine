@@ -60,7 +60,7 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
   /**
    * Injects a message to this Bus for processing by the associated Nodes.
    *
-   * @returns Routing defining how this was processed by the nodes.
+   * @return Routing defining how this was processed by the nodes.
    */
   def apply(message: Any) = process(message, nodes, null)
 

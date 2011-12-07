@@ -2,8 +2,6 @@ import sbt._
 import Keys._
 
 object SgineBuild extends Build {
-  val lwjglVersion = "2.8.1"
-
   val baseSettings = Defaults.defaultSettings ++ Seq(
     version := "1.0-SNAPSHOT",
     organization := "org.sgine",

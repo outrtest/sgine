@@ -38,7 +38,7 @@ class Media extends RenderableComponent {
 
   @volatile private var texture: Texture = _
   @volatile private var pixmap: Pixmap = _
-  @volatile private var updates = false
+  @volatile private var bufferUpdated = false
 
   def load() = Media.load(this)
 
@@ -95,7 +95,7 @@ class Media extends RenderableComponent {
               b.flip()
               buffer.put(b)
               buffer.flip()
-              updates = true
+              bufferUpdated = true
             }
             catch {
               case exc => {
@@ -113,8 +113,8 @@ class Media extends RenderableComponent {
   }
 
   protected def draw() = {
-    if (updates) {
-      updates = false
+    if (bufferUpdated) {
+      bufferUpdated = false
       texture.draw(pixmap, 0, 0)
     }
     if (texture != null) {
