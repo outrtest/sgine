@@ -1,13 +1,16 @@
 import sbt._
 import Keys._
 
+import Dependencies._
+
 object SgineBuild extends Build {
   val baseSettings = Defaults.defaultSettings ++ Seq(
     version := "1.0-SNAPSHOT",
     organization := "org.sgine",
     scalaVersion := "2.9.1",
     libraryDependencies ++= Seq(
-      "org.scalatest" % "scalatest_2.9.1" % "1.6.1" % "test"
+      neodatisOdb,
+      scalaTest
     ),
     publishTo <<= (version) {
       version: String =>
@@ -32,6 +35,7 @@ object SgineBuild extends Build {
       dir =>
         Seq(dir / "concurrent" / "src" / "main" / "scala",
           dir / "core" / "src" / "main" / "scala",
+          dir / "datastore" / "src" / "main" / "scala",
           dir / "event" / "src" / "main" / "scala",
           dir / "input" / "src" / "main" / "scala",
           dir / "media" / "src" / "main" / "scala",
@@ -41,12 +45,14 @@ object SgineBuild extends Build {
           dir / "ui" / "src" / "main" / "scala"
         )
     })
-    .aggregate(concurrent, core, event, input, media, property, reflect, scene, ui)
+    .aggregate(concurrent, core, datastore, event, input, media, property, reflect, scene, ui)
   lazy val concurrent = Project("concurrent", file("concurrent"),
     settings = createSettings("sgine-concurrent"))
     .dependsOn(core, reflect)
   lazy val core = Project("core", file("core"), settings = createSettings("sgine-core"))
     .dependsOn(reflect)
+  lazy val datastore = Project("datastore", file("datastore"), settings = createSettings("sgine-datastore"))
+    .settings(libraryDependencies += neodatisOdb)
   lazy val event = Project("event", file("event"), settings = createSettings("sgine-event"))
     .dependsOn(concurrent, core)
   lazy val input = Project("input", file("input"), settings = createSettings("sgine-input"))
@@ -57,9 +63,15 @@ object SgineBuild extends Build {
     settings = createSettings("sgine-property"))
     .dependsOn(event, scene)
   lazy val reflect = Project("reflect", file("reflect"), settings = createSettings("sgine-reflect"))
-    .settings(libraryDependencies += "com.thoughtworks.paranamer" % "paranamer" % "2.4")
+    .settings(libraryDependencies += paranamer)
   lazy val scene = Project("scene", file("scene"), settings = createSettings("sgine-scene"))
     .dependsOn(event)
   lazy val ui = Project("ui", file("ui"), settings = createSettings("sgine-ui"))
     .dependsOn(core, event, input, property, scene)
+}
+
+object Dependencies {
+  val neodatisOdb = "org.neodatis.odb" % "neodatis-odb" % "1.9.30.689"
+  val paranamer = "com.thoughtworks.paranamer" % "paranamer" % "2.4"
+  val scalaTest = "org.scalatest" % "scalatest_2.9.1" % "1.6.1" % "test"
 }
