@@ -18,6 +18,8 @@ trait Datastore {
 
   def persist(obj: AnyRef): Unit
 
+  def persistAll(objects: AnyRef*) = objects.foreach(persist)
+
   def delete(obj: AnyRef): Unit
 
   def commit(): Unit

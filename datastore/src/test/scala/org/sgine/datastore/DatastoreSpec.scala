@@ -31,6 +31,37 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
         results.size should equal(1)
         results.head should equal(t1)
       }
+      "delete the object" in {
+        db.delete(t1)
+        db.all[Test1]().size should equal(0)
+      }
+      "insert an object in a transaction that is rolled back" in {
+        val t = Test1("Blah!")
+        intercept[RuntimeException] {
+          db.transaction {
+            db.persist(t)
+            db.all[Test1]().size should equal(1)
+            throw new RuntimeException("Rollback!")
+          }
+        }
+        db.all[Test1]().size should equal(0)
+      }
+      "insert five objects" in {
+        val o1 = Test1("One")
+        val o2 = Test1("Two")
+        val o3 = Test1("Three")
+        val o4 = Test1("Four")
+        val o5 = Test1("Five")
+        db.persistAll(o1, o2, o3, o4, o5)
+      }
+      "query 'Three' back out" in {
+        val results = db.query[Test1] {
+          case t if (t.name == "Three") => true
+          case t => false
+        }
+        results.size should equal(1)
+        results.head.name should equal("Three")
+      }
       "close the database" in {
         db.close()
       }
@@ -51,11 +82,44 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
       }
       "insert an object" in {
         db.persist(t1)
+        db.commit()
       }
       "query the object back out" in {
         val results = db.all[Test1]()
         results.size should equal(1)
         results.head should equal(t1)
+      }
+      "delete the object" in {
+        db.delete(t1)
+        db.all[Test1]().size should equal(0)
+        db.commit()
+      }
+      "insert an object in a transaction that is rolled back" in {
+        val t = Test1("Blah!")
+        intercept[RuntimeException] {
+          db.transaction {
+            db.persist(t)
+            db.all[Test1]().size should equal(1)
+            throw new RuntimeException("Rollback!")
+          }
+        }
+        db.all[Test1]().size should equal(0)
+      }
+      "insert five objects" in {
+        val o1 = Test1("One")
+        val o2 = Test1("Two")
+        val o3 = Test1("Three")
+        val o4 = Test1("Four")
+        val o5 = Test1("Five")
+        db.persistAll(o1, o2, o3, o4, o5)
+      }
+      "query 'Three' back out" in {
+        val results = db.query[Test1] {
+          case t if (t.name == "Three") => true
+          case t => false
+        }
+        results.size should equal(1)
+        results.head.name should equal("Three")
       }
       "close the database" in {
         db.close()
