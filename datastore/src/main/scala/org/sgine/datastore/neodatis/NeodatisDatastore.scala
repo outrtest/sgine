@@ -10,7 +10,7 @@ import org.neodatis.odb.core.query.nq.SimpleNativeQuery
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class NeodatisDatastore(db: ODB) extends Datastore {
+case class NeodatisDatastore(db: ODB) extends Datastore {
   def persist(obj: AnyRef) = db.store(obj)
 
   def delete(obj: AnyRef) = db.delete(obj)
@@ -36,5 +36,5 @@ class NeodatisDatastore(db: ODB) extends Datastore {
     db.getObjects[T](query).toStream
   }
 
-  def close() {}
+  def close() = db.close()
 }

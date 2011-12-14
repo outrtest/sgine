@@ -44,8 +44,6 @@ import org.sgine.Child
 trait Element extends Listenable with Child[Element] {
   override val parent: () => Element = new ElementParent()
 
-  // TODO: extend from Child
-
   /**
    * Processes up the ancestry tree through parents to find the first matching ancestor of the
    * generic type T and invokes the supplied function on it.
