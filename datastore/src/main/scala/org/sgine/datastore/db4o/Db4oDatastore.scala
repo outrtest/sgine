@@ -29,12 +29,10 @@ case class Db4oDatastore(db: ObjectContainer) extends Datastore {
   }
 
   def query[T](matcher: (T) => Boolean)(implicit manifest: Manifest[T]) = {
-    val query = db.query()
-    query.constrain(manifest.erasure)
-    query.constrain(new Predicate[T] {
+    val predicate = new Predicate[T](manifest.erasure.asInstanceOf[Class[T]]) {
       def `match`(obj: T) = matcher(obj)
-    })
-    query.execute[T]().toStream
+    }
+    db.query(predicate).toStream
   }
 
   def close() = db.close()
