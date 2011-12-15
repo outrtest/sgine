@@ -1,9 +1,9 @@
 package org.sgine.datastore.neodatis
 
-import org.neodatis.odb.ODB
 import org.sgine.datastore.Datastore
 import scala.collection.JavaConversions._
 import org.neodatis.odb.core.query.nq.NativeQuery
+import org.neodatis.odb.{ODBFactory, ODB}
 
 /**
  * NeodatisDatastore provides an implementation of a Datastore using Neodatis object database.
@@ -27,26 +27,24 @@ class NeodatisDatastore(dbFunction: => ODB) extends Datastore {
 
   def byExample[T](obj: T)(implicit manifest: Manifest[T]) = throw new UnsupportedOperationException("Not implemented")
 
-  def all[T]()(implicit manifest: Manifest[T]) = db.getObjects[T](manifest.erasure).toStream
+  def all[T]()(implicit manifest: Manifest[T]) = query[T](allResults.asInstanceOf[(T) => Boolean])
 
   def query[T](matcher: (T) => Boolean)(implicit manifest: Manifest[T]) = {
     val query = new NativeQuery() {
       def getObjectType = manifest.erasure
 
-      def `match`(obj: AnyRef) = {
-        if (manifest.erasure.isAssignableFrom(obj.getClass)) {
-          matcher(obj.asInstanceOf[T])
-        } else {
-          false
-        }
-      }
-    }
+      def `match`(obj: AnyRef) = matcher(obj.asInstanceOf[T])
+    }.setPolymorphic(true)
     db.getObjects[T](query).toStream
   }
+  
+  private val allResults = (obj: AnyRef) => true
 
   def close() = db.close()
 }
 
-object NeodatisDatastore {
+object NeodatisDatastore extends Function1[String, Datastore] {
+  def apply(filename: String): NeodatisDatastore = apply(ODBFactory.open(filename))
+
   def apply(dbFunction: => ODB) = new NeodatisDatastore(dbFunction)
 }
