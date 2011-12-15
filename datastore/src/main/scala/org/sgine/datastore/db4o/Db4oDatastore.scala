@@ -1,17 +1,17 @@
 package org.sgine.datastore.db4o
 
-import com.db4o.ObjectContainer
 import org.sgine.datastore.Datastore
 
 import scala.collection.JavaConversions._
 import com.db4o.query.Predicate
+import com.db4o.{Db4oEmbedded, ObjectContainer}
 
 /**
  * Db4oDatastore is a datastore implementation backed by db4o object database.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class Db4oDatastore(db: ObjectContainer) extends Datastore {
+class Db4oDatastore(db: ObjectContainer) extends Datastore {
   def persist(obj: AnyRef) = db.store(obj)
 
   def delete(obj: AnyRef) = db.delete(obj)
@@ -36,4 +36,8 @@ case class Db4oDatastore(db: ObjectContainer) extends Datastore {
   }
 
   def close() = db.close()
+}
+
+object Db4oDatastore extends Function1[String, Datastore] {
+  def apply(filename: String) = new Db4oDatastore(Db4oEmbedded.openFile(filename))
 }
