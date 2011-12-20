@@ -35,17 +35,32 @@ trait Datastore {
   def close(): Unit
 
   def firstByExample[T](obj: T)(implicit manifest: Manifest[T]) = byExample[T](obj)(manifest) match {
-    case results if (results.isEmpty) => None
+    case results if (results.isEmpty) => null.asInstanceOf[T]
     case results => results.head
+  }
+
+  def firstOptionByExample[T](obj: T)(implicit manifest: Manifest[T]) = firstByExample[T](obj)(manifest) match {
+    case null => None
+    case result => Some(result)
   }
 
   def first[T]()(implicit manifest: Manifest[T]) = all[T]()(manifest) match {
-    case results if (results.isEmpty) => None
+    case results if (results.isEmpty) => null.asInstanceOf[T]
     case results => results.head
   }
 
-  def first[T](matcher: T => Boolean)(implicit manifest: Manifest[T]) = query(matcher)(manifest) match {
+  def firstOption[T]()(implicit manifest: Manifest[T]) = all[T]()(manifest) match {
     case results if (results.isEmpty) => None
+    case results => Some(results.head)
+  }
+
+  def first[T](matcher: T => Boolean)(implicit manifest: Manifest[T]) = query(matcher)(manifest) match {
+    case results if (results.isEmpty) => null.asInstanceOf[T]
     case results => results.head
+  }
+
+  def firstOption[T](matcher: T => Boolean)(implicit manifest: Manifest[T]) = query(matcher)(manifest) match {
+    case results if (results.isEmpty) => None
+    case results => Some(results.head)
   }
 }
