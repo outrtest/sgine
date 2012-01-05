@@ -45,6 +45,11 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMetho
    */
   def isNative = Modifier.isNative(javaMethod.getModifiers)
 
+  /**
+   * True if this is a static method.
+   */
+  def isStatic = Modifier.isStatic(javaMethod.getModifiers)
+
   private def getDefault(index: Int) = {
     val defaultMethodName = name + "$default$" + (index + 1)
     parent.method(defaultMethodName)
