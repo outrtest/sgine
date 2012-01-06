@@ -38,12 +38,23 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   /**
    * Finds a method from the supplied name and argument names and values.
    */
-  def methodByArgs(name: String, args: List[(String, Any)]) = method(name, args.map(t => t._1 -> EnhancedClass(t._2.asInstanceOf[AnyRef].getClass)))
+  def methodByArgs(name: String, args: List[(String, Any)]) = method(name, args.map(t => t._1 -> EnhancedClass.fromValue(t._2)))
 
   /**
    * Finds a method from the supplied name and argument names and types.
    */
   def method(name: String, args: List[(String, EnhancedClass)]) = methods.find(m => m.hasArgs(args))
+
+  /**
+   * The instance of this class if it exists. This is particularly useful on companion classes to get the singleton
+   * instance they are stored within.
+   */
+  lazy val instance = javaClass.getFields.find(f => f.getName == "MODULE$").map(f => f.get(null))
+
+  /**
+   * True if this is a companion object.
+   */
+  def isCompanion = instance != None
 
   /**
    * The companion class to this class if it exists.
@@ -83,6 +94,11 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
 
 object EnhancedClass {
   def apply(clazz: Class[_]) = class2EnhancedClass(clazz)
+
+  def fromValue(value: Any) = value match {
+    case null => null
+    case ref: AnyRef => apply(ref.getClass)
+  }
 
   /**
    * Converts primitive classes to wrapper classes.
