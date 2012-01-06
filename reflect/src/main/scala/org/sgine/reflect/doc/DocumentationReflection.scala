@@ -1,10 +1,10 @@
 package org.sgine.reflect.doc
 
-import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 import annotation.tailrec
 import io.Source
 import java.net.URL
+import java.lang.reflect.Method
 
 /**
  * Implementations of DocumentationReflection provide functionality to introspect the JavaDoc /

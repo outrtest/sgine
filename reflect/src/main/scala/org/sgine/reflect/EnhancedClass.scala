@@ -16,6 +16,11 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   def name = EnhancedClass.convertClass(javaClass)
 
   /**
+   * All constructors on this class.
+   */
+  lazy val constructors: List[EnhancedConstructor] = javaClass.getConstructors.toList.map(c => new EnhancedConstructor(this, c))
+
+  /**
    * All methods on this class.
    */
   lazy val methods: List[EnhancedMethod] = javaClass.getMethods.toList.map(m => new EnhancedMethod(this, m))
@@ -29,6 +34,16 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
    * Finds a method from the supplied name and args.
    */
   def method(name: String, args: EnhancedClass*): Option[EnhancedMethod] = methods.find(m => m.name == name && m.argsMatch(args))
+
+  /**
+   * Finds a method from the supplied name and argument names and values.
+   */
+  def methodByArgs(name: String, args: List[(String, Any)]) = method(name, args.map(t => t._1 -> EnhancedClass(t._2.asInstanceOf[AnyRef].getClass)))
+
+  /**
+   * Finds a method from the supplied name and argument names and types.
+   */
+  def method(name: String, args: List[(String, EnhancedClass)]) = methods.find(m => m.hasArgs(args))
 
   /**
    * The companion class to this class if it exists.
@@ -67,6 +82,8 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
 }
 
 object EnhancedClass {
+  def apply(clazz: Class[_]) = class2EnhancedClass(clazz)
+
   /**
    * Converts primitive classes to wrapper classes.
    */

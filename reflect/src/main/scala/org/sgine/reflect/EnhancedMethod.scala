@@ -8,6 +8,8 @@ import java.lang.reflect.{Modifier, Method}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMethod: Method) {
+  private lazy val _docs = parent.getDocs.method(javaMethod)
+
   /**
    * The method name.
    */
@@ -18,6 +20,25 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMetho
    */
   lazy val args: List[MethodArgument] = for ((dc, index) <- _docs.args.zipWithIndex) yield {
     new MethodArgument(index, dc.name, dc.`type`, getDefault(index), dc.doc)
+  }
+
+  /**
+   * Returns true if the argument list of Tuple2 name -> type matches.
+   */
+  def hasArgs(argsList: List[(String, EnhancedClass)]) = {
+    if (args.length == argsList.length) {
+      argsList.forall(arg => argIndex(arg) != -1)
+    } else {
+      false
+    }
+  }
+
+  /**
+   * Returns true if the argument defined by Tuple2 name -> type is contained within this method.
+   */
+  def argIndex(arg: (String, EnhancedClass)) = args.find(ma => ma.name == arg._1 && ma.`type` == arg._2) match {
+    case None => -1
+    case Some(ma) => args.indexOf(ma)
   }
 
   /**
@@ -62,12 +83,19 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMetho
    */
   def apply[R](instance: AnyRef, args: Any*) = javaMethod.invoke(instance, args.map(a => a.asInstanceOf[AnyRef]): _*).asInstanceOf[R]
 
+  /**
+   * Invokes this method on the supplied instance with a list of argument names along with values.
+   */
+  def apply[R](instance: AnyRef, args: List[(String, Any)]): R = {
+    val arguments = new Array[Any](args.length)
+    args.foreach(arg => arguments(argIndex(arg._1 -> arg._2.asInstanceOf[AnyRef].getClass)) = arg._2)
+    apply[R](instance, arguments)
+  }
+
   private[reflect] def argsMatch(args: Seq[EnhancedClass]) = {
     args.length == javaMethod.getParameterTypes.length &&
       javaMethod.getParameterTypes.zip(args).forall(t => class2EnhancedClass(t._1) == t._2)
   }
-
-  private lazy val _docs = parent.getDocs.method(javaMethod)
 
   /**
    * The absolute absoluteSignature of this method including package and class name.
