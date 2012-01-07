@@ -57,7 +57,7 @@ class StaticContainer[T](implicit manifest: Manifest[T]) extends MutableContaine
         manifest.erasure.isAssignableFrom(m.returnType.`type`.javaClass) &&
         m.name.indexOf('$') == -1 &&
         m.name != "toString") {
-        val element = m[T](this)
+        val element = m.invoke[T](this)
         if (element == null) throw new ScalaDelayedInitBug
         element :: list
       } else {

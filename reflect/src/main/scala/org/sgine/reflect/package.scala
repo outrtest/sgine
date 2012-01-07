@@ -7,11 +7,15 @@ import java.util.concurrent.ConcurrentHashMap
 package object reflect {
   private val map = new ConcurrentHashMap[Class[_], SoftReference[EnhancedClass]]
 
+  protected[reflect] def register(c: Class[_], ec: EnhancedClass) = {
+    map.put(c, new SoftReference[EnhancedClass](ec))
+    ec
+  }
+
   implicit def class2EnhancedClass(c: Class[_]): EnhancedClass = map.get(c) match {
     case null => {
       val ec = new EnhancedClass(c)
-      map.put(c, new SoftReference[EnhancedClass](ec))
-      ec
+      register(c, ec)
     }
     case ref if (!ref.isEnqueued) => ref()
   }
