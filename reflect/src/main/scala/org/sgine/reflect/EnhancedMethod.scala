@@ -36,7 +36,7 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMetho
   /**
    * Returns true if the argument defined by Tuple2 name -> type is contained within this method.
    */
-  def argIndex(arg: (String, EnhancedClass)) = args.find(ma => ma.name == arg._1 && ma.`type` == arg._2) match {
+  def argIndex(arg: (String, EnhancedClass)) = args.find(ma => ma.name == arg._1 && (ma.`type` == arg._2 || arg._2 == null)) match {
     case None => -1
     case Some(ma) => args.indexOf(ma)
   }
