@@ -7,7 +7,7 @@ package org.sgine.naming
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class NamingFilter[T](protected val parent: NamingParent)(implicit manifest: Manifest[T] = null)
-    extends Seq[T] {
+  extends Seq[T] {
   private lazy val classType = if (manifest != null) {
     manifest.erasure
   }
@@ -15,13 +15,12 @@ class NamingFilter[T](protected val parent: NamingParent)(implicit manifest: Man
     Class.forName(parent.getClass.getName.substring(0, parent.getClass.getName.length - 1))
   }
   protected lazy val fields = parent.fields
-      .filter(m => classType.isAssignableFrom(m.returnType.`type`.javaClass)).toList
+    .filter(m => classType.isAssignableFrom(m.returnType.`type`.javaClass)).toList
 
   /**
    * Finds the field by the provided name or throws a RuntimeException if not found.
    */
-  def apply(name: String) = fields.find(m => m.name == name).getOrElse(parent.notFound(name))
-      .apply[T](parent)
+  def apply(name: String) = fields.find(m => m.name == name).getOrElse(parent.notFound(name)).invoke[T](parent)
 
   /**
    * The number of fields on this filter.
@@ -31,10 +30,10 @@ class NamingFilter[T](protected val parent: NamingParent)(implicit manifest: Man
   /**
    * Retrieve a field value by index.
    */
-  def apply(index: Int) = fields(index).apply[T](parent)
+  def apply(index: Int) = fields(index).invoke[T](parent)
 
   /**
    * Iterate over field values on this filter.
    */
-  def iterator = fields.iterator.map(m => m[T](parent))
+  def iterator = fields.iterator.map(m => m.invoke[T](parent))
 }
