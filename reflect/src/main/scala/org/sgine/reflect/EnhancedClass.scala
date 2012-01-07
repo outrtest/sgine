@@ -23,7 +23,10 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   /**
    * All methods on this class.
    */
-  lazy val methods: List[EnhancedMethod] = javaClass.getMethods.toList.map(m => new EnhancedMethod(this, m))
+  lazy val methods: List[EnhancedMethod] = {
+    val javaMethods = javaClass.getMethods.toSet ++ javaClass.getDeclaredMethods.toSet
+    javaMethods.toList.map(m => new EnhancedMethod(this, m))
+  }
 
   /**
    * Finds a method by the absoluteSignature.
@@ -46,6 +49,11 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   def method(name: String, args: List[(String, EnhancedClass)]) = methods.find(m => m.hasArgs(args))
 
   /**
+   * Finds the first method match for the name supplied.
+   */
+  def methodByName(name: String) = methods.find(m => m.name == name)
+
+  /**
    * The instance of this class if it exists. This is particularly useful on companion classes to get the singleton
    * instance they are stored within.
    */
@@ -65,6 +73,20 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
     case exc: ClassNotFoundException => None
   }
   // TODO: add support for class-level docs
+
+  lazy val caseValues: List[CaseValue] = {
+    val fieldNames = javaClass.getDeclaredFields.map(f => f.getName).toList
+    fieldNames.map(name => CaseValue(name, this))
+  }
+
+  lazy val copyMethod = methodByName("copy")
+
+  def caseValue(name: String) = caseValues.find(cv => cv.name == name)
+
+  def copy[T](instance: AnyRef, args: Map[String, Any]) = {
+    val cm = copyMethod.getOrElse(throw new NullPointerException("No copy method for this class"))
+    cm[T](instance, args)
+  }
 
   // Only called internally to avoid receiving methods not for this class
   private[reflect] def apply(m: Method): EnhancedMethod = {
@@ -93,6 +115,11 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
 }
 
 object EnhancedClass {
+  // Set up defaults
+  val Integer = EnhancedClass(classOf[Int])
+
+  register(classOf[java.lang.Integer], Integer)
+
   def apply(clazz: Class[_]) = class2EnhancedClass(clazz)
 
   def fromValue(value: Any) = value match {

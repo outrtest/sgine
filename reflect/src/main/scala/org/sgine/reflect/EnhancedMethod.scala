@@ -76,20 +76,30 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMetho
     parent.method(defaultMethodName)
   }
 
-  // TODO: support assignment via field_$eq - Note that this works even on vals
-
   /**
    * Invokes this method on the supplied instance with the passed arguments.
    */
-  def apply[R](instance: AnyRef, args: Any*) = javaMethod.invoke(instance, args.map(a => a.asInstanceOf[AnyRef]): _*).asInstanceOf[R]
+  def invoke[R](instance: AnyRef, args: Any*) = {
+    if (args.length != this.args.length) {
+      throw new IllegalArgumentException("%s arguments supplied, %s expected".format(args.length, this.args.length))
+    }
+    javaMethod.invoke(instance, args.map(a => a.asInstanceOf[AnyRef]): _*).asInstanceOf[R]
+  }
 
   /**
    * Invokes this method on the supplied instance with a list of argument names along with values.
+   *
+   * The arguments list does not have to have the same number of arguments as the method if the method provides default
+   * values for the unsupplied argument names.
    */
-  def apply[R](instance: AnyRef, args: List[(String, Any)]): R = {
-    val arguments = new Array[Any](args.length)
-    args.foreach(arg => arguments(argIndex(arg._1 -> arg._2.asInstanceOf[AnyRef].getClass)) = arg._2)
-    apply[R](instance, arguments)
+  def apply[R](instance: AnyRef, args: Map[String, Any]): R = {
+    var map = Map.empty[String, Any]
+    this.args.foreach(arg => if (arg.hasDefault) map += arg.name -> arg.default[AnyRef](instance).get) // Assign defaults
+    map ++= args
+
+    val arguments = new Array[Any](map.size)
+    map.foreach(arg => arguments(argIndex(arg._1 -> arg._2.asInstanceOf[AnyRef].getClass)) = arg._2)
+    invoke[R](instance, arguments: _*)
   }
 
   private[reflect] def argsMatch(args: Seq[EnhancedClass]) = {
