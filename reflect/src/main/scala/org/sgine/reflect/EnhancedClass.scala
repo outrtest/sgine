@@ -77,7 +77,7 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   /**
    * CaseValue instances representing the arguments if this is a case class.
    */
-  lazy val caseValues: List[CaseValue] = javaClass.getDeclaredFields.map(f => CaseValue(f.getName, f.getType, this)).toList
+  lazy val caseValues: List[CaseValue] = javaClass.getDeclaredFields.filterNot(f => f.getName.indexOf('$') != -1).map(f => CaseValue(f.getName, f.getType, this)).toList
 
   /**
    * The method used to create a copy of an instance if this is a case class.
