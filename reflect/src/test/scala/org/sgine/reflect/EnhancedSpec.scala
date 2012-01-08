@@ -99,6 +99,17 @@ class EnhancedSpec extends WordSpec with ShouldMatchers {
         cc2.lastName should equal("Test")
         cc2.age should equal(2)
       }
+      "instantiate case class" in {
+        val cc3 = ec.create[TestCaseClass](Map("firstName" -> "One", "lastName" -> "Two", "age" -> 3))
+        cc3.firstName should equal("One")
+        cc3.lastName should equal("Two")
+        cc3.age should equal(3)
+      }
+      "instantiate a case class with a default value" in {
+        val cc4 = classOf[TestCaseClass2].create[TestCaseClass2](Map("name" -> "Test"))
+        cc4.name should equal("Test")
+        cc4.age should equal(5)
+      }
     }
   }
 }
@@ -114,3 +125,5 @@ object TestClass {
 case class TestCaseClass(firstName: String, lastName: String, var age: Int) {
   def name = "%s %s".format(firstName, lastName)
 }
+
+case class TestCaseClass2(name: String, age: Int = 5)
