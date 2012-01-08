@@ -5,7 +5,7 @@ package org.sgine.reflect
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class CaseValue(name: String, clazz: EnhancedClass) {
+case class CaseValue(name: String, valueType: EnhancedClass, clazz: EnhancedClass) {
   lazy val getter = clazz.method(name)
   lazy val setter = clazz.methods.find(m => m.name == "%s_$eq".format(name))
 

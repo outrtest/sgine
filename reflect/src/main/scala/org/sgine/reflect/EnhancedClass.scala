@@ -74,18 +74,42 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   }
   // TODO: add support for class-level docs
 
-  lazy val caseValues: List[CaseValue] = {
-    val fieldNames = javaClass.getDeclaredFields.map(f => f.getName).toList
-    fieldNames.map(name => CaseValue(name, this))
-  }
+  /**
+   * CaseValue instances representing the arguments if this is a case class.
+   */
+  lazy val caseValues: List[CaseValue] = javaClass.getDeclaredFields.map(f => CaseValue(f.getName, f.getType, this)).toList
 
+  /**
+   * The method used to create a copy of an instance if this is a case class.
+   */
   lazy val copyMethod = methodByName("copy")
 
+  /**
+   * Retrieve a CaseValue by name if this is a case class.
+   */
   def caseValue(name: String) = caseValues.find(cv => cv.name == name)
 
+  /**
+   * Reflective copy of a case class with the supplied arguments.
+   *
+   * Note that an empty arguments list may be supplied to create a clone.
+   */
   def copy[T](instance: AnyRef, args: Map[String, Any]) = {
     val cm = copyMethod.getOrElse(throw new NullPointerException("No copy method for this class"))
     cm[T](instance, args)
+  }
+
+  /**
+   * Reflective invocation of the generated apply method on a companion to this case class.
+   *
+   * Note that any default arguments may optionally be omitted.
+   */
+  def create[T](args: Map[String, Any]): T = {
+    val companionClass = companion.getOrElse(throw new NullPointerException("No companion class for %s".format(this)))
+    val map = caseValues.map(cv => cv.name -> cv.valueType)
+    val applyMethodOption = companionClass.method("apply", map)
+    val applyMethod = applyMethodOption.getOrElse(throw new NullPointerException("No apply method for args %s".format(map)))
+    applyMethod[T](companionClass.instance.getOrElse(throw new NullPointerException("No companion instance found for %s".format(this))), args)
   }
 
   // Only called internally to avoid receiving methods not for this class
