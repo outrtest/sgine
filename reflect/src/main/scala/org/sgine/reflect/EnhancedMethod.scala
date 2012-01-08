@@ -27,16 +27,16 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMetho
    */
   def hasArgs(argsList: List[(String, EnhancedClass)]) = {
     if (args.length == argsList.length) {
-      argsList.forall(arg => argIndex(arg) != -1)
+      argsList.forall(arg => argIndex(arg._1) != -1)
     } else {
       false
     }
   }
 
   /**
-   * Returns true if the argument defined by Tuple2 name -> type is contained within this method.
+   * Returns the index of the argument defined by name.
    */
-  def argIndex(arg: (String, EnhancedClass)) = args.find(ma => ma.name == arg._1 && (ma.`type` == arg._2 || arg._2 == null)) match {
+  def argIndex(arg: String) = args.find(ma => ma.name == arg) match {
     case None => -1
     case Some(ma) => args.indexOf(ma)
   }
@@ -98,7 +98,7 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMetho
     map ++= args
 
     val arguments = new Array[Any](map.size)
-    map.foreach(arg => arguments(argIndex(arg._1 -> arg._2.asInstanceOf[AnyRef].getClass)) = arg._2)
+    map.foreach(arg => arguments(argIndex(arg._1)) = arg._2)
     invoke[R](instance, arguments: _*)
   }
 

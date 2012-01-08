@@ -123,7 +123,7 @@ object TestClass {
 }
 
 case class TestCaseClass(firstName: String, lastName: String, var age: Int) {
-  def name = "%s %s".format(firstName, lastName)
+  lazy val name = "%s %s".format(firstName, lastName)
 }
 
 case class TestCaseClass2(name: String, age: Int = 5)
