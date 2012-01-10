@@ -1,6 +1,7 @@
 package org.sgine.naming
 
-import org.sgine.reflect.EnhancedMethod
+import org.sgine.reflect.{EnhancedClass, EnhancedMethod}
+
 
 /**
  * NamedChild is used in conjunction with a NamingParent to determine the name of an underlying
@@ -13,8 +14,10 @@ trait NamedChild {
 
   protected def parent: NamingParent
 
-  protected lazy val companion = Class.forName(typeClass.getName + "$").getField("MODULE$")
-      .get(this)
+  protected lazy val companion = EnhancedClass(getClass).companion match {
+    case Some(comp) => comp.instance.getOrElse(null)
+    case None => null
+  }
 
   private lazy val method = parent.method(this)
 
@@ -39,7 +42,13 @@ trait NamedChild {
     }
   }
 
-  private def determineOrdinal(count: Int = 0, list: List[EnhancedMethod] = parent.fields): Int = {
+  private def fields = if (parent != null) {
+    parent.fields
+  } else {
+    Nil
+  }
+
+  private def determineOrdinal(count: Int = 0, list: List[EnhancedMethod] = fields): Int = {
     if (list.isEmpty) {
       -1
     }

@@ -7,18 +7,18 @@ import org.sgine.{Enumerated, EnumEntry}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Routing extends EnumEntry[Routing]
+class Routing(val continuing: Boolean) extends EnumEntry[Routing]
 
 object Routing extends Enumerated[Routing] {
   /**
    * Returned by a Node to allow the message to continue processing along to Bus.
    */
-  val Continue = new Routing()
+  val Continue = new Routing(true)
 
   /**
    * Returned by a Node to stop processing by additional Nodes.
    */
-  val Stop = new Routing()
+  val Stop = new Routing(false)
 
   /**
    * Returned by a Node to stop processing and return the supplied response value.
@@ -32,10 +32,15 @@ object Routing extends Enumerated[Routing] {
   def Results(results: List[Any]) = new RoutingResults(results)
 }
 
-class RoutingResponse private[bus](val response: Any) extends Routing {
+class RoutingResponse private[bus](val response: Any) extends Routing(false) {
   override lazy val name = "Response"
 }
 
-class RoutingResults private[bus](val results: List[Any]) extends Routing {
+class RoutingResults private[bus](val results: List[Any]) extends Routing(true) {
   override lazy val name = "Results"
+
+  override def equals(obj: Any) = obj match {
+    case other: RoutingResults => results == other.results
+    case _ => false
+  }
 }

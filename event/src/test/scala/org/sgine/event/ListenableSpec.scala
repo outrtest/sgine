@@ -4,7 +4,7 @@ import org.scalatest.WordSpec
 import org.scalatest.matchers.ShouldMatchers
 import org.sgine.concurrent.{Executor, AtomicInt, Time}
 import org.sgine.{Parent, Child}
-import org.sgine.bus.{Bus, Node}
+import org.sgine.bus.{RoutingResults, Routing, Bus, Node}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -251,6 +251,73 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       }
       "remove the node" in {
         Bus.remove(node)
+      }
+    }
+    "listener stopping processing via Routing.Stop" should {
+      var received1 = false
+      var received2 = false
+      var listener1: Listener = null
+      var listener2: Listener = null
+      "add the first listener" in {
+        listener1 = TestListenable.listeners.synchronous {
+          case evt => {
+            received1 = true
+            Routing.Stop
+          }
+        }
+      }
+      "add the second listener" in {
+        listener2 = TestListenable.listeners.synchronous {
+          case evt => {
+            received2 = true
+          }
+        }
+      }
+      "fire an event" in {
+        TestListenable.fire(Event(TestListenable)) should equal(Routing.Stop)
+      }
+      "message should have been received on first listener" in {
+        received1 should equal(true)
+      }
+      "message should not have been received on second listener" in {
+        received2 should equal(false)
+      }
+      "remove the listeners" in {
+        TestListenable.listeners.synchronous -= listener1
+        TestListenable.listeners.synchronous -= listener2
+      }
+    }
+    "listener propagating Routing.Results" should {
+      var listener1: Listener = null
+      var listener2: Listener = null
+      var listener3: Listener = null
+      var routing: Routing = null
+      "add the first listener" in {
+        listener1 = TestListenable.listeners.synchronous {
+          case evt => Routing.Results(List(1))
+        }
+      }
+      "add the second listener" in {
+        listener2 = TestListenable.listeners.synchronous {
+          case evt => Routing.Results(List(2))
+        }
+      }
+      "add the third listener" in {
+        listener3 = TestListenable.listeners.synchronous {
+          case evt => Routing.Results(List(3))
+        }
+      }
+      "fire an event" in {
+        routing = TestListenable.fire(Event(TestListenable))
+      }
+      "message should be a Routing.Results of List(1, 2, 3)" in {
+        routing.name should equal("Results")
+        routing.asInstanceOf[RoutingResults].results should equal(List(1, 2, 3))
+      }
+      "remove the listeners" in {
+        TestListenable.listeners.synchronous -= listener1
+        TestListenable.listeners.synchronous -= listener2
+        TestListenable.listeners.synchronous -= listener3
       }
     }
   }

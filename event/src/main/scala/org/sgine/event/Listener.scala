@@ -9,7 +9,7 @@ import org.sgine.concurrent.Executor
  * Date: 12/2/11
  */
 trait Listener {
-  def process(event: Event): Unit
+  def process(event: Event): Any
 }
 
 class FunctionalListener[T <: Event](f: (T) => Any)(implicit manifest: Manifest[T]) extends Listener {
