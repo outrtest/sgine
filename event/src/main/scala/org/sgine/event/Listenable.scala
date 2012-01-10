@@ -5,6 +5,7 @@ import annotation.tailrec
 import actors.DaemonActor
 import org.sgine.bus._
 import org.sgine.{Parent, Child, Priority}
+import collection.mutable.ListBuffer
 
 /**
  * Listenable can be mixed in to provide the ability for event management on an object.
@@ -19,7 +20,7 @@ trait Listenable {
     def act() {
       loop {
         react {
-          case event: Event => processOn(event, listeners.asynchronous.listeners)
+          case event: Event => processOn(event, listeners.asynchronous.listeners, null)
         }
       }
     }
@@ -36,21 +37,44 @@ trait Listenable {
     }
 
     protected def process(event: Event) = {
-      processOn(event, listeners.synchronous.listeners)
-      if (listeners.asynchronous.listeners.nonEmpty) {
-        asynchronousActor ! event
+      val routing = processOn(event, listeners.synchronous.listeners, null)
+      if (routing.continuing) {
+        if (listeners.asynchronous.listeners.nonEmpty) {
+          asynchronousActor ! event
+        }
+        val buffer = routing match {
+          case results: RoutingResults => ListBuffer[Any](results.results: _*)
+          case _ => null
+        }
+        processOn(event, listeners.concurrent.listeners, buffer)
+      } else {
+        routing
       }
-      processOn(event, listeners.concurrent.listeners)
-      Routing.Continue
     }
   }
 
   @tailrec
-  private def processOn(message: Event, listeners: List[Listener]): Unit = {
+  private def processOn(message: Event, listeners: List[Listener], buffer: ListBuffer[Any]): Routing = {
     if (listeners.nonEmpty) {
       val listener = listeners.head
-      listener.process(message)
-      processOn(message, listeners.tail)
+      listener.process(message) match {
+        case Routing.Stop if (buffer == null) => Routing.Stop
+        case Routing.Stop => Routing.Results(buffer.toList)
+        case response: RoutingResponse => response
+        case results: RoutingResults => {
+          val b = buffer match {
+            case null => new ListBuffer[Any]()
+            case _ => buffer
+          }
+          b ++= results.results
+          processOn(message, listeners.tail, b)
+        }
+        case _ => processOn(message, listeners.tail, buffer)
+      }
+    } else if (buffer != null) {
+      Routing.Results(buffer.toList)
+    } else {
+      Routing.Continue
     }
   }
 
@@ -109,26 +133,32 @@ trait Listenable {
 
 class AncestorNode(descendant: Any, listener: Listener, maxDepth: Int = Int.MaxValue, val priority: Priority = Priority.Normal) extends Node {
   def receive(message: Any) = {
-    message match {
+    val response = message match {
       case event: Event => event.target match {
         case parent: Parent[_] if (parent.hasDescendant(descendant, maxDepth)) => listener.process(event)
         case _ => // Not a Child instance
       }
       case _ => // Not an Event
     }
-    Routing.Continue
+    response match {
+      case routing: Routing => routing
+      case _ => Routing.Continue
+    }
   }
 }
 
 class DescendantNode(ancestor: Any, listener: Listener, maxDepth: Int = Int.MaxValue, val priority: Priority = Priority.Normal) extends Node {
   def receive(message: Any) = {
-    message match {
+    val response = message match {
       case event: Event => event.target match {
         case child: Child[_] if (child.hasAncestor(ancestor, maxDepth)) => listener.process(event)
         case _ => // Not a Child instance
       }
       case _ => // Not an Event
     }
-    Routing.Continue
+    response match {
+      case routing: Routing => routing
+      case _ => Routing.Continue
+    }
   }
 }
