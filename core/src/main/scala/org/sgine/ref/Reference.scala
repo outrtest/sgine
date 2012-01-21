@@ -14,6 +14,8 @@ trait Reference[T <: AnyRef] extends Function0[T] {
 
   def get: Option[T]
 
+  def getOrNull: T
+
   def isEnqueued: Boolean
 
   def isCleared = apply() == null

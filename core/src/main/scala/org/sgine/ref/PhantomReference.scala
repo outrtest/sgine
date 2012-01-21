@@ -17,6 +17,8 @@ class PhantomReference[T <: AnyRef] private(ref: JPR[T]) extends Reference[T] {
 
   def get = ref.get
 
+  def getOrNull = ref.underlying.get()
+
   def isEnqueued = ref.isEnqueued()
 }
 

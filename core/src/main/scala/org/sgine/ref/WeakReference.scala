@@ -16,6 +16,8 @@ class WeakReference[T <: AnyRef] private(private val ref: JWR[T]) extends Refere
 
   def get = ref.get
 
+  def getOrNull = ref.underlying.get()
+
   def isEnqueued = ref.isEnqueued()
 }
 
