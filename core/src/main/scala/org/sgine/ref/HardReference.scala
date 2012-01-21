@@ -19,6 +19,8 @@ class HardReference[T <: AnyRef] private(private var value: T) extends Reference
 
   def get = Option(value)
 
+  def getOrNull = value
+
   def isEnqueued = value == null
 }
 
