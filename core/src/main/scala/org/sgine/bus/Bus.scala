@@ -70,7 +70,7 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
   private def process(message: Any, nodes: List[Reference[Node]], buffer: ListBuffer[Any]): Routing = {
     if (nodes.nonEmpty) {
       val ref = nodes.head
-      val node = ref()
+      val node = ref.getOrNull
       if (node != null) {
         node.receive(message) match {
           case Routing.Stop if (buffer == null) => Routing.Stop
