@@ -26,6 +26,6 @@ trait Reference[T <: AnyRef] extends Function0[T] {
   override def equals(obj: Any) = if (super.equals(obj)) {
     true
   } else {
-    apply() == obj
+    getOrNull == obj
   }
 }
