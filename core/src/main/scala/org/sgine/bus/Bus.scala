@@ -119,8 +119,8 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
   def length = nodes.length
 
   private val referenceSort = (r1: Reference[Node], r2: Reference[Node]) => {
-    val n1 = r1()
-    val n2 = r2()
+    val n1 = r1.getOrNull
+    val n2 = r2.getOrNull
     if (n1 == null) {
       true
     } else if (n2 == null) {
