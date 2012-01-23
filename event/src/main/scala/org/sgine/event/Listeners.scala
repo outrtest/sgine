@@ -1,6 +1,8 @@
 package org.sgine.event
 
 import org.sgine.concurrent.Time
+import org.sgine.bus.Bus
+import org.sgine.{Parent, Child}
 
 /**
  *
@@ -11,14 +13,18 @@ import org.sgine.concurrent.Time
 class Listeners(listenable: Listenable) {
   protected[event] var listeners: List[Listener] = Nil
 
+  def values = listeners
+
   def +=(listener: Listener) = synchronized {
     val l = createListener(listener)
     listeners = (l :: listeners.reverse).reverse
+    Bus.add(l)
     l
   }
 
   def -=(listener: Listener) = synchronized {
     listeners = listeners.filterNot(l => l == listener)
+    Bus.remove(listener)
     listener
   }
 
@@ -34,15 +40,40 @@ class Listeners(listenable: Listenable) {
 
   protected def createListener(listener: Listener) = listener
 
-  def apply(f: PartialFunction[Event, Any]) = {
+  val acceptFilter = listenable.targetFilter
+
+  def apply(f: PartialFunction[Event, Any])(implicit acceptFilter: Event => Boolean = acceptFilter) = {
     val function = Listener.withFallthrough(f)
+    val filter = acceptFilter
     this += new Listener {
-      def process(event: Event) = function(event)
+      def acceptFilter = filter
+
+      def apply(event: Event) = function(event)
     }
   }
 
+  def descendant(f: PartialFunction[Event, Any])(implicit depth: Int = Int.MaxValue) = {
+    val acceptFilter = (event: Event) => event.target match {
+      case child: Child[_] if (child.hasAncestor(listenable, depth)) => true
+      case _ => false
+    }
+    apply(f)(acceptFilter)
+  }
+
+  def child(f: PartialFunction[Event, Any]) = descendant(f)(1)
+
+  def ancestor(f: PartialFunction[Event, Any])(implicit depth: Int = Int.MaxValue) = {
+    val acceptFilter = (event: Event) => event.target match {
+      case parent: Parent[_] if (parent.hasDescendant(listenable, depth)) => true
+      case _ => false
+    }
+    apply(f)(acceptFilter)
+  }
+
+  def parent(f: PartialFunction[Event, Any]) = ancestor(f)(1)
+
   def filtered[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    this += new FunctionalListener[T](Listener.withFallthrough(f))
+    this += new FunctionalListener[T](Listener.withFallthrough(f), listenable.targetFilter)
   }
 
   def once[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
@@ -51,7 +82,7 @@ class Listeners(listenable: Listenable) {
       case _ => {
         this -= listener
       }
-    }))(manifest)
+    }), listenable.targetFilter)(manifest)
     this += listener
   }
 
@@ -75,7 +106,7 @@ class Listeners(listenable: Listenable) {
           }
         }
       }
-    })
+    }, listenable.targetFilter)
     this += listener
     Time.waitFor(time, precision, start, errorOnTimeout) {
       result != None

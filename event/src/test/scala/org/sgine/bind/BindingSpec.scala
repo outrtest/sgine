@@ -50,7 +50,6 @@ class BindingSpec extends WordSpec with ShouldMatchers {
       }
     }
     "conversion binding" should {
-      implicit var binding: Binding[String] = null
       "set the initial values" in {
         BindTest1.value = 0
         BindTest2.value = 0
@@ -62,7 +61,7 @@ class BindingSpec extends WordSpec with ShouldMatchers {
       }
       "bind BindTest1 to BindTest3 successfully" in {
         implicit val s2i = (s: String) => s.toInt
-        binding = BindTest1.bindTo[String](BindTest3)
+        BindTest1.bindTo[String](BindTest3)
       }
       "have one listener on BindTest3" in {
         BindTest1.listeners.synchronous.isEmpty should equal(true)
@@ -82,7 +81,7 @@ class BindingSpec extends WordSpec with ShouldMatchers {
         BindTest1.value should equal(1)
       }
       "BindTest1 should remove the binding" in {
-        BindTest1.unbindFrom[String](BindTest3)
+        BindTest1.unbind(BindTest3)
       }
       "have no listeners on either test" in {
         BindTest1.listeners.synchronous.isEmpty should equal(true)

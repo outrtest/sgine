@@ -33,7 +33,7 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
     if (nodes.contains(node)) {
       null
     } else {
-      nodes = referenceType(node) :: nodes
+      nodes = (referenceType(node) :: nodes.reverse).reverse // TODO: determine a faster mechanism
       if (sort != null) {
         nodes = nodes.sortWith(referenceSort)
       }
