@@ -9,8 +9,8 @@ import org.sgine.event._
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Binding[T](binded: Function1[T, Unit]) extends Listener {
-  def process(event: Event) = event match {
+class Binding[T](binded: Function1[T, Unit], val acceptFilter: Event => Boolean) extends Listener {
+  def apply(event: Event) = event match {
     case changeEvent: ChangeEvent[_] => binded(changeEvent.newValue.asInstanceOf[T])
     case _ => // Ignore everything else
   }
