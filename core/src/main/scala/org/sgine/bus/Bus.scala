@@ -33,7 +33,7 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
     if (nodes.contains(node)) {
       null
     } else {
-      nodes = referenceType(node) :: nodes
+      nodes = (referenceType(node) :: nodes.reverse).reverse // TODO: determine a faster mechanism
       if (sort != null) {
         nodes = nodes.sortWith(referenceSort)
       }
@@ -70,7 +70,7 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
   private def process(message: Any, nodes: List[Reference[Node]], buffer: ListBuffer[Any]): Routing = {
     if (nodes.nonEmpty) {
       val ref = nodes.head
-      val node = ref()
+      val node = ref.getOrNull
       if (node != null) {
         node.receive(message) match {
           case Routing.Stop if (buffer == null) => Routing.Stop
@@ -119,8 +119,8 @@ class Bus(val priority: Priority = Priority.Normal) extends Node {
   def length = nodes.length
 
   private val referenceSort = (r1: Reference[Node], r2: Reference[Node]) => {
-    val n1 = r1()
-    val n2 = r2()
+    val n1 = r1.getOrNull
+    val n2 = r2.getOrNull
     if (n1 == null) {
       true
     } else if (n2 == null) {

@@ -4,7 +4,7 @@ import org.scalatest.WordSpec
 import org.scalatest.matchers.ShouldMatchers
 import org.sgine.concurrent.{Executor, AtomicInt, Time}
 import org.sgine.{Parent, Child}
-import org.sgine.bus.{RoutingResults, Routing, Bus, Node}
+import org.sgine.bus.{RoutingResults, Routing, Bus}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -34,6 +34,9 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       }
       "have no listeners" in {
         TestListenable.listeners.synchronous.isEmpty should equal(true)
+      }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
       }
     }
     "one asynchronous listener is added" should {
@@ -67,6 +70,9 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       "have no listeners" in {
         TestListenable.listeners.asynchronous.isEmpty should equal(true)
       }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
+      }
     }
     "one concurrent listener is added" should {
       var received = false
@@ -99,6 +105,9 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       "have no listeners" in {
         TestListenable.listeners.concurrent.isEmpty should equal(true)
       }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
+      }
     }
     "utilizing the 'once' convenience method" should {
       val received = new AtomicInt(0)
@@ -128,6 +137,9 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       "have no listeners attached" in {
         TestListenable.listeners.synchronous.isEmpty should equal(true)
       }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
+      }
     }
     "utilizing the 'waitFor' convenience method" should {
       val received = new AtomicInt(0)
@@ -156,12 +168,15 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       "have no listeners attached" in {
         TestListenable.listeners.synchronous.isEmpty should equal(true)
       }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
+      }
     }
     "listening for an event on an ancestor" should {
       var received = false
-      var node: Node = null
+      var listener: Listener = null
       "add an ancestor listener to the child" in {
-        node = TestChildListenable.listeners.ancestor[Event] {
+        listener = TestChildListenable.listeners.synchronous.ancestor {
           case event => received = true
         }
       }
@@ -177,15 +192,18 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       "have received an event on the child" in {
         received should equal(true)
       }
-      "remove the node" in {
-        Bus.remove(node)
+      "remove the listener" in {
+        TestChildListenable.listeners.synchronous -= listener
+      }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
       }
     }
     "listening for an event on an parent" should {
       var received = false
-      var node: Node = null
+      var listener: Listener = null
       "add an ancestor listener to the child" in {
-        node = TestChildListenable.listeners.parent[Event] {
+        listener = TestChildListenable.listeners.synchronous.parent {
           case event => received = true
         }
       }
@@ -201,15 +219,18 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       "have received an event on the child" in {
         received should equal(true)
       }
-      "remove the node" in {
-        Bus.remove(node)
+      "remove the listener" in {
+        TestChildListenable.listeners.synchronous -= listener
+      }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
       }
     }
     "listening for an event on a descendant" should {
       var received = false
-      var node: Node = null
+      var listener: Listener = null
       "add a descendant listener to the parent" in {
-        node = TestParentListenable.listeners.descendant[Event] {
+        listener = TestParentListenable.listeners.synchronous.descendant {
           case event => received = true
         }
       }
@@ -225,15 +246,18 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       "have received an event on the parent" in {
         received should equal(true)
       }
-      "remove the node" in {
-        Bus.remove(node)
+      "remove the listener" in {
+        TestChildListenable.listeners.synchronous -= listener
+      }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
       }
     }
     "listening for an event on a child" should {
       var received = false
-      var node: Node = null
+      var listener: Listener = null
       "add a descendant listener to the parent" in {
-        node = TestParentListenable.listeners.child[Event] {
+        listener = TestParentListenable.listeners.synchronous.child {
           case event => received = true
         }
       }
@@ -249,8 +273,11 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       "have received an event on the parent" in {
         received should equal(true)
       }
-      "remove the node" in {
-        Bus.remove(node)
+      "remove the listener" in {
+        TestChildListenable.listeners.synchronous -= listener
+      }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
       }
     }
     "listener stopping processing via Routing.Stop" should {
@@ -286,6 +313,9 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.synchronous -= listener1
         TestListenable.listeners.synchronous -= listener2
       }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
+      }
     }
     "listener propagating Routing.Results" should {
       var listener1: Listener = null
@@ -318,6 +348,9 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.synchronous -= listener1
         TestListenable.listeners.synchronous -= listener2
         TestListenable.listeners.synchronous -= listener3
+      }
+      "have no nodes on the Bus" in {
+        Bus.isEmpty should equal(true)
       }
     }
   }

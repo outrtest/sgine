@@ -14,6 +14,8 @@ trait Reference[T <: AnyRef] extends Function0[T] {
 
   def get: Option[T]
 
+  def getOrNull: T
+
   def isEnqueued: Boolean
 
   def isCleared = apply() == null
@@ -24,6 +26,6 @@ trait Reference[T <: AnyRef] extends Function0[T] {
   override def equals(obj: Any) = if (super.equals(obj)) {
     true
   } else {
-    apply() == obj
+    getOrNull == obj
   }
 }
