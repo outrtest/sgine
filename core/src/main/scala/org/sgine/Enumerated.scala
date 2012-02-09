@@ -23,6 +23,11 @@ trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
   def apply(index: Int) = values(index)
 
   /**
+   * Retrieve an enum by name.
+   */
+  def apply(name: String) = values.find(e => e.name == name)
+
+  /**
    * Collection of all the enums associated with this Enumerated.
    */
   object values extends NamingFilter[E](this) {
