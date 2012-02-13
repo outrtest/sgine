@@ -12,18 +12,36 @@ object SgineBuild extends Build {
       neodatisOdb,
       scalaTest
     ),
-    publishTo <<= (version) {
-      version: String =>
-        val nexus = "http://nexus.scala-tools.org/content/repositories/"
-        if (version.trim.endsWith("SNAPSHOT")) {
-          Some("snapshots" at nexus + "snapshots/")
-        }
-        else {
-          Some("releases" at nexus + "releases/")
-        }
+    publishTo <<= version {
+      (v: String) =>
+        val nexus = "https://oss.sonatype.org/"
+        if (v.trim.endsWith("SNAPSHOT"))
+          Some("snapshots" at nexus + "content/repositories/snapshots")
+        else
+          Some("releases" at nexus + "service/local/staging/deploy/maven2")
     },
-    credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
-    publishArtifact in Test := true,
+    publishArtifact in Test := false,
+    pomExtra := (
+      <url>http://sgine.org</url>
+        <licenses>
+          <license>
+            <name>BSD-style</name>
+            <url>http://www.opensource.org/licenses/bsd-license.php</url>
+            <distribution>repo</distribution>
+          </license>
+        </licenses>
+        <scm>
+          <developerConnection>scm:https://sgine.googlecode.com/hg</developerConnection>
+          <connection>scm:http://sgine.googlecode.com/hg</connection>
+          <url>http://code.google.com/p/sgine/source/browse/</url>
+        </scm>
+        <developers>
+          <developer>
+            <id>darkfrog</id>
+            <name>Matt Hicks</name>
+            <url>http://matthicks.com</url>
+          </developer>
+        </developers>),
     scalacOptions ++= Seq("-unchecked", "-deprecation")
   )
 
