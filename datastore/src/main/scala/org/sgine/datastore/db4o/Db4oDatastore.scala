@@ -1,43 +1,44 @@
 package org.sgine.datastore.db4o
 
-import org.sgine.datastore.Datastore
 
 import scala.collection.JavaConversions._
 import com.db4o.query.Predicate
-import com.db4o.{Db4oEmbedded, ObjectContainer}
+import com.db4o.ObjectContainer
+import org.sgine.datastore.{Identifiable, Datastore}
+import java.util.UUID
 
 /**
  * Db4oDatastore is a datastore implementation backed by db4o object database.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Db4oDatastore(db: ObjectContainer) extends Datastore {
-  def persist(obj: AnyRef) = db.store(obj)
+class Db4oDatastore[T <: Identifiable](db: ObjectContainer, val layers: Datastore[_]*)(implicit val manifest: Manifest[T]) extends Datastore[T] {
+  protected def persistInternal(obj: T) = db.store(obj)
 
-  def delete(obj: AnyRef) = db.delete(obj)
+  protected def deleteInternal(id: UUID) = byId(id) match {
+    case Some(obj) => {
+      db.delete(obj)
+      true
+    }
+    case None => false
+  }
 
   def commit() = db.commit()
 
   def rollback() = db.rollback()
 
-  def byExample[T](obj: T)(implicit manifest: Manifest[T]) = db.queryByExample[T](obj).toStream
+  def byExample(obj: T) = db.queryByExample[T](obj).toIterator
 
-  def all[T]()(implicit manifest: Manifest[T]) = {
+  def all = {
     val query = db.query()
     query.constrain(manifest.erasure)
-    query.execute[T]().toStream
+    query.execute[T]().toIterator
   }
 
-  def query[T](matcher: (T) => Boolean)(implicit manifest: Manifest[T]) = {
+  override def query(matcher: T => Boolean): Iterator[T] = {
     val predicate = new Predicate[T](manifest.erasure.asInstanceOf[Class[T]]) {
       def `match`(obj: T) = matcher(obj)
     }
-    db.query(predicate).toStream
+    db.query(predicate).toIterator
   }
-
-  def close() = db.close()
-}
-
-object Db4oDatastore extends Function1[String, Datastore] {
-  def apply(filename: String) = new Db4oDatastore(Db4oEmbedded.openFile(filename))
 }

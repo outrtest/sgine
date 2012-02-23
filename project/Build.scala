@@ -70,7 +70,8 @@ object SgineBuild extends Build {
   lazy val core = Project("core", file("core"), settings = createSettings("sgine-core"))
     .dependsOn(reflect)
   lazy val datastore = Project("datastore", file("datastore"), settings = createSettings("sgine-datastore"))
-    .settings(libraryDependencies += neodatisOdb)
+    .settings(libraryDependencies ++= Seq(neodatisOdb, casbah))
+    .dependsOn(core, reflect, event)
   lazy val event = Project("event", file("event"), settings = createSettings("sgine-event"))
     .dependsOn(concurrent, core)
   lazy val input = Project("input", file("input"), settings = createSettings("sgine-input"))
@@ -92,4 +93,5 @@ object Dependencies {
   val neodatisOdb = "org.neodatis.odb" % "neodatis-odb" % "1.9.30.689"
   val paranamer = "com.thoughtworks.paranamer" % "paranamer" % "2.4"
   val scalaTest = "org.scalatest" % "scalatest_2.9.1" % "1.6.1" % "test"
+  val casbah = "com.mongodb.casbah" %% "casbah" % "2.1.5-1"
 }
