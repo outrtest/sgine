@@ -13,6 +13,7 @@ import java.util.UUID
 import com.mongodb.casbah.MongoConnection
 import com.db4o.Db4oEmbedded
 import org.neodatis.odb.ODBFactory
+import org.sgine.Precision
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -25,7 +26,8 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
       val db1 = new Db4oDatastore[Test1](db)
       val db2 = new Db4oDatastore[Test2](db)
       val db3 = new Db4oDatastore[Test3](db)
-      test(db1, db2, db3) {
+      val db4 = new Db4oDatastore[Test4](db)
+      test(db1, db2, db3, db4) {
         db.close()
         file.delete()
       }
@@ -36,7 +38,8 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
       val db1 = new NeodatisDatastore[Test1](db)
       val db2 = new NeodatisDatastore[Test2](db)
       val db3 = new NeodatisDatastore[Test3](db)
-      test(db1, db2, db3, false) {
+      val db4 = new NeodatisDatastore[Test4](db)
+      test(db1, db2, db3, db4, false) {
         db.close()
         file.delete()
       }
@@ -48,14 +51,15 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
       val db1 = new MongoDBDatastore[Test1](db, "test1")
       val db2 = new MongoDBDatastore[Test2](db, "test2")
       val db3 = new MongoDBDatastore[Test3](db, "test3", db2)
-      test(db1, db2, db3, false) {
+      val db4 = new MongoDBDatastore[Test4](db, "test4")
+      test(db1, db2, db3, db4, false) {
         db.dropDatabase()
         connection.close()
       }
     }
   }
 
-  def test(db1: Datastore[Test1], db2: Datastore[Test2], db3: Datastore[Test3], transactions: Boolean = true)(finish: => Unit) = {
+  def test(db1: Datastore[Test1], db2: Datastore[Test2], db3: Datastore[Test3], db4: Datastore[Test4], transactions: Boolean = true)(finish: => Unit) = {
     val t1 = Test1("test1")
     "have no objects in the database" in {
       db1.all.size should equal(0)
@@ -134,6 +138,14 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
     "verify Test3 returns with Test2 query" in {
       db2.query((t: Test2) => true).size should equal(6)
     }
+    "persist a Test4 with an EnumEntry" in {
+      db4.persist(Test4("first", Precision.Milliseconds))
+    }
+    "query back one Test4 with an EnumEntry" in {
+      val t = db4.first()
+      t.name should equal("first")
+      t.precision should equal(Precision.Milliseconds)
+    }
     "close resources in" in {
       finish
     }
@@ -145,3 +157,5 @@ case class Test1(name: String, id: UUID = UUID.randomUUID()) extends Identifiabl
 case class Test2(name: String, id: UUID = UUID.randomUUID()) extends Identifiable
 
 case class Test3(override val name: String, override val id: UUID = UUID.randomUUID()) extends Test2(name, id)
+
+case class Test4(name: String, precision: Precision, id: UUID = UUID.randomUUID()) extends Identifiable

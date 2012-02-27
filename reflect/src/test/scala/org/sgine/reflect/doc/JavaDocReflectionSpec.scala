@@ -2,6 +2,8 @@ package org.sgine.reflect.doc
 
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.WordSpec
+import java.util.GregorianCalendar
+import org.sgine.reflect.{EnhancedMethod, EnhancedClass}
 
 /**
  *
@@ -15,8 +17,10 @@ class JavaDocReflectionSpec extends WordSpec with ShouldMatchers {
   val codePointCount = clazz.getMethod("codePointCount", classOf[Int], classOf[Int])
   val intern = clazz.getMethod("intern")
 
+  lazy val gregorianCalendar = EnhancedClass(classOf[GregorianCalendar])
+
   "JavaDocReflection" when {
-    "instantiated" should {
+    "instantiating on String" should {
       "not throw an exception" in {
         jdf = new JavaDocReflection(clazz.getName)
       }
@@ -97,6 +101,45 @@ class JavaDocReflectionSpec extends WordSpec with ShouldMatchers {
       }
       "link to the proper URL" in {
         md.url should be("http://download.oracle.com/javase/6/docs/api/java/lang/String.html#intern()")
+      }
+    }
+    "invoked on Calendar.get" should {
+      var method: EnhancedMethod = null
+      var docs: Documentation = null
+      "lookup the method" in {
+        method = gregorianCalendar.methodByName("get").getOrElse(null)
+        method should not equal (null)
+      }
+      "get the documentation" in {
+        docs = method.docs.get
+      }
+      "have one arg" in {
+        method.args.length should equal(1)
+      }
+      "have Int as the return type" in {
+        method.returnType.`type` should be(classOf[Int])
+      }
+      "link to the proper URL" in {
+        method.docsURL should be("http://download.oracle.com/javase/6/docs/api/java/util/Calendar.html#get(int)")
+      }
+    }
+    "invoked on GregorianCalendar.yearLength" should {
+      var method: EnhancedMethod = null
+      "lookup the method" in {
+        method = gregorianCalendar.methodByName("yearLength").getOrElse(null)
+        method should not equal (null)
+      }
+      "get the documentation" in {
+        method.docs should equal(None)
+      }
+      "have one arg" in {
+        method.args.length should equal(0)
+      }
+      "have Int as the return type" in {
+        method.returnType.`type` should equal(classOf[Int])
+      }
+      "link to the proper URL" in {
+        method.docsURL should equal(null)
       }
     }
   }

@@ -19,25 +19,35 @@ class JavaDocReflection(className: String) extends DocumentationReflection {
   private lazy val string = source.mkString
 
   def method(m: Method) = {
+    assert(m.getDeclaringClass.getName == className, "Attempting to load documentation for %s.%s on the wrong class: %s".format(m.getDeclaringClass.getName, m.getName, className))
     val nameLookup = generateNameLookup(m)
     val offset = string.indexOf("<A NAME=\"" + nameLookup + "\">")
-    val doc = between(string, offset, "<DD>", "<DD>").map(s => Documentation(cleanWhite(s)))
-    val args = if (m.getParameterTypes.length == 0) {
-      Nil
+    if (offset == -1) {
+      val args = m.getParameterTypes.zipWithIndex.map(t => DocumentedClass("arg%s".format(t._2), t._1, None)).toList
+      MethodDocumentation(args, DocumentedClass(null, m.getReturnType, None), null, None)
     } else {
-      between(string, offset, "<DT><B>Parameters:</B>", "<DT><B>") match {
-        case Some(s) => splitArgs(m.getParameterTypes.toList, s).reverse
-        case None => Nil
+      val doc = between(string, offset, "<DD>", "<DD>").map(s => Documentation(cleanWhite(s)))
+      val args = if (m.getParameterTypes.length == 0) {
+        Nil
+      } else {
+        between(string, offset, "<DT><B>Parameters:</B>", "<DT><B>") match {
+          case Some(s) => try {
+            splitArgs(m.getParameterTypes.toList, s).reverse
+          } catch {
+            case exc => throw new RuntimeException("Failed to split arguments for %s.%s with data: %s".format(className, m.getName, s), exc)
+          }
+          case None => Nil
+        }
       }
-    }
-    val retDocs = (between(string, offset, "<DT><B>Returns:</B><DD>", "<DT>") match {
-      case Some(docs) => Some(docs)
-      case None => between(string, offset, "<DT><B>Returns:</B><DD>", "</DL>")
-    }).map(s => Documentation(cleanWhite(s)))
-    val ret = DocumentedClass(null, m.getReturnType, retDocs)
+      val retDocs = (between(string, offset, "<DT><B>Returns:</B><DD>", "<DT>") match {
+        case Some(docs) => Some(docs)
+        case None => between(string, offset, "<DT><B>Returns:</B><DD>", "</DL>")
+      }).map(s => Documentation(cleanWhite(s)))
+      val ret = DocumentedClass(null, m.getReturnType, retDocs)
 
-    val link = url + "#" + nameLookup
-    MethodDocumentation(args, ret, link, doc)
+      val link = url + "#" + nameLookup
+      MethodDocumentation(args, ret, link, doc)
+    }
   }
 
   @tailrec

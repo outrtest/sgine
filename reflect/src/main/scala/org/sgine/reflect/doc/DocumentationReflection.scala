@@ -42,7 +42,7 @@ trait DocumentationReflection {
       nameLookup.append(JavaDocReflection.typeConversion(c))
     }
     nameLookup.append(')')
-    nameLookup.toString
+    nameLookup.toString()
   }
 
   protected def cleanWhite(s: String) = {

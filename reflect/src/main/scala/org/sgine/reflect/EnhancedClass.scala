@@ -25,7 +25,7 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
    */
   lazy val methods: List[EnhancedMethod] = {
     val javaMethods = javaClass.getMethods.toSet ++ javaClass.getDeclaredMethods.toSet
-    javaMethods.toList.map(m => new EnhancedMethod(this, m))
+    javaMethods.toList.map(m => new EnhancedMethod(this, EnhancedClass(m.getDeclaringClass), m))
   }
 
   /**

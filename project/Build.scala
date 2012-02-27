@@ -9,7 +9,6 @@ object SgineBuild extends Build {
     organization := "org.sgine",
     scalaVersion := "2.9.1",
     libraryDependencies ++= Seq(
-      neodatisOdb,
       scalaTest
     ),
     publishTo <<= version {
@@ -49,6 +48,7 @@ object SgineBuild extends Build {
 
   lazy val root = Project("root", file("."), settings = createSettings("sgine-root"))
     .settings(publishArtifact in Compile := false, publishArtifact in Test := false,
+    libraryDependencies ++= Seq(neodatisOdb, casbah),
     unmanagedSourceDirectories in Compile <<= baseDirectory apply {
       dir =>
         Seq(dir / "concurrent" / "src" / "main" / "scala",
