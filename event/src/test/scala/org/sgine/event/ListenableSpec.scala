@@ -15,6 +15,11 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
     "one synchronous listener is added" should {
       var received = false
       var listener: Listener = null
+      "wait for an empty Bus" in {
+        Time.waitFor(5.0) {
+          Bus.isEmpty
+        } should equal(true)
+      }
       "add a listener" in {
         listener = TestListenable.listeners.synchronous {
           case event => received = true

@@ -7,8 +7,8 @@ import java.lang.reflect.{Modifier, Method}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMethod: Method) {
-  private lazy val _docs = parent.getDocs.method(javaMethod)
+class EnhancedMethod protected[reflect](val parent: EnhancedClass, val declaring: EnhancedClass, val javaMethod: Method) {
+  private lazy val _docs = declaring.getDocs.method(javaMethod)
 
   /**
    * The method name.
@@ -83,6 +83,7 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val javaMetho
     if (args.length != this.args.length) {
       throw new IllegalArgumentException("%s arguments supplied, %s expected".format(args.length, this.args.length))
     }
+    javaMethod.setAccessible(true)
     javaMethod.invoke(instance, args.map(a => a.asInstanceOf[AnyRef]): _*).asInstanceOf[R]
   }
 
