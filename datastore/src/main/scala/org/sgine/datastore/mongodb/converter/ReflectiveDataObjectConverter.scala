@@ -3,15 +3,29 @@ package org.sgine.datastore.mongodb.converter
 import com.mongodb.casbah.commons.{MongoDBObjectBuilder, MongoDBObject}
 import annotation.tailrec
 import java.lang.reflect.Modifier
-import org.sgine.reflect.{EnhancedMethod, EnhancedClass}
+import org.sgine.reflect.{CaseValue, EnhancedMethod, EnhancedClass}
 
 class ReflectiveDataObjectConverter(erasure: EnhancedClass) extends DataObjectConverter {
   private lazy val methods = generateMethods().toList
 
   def toDBObject(obj: AnyRef) = {
     val builder = MongoDBObject.newBuilder
-    applyMethods(builder, obj, methods)
-    builder += "class" -> obj.getClass.getName
+    val clazz: EnhancedClass = obj.getClass
+    if (clazz.isCase) {
+      val cv2Builder = (cv: CaseValue) => {
+        val name = cv.name match {
+          case "id" => "_id"
+          case s => s
+        }
+        val value = DataObjectConverter.toDBValue(cv.apply(obj))
+        builder += name -> value
+      }
+      clazz.caseValues.foreach(cv2Builder)
+    } else {
+      throw new RuntimeException("Only case classes are supported: %s".format(clazz))
+    }
+    //    applyMethods(builder, obj, methods)
+    builder += "class" -> clazz.name
     builder.result()
   }
 
