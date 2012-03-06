@@ -8,7 +8,7 @@ import com.mongodb.casbah.commons.{MongoDBList, MongoDBListBuilder, MongoDBObjec
 import collection.mutable.ListBuffer
 
 import com.mongodb.casbah.commons.Implicits._
-import java.util.UUID
+import java.util.{Calendar, UUID}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -39,6 +39,12 @@ object DataObjectConverter {
         if (!map.contains(clazz)) {
           val converter = if (classOf[EnumEntry[_]].isAssignableFrom(clazz)) {
             EnumDataObjectConverter
+          } else if (classOf[Calendar].isAssignableFrom(clazz)) {
+            CalendarDataObjectConverter
+          } else if (classOf[Map[_, _]].isAssignableFrom(clazz)) {
+            MapDataObjectConverter
+          } else if (classOf[java.util.Map[_, _]].isAssignableFrom(clazz)) {
+            MapDataObjectConverter
           } else {
             new ReflectiveDataObjectConverter(clazz)
           }

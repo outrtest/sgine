@@ -65,6 +65,11 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   def isCompanion = instance != None
 
   /**
+   * True if this is a case class
+   */
+  def isCase = copyMethod != None
+
+  /**
    * The companion class to this class if it exists.
    */
   lazy val companion: Option[EnhancedClass] = try {

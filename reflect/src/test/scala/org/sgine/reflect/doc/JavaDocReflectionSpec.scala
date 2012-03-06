@@ -126,17 +126,39 @@ class JavaDocReflectionSpec extends WordSpec with ShouldMatchers {
     "invoked on GregorianCalendar.yearLength" should {
       var method: EnhancedMethod = null
       "lookup the method" in {
-        method = gregorianCalendar.methodByName("yearLength").getOrElse(null)
+        method = gregorianCalendar.method("yearLength").getOrElse(null)
+        method should not equal (null)
+      }
+      "get the documentation" in {
+        method.docs should equal(None)
+      }
+      "have no args" in {
+        method.args.length should equal(0)
+      }
+      "have Int as the return type" in {
+        method.returnType.`type` should equal(classOf[Int])
+      }
+      "link to the proper URL" in {
+        method.docsURL should equal(null)
+      }
+    }
+    "invoked on GregorianCalendar.setGregorianChange" should {
+      var method: EnhancedMethod = null
+      "lookup the method" in {
+        method = gregorianCalendar.methodByName("setGregorianChange").getOrElse(null)
         method should not equal (null)
       }
       "get the documentation" in {
         method.docs should equal(None)
       }
       "have one arg" in {
-        method.args.length should equal(0)
+        method.args.length should equal(1)
+      }
+      "have proper argument name" in {
+        method.args.head.name should equal("arg0")
       }
       "have Int as the return type" in {
-        method.returnType.`type` should equal(classOf[Int])
+        method.returnType.`type` should equal(classOf[Unit])
       }
       "link to the proper URL" in {
         method.docsURL should equal(null)
