@@ -6,7 +6,7 @@ import collection.mutable.ListBuffer
 
 /**
  * TextComponent is a base class for all Components needing to draw text to the screen.
- * 
+ *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class TextComponent extends ShapeComponent {
@@ -15,14 +15,6 @@ class TextComponent extends ShapeComponent {
   protected[ui] val _wrapWidth = Property[Double](Double.MaxValue)
 
   protected val generator = new TextGenerator(_font())
-
-  /**
-   * The measured size of the text.
-   */
-  object measured extends PropertyParent {
-    val width = Property[Double](0.0)
-    val height = Property[Double](0.0)
-  }
 
   onChange(_text, _font, _wrapWidth) {
     val t = _text()
