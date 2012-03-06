@@ -1,5 +1,6 @@
 package org.sgine.ui
 
+import align.{DepthAlignment, HorizontalAlignment, VerticalAlignment}
 import org.sgine.property.{PropertyParent, Property}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
@@ -25,28 +26,68 @@ trait Component extends PropertyParent with Listenable with Element with Updater
 
   private val updateAsync = new AsynchronousInvocation()
 
-  onUpdate(location.x, location.y, location.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z) {
+  onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z) {
     matrix.idt() // TODO: use parent matrix instead
-    matrix.translate(location.x().toFloat, location.y().toFloat, location.z().toFloat)
+    matrix.translate(location.actual.x().toFloat, location.actual.y().toFloat, location.actual.z().toFloat)
     matrix.rotate(rotation.x().toFloat, rotation.y().toFloat, rotation.z().toFloat, 1.0f)
     matrix.scale(scale.x().toFloat, scale.y().toFloat, scale.z().toFloat)
 
-//    println("T: %sx%sx%s, R: %sx%sx%s, S: %sx%sx%s".format(location.x(), location.y(), location.z(), rotation.x(), rotation.y(), rotation.z(), scale.x(), scale.y(), scale.z()))
+    //    println("T: %sx%sx%s, R: %sx%sx%s, S: %sx%sx%s".format(location.x(), location.y(), location.z(), rotation.x(), rotation.y(), rotation.z(), scale.x(), scale.y(), scale.z()))
   }
 
   /**
    * The visibility of this component.
+   *
+   * Defaults to true.
    */
   val visible = Property[Boolean](true)
   /**
    * True if mouse events should occur on this Component.
+   *
+   * Defaults to true.
    */
   val mouseEnabled = Property[Boolean](true)
 
   /**
    * The local location of this component in the UI.
    */
-  object location extends Property3D(0.0, 0.0, 0.0)
+  object location extends Property3D(0.0, 0.0, 0.0) {
+    val actual = new Property3D(0.0, 0.0, 0.0)
+
+    def updateActual() = {
+      alignment.horizontal() match {
+        case HorizontalAlignment.Center => actual.x := x()
+        case HorizontalAlignment.Left => actual.x := x() + (size.width() / 2.0)
+        case HorizontalAlignment.Right => actual.x := x() - (size.width() / 2.0)
+      }
+      alignment.vertical() match {
+        case VerticalAlignment.Middle => actual.y := y()
+        case VerticalAlignment.Top => actual.y := y() - (size.height() / 2.0)
+        case VerticalAlignment.Bottom => actual.y := y() + (size.height() / 2.0)
+      }
+      alignment.depth() match {
+        case DepthAlignment.Middle => actual.z := z()
+        case DepthAlignment.Front => actual.z := z() + (size.depth() / 2.0)
+        case DepthAlignment.Back => actual.z := z() - (size.depth() / 2.0)
+      }
+    }
+  }
+
+  /**
+   * The alignment of this component
+   */
+  object alignment extends PropertyParent {
+    val horizontal = Property[HorizontalAlignment](HorizontalAlignment.Center)
+    val vertical = Property[VerticalAlignment](VerticalAlignment.Middle)
+    val depth = Property[DepthAlignment](DepthAlignment.Middle)
+  }
+
+  /**
+   * If true the size is directly linked to the measured size.
+   *
+   * Defaults to true.
+   */
+  val autoSize = Property[Boolean](true)
 
   /**
    * The size of this component in the UI.
@@ -54,6 +95,37 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   object size extends PropertyParent {
     val width = Property[Double](0.0)
     val height = Property[Double](0.0)
+    val depth = Property[Double](0.0)
+  }
+
+  /**
+   * The measured size of the text.
+   */
+  object measured extends PropertyParent {
+    val width = Property[Double](0.0)
+    val height = Property[Double](0.0)
+    val depth = Property[Double](0.0)
+  }
+
+  // Update size when measured size is modified in the case of autoSize being true.
+  onChange(measured.width, measured.height, measured.depth) {
+    if (autoSize()) {
+      size.width := measured.width()
+      size.height := measured.height()
+      size.depth := measured.depth()
+    }
+  }
+
+  onChange(location.x,
+    location.y,
+    location.z,
+    alignment.horizontal,
+    alignment.vertical,
+    alignment.depth,
+    size.width,
+    size.height,
+    size.depth) {
+    location.updateActual()
   }
 
   /**
@@ -68,6 +140,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
 
   object updates {
     def +=(updatable: Updatable) = add(updatable)
+
     def -=(updatable: Updatable) = remove(updatable)
   }
 
