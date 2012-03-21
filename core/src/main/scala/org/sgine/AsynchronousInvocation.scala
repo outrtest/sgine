@@ -1,52 +1,36 @@
 package org.sgine
 
-import java.util.concurrent.locks.ReentrantLock
 import annotation.tailrec
+import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
  * AsynchronousInvocation defines an infrastructure to inject a function to be invoked at a later
  * time by another thread. This works similarly to Actors except these functions are invoked in a
  * specific thread at a specific state.
- * 
+ *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class AsynchronousInvocation {
-  private val lock = new ReentrantLock()
-  private var set = Set.empty[() => Unit]
+  private val set = new ConcurrentLinkedQueue[() => Unit]()
 
   /**
    * Invokes all waiting invocations within this method.
    */
-  def invokeNow() = {
-    if (!set.isEmpty) {
-      lock.lock()
-      try {
-        processSet(set)
-        set = Set.empty
-      } finally {
-        lock.unlock()
-      }
-    }
-  }
+  def invokeNow() = processSet()
 
   /**
    * Invokes the supplied function later when invokeNow() is called.
    */
-  def invokeLater(f: () => Unit) = {
-    lock.lock()
-    try {
-      set += f
-    } finally {
-      lock.unlock()
-    }
-  }
+  def invokeLater(f: () => Unit) = set.add(f)
 
   @tailrec
-  private def processSet(set: Set[() => Unit]): Unit = {
+  private def processSet(): Unit = {
     if (!set.isEmpty) {
-      val entry = set.head
-      entry()
-      processSet(set.tail)
+      set.poll() match {
+        case null => // Concurrency
+        case entry => entry()
+      }
+      processSet()
     }
   }
 }

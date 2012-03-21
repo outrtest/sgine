@@ -83,19 +83,18 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   }
 
   /**
-   * If true the size is directly linked to the measured size.
-   *
-   * Defaults to true.
-   */
-  val autoSize = Property[Boolean](true)
-
-  /**
    * The size of this component in the UI.
    */
   object size extends PropertyParent {
     val width = Property[Double](0.0)
     val height = Property[Double](0.0)
     val depth = Property[Double](0.0)
+    /**
+     * The algorithm used to update the actual size when the measured size changes.
+     *
+     * Defaults to SizeAlgorithm.measured
+     */
+    val algorithm = Property[SizeAlgorithm](SizeAlgorithm.measured)
   }
 
   /**
@@ -109,10 +108,9 @@ trait Component extends PropertyParent with Listenable with Element with Updater
 
   // Update size when measured size is modified in the case of autoSize being true.
   onChange(measured.width, measured.height, measured.depth) {
-    if (autoSize()) {
-      size.width := measured.width()
-      size.height := measured.height()
-      size.depth := measured.depth()
+    size.algorithm() match {
+      case null => // Do nothing
+      case algorithm => algorithm(this)
     }
   }
 
