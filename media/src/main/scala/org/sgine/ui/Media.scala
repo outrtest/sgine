@@ -1,167 +1,188 @@
 package org.sgine.ui
 
-import com.badlogic.gdx.graphics.{Pixmap, Texture}
 import uk.co.caprica.vlcj.player.direct.RenderCallback
 import com.sun.jna.Memory
-import uk.co.caprica.vlcj.player.events.VideoOutputEventListener
-import uk.co.caprica.vlcj.player.{VideoTrackInfo, MediaPlayer, MediaPlayerFactory}
-import org.sgine.property.{MutableProperty, Property}
 import java.io.File
+import uk.co.caprica.vlcj.player._
+import org.sgine.concurrent.Time
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.ConcurrentLinkedQueue
+import org.sgine.property.{PropertyParent, Property}
+import com.badlogic.gdx.graphics.{Texture, Pixmap}
+
+import scala.collection.JavaConversions._
 
 /**
- *
- *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Media extends RenderableComponent {
+class Media extends Image {
   val resource = Property[String]()
-  val loaded = Property[Boolean]()
-  val position = Property[Double] {
-    if (mediaPlayer != null) {
-      mediaPlayer.getPosition
-    }
-    else {
-      0.0
-    }
+  val buffers = Property[Int](2)
+
+  object information extends PropertyParent {
+    val length = Property[Long]()
   }
 
-  resource.onChange {
-    stop()
-    load()
+  private val mediaPlayer = Property[MediaPlayer]()
+  private val currentBuffer = new AtomicReference[Pixmap](null)
+  private val availableBuffers = new ConcurrentLinkedQueue[Pixmap]()
+  @volatile private var usedBuffers = 0
 
-    createMediaPlayer()
-    pixmap = new Pixmap(information.width(), information.height(), Pixmap.Format.RGBA8888)
-    texture = new Texture(pixmap)
-    //    mediaPlayer.playMedia(resource())
-    mediaPlayer.prepareMedia(resource())
-  }
-
-  @volatile private var texture: Texture = _
-  @volatile private var pixmap: Pixmap = _
-  @volatile private var bufferUpdated = false
-
-  def load() = Media.load(this)
-
-  def snapshot(file: File) = mediaPlayer.saveSnapshot(file)
-
-  def play() = if (mediaPlayer != null) {
-    mediaPlayer.play()
-  }
-
-  def setPosition(position: Double) = mediaPlayer.setPosition(position.toFloat)
-
-  def pause() = if (mediaPlayer != null) {
-    mediaPlayer.setPause(true)
-  }
-
-  def stop() = {
-    if (mediaPlayer != null) {
-      mediaPlayer.stop()
-    }
-
-    if (texture != null) {
-      texture.dispose()
-      texture = null
-    }
-    if (pixmap != null) {
-      pixmap.dispose()
-      pixmap = null
-    }
-  }
-
-  object information {
-    val width: Property[Int] = Property[Int]()
-    val height: Property[Int] = Property[Int]()
-    val length: Property[Long] = Property[Long]()
-  }
-
-  private var mediaPlayer: MediaPlayer = _
-
-  private def createMediaPlayer() = {
-    if (mediaPlayer != null) {
-      mediaPlayer.release()
-    }
-    mediaPlayer = Media.factory
-      .newDirectMediaPlayer("RGBA", information.width(), information.height(),
-      information.width() * 4, new RenderCallback {
-        def display(nativeBuffer: Memory) = {
-          if (pixmap != null) {
-            try {
-              val videoBuffer = (information.width() * information.height() * 4) + 32
-              val buffer = pixmap.getPixels
-              val b = nativeBuffer.getByteBuffer(0, videoBuffer)
-              buffer.clear()
-              b.position(b.limit() - 32) // Remove last 32 bytes
-              b.flip()
-              buffer.put(b)
-              buffer.flip()
-              bufferUpdated = true
-            }
-            catch {
-              case exc => {
-                exc.printStackTrace()
-                System.exit(1)
-              }
-            }
-          }
+  private object renderCallback extends MediaPlayerEventAdapter with RenderCallback {
+    def display(nativeBuffer: Memory) = availableBuffers.poll() match {
+      case null => // No buffer to render to
+      case pixmap: Pixmap => {
+        val pixels = pixmap.getPixels
+        val bufferLength = (size.width().toInt * size.height().toInt * 4) + 32
+        val buffer = nativeBuffer.getByteBuffer(0, bufferLength)
+        pixels.clear()
+        buffer.position(buffer.limit() - 32)
+        buffer.flip()
+        pixels.put(buffer)
+        pixels.flip()
+        currentBuffer.getAndSet(pixmap) match {
+          case null => // No previous set - nothing to do
+          case previous => availableBuffers.add(previous) // Unused update, recycle
         }
-      })
+      }
+    }
+
+    override def lengthChanged(mediaPlayer: MediaPlayer, newLength: Long) = {
+      information.length := newLength
+    }
   }
 
   resource.onChange {
-    pixmap = null
+    mediaPlayer() match {
+      case null => // Nothing to do
+      case mp => {
+        mp.stop()
+        mp.release()
+      }
+    }
+
+    // Determine size
+    val (width, height) = Media.determineSize(resource())
+    measured.width := width
+    measured.height := height
+
+    val w = size.width().toInt
+    val h = size.height().toInt
+    mediaPlayer := Media.factory.newDirectMediaPlayer("RGBA", w, h, w * 4, renderCallback)
+    val pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888)
+    texture := null
+    availableBuffers.add(pixmap)
+    mediaPlayer().prepareMedia(resource())
   }
 
-  protected def draw() = {
-    if (bufferUpdated) {
-      bufferUpdated = false
-      texture.draw(pixmap, 0, 0)
+  override protected def draw() = {
+    currentBuffer.getAndSet(null) match {
+      case null => // Nothing to update
+      case p: Pixmap => {
+        val width = size.width().toInt
+        val height = size.height().toInt
+        val pixmap = if (p.getWidth != width || p.getHeight != height) {
+          new Pixmap(width, height, Pixmap.Format.RGBA8888)
+        } else {
+          p
+        }
+        pixmap.getWidth
+
+        if (texture() == null) {
+          texture := new Texture(pixmap)
+        }
+
+        texture().draw(pixmap, 0, 0)
+
+        if (usedBuffers > buffers()) {
+          // Buffers reduced, don't recycle
+          usedBuffers -= 1
+          pixmap.dispose()
+        } else {
+          availableBuffers.add(pixmap)
+        }
+      }
     }
-    if (texture != null) {
-      // TODO: fix to work with ArrayBuffer
-      //      batch.draw(texture, location.x().toFloat, location.y().toFloat)
+
+    if (usedBuffers < buffers()) {
+      availableBuffers.add(new Pixmap(size.width().toInt, size.height().toInt, Pixmap.Format.RGBA8888))
+      usedBuffers += 1
     }
+
+    super.draw()
+  }
+
+  def snapshot(file: File) = mediaPlayer().saveSnapshot(file)
+
+  def play() = mediaPlayer() match {
+    case null => // Ignore
+    case mp => mp.play()
+  }
+
+  def pause() = mediaPlayer() match {
+    case null => // Ignore
+    case mp => mp.pause()
+  }
+
+  def stop() = mediaPlayer() match {
+    case null => // Ignore
+    case mp => mp.stop()
   }
 
   override def destroy() = {
-    mediaPlayer.release()
+    mediaPlayer().release()
 
     super.destroy()
   }
 }
 
 object Media {
-  private var media: Media = _
-
   private val factory = new MediaPlayerFactory("--no-video-title-show")
-  private val mediaPlayer = Media.factory.newDirectMediaPlayer(1, 1, new RenderCallback {
-    def display(nativeBuffer: Memory) = {
-    }
-  })
-  mediaPlayer.mute()
-  mediaPlayer.addVideoOutputEventListener(new VideoOutputEventListener {
-    def videoOutputAvailable(mediaPlayer: MediaPlayer, videoOutput: Boolean) = {
-      val trackInfo = mediaPlayer.getTrackInfo.get(0).asInstanceOf[VideoTrackInfo]
-      media.information.width.asInstanceOf[MutableProperty[Int]] := trackInfo.width()
-      media.information.height.asInstanceOf[MutableProperty[Int]] := trackInfo.height()
-      media.information.length.asInstanceOf[MutableProperty[Long]] := mediaPlayer.getLength
-      media.loaded := true
-    }
-  })
 
-  private def load(media: Media) = synchronized {
-    this.media = media
-
-    media.loaded := false
-    mediaPlayer.prepareMedia(media.resource())
+  def determineSize(resource: String) = {
+    var size: (Int, Int) = null
+    val mediaPlayer = factory.newDirectMediaPlayer(1, 1, new RenderCallback {
+      def display(nativeBuffer: Memory) = {}
+    })
+    mediaPlayer.mute()
+    mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter {
+      override def mediaMetaChanged(mediaPlayer: MediaPlayer, metaType: Int) = {
+        mediaPlayer.getTrackInfo.find(info => info.isInstanceOf[VideoTrackInfo]) match {
+          case None => // Ignore
+          case Some(videoTrack: VideoTrackInfo) => {
+            val width = videoTrack.width()
+            val height = videoTrack.height()
+            size = width -> height
+          }
+        }
+      }
+    })
+    mediaPlayer.prepareMedia(resource)
     mediaPlayer.parseMedia()
-    mediaPlayer.start()
-    // TODO: replace below with asynchronous listener
-    while (!media.loaded()) {
-      Thread.sleep(1)
+    Time.waitFor(10.0) {
+      size != null
     }
     mediaPlayer.stop()
+    mediaPlayer.release()
+    size
+  }
 
-    this.media = null
+  def main(args: Array[String]): Unit = {
+    //    val file = new File("test.avi")
+    //    val t1 = Time.elapsed {
+    //      println(determineSize(file.getAbsolutePath))
+    //    }
+    //    val t2 = Time.elapsed {
+    //      println(determineSize("test.mp4"))
+    //    }
+    //    println("Took: %s, Took: %s".format(t1, t2))
+    //    determineInformation("test.avi")
   }
 }
+
+case class TrackInformation(id: Int,
+                            width: Int,
+                            height: Int,
+                            codec: Int,
+                            profile: Int,
+                            level: Int)

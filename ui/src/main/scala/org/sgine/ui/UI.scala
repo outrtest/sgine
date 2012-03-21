@@ -79,23 +79,24 @@ class UI extends Container with DelayedInit {
   }
 
   private def pickComponents(evt: MouseEvent, components: Iterable[Component]): Unit = {
-    val x = evt.x
-    val y = abs(evt.y - height)
-    currentRay = camera().getPickRay(x.toFloat, y.toFloat)
-    val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
-    if (hit != null) {
-      hit.fire(evt.duplicate())
-    }
-    if (evt.isInstanceOf[MouseMoveEvent] && Component.mouse() != hit) {
-      val old = Component.mouse()
-      Component.mouse := hit
-      if (old != null) {
-        old.fire(MouseOutEvent(evt.x, evt.y, evt.deltaX, evt.deltaY))
-      }
-      if (hit != null) {
-        hit.fire(MouseOverEvent(evt.x, evt.y, evt.deltaX, evt.deltaY))
-      }
-    }
+    // TODO: re-enable once we figure out the recursive problem
+    //    val x = evt.x
+    //    val y = abs(evt.y - height)
+    //    currentRay = camera().getPickRay(x.toFloat, y.toFloat)
+    //    val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
+    //    if (hit != null) {
+    //      hit.fire(evt.duplicate())
+    //    }
+    //    if (evt.isInstanceOf[MouseMoveEvent] && Component.mouse() != hit) {
+    //      val old = Component.mouse()
+    //      Component.mouse := hit
+    //      if (old != null) {
+    //        old.fire(MouseOutEvent(evt.x, evt.y, evt.deltaX, evt.deltaY))
+    //      }
+    //      if (hit != null) {
+    //        hit.fire(MouseOverEvent(evt.x, evt.y, evt.deltaX, evt.deltaY))
+    //      }
+    //    }
   }
 
   def delayedInit(x: => Unit) = {

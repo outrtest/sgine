@@ -3,21 +3,15 @@ package org.sgine.ui
 import com.badlogic.gdx.graphics.Texture
 import org.sgine.property._
 import org.sgine._
-import render.{TextureCoordinates, Vertex, ArrayBuffer}
+import render.{TextureCoordinates, Vertex}
 
 /**
  * Image represents a visual rectangular texture region.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Image extends RenderableComponent {
-  // TODO: extend ShapeComponent instead of RenderableComponent
-  private val arrayBuffer = new ArrayBuffer(false)
-
-  /**
-   * The texture to be used for this Image.
-   */
-  val texture = Property[Texture]()
+class Image extends ShapeComponent {
+  def texture = _texture
 
   /**
    * This defines the region of the texture to be displayed. This is reset to the bounds of the
@@ -31,12 +25,15 @@ class Image extends RenderableComponent {
   }
 
   texture.onChange {
-    size.width := texture().getWidth
-    size.height := texture().getHeight
-    textureRegion.x := 0
-    textureRegion.y := 0
-    textureRegion.width := texture().getWidth
-    textureRegion.height := texture().getHeight
+    val texture = this.texture()
+    if (texture != null) {
+      measured.width := texture.getWidth
+      measured.height := texture.getHeight
+      textureRegion.x := 0
+      textureRegion.y := 0
+      textureRegion.width := texture.getWidth
+      textureRegion.height := texture.getHeight
+    }
   }
 
   onUpdate(texture,
@@ -46,15 +43,18 @@ class Image extends RenderableComponent {
     textureRegion.height,
     size.width,
     size.height) {
-    updateArrayBuffer()
-  }
-
-  private def updateArrayBuffer() = {
-    val vertices = Vertex.rect(size.width(), size.height())
-    val textureCoordinates = TextureCoordinates
-        .rectCoords(textureRegion.x(), textureRegion.y(), textureRegion.width(),
-      textureRegion.height(), texture.getWidth, texture.getHeight)
-    arrayBuffer.data = vertices ::: textureCoordinates
+    val texture = this.texture()
+    if (texture != null) {
+      _textureCoordinates := TextureCoordinates.rectCoords(
+        textureRegion.x(),
+        textureRegion.y(),
+        textureRegion.width(),
+        textureRegion.height(),
+        texture.getWidth,
+        texture.getHeight
+      )
+      _vertices := Vertex.rect(size.width(), size.height())
+    }
   }
 
   /**
@@ -62,16 +62,6 @@ class Image extends RenderableComponent {
    */
   def load(resource: Resource) = {
     texture := new Texture(resource)
-  }
-
-  protected def draw() = {
-    val texture = this.texture()
-    if (texture != null) {
-      texture.bind()
-      arrayBuffer.bind()
-      arrayBuffer.bindTextureCoordinates(18)
-      arrayBuffer.drawVertices(0, 9)
-    }
   }
 }
 
