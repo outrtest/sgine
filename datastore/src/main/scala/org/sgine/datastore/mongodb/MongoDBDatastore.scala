@@ -26,6 +26,8 @@ class MongoDBDatastore[T <: Identifiable](db: MongoDB, collectionName: String, v
 
   protected def deleteInternal(id: UUID) = collection.findAndRemove(MongoDBObject("_id" -> id)) != None
 
+  override def clear() = collection.dropCollection()
+
   def commit() {} // TODO: support
 
   def rollback() {} // TODO: support

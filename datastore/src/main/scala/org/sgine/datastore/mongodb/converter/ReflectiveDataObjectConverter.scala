@@ -13,12 +13,14 @@ class ReflectiveDataObjectConverter(erasure: EnhancedClass) extends DataObjectCo
     val clazz: EnhancedClass = obj.getClass
     if (clazz.isCase) {
       val cv2Builder = (cv: CaseValue) => {
-        val name = cv.name match {
-          case "id" => "_id"
-          case s => s
+        if (!cv.valueType.isTransient) {
+          val name = cv.name match {
+            case "id" => "_id"
+            case s => s
+          }
+          val value = DataObjectConverter.toDBValue(cv.apply(obj))
+          builder += name -> value
         }
-        val value = DataObjectConverter.toDBValue(cv.apply(obj))
-        builder += name -> value
       }
       clazz.caseValues.foreach(cv2Builder)
     } else {
