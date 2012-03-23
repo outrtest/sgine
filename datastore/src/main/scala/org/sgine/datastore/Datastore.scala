@@ -68,6 +68,8 @@ trait Datastore[T <: Identifiable] extends Listenable {
     false
   }
 
+  def clear() = all.foreach(obj => delete(obj))
+
   def commit(): Unit
 
   def rollback(): Unit

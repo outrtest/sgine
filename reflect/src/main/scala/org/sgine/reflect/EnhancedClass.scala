@@ -2,7 +2,7 @@ package org.sgine.reflect
 
 import doc.DocumentationReflection
 import ref.SoftReference
-import java.lang.reflect.Method
+import java.lang.reflect.{Modifier, Method}
 
 /**
  * Wraps a Class to provide more powerful functionality.
@@ -68,6 +68,11 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
    * True if this is a case class
    */
   def isCase = copyMethod != None
+
+  /**
+   * True if this is a transient class
+   */
+  def isTransient = Modifier.isTransient(javaClass.getModifiers)
 
   /**
    * The companion class to this class if it exists.
