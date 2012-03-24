@@ -36,6 +36,7 @@ package org.sgine.concurrent
 import scala.math._
 import org.sgine.{Enumerated, EnumEntry, Precision}
 import java.util.Calendar
+import java.text.SimpleDateFormat
 
 /**
  * Time represents convenience values and utilities
@@ -44,18 +45,36 @@ import java.util.Calendar
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-sealed case class Time(value: Double, formatter: Calendar => String) extends EnumEntry[Time] {
-  def this(value: Double, format: String) = this(value, calendar => format.format(calendar))
+sealed case class Time(value: Double, pattern: String) extends EnumEntry[Time] {
+  private lazy val dateFormat = new SimpleDateFormat(pattern)
+
+  def format(calendar: Calendar) = dateFormat.format(calendar.getTime)
+
+  /**
+   * Parses the Calendar and then returns a Long shortened to the precision of this format in milliseconds.
+   */
+  def toLong(calendar: Calendar) = {
+    val formatted = format(calendar)
+    parse(formatted)
+  }
+
+  def parse(source: String) = dateFormat.parse(source).getTime
+
+  def parseCalendar(source: String, calendar: Calendar = Calendar.getInstance()) = {
+    val time = parse(source)
+    calendar.setTimeInMillis(time)
+    calendar
+  }
 }
 
 object Time extends Enumerated[Time] {
-  val Second = new Time(1.0, "%1$tD %1$tT")
-  val Minute = new Time(60.0 * Second.value, "%1$tD %1$tR")
-  val Hour = new Time(60.0 * Minute.value, "%1$tD %1$tH")
-  val Day = new Time(24.0 * Hour.value, "%1$tD")
-  val Week = new Time(7.0 * Day.value, calendar => "%1$tY %2$s".format(calendar, calendar.get(Calendar.WEEK_OF_YEAR)))
-  val Month = new Time(30.0 * Day.value, "%1$tB %1$tY")
-  val Year = new Time(12.0 * Month.value, "%1$tY")
+  val Second = new Time(1.0, "MM/dd/yyyy hh:mm:ss a")
+  val Minute = new Time(60.0 * Second.value, "MM/dd/yyyy hh:mm a")
+  val Hour = new Time(60.0 * Minute.value, "MM/dd/yyyy hh a")
+  val Day = new Time(24.0 * Hour.value, "MM/dd/yyyy")
+  val Week = new Time(7.0 * Day.value, "yyyy w")
+  val Month = new Time(30.0 * Day.value, "MM yyyy")
+  val Year = new Time(12.0 * Month.value, "yyyy")
 
   /**
    * Invokes the wrapped function and returns the time in seconds it took to complete as a Double.
