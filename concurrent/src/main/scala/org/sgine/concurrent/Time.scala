@@ -32,9 +32,10 @@
 
 package org.sgine.concurrent
 
-import org.sgine.Precision
 
 import scala.math._
+import org.sgine.{Enumerated, EnumEntry, Precision}
+import java.util.Calendar
 
 /**
  * Time represents convenience values and utilities
@@ -43,14 +44,18 @@ import scala.math._
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object Time {
-  val Second = 1.0
-  val Minute = 60.0 * Second
-  val Hour = 60.0 * Minute
-  val Day = 24.0 * Hour
-  val Week = 7.0 * Day
-  val Month = 30.0 * Day
-  val Year = 12.0 * Month
+sealed case class Time(value: Double, formatter: Calendar => String) extends EnumEntry[Time] {
+  def this(value: Double, format: String) = this(value, calendar => format.format(calendar))
+}
+
+object Time extends Enumerated[Time] {
+  val Second = new Time(1.0, "%1$tD %1$tT")
+  val Minute = new Time(60.0 * Second.value, "%1$tD %1$tR")
+  val Hour = new Time(60.0 * Minute.value, "%1$tD %1$tH")
+  val Day = new Time(24.0 * Hour.value, "%1$tD")
+  val Week = new Time(7.0 * Day.value, calendar => "%1$tY %2$s".format(calendar, calendar.get(Calendar.WEEK_OF_YEAR)))
+  val Month = new Time(30.0 * Day.value, "%1$tB %1$tY")
+  val Year = new Time(12.0 * Month.value, "%1$tY")
 
   /**
    * Invokes the wrapped function and returns the time in seconds it took to complete as a Double.
@@ -73,26 +78,26 @@ object Time {
     val format = "%,.2f"
     var value: Double = time
     var ending = "ms"
-    if (time > Year) {
-      value = time / Year
+    if (time > Year.value) {
+      value = time / Year.value
       ending = " years"
-    } else if (time > Month) {
-      value = time / Month
+    } else if (time > Month.value) {
+      value = time / Month.value
       ending = " months"
-    } else if (time > Week) {
-      value = time / Week
+    } else if (time > Week.value) {
+      value = time / Week.value
       ending = " weeks"
-    } else if (time > Day) {
-      value = time / Day
+    } else if (time > Day.value) {
+      value = time / Day.value
       ending = " days"
-    } else if (time > Hour) {
-      value = time / Hour
+    } else if (time > Hour.value) {
+      value = time / Hour.value
       ending = " hours"
-    } else if (time > Minute) {
-      value = time / Minute
+    } else if (time > Minute.value) {
+      value = time / Minute.value
       ending = " minutes"
-    } else if (time > Second) {
-      value = time / Second
+    } else if (time > Second.value) {
+      value = time / Second.value
       ending = " seconds"
     }
 
@@ -108,33 +113,33 @@ object Time {
     var elapsed: Double = time
     var years, months, weeks, days, hours, minutes, seconds = 0
 
-    while (elapsed >= Year) {
+    while (elapsed >= Year.value) {
       years += 1
-      elapsed -= Year
+      elapsed -= Year.value
     }
-    while (elapsed >= Month) {
+    while (elapsed >= Month.value) {
       months += 1
-      elapsed -= Month
+      elapsed -= Month.value
     }
-    while (elapsed >= Week) {
+    while (elapsed >= Week.value) {
       weeks += 1
-      elapsed -= Week
+      elapsed -= Week.value
     }
-    while (elapsed >= Day) {
+    while (elapsed >= Day.value) {
       days += 1
-      elapsed -= Day
+      elapsed -= Day.value
     }
-    while (elapsed >= Hour) {
+    while (elapsed >= Hour.value) {
       hours += 1
-      elapsed -= Hour
+      elapsed -= Hour.value
     }
-    while (elapsed >= Minute) {
+    while (elapsed >= Minute.value) {
       minutes += 1
-      elapsed -= Minute
+      elapsed -= Minute.value
     }
-    while (elapsed >= Second) {
+    while (elapsed >= Second.value) {
       seconds += 1
-      elapsed -= Second
+      elapsed -= Second.value
     }
 
     if (years > 0) b.append(years + "y, ")
