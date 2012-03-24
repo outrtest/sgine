@@ -54,15 +54,15 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   def methodByName(name: String) = methods.find(m => m.name == name)
 
   /**
-   * The instance of this class if it exists. This is particularly useful on companion classes to get the singleton
-   * instance they are stored within.
+   * Singleton instance on the associated companion object. This can be called on the object or class to get the
+   * instance for the companion object.
    */
-  lazy val instance = javaClass.getFields.find(f => f.getName == "MODULE$").map(f => f.get(null))
+  lazy val instance = companion.get.javaClass.getFields.find(f => f.getName == "MODULE$").map(f => f.get(null))
 
   /**
    * True if this is a companion object.
    */
-  def isCompanion = instance != None
+  def isCompanion = javaClass.getName.endsWith("$")
 
   /**
    * True if this is a case class
@@ -75,10 +75,14 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
   def isTransient = Modifier.isTransient(javaClass.getModifiers)
 
   /**
-   * The companion class to this class if it exists.
+   * The companion class to this class if it exists. If this is the companion class it will return itself.
    */
   lazy val companion: Option[EnhancedClass] = try {
-    Some(Class.forName(javaClass.getName + "$"))
+    if (isCompanion) {
+      Some(this)
+    } else {
+      Some(Class.forName(javaClass.getName + "$"))
+    }
   } catch {
     case exc: ClassNotFoundException => None
   }
