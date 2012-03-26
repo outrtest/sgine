@@ -108,9 +108,19 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
    *
    * Note that an empty arguments list may be supplied to create a clone.
    */
-  def copy[T](instance: AnyRef, args: Map[String, Any]) = {
-    val cm = copyMethod.getOrElse(throw new NullPointerException("No copy method for this class"))
-    cm[T](instance, args)
+  def copy[T](instance: T, args: Map[String, Any]) = {
+    if (copyMethod == None && args.isEmpty) {
+      companion match {
+        case Some(clazz) => clazz.method("apply") match {
+          case Some(method) => method[T](clazz.instance.get)
+          case None => throw new NullPointerException("No copy method for this class and unable to find empty apply method on companion.")
+        }
+        case None => throw new NullPointerException("No copy method for this class and unable to find companion.")
+      }
+    } else {
+      val cm = copyMethod.getOrElse(throw new NullPointerException("No copy method for this class"))
+      cm[T](instance.asInstanceOf[AnyRef], args)
+    }
   }
 
   /**

@@ -93,7 +93,7 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val declaring
    * The arguments list does not have to have the same number of arguments as the method if the method provides default
    * values for the unsupplied argument names.
    */
-  def apply[R](instance: AnyRef, args: Map[String, Any]): R = {
+  def apply[R](instance: AnyRef, args: Map[String, Any] = Map.empty): R = {
     var map = Map.empty[String, Any]
     this.args.foreach(arg => if (arg.hasDefault) map += arg.name -> arg.default[AnyRef](instance).get) // Assign defaults
     map ++= args
