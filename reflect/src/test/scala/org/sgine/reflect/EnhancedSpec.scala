@@ -116,6 +116,13 @@ class EnhancedSpec extends WordSpec with ShouldMatchers {
         cc4.name should equal("Test")
         cc4.age should equal(5)
       }
+      "detect transient CaseValues" in {
+        val clazz: EnhancedClass = classOf[TestCaseClass4]
+        val nameValue = clazz.caseValue("name").get
+        val ageValue = clazz.caseValue("age").get
+        nameValue.isTransient should equal(false)
+        ageValue.isTransient should equal(true)
+      }
     }
   }
 }
@@ -135,3 +142,5 @@ case class TestCaseClass(firstName: String, lastName: String, var age: Int) {
 case class TestCaseClass2(name: String, age: Int = 5)
 
 case class TestCaseClass3()
+
+case class TestCaseClass4(name: String, @transient age: Int)
