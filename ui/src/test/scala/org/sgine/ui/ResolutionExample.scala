@@ -4,7 +4,7 @@ package org.sgine.ui
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object PerspectiveExample extends UI {
+object ResolutionExample extends UI {
   perspective()
 
   val image640 = Image("640.jpg")
