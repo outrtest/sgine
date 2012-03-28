@@ -8,6 +8,8 @@ import org.sgine.scene.Element
 import org.sgine.event.{ChangeEvent, Listenable}
 import org.sgine.{Updater, Updatable, AsynchronousInvocation}
 
+import scala.math._
+
 /**
  * Component is the base class for all visual elements in UI.
  *
@@ -23,17 +25,9 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * World matrix for this component.
    */
   protected[ui] val matrix = new Matrix4()
+  protected val multipliedAlpha = Property[Float](1.0f)
 
   private val updateAsync = new AsynchronousInvocation()
-
-  onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z) {
-    matrix.idt() // TODO: use parent matrix instead
-    matrix.translate(location.actual.x().toFloat, location.actual.y().toFloat, location.actual.z().toFloat)
-    matrix.rotate(rotation.x().toFloat, rotation.y().toFloat, rotation.z().toFloat, 1.0f)
-    matrix.scale(scale.x().toFloat, scale.y().toFloat, scale.z().toFloat)
-
-    //    println("T: %sx%sx%s, R: %sx%sx%s, S: %sx%sx%s".format(location.x(), location.y(), location.z(), rotation.x(), rotation.y(), rotation.z(), scale.x(), scale.y(), scale.z()))
-  }
 
   /**
    * The visibility of this component.
@@ -42,11 +36,23 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    */
   val visible = Property[Boolean](true)
   /**
+   * The transparency value assigned to the component.
+   *
+   * Defaults to 1.0 (opaque)
+   */
+  val alpha = Property[Double](1.0)
+  /**
    * True if mouse events should occur on this Component.
    *
    * Defaults to true.
    */
   val mouseEnabled = Property[Boolean](true)
+  /**
+   * If true the translation will be independent from the parent matrix.
+   *
+   * Defaults to false.
+   */
+  val localizeMatrix = Property[Boolean](false)
 
   /**
    * The local location of this component in the UI.
@@ -106,6 +112,54 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     val depth = Property[Double](0.0)
   }
 
+  /**
+   * The scale of this component in the UI.
+   */
+  object scale extends Property3D(1.0, 1.0, 1.0)
+
+  /**
+   * The rotation of this component in the UI.
+   */
+  object rotation extends Property3D(0.0, 0.0, 0.0)
+
+  object updates {
+    def +=(updatable: Updatable) = add(updatable)
+
+    def -=(updatable: Updatable) = remove(updatable)
+  }
+
+  def resolution(width: Double, height: Double) = {
+    val w = 0.8275 / width
+    val h = 0.8275 / height
+    localizeMatrix := true
+    scale.set(min(w, h))
+  }
+
+  onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z, localizeMatrix) {
+    updateMatrix()
+  }
+
+  protected[ui] def updateMatrix(): Unit = {
+    parent() match {
+      case null => matrix.idt()
+      case p => localizeMatrix() match {
+        case true => matrix.idt()
+        case false => matrix.set(p.matrix)
+      }
+    }
+    matrix.translate(location.actual.x().toFloat, location.actual.y().toFloat, location.actual.z().toFloat)
+    matrix.rotate(rotation.x().toFloat, rotation.y().toFloat, rotation.z().toFloat, 1.0f)
+    matrix.scale(scale.x().toFloat, scale.y().toFloat, scale.z().toFloat)
+  }
+
+  protected[ui] def updateAlpha(): Unit = {
+    val parentAlpha = parent() match {
+      case null => 1.0
+      case p => p.alpha()
+    }
+    multipliedAlpha := (alpha() * parentAlpha).toFloat
+  }
+
   // Update size when measured size is modified in the case of autoSize being true.
   onChange(measured.width, measured.height, measured.depth) {
     size.algorithm() match {
@@ -126,20 +180,8 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     location.updateActual()
   }
 
-  /**
-   * The scale of this component in the UI.
-   */
-  object scale extends Property3D(1.0, 1.0, 1.0)
-
-  /**
-   * The rotation of this component in the UI.
-   */
-  object rotation extends Property3D(0.0, 0.0, 0.0)
-
-  object updates {
-    def +=(updatable: Updatable) = add(updatable)
-
-    def -=(updatable: Updatable) = remove(updatable)
+  onChange(alpha) {
+    updateAlpha()
   }
 
   /**
