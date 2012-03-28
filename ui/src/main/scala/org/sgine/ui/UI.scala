@@ -125,6 +125,8 @@ class UI extends Container with DelayedInit {
     val c = new PerspectiveCamera(fov.toFloat, 2.0f * aspectRatio, 2.0f)
     c.near = nearPlane.toFloat
     c.far = farPlane.toFloat
+    c.translate(0.0f, 0.0f, 1.0f)
+    c.update()
     camera := c
   }
 

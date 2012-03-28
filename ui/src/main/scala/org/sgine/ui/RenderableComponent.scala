@@ -19,6 +19,7 @@ trait RenderableComponent extends Component {
   final def render() = {
     UI().camera()(Gdx.gl11)
     Gdx.gl11.glMultMatrixf(matrix.getValues, 0)
+    Gdx.gl11.glColor4f(1.0f, 1.0f, 1.0f, multipliedAlpha())
     renderAsync.invokeNow()
     draw()
   }
