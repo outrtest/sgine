@@ -4,8 +4,6 @@ import org.sgine.property.MutableProperty
 import org.sgine.workflow.{Asynchronous, WorkflowItem, Workflow}
 
 /**
- *
- *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object AnimationExample extends UI {
