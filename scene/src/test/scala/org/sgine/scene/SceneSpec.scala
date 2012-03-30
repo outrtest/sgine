@@ -35,6 +35,7 @@ package org.sgine.scene
 import event.{ChildRemovedEvent, ChildAddedEvent}
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.WordSpec
+import org.sgine.Child
 
 /**
  *
@@ -277,6 +278,42 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         containerView5.refreshFilter()
         containerView5.size should be(3)
       }
+    }
+  }
+
+  "Scene" should {
+    class SceneChild(name: String, val parent: () => MutableContainer[_]) extends Child[MutableContainer[_]] {
+      override def toString = "SceneChild[%s]".format(name)
+    }
+    val c = new MutableContainer[MutableContainer[SceneChild]]
+    val c1 = new MutableContainer[SceneChild]
+    val c2 = new MutableContainer[SceneChild]
+    val c3 = new MutableContainer[SceneChild]
+    val c1a = new SceneChild("c1a", () => c1)
+    val c1b = new SceneChild("c1b", () => c1)
+    val c1c = new SceneChild("c1c", () => c1)
+    val c2a = new SceneChild("c2a", () => c2)
+    val c3a = new SceneChild("c3a", () => c3)
+    "build correctly" in {
+      c.contents += c1
+      c.contents += c2
+      c.contents += c3
+      c1.contents += c1a
+      c1.contents += c1b
+      c1.contents += c1c
+      c2.contents += c2a
+      c3.contents += c3a
+    }
+    "check next" in {
+      c.next() should equal(c1)
+      c1.next() should equal(c1a)
+      c1a.next() should equal(c1b)
+      c1b.next() should equal(c1c)
+      c1c.next() should equal(c2)
+      c2.next() should equal(c2a)
+      c2a.next() should equal(c3)
+      c3.next() should equal(c3a)
+      c3a.next() should equal(null)
     }
   }
 }

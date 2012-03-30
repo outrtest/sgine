@@ -8,6 +8,22 @@ package org.sgine
 trait Parent[C] {
   def children: Seq[C]
 
+  def after[T](child: C): Any = {
+    val index = children.indexOf(child)
+    val size = children.size
+    if (index >= size - 1) {
+      this match {
+        case child: Child[_] => child.parent() match {
+          case null => null
+          case parent: Parent[Any] => parent.after[T](this)
+        }
+        case _ => null
+      }
+    } else {
+      children(index + 1).asInstanceOf[T]
+    }
+  }
+
   /**
    * Returns true if the value passed is in the descendant hierarchy for this Parent.
    */

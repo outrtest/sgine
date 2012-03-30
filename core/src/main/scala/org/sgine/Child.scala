@@ -8,6 +8,16 @@ package org.sgine
 trait Child[P] {
   def parent: () => P
 
+  def next[T]() = {
+    this match {
+      case parent: Parent[Any] => parent.children.head.asInstanceOf[T]
+      case _ => parent() match {
+        case parent: Parent[Any] => parent.after[T](this)
+        case _ => null
+      }
+    }
+  }
+
   /**
    * Returns true if the value passed is in the ancestry hierarchy for this Child.
    */
