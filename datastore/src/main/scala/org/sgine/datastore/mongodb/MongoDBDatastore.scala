@@ -45,7 +45,7 @@ class MongoDBDatastore[T <: Identifiable](db: MongoDB, collectionName: String, v
       }
     }.toMap
     val builder = MongoDBObject.newBuilder
-    ec.caseValues.foreach(cv => if (defaults(cv.name) != cv[Any](example)) {
+    ec.caseValues.foreach(cv => if (cv.name != "id" && defaults(cv.name) != cv[Any](example)) {
       val value = cv[Any](example)
       builder += cv.name -> DataObjectConverter.toDBValue(value)
     })
