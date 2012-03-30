@@ -168,7 +168,7 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
    * Returns the default value by type. For primitives this will return zero or false and for references this will
    * return null.
    */
-  def defaultForType: Any = EnhancedClass.convertClass(javaClass) {
+  def defaultForType: Any = EnhancedClass.convertClass(javaClass) match {
     case "Boolean" => false
     case "Byte" => 0.byteValue()
     case "Int" => 0
