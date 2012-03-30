@@ -37,10 +37,13 @@ class MongoDBDatastore[T <: Identifiable](db: MongoDB, collectionName: String, v
     val method = ec.createMethod.getOrElse(throw new NullPointerException("%s is not a case class".format(example)))
     val companion = ec.companion.getOrElse(throw new NullPointerException("No companion found for %s".format(example)))
     val companionInstance = companion.instance.getOrElse(throw new NullPointerException("No companion instance found for %s".format(companion)))
-    val defaults = method.args.map(arg => arg.default(companionInstance) match {
-      case None => arg.name -> null // TODO: support primitives
-      case Some(value) => arg.name -> value
-    }).toMap
+    val defaults = method.args.collect {
+      // Generate defaults excluding "id"
+      case arg if (arg.name != "id") => arg.default(companionInstance) match {
+        case None => arg.name -> arg.`type`.defaultForType // Default by the class type
+        case Some(value) => arg.name -> value // Default argument for this case class
+      }
+    }.toMap
     val builder = MongoDBObject.newBuilder
     ec.caseValues.foreach(cv => if (defaults(cv.name) != cv[Any](example)) {
       val value = cv[Any](example)
