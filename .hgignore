@@ -1,0 +1,9 @@
+glob:.idea
+relre:.*[.]iml
+relre:.*/target/.*
+relre:.*/lib_managed/.*
+glob:project/boot
+relre:target/.*
+relre:.*/src_managed/.*
+syntax: regexp
+out/.*
