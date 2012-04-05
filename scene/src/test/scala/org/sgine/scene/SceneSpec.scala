@@ -51,7 +51,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
 
   "ImmutableContainer" when {
     "created" should {
-      val container = new ImmutableContainer(List("One", "Two", "Three"))
+      val container = new ImmutableContainer(List(StringElement("One"), StringElement("Two"), StringElement("Three")))
       "have three elements" in {
         container.contents.length should be(3)
       }
@@ -59,7 +59,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
   }
 
   "MutableContainer" when {
-    val container = new MutableContainer[String]()
+    val container = new MutableContainer[StringElement]()
     var added: ChildAddedEvent = null
     var removed: ChildRemovedEvent = null
     container.listeners.synchronous {
@@ -77,7 +77,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         container.contents.length should be(1)
       }
       "have the correct element" in {
-        container.contents.head should be("One")
+        container.contents.head should be(StringElement("One"))
       }
       "throw a ChildAddedEvent" in {
         added should not be (null)
@@ -86,7 +86,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         added.parent should be(container)
       }
       "reference the corrent child in the event" in {
-        added.child should be("One")
+        added.child should be(StringElement("One"))
       }
     }
     "adding \"Two\"" should {
@@ -96,8 +96,8 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         container.contents.length should be(2)
       }
       "have the correct elements" in {
-        container.contents.head should be("One")
-        container.contents.tail.head should be("Two")
+        container.contents.head should be(StringElement("One"))
+        container.contents.tail.head should be(StringElement("Two"))
       }
       "throw another ChildAddedEvent" in {
         added should not be (null)
@@ -106,7 +106,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         added.parent should be(container)
       }
       "reference the corrent child in the second add event" in {
-        added.child should be("Two")
+        added.child should be(StringElement("Two"))
       }
     }
     "removing \"One\"" should {
@@ -116,7 +116,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         container.contents.length should be(1)
       }
       "have the correct element again" in {
-        container.contents.head should be("Two")
+        container.contents.head should be(StringElement("Two"))
       }
       "throw a ChildRemovedEvent" in {
         removed should not be (null)
@@ -125,13 +125,13 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         removed.parent should be(container)
       }
       "reference the correct child in the remove event" in {
-        removed.child should be("One")
+        removed.child should be(StringElement("One"))
       }
     }
   }
 
   "StaticContainer" when {
-    class Test
+    class Test extends Element
     class Test2 extends Test
     class Test3 extends Test2
     val container = new StaticContainer[Test] {
@@ -157,23 +157,23 @@ class SceneSpec extends WordSpec with ShouldMatchers {
   }
 
   "ContainerView" when {
-    val container = new ImmutableContainer(List("One", "Two", "Three"))
-    val container2 = new MutableContainer[AnyRef]()
-    val container3 = new MutableContainer[String]()
-    val container4 = new MutableContainer[String]()
-    val container5 = new MutableContainer[String]()
+    val container = new ImmutableContainer(List(StringElement("One"), StringElement("Two"), StringElement("Three")))
+    val container2 = new MutableContainer[Element]()
+    val container3 = new MutableContainer[StringElement]()
+    val container4 = new MutableContainer[StringElement]()
+    val container5 = new MutableContainer[StringElement]()
 
-    val containerView = new ContainerView[String](container)
-    val containerView2 = new ContainerView[String](container2)
-    val query = (s: String) => s.length > 3
-    val containerView3 = new ContainerView[String](container3, query)
-    val sort = (s1: String, s2: String) => s1.compare(s2)
-    val containerView4 = new ContainerView[String](container4, sort = sort)
+    val containerView = new ContainerView[StringElement](container)
+    val containerView2 = new ContainerView[StringElement](container2)
+    val query = (s: StringElement) => s.name.length > 3
+    val containerView3 = new ContainerView[StringElement](container3, query)
+    val sort = (s1: StringElement, s2: StringElement) => s1.name.compare(s2.name)
+    val containerView4 = new ContainerView[StringElement](container4, sort = sort)
     var filterLength = 3
-    val filter = (s: String) => s.length > filterLength
-    val containerView5 = new ContainerView[String](container5, filter = filter)
+    val filter = (s: StringElement) => s.name.length > filterLength
+    val containerView5 = new ContainerView[StringElement](container5, filter = filter)
 
-    val ic = new ImmutableContainer[String](List("Uno"))
+    val ic = new ImmutableContainer[StringElement](List(StringElement("Uno")))
 
     "created on a container with three elements" should {
       "have three elements" in {
@@ -203,7 +203,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         containerView2.size should be(1)
       }
       "have \"Two\" as the only item" in {
-        containerView2.head should be("Two")
+        containerView2.head should be(StringElement("Two"))
       }
     }
     "adding an ImmutableContainer(\"Uno\")" should {
@@ -212,11 +212,11 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         containerView2.size should be(2)
       }
       "define the parent container correctly" in {
-        ic.parent() should be(container2)
+        ic.parent should be(container2)
       }
       "reference \"Two\" and \"Uno\" as the only elements" in {
-        containerView2.head should be("Two")
-        containerView2.tail.head should be("Uno")
+        containerView2.head should be(StringElement("Two"))
+        containerView2.tail.head should be(StringElement("Uno"))
       }
     }
     "removing an ImmutableContainer(\"Uno\")" should {
@@ -225,10 +225,10 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         containerView2.size should be(1)
       }
       "define the parent container as null" in {
-        ic.parent() should be(null)
+        ic.parent should be(null)
       }
       "reference \"Two\" as the only element" in {
-        containerView2.head should be("Two")
+        containerView2.head should be(StringElement("Two"))
       }
     }
     "adding items to a queried view" should {
@@ -249,9 +249,9 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         containerView4.size should be(3)
       }
       "be sorted correctly" in {
-        containerView4.head should be("One")
-        containerView4.tail.head should be("Three")
-        containerView4.tail.tail.head should be("Two")
+        containerView4.head should be(StringElement("One"))
+        containerView4.tail.head should be(StringElement("Three"))
+        containerView4.tail.tail.head should be(StringElement("Two"))
       }
     }
     "adding items to a filtered view" should {
@@ -262,7 +262,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
         containerView5.size should be(1)
       }
       "have \"Three\" as the only visible element" in {
-        containerView5.head should be("Three")
+        containerView5.head should be(StringElement("Three"))
       }
       "have three elements after updating filter" in {
         filterLength = 0
