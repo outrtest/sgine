@@ -35,6 +35,7 @@ package org.sgine.scene
 import event.{ChildRemovedEvent, ChildAddedEvent}
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.WordSpec
+import org.sgine.hierarchy.Element
 
 //import org.sgine.Child
 
@@ -44,6 +45,10 @@ import org.scalatest.WordSpec
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class SceneSpec extends WordSpec with ShouldMatchers {
+  case class StringElement(name: String) extends Element
+
+  implicit def s2se(s: String) = StringElement(s)
+
   "ImmutableContainer" when {
     "created" should {
       val container = new ImmutableContainer(List("One", "Two", "Three"))

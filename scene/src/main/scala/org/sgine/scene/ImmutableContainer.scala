@@ -32,12 +32,14 @@
 
 package org.sgine.scene
 
+import org.sgine.hierarchy.Element
+
 /**
  * ImmutableContainer defines a simple collection wrapper for a pre-defined list of children.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class ImmutableContainer[T](val contents: Seq[T]) extends Container[T] {
+class ImmutableContainer[T <: Element](val contents: Seq[T]) extends Container[T] {
   contents.foreach {
     case element: Element => Element.assignParent(element, this)
     case _ =>

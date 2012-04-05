@@ -32,22 +32,22 @@
 
 package org.sgine.scene
 
-import org.sgine.Parent
+import org.sgine.hierarchy.{Element, Parent}
+import org.sgine.event.Listenable
+
 
 /**
  * Container maintains a collection of children T.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Container[T] extends Element with Parent[T] {
+trait Container[T <: Element] extends Element with Parent with Listenable {
   /**
    * The children associated to this Container.
    */
   def contents: Seq[T]
 
   def children = contents
-
-  // TODO: extend from Parent
 
   /**
    * Recursively iterates over all descendants to invoke the supplied function on all elements that

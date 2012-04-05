@@ -4,11 +4,11 @@ import align.{DepthAlignment, HorizontalAlignment, VerticalAlignment}
 import org.sgine.property.{PropertyParent, Property}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
-import org.sgine.scene.Element
 import org.sgine.event.{ChangeEvent, Listenable}
 import org.sgine.{Updater, Updatable, AsynchronousInvocation}
 
 import scala.math._
+import org.sgine.hierarchy.Element
 
 /**
  * Component is the base class for all visual elements in UI.
@@ -19,7 +19,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The parent associated with this Component.
    */
-  override val parent: Property[Component] = Property[Component]()
+  override def parent = super.parent.asInstanceOf[Container]
 
   /**
    * World matrix for this component.
@@ -140,7 +140,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   }
 
   protected[ui] def updateMatrix(): Unit = {
-    parent() match {
+    parent match {
       case null => matrix.idt()
       case p => localizeMatrix() match {
         case true => matrix.idt()
@@ -153,7 +153,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   }
 
   protected[ui] def updateAlpha(): Unit = {
-    val parentAlpha = parent() match {
+    val parentAlpha = parent match {
       case null => 1.0
       case p => p.alpha()
     }
