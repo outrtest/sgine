@@ -41,11 +41,11 @@ import org.sgine.event.Listenable
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Container[T <: Element] extends Element with Parent with Listenable {
+trait Container[E <: Element] extends Element with Parent with Listenable {
   /**
    * The children associated to this Container.
    */
-  def contents: Seq[T]
+  def contents: Seq[E]
 
   def children = contents
 
