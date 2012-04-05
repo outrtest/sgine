@@ -34,6 +34,7 @@ package org.sgine.scene
 
 import org.sgine.{ScalaDelayedInitBug, ExtendedDelayedInit}
 import org.sgine.reflect._
+import org.sgine.hierarchy.Element
 
 /**
  * StaticContainer expects all children to be defined within the class itself and uses Reflection to add the children to
@@ -41,7 +42,7 @@ import org.sgine.reflect._
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class StaticContainer[T](implicit manifest: Manifest[T]) extends MutableContainer[T] with ExtendedDelayedInit {
+class StaticContainer[T <: Element](implicit manifest: Manifest[T]) extends MutableContainer[T] with ExtendedDelayedInit {
   override def postInit() = {
     super.postInit()
     val children = loadElements(getClass.methods, Nil).reverse

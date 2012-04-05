@@ -3,8 +3,8 @@ package org.sgine.event
 import org.scalatest.WordSpec
 import org.scalatest.matchers.ShouldMatchers
 import org.sgine.concurrent.{Executor, AtomicInt, Time}
-import org.sgine.{Parent, Child}
 import org.sgine.bus.{RoutingResults, Routing, Bus}
+import org.sgine.hierarchy.{Parent, Element}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -363,10 +363,10 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
 
 object TestListenable extends Listenable
 
-object TestParentListenable extends Listenable with Parent[Listenable] {
+object TestParentListenable extends Listenable with Parent {
   lazy val children = List(TestChildListenable)
 }
 
-object TestChildListenable extends Listenable with Child[Listenable] {
-  val parent = () => TestParentListenable
+object TestChildListenable extends Listenable with Element {
+  override def parent = TestParentListenable
 }

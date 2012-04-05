@@ -2,7 +2,7 @@ package org.sgine.event
 
 import org.sgine.concurrent.Time
 import org.sgine.bus.Bus
-import org.sgine.{Parent, Child}
+import org.sgine.hierarchy.{Parent, Element}
 
 /**
  *
@@ -54,7 +54,7 @@ class Listeners(listenable: Listenable) {
 
   def descendant(f: PartialFunction[Event, Any])(implicit depth: Int = Int.MaxValue) = {
     val acceptFilter = (event: Event) => event.target match {
-      case child: Child[_] if (child.hasAncestor(listenable, depth)) => true
+      case child: Element if (child.hierarchy.hasAncestor(listenable, depth)) => true
       case _ => false
     }
     apply(f)(acceptFilter)
@@ -64,7 +64,7 @@ class Listeners(listenable: Listenable) {
 
   def ancestor(f: PartialFunction[Event, Any])(implicit depth: Int = Int.MaxValue) = {
     val acceptFilter = (event: Event) => event.target match {
-      case parent: Parent[_] if (parent.hasDescendant(listenable, depth)) => true
+      case parent: Parent if (parent.hierarchy.hasDescendant(listenable, depth)) => true
       case _ => false
     }
     apply(f)(acceptFilter)
