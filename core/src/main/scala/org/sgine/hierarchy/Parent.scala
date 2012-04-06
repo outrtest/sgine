@@ -24,9 +24,12 @@ trait Parent extends Element {
       super.last
     }
 
-    /**
-     * Returns true if the value passed is in the descendant hierarchy for this Parent.
-     */
+    override def next = if (children.nonEmpty) {
+      children.head
+    } else {
+      super.next
+    }
+
     def hasDescendant[T](value: T, maxDepth: Int = Int.MaxValue)(implicit manifest: Manifest[T]) = descendant((t: T) => t == value, maxDepth)(manifest) != None
 
     /**
@@ -81,7 +84,11 @@ trait Parent extends Element {
     @tailrec
     private def findAfter(previous: Element, element: Element, children: Seq[Element]): Element = {
       if (children.isEmpty) {
-        null
+        if (parent != null) {
+          parent.hierarchy.after(Parent.this)
+        } else {
+          null
+        }
       } else {
         val current = children.head
         if (previous == element) {
