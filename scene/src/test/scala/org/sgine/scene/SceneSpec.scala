@@ -287,50 +287,50 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     }
   }
 
-  //  "Scene" should {
-  //    class SceneChild(name: String, val parent: () => MutableContainer[_]) extends Child[MutableContainer[_]] {
-  //      override def toString = "SceneChild[%s]".format(name)
-  //    }
-  //    val c = new MutableContainer[MutableContainer[SceneChild]]
-  //    val c1 = new MutableContainer[SceneChild]
-  //    val c2 = new MutableContainer[SceneChild]
-  //    val c3 = new MutableContainer[SceneChild]
-  //    val c1a = new SceneChild("c1a", () => c1)
-  //    val c1b = new SceneChild("c1b", () => c1)
-  //    val c1c = new SceneChild("c1c", () => c1)
-  //    val c2a = new SceneChild("c2a", () => c2)
-  //    val c3a = new SceneChild("c3a", () => c3)
-  //    "build correctly" in {
-  //      c.contents += c1
-  //      c.contents += c2
-  //      c.contents += c3
-  //      c1.contents += c1a
-  //      c1.contents += c1b
-  //      c1.contents += c1c
-  //      c2.contents += c2a
-  //      c3.contents += c3a
-  //    }
-  //    "check next" in {
-  //      c.next() should equal(c1)
-  //      c1.next() should equal(c1a)
-  //      c1a.next() should equal(c1b)
-  //      c1b.next() should equal(c1c)
-  //      c1c.next() should equal(c2)
-  //      c2.next() should equal(c2a)
-  //      c2a.next() should equal(c3)
-  //      c3.next() should equal(c3a)
-  //      c3a.next() should equal(null)
-  //    }
-  //    "check previous" in {
-  //      c.previous() should equal(null)
-  //      c1.previous() should equal(c)
-  //      c1a.previous() should equal(c1)
-  //      c1b.previous() should equal(c1a)
-  //      c1c.previous() should equal(c1b)
-  //      c2.previous() should equal(c1c)
-  //      c2a.previous() should equal(c2)
-  //      c3.previous() should equal(c2a)
-  //      c3a.previous() should equal(c3)
-  //    }
-  //  }
+  "Scene" should {
+    class SceneChild(name: String, override val parent: MutableContainer[_]) extends Element {
+      override def toString = "SceneChild[%s]".format(name)
+    }
+    val c = new MutableContainer[MutableContainer[SceneChild]]
+    val c1 = new MutableContainer[SceneChild]
+    val c2 = new MutableContainer[SceneChild]
+    val c3 = new MutableContainer[SceneChild]
+    val c1a = new SceneChild("c1a", c1)
+    val c1b = new SceneChild("c1b", c1)
+    val c1c = new SceneChild("c1c", c1)
+    val c2a = new SceneChild("c2a", c2)
+    val c3a = new SceneChild("c3a", c3)
+    "build correctly" in {
+      c.contents += c1
+      c.contents += c2
+      c.contents += c3
+      c1.contents += c1a
+      c1.contents += c1b
+      c1.contents += c1c
+      c2.contents += c2a
+      c3.contents += c3a
+    }
+    "check next" in {
+      c.hierarchy.next should equal(c1)
+      c1.hierarchy.next should equal(c1a)
+      c1a.hierarchy.next should equal(c1b)
+      c1b.hierarchy.next should equal(c1c)
+      c1c.hierarchy.next should equal(c2)
+      c2.hierarchy.next should equal(c2a)
+      c2a.hierarchy.next should equal(c3)
+      c3.hierarchy.next should equal(c3a)
+      c3a.hierarchy.next should equal(null)
+    }
+    "check previous" in {
+      c.hierarchy.previous should equal(null)
+      c1.hierarchy.previous should equal(c)
+      c1a.hierarchy.previous should equal(c1)
+      c1b.hierarchy.previous should equal(c1a)
+      c1c.hierarchy.previous should equal(c1b)
+      c2.hierarchy.previous should equal(c1c)
+      c2a.hierarchy.previous should equal(c2)
+      c3.hierarchy.previous should equal(c2a)
+      c3a.hierarchy.previous should equal(c3)
+    }
+  }
 }

@@ -29,12 +29,18 @@ trait Element {
     /**
      * The element before this one or null.
      */
-    def previous = parent.hierarchy.before(Element.this)
+    def previous = parent match {
+      case null => null
+      case p => p.hierarchy.before(Element.this)
+    }
 
     /**
      * The element after this one or null.
      */
-    def next = parent.hierarchy.after(Element.this)
+    def next = parent match {
+      case null => null
+      case p => p.hierarchy.after(Element.this)
+    }
 
     /**
      * Moves backward until it finds an Element matching the condition or null if it reaches the beginning.
