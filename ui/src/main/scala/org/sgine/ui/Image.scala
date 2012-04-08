@@ -11,6 +11,13 @@ import render.{TextureCoordinates, Vertex}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Image extends ShapeComponent {
+  def this(resource: Resource) = {
+    this()
+    load(resource)
+  }
+
+  def this(resource: String) = this(Resource(resource))
+
   def texture = _texture
 
   /**
@@ -69,14 +76,10 @@ object Image {
   /**
    * Convenience method to create an Image from a resource path.
    */
-  def apply(resource: String): Image = apply(Resource(resource))
+  def apply(resource: String) = new Image(resource)
 
   /**
    * Convenience method to create an Image from a Resource.
    */
-  def apply(resource: Resource): Image = {
-    val image = new Image()
-    image.load(resource)
-    image
-  }
+  def apply(resource: Resource) = new Image(resource)
 }

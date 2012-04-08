@@ -22,6 +22,17 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   override def parent = super.parent.asInstanceOf[Container]
 
   /**
+   * Return the root UI for this Component or null if not attached to a UI.
+   */
+  def ui: UI = this match {
+    case instance: UI => instance
+    case _ => parent match {
+      case null => null
+      case p => p.ui
+    }
+  }
+
+  /**
    * World matrix for this component.
    */
   protected[ui] val matrix = new Matrix4()
@@ -53,6 +64,13 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * Defaults to false.
    */
   val localizeMatrix = Property[Boolean](false)
+  /**
+   * Updater function called when a translation value of the component is modified to apply properly to the backing
+   * Matrix4.
+   *
+   * Defaults to Component.DefaultMatrixUpdater
+   */
+  val matrixUpdater = Property[(Component, Matrix4) => Unit](Component.DefaultMatrixUpdater)
 
   /**
    * The local location of this component in the UI.
@@ -139,17 +157,11 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     updateMatrix()
   }
 
-  protected[ui] def updateMatrix(): Unit = {
-    parent match {
-      case null => matrix.idt()
-      case p => localizeMatrix() match {
-        case true => matrix.idt()
-        case false => matrix.set(p.matrix)
-      }
+  protected[ui] def updateMatrix() = {
+    matrixUpdater() match {
+      case null => // Do nothing
+      case updater => updater(this, matrix)
     }
-    matrix.translate(location.actual.x().toFloat, location.actual.y().toFloat, location.actual.z().toFloat)
-    matrix.rotate(rotation.x().toFloat, rotation.y().toFloat, rotation.z().toFloat, 1.0f)
-    matrix.scale(scale.x().toFloat, scale.y().toFloat, scale.z().toFloat)
   }
 
   protected[ui] def updateAlpha(): Unit = {
@@ -261,4 +273,21 @@ object Component {
    * The Component the mouse is current over.
    */
   val mouse = Property[Component]()
+
+  /**
+   * Default MatrixUpdater used by Components to apply translation, rotation, and scale.
+   */
+  val DefaultMatrixUpdater: (Component, Matrix4) => Unit = (component: Component, matrix: Matrix4) => {
+    component.parent match {
+      case null => matrix.idt()
+      case p => component.localizeMatrix() match {
+        case true => matrix.idt()
+        case false => matrix.set(p.matrix)
+      }
+    }
+    matrix.translate(component.location.actual.x().toFloat, component.location.actual.y().toFloat, component.location.actual.z().toFloat)
+    val maxRotation = max(max(component.rotation.x(), component.rotation.y()), component.rotation.z())
+    matrix.rotate((component.rotation.x() / maxRotation).toFloat, (component.rotation.y() / maxRotation).toFloat, (component.rotation.z() / maxRotation).toFloat, maxRotation.toFloat)
+    matrix.scale(component.scale.x().toFloat, component.scale.y().toFloat, component.scale.z().toFloat)
+  }
 }
