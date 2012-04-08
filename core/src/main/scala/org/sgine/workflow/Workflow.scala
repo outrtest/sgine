@@ -8,7 +8,7 @@ import org.sgine.{Finishable, Updatable}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Workflow protected(val items: List[WorkflowItem]) extends WorkflowItem with Updatable with Finishable {
+class Workflow(val items: List[WorkflowItem]) extends WorkflowItem with Updatable with Finishable {
   protected var currentItems = items
   protected var current: WorkflowItem = _
 

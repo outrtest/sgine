@@ -70,6 +70,11 @@ class UI extends Container with DelayedInit {
    */
   def height = 768
 
+  /**
+   * The delta in seconds for the current render.
+   */
+  def delta = listener.delta
+
   private var currentRay: Ray = _
 
   lazy val pickFunction = (current: Component, c: Component) => if (c.hitTest(currentRay)) {
@@ -173,11 +178,10 @@ class UI extends Container with DelayedInit {
       Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT) // TODO: optional?
       delta = Gdx.graphics.getDeltaTime.toDouble
       updatablesView.value.foreach(updateUpdatables)
-      camera()(Gdx.gl11)
       rendererView.value.foreach(renderRenderable)
     }
 
-    private var delta = 0.0
+    protected[ui] var delta = 0.0
 
     private val updateUpdatables = (updatable: Updatable) => updatable.update(delta)
 
