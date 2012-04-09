@@ -12,7 +12,7 @@ import collection.mutable.ListBuffer
 class TextComponent extends ShapeComponent {
   protected[ui] val _text = Property[String]()
   protected[ui] val _font = Property[BitmapFont]()
-  protected[ui] val _wrapWidth = Property[Double](Double.MaxValue)
+  protected[ui] val _wrapWidth = NumericProperty(Double.MaxValue)
 
   protected val generator = new TextGenerator(_font())
 
