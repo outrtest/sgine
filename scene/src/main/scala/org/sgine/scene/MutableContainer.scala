@@ -32,8 +32,6 @@
 
 package org.sgine.scene
 
-import collection.mutable.ListBuffer
-import event.{ChildRemovedEvent, ChildAddedEvent}
 import org.sgine.hierarchy.Element
 
 /**
@@ -41,13 +39,13 @@ import org.sgine.hierarchy.Element
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class MutableContainer[T <: Element] extends Container[T] {
-  private val buffer = new ListBuffer[T]
+trait MutableContainer[T <: Element] extends AbstractMutableContainer[T] {
+  override val contents = new VisibleContents
 
   /**
    * Represents the children of this container.
    */
-  object contents extends Seq[T] {
+  sealed class VisibleContents extends Seq[T] {
     def iterator = buffer.iterator
 
     /**
@@ -64,31 +62,13 @@ class MutableContainer[T <: Element] extends Container[T] {
      * Inserts a child into this container and assigns this container as the parent if the child is
      * of type Element.
      */
-    def +=(child: T) = synchronized {
-      buffer += child
-
-      child match {
-        case element: Element => Element.assignParent(element, MutableContainer.this)
-        case _ =>
-      }
-
-      fire(new ChildAddedEvent(MutableContainer.this, child))
-    }
+    def +=(child: T) = addChild(child)
 
     /**
      * Removes the supplied child from this container and nullifies parent if the child is of type
      * Element.
      */
-    def -=(child: T) = synchronized {
-      buffer -= child
-
-      child match {
-        case element: Element => Element.assignParent(element, null)
-        case _ =>
-      }
-
-      fire(new ChildRemovedEvent(MutableContainer.this, child))
-    }
+    def -=(child: T) = removeChild(child)
   }
 
 }
