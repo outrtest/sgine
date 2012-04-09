@@ -140,7 +140,7 @@ case class PropertyAnimator(property: MutableProperty[Double], destination: Doub
     multiplier = (destination - property()) / time
   }
 
-  def act(delta: Float) = {
+  def act(delta: Double) = {
     val adjust = delta * multiplier
     val value = property() + adjust
     if (multiplier > 0.0 && value >= destination) {

@@ -33,7 +33,7 @@ class Workflow(val items: List[WorkflowItem]) extends WorkflowItem with Updatabl
     current = null
   }
 
-  def act(delta: Float) = {
+  def act(delta: Double) = {
     if (current == null && !currentItems.isEmpty) {
       current = currentItems.head
       current.begin()

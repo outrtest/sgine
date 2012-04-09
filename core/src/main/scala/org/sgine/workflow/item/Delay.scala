@@ -9,15 +9,15 @@ import org.sgine.xml.XMLLoader
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class Delay(time: Float) extends WorkflowItem {
-  private var elapsed: Float = _
+case class Delay(time: Double) extends WorkflowItem {
+  private var elapsed: Double = _
 
   override def begin() = {
     super.begin()
     elapsed = 0.0f
   }
 
-  def act(delta: Float) = {
+  def act(delta: Double) = {
     elapsed += delta
     elapsed >= time
   }
