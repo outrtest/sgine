@@ -10,7 +10,7 @@ trait Looping extends Workflow {
 
   def loops: Int
 
-  override def act(delta: Float) = {
+  override def act(delta: Double) = {
     if (super.act(delta)) {
       iteration += 1
 

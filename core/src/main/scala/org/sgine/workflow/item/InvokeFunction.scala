@@ -8,7 +8,7 @@ import org.sgine.workflow.WorkflowItem
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class InvokeFunction private(f: () => Unit) extends WorkflowItem {
-  def act(delta: Float) = {
+  def act(delta: Double) = {
     f()
     true
   }

@@ -24,7 +24,7 @@ trait WorkflowItem {
   /**
    * Acts on the workflow item returning true if it's completed.
    */
-  def act(delta: Float): Boolean
+  def act(delta: Double): Boolean
 
   /**
    * Called when this WorkflowItem is ending.

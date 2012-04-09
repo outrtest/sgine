@@ -15,13 +15,13 @@ trait Asynchronous extends Workflow {
     currentItems.foreach(Asynchronous.beginItem)
   }
 
-  override def act(delta: Float) = {
+  override def act(delta: Double) = {
     updateAsync(delta, currentItems)
     currentItems.isEmpty
   }
 
   @tailrec
-  private def updateAsync(delta: Float, items: List[WorkflowItem]): Unit = {
+  private def updateAsync(delta: Double, items: List[WorkflowItem]): Unit = {
     if (!items.isEmpty) {
       val item = items.head
       if (item.act(delta) || item.finished) {
