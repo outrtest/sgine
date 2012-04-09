@@ -2,6 +2,8 @@ package org.sgine.ui
 
 import org.sgine.property.MutableProperty
 import org.sgine.workflow.{Asynchronous, WorkflowItem, Workflow}
+import org.sgine.workflow.item.Delay
+import org.sgine.{Enumerated, EnumEntry}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -10,6 +12,8 @@ object AnimationExample extends UI {
   implicit def p2wb(property: MutableProperty[Double]) = new WorkflowBuilder(property)
 
   implicit def wb2w(builder: WorkflowBuilder) = builder.workflow
+
+  val all = Repeat.All
 
   val image = Image("sgine.png")
   contents += image
@@ -24,8 +28,17 @@ object AnimationExample extends UI {
     image.location.x moveTo 200.0 and image.location.y moveTo -200.0 in time then
     image.location.x and image.location.y moveTo 0.0 in time then
     image.rotation.z moveTo 360.0 in time then
-    image.alpha moveTo 0.0 in time
+    image.alpha moveTo 0.0 in time then
+    image.alpha moveTo 1.0 in time repeat all
   image.updates += wf
+}
+
+sealed class Repeat extends EnumEntry[Repeat]
+
+object Repeat extends Enumerated[Repeat] {
+  val All = new Repeat()
+  val First = new Repeat()
+  val Last = new Repeat()
 }
 
 class WorkflowBuilder {
@@ -36,8 +49,15 @@ class WorkflowBuilder {
 
   case class AnimatedProperty(property: MutableProperty[Double], destination: Option[Double] = None, time: Option[Double] = None)
 
-  private var workflows = List.empty[Workflow]
+  private var workflowItems = List.empty[WorkflowItem]
   private var current = List.empty[AnimatedProperty]
+
+  private def updateWorkflowItems() = {
+    if (current.nonEmpty) {
+      workflowItems = new Workflow(animators(current)) with Asynchronous :: workflowItems
+      current = Nil
+    }
+  }
 
   def and(property: MutableProperty[Double]) = {
     current = AnimatedProperty(property, previousDestination, previousTime) :: current
@@ -45,10 +65,7 @@ class WorkflowBuilder {
   }
 
   def then(property: MutableProperty[Double]) = {
-    if (current.nonEmpty) {
-      workflows = new Workflow(animators(current)) with Asynchronous :: workflows
-      current = Nil
-    }
+    updateWorkflowItems()
     and(property)
   }
 
@@ -66,8 +83,25 @@ class WorkflowBuilder {
     this
   }
 
+  def pause(time: Double) = {
+    workflowItems = Delay(time.toFloat) :: workflowItems
+    this
+  }
+
+  def delay(time: Double) = pause(time)
+
+  def repeat(r: Repeat) = {
+    updateWorkflowItems()
+    r match {
+      case Repeat.All => workflowItems = workflowItems ::: workflowItems
+      case Repeat.First => workflowItems = workflowItems.last :: workflowItems
+      case Repeat.Last => workflowItems = workflowItems.head :: workflowItems
+    }
+    this
+  }
+
   def workflow = {
-    var list: List[WorkflowItem] = workflows
+    var list: List[WorkflowItem] = workflowItems
     if (current.nonEmpty) {
       list = new Workflow(animators(current)) with Asynchronous :: list
     }
