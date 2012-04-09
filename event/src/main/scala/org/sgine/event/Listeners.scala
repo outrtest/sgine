@@ -8,7 +8,7 @@ import org.sgine.hierarchy.{Parent, Element}
  *
  *
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 12/2/11
+ *         Date: 12/2/11
  */
 class Listeners(listenable: Listenable) {
   protected[event] var listeners: List[Listener] = Nil
@@ -71,10 +71,6 @@ class Listeners(listenable: Listenable) {
   }
 
   def parent(f: PartialFunction[Event, Any]) = ancestor(f)(1)
-
-  def filtered[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
-    this += new FunctionalListener[T](Listener.withFallthrough(f), listenable.targetFilter)
-  }
 
   def once[T <: Event](f: PartialFunction[T, Any])(implicit manifest: Manifest[T]) = {
     var listener: Listener = null

@@ -26,8 +26,8 @@ trait StandardProperty[T] extends MutableProperty[T] with Listenable with Change
 
   def apply() = getValue
 
-  def onChange(f: => Unit) = listeners.synchronous.filtered[ChangeEvent[_]] {
-    case _ => f
+  def onChange(f: => Unit) = listeners.synchronous {
+    case evt: ChangeEvent[_] => f
   }
 
   def readOnly: Property[T] = this

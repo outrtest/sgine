@@ -217,8 +217,8 @@ trait Component extends PropertyParent with Listenable with Element with Updater
 
   def onUpdate(listenables: Listenable*)(f: => Unit) = {
     val function = () => f
-    listenables.foreach(l => l.listeners.synchronous.filtered[ChangeEvent[_]] {
-      case event => updateAsync.invokeLater(function)
+    listenables.foreach(l => l.listeners.synchronous {
+      case event: ChangeEvent[_] => updateAsync.invokeLater(function)
     })
   }
 
@@ -226,8 +226,8 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * Adds change listeners to the Listenables to invoke the supplied function immediately when a
    * change occurs.
    */
-  def onChange(listenables: Listenable*)(f: => Unit) = listenables.foreach(l => l.listeners.synchronous.filtered[ChangeEvent[_]] {
-    case event => f
+  def onChange(listenables: Listenable*)(f: => Unit) = listenables.foreach(l => l.listeners.synchronous {
+    case event: ChangeEvent[_] => f
   })
 
   /**
