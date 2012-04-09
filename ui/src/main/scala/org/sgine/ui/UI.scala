@@ -175,6 +175,7 @@ class UI extends Container with DelayedInit {
     def render() = {
       Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT) // TODO: optional?
       delta = Gdx.graphics.getDeltaTime.toDouble
+      update(delta)
       updatablesView.value.foreach(updateUpdatables)
       rendererView.value.foreach(renderRenderable)
     }
