@@ -8,7 +8,7 @@ import org.sgine.hierarchy.{Parent, Element}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
- * Date: 12/3/11
+ *         Date: 12/3/11
  */
 class ListenableSpec extends WordSpec with ShouldMatchers {
   "Listenable" when {
@@ -364,7 +364,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
 object TestListenable extends Listenable
 
 object TestParentListenable extends Listenable with Parent {
-  lazy val children = List(TestChildListenable)
+  lazy val contents = List(TestChildListenable)
 }
 
 object TestChildListenable extends Listenable with Element {

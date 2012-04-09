@@ -3,7 +3,7 @@ package org.sgine.hierarchy
 import annotation.tailrec
 
 trait Parent extends Element {
-  def children: Seq[Element]
+  def contents: Seq[Element]
 
   override val hierarchy = new ParentHierarchy
 
@@ -11,21 +11,21 @@ trait Parent extends Element {
     /**
      * The element before this one hierarchically.
      */
-    def before(element: Element) = findBefore(null, element, children)
+    def before(element: Element) = findBefore(null, element, contents)
 
     /**
      * The element after this one hierarchically.
      */
-    def after(element: Element) = findAfter(null, element, children)
+    def after(element: Element) = findAfter(null, element, contents)
 
-    override def last = if (children.nonEmpty) {
-      children.last.hierarchy.last
+    override def last = if (contents.nonEmpty) {
+      contents.last.hierarchy.last
     } else {
       super.last
     }
 
-    override def next = if (children.nonEmpty) {
-      children.head
+    override def next = if (contents.nonEmpty) {
+      contents.head
     } else {
       super.next
     }
@@ -41,7 +41,7 @@ trait Parent extends Element {
      * Uses the supplied matching function to return the first descendant match given the specified type or None if no
      * match is found.
      */
-    def descendant[T](matcher: T => Boolean, maxDepth: Int = Int.MaxValue, children: Seq[Element] = Parent.this.children)(implicit manifest: Manifest[T]): Option[T] = {
+    def descendant[T](matcher: T => Boolean, maxDepth: Int = Int.MaxValue, children: Seq[Element] = contents)(implicit manifest: Manifest[T]): Option[T] = {
       if (children.nonEmpty) {
         // if (manifest.erasure.isAssignableFrom(p.getClass) && matcher(p.asInstanceOf[T])) {
         val child = children.head
@@ -51,7 +51,7 @@ trait Parent extends Element {
           val result = descendant[T](matcher, maxDepth, children.tail)(manifest)
           if (result == None && maxDepth > 1) {
             child match {
-              case parent: Parent => parent.hierarchy.descendant(matcher, maxDepth - 1, parent.children)
+              case parent: Parent => parent.hierarchy.descendant(matcher, maxDepth - 1, parent.contents)
               case _ => None
             }
           } else {
@@ -99,4 +99,5 @@ trait Parent extends Element {
       }
     }
   }
+
 }

@@ -47,8 +47,6 @@ trait Container[E <: Element] extends Element with Parent with Listenable {
    */
   def contents: Seq[E]
 
-  def children = contents
-
   /**
    * Recursively iterates over all descendants to invoke the supplied function on all elements that
    * match the generic type T.

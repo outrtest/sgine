@@ -45,6 +45,7 @@ import org.sgine.hierarchy.Element
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class SceneSpec extends WordSpec with ShouldMatchers {
+
   case class StringElement(name: String) extends Element
 
   implicit def s2se(s: String) = StringElement(s)
@@ -59,7 +60,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
   }
 
   "MutableContainer" when {
-    val container = new MutableContainer[StringElement]()
+    val container = new AbstractMutableContainer[StringElement]() with MutableContainer[StringElement]
     var added: ChildAddedEvent = null
     var removed: ChildRemovedEvent = null
     container.listeners.synchronous {
@@ -158,10 +159,10 @@ class SceneSpec extends WordSpec with ShouldMatchers {
 
   "ContainerView" when {
     val container = new ImmutableContainer(List(StringElement("One"), StringElement("Two"), StringElement("Three")))
-    val container2 = new MutableContainer[Element]()
-    val container3 = new MutableContainer[StringElement]()
-    val container4 = new MutableContainer[StringElement]()
-    val container5 = new MutableContainer[StringElement]()
+    val container2 = new AbstractMutableContainer[Element]() with MutableContainer[Element]
+    val container3 = new AbstractMutableContainer[StringElement]() with MutableContainer[StringElement]
+    val container4 = new AbstractMutableContainer[StringElement]() with MutableContainer[StringElement]
+    val container5 = new AbstractMutableContainer[StringElement]() with MutableContainer[StringElement]
 
     val containerView = new ContainerView[StringElement](container)
     val containerView2 = new ContainerView[StringElement](container2)
@@ -291,10 +292,10 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     class SceneChild(name: String, override val parent: MutableContainer[_]) extends Element {
       override def toString = "SceneChild[%s]".format(name)
     }
-    val c = new MutableContainer[MutableContainer[SceneChild]]
-    val c1 = new MutableContainer[SceneChild]
-    val c2 = new MutableContainer[SceneChild]
-    val c3 = new MutableContainer[SceneChild]
+    val c = new AbstractMutableContainer[MutableContainer[SceneChild]]() with MutableContainer[MutableContainer[SceneChild]]
+    val c1 = new AbstractMutableContainer[SceneChild]() with MutableContainer[SceneChild]
+    val c2 = new AbstractMutableContainer[SceneChild]() with MutableContainer[SceneChild]
+    val c3 = new AbstractMutableContainer[SceneChild]() with MutableContainer[SceneChild]
     val c1a = new SceneChild("c1a", c1)
     val c1b = new SceneChild("c1b", c1)
     val c1c = new SceneChild("c1c", c1)
