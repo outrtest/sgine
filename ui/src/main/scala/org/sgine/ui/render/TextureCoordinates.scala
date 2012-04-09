@@ -59,4 +59,11 @@ object TextureCoordinates {
       right, top
     )
   }
+
+  /**
+   * Generic generation of texture coordinates presuming use of entire texture.
+   */
+  def box() = {
+    rect() ::: rect() ::: rect() ::: rect()
+  }
 }

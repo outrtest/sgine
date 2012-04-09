@@ -1,7 +1,6 @@
 package org.sgine.ui
 
 import align.{DepthAlignment, HorizontalAlignment, VerticalAlignment}
-import org.sgine.property.{PropertyParent, Property}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
 import org.sgine.event.{ChangeEvent, Listenable}
@@ -9,6 +8,7 @@ import org.sgine.{Updater, Updatable, AsynchronousInvocation}
 
 import scala.math._
 import org.sgine.hierarchy.Element
+import org.sgine.property.{NumericProperty, PropertyParent, Property}
 
 /**
  * Component is the base class for all visual elements in UI.
@@ -51,7 +51,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    *
    * Defaults to 1.0 (opaque)
    */
-  val alpha = Property[Double](1.0)
+  val alpha = NumericProperty(1.0)
   /**
    * True if mouse events should occur on this Component.
    *
@@ -110,9 +110,9 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * The size of this component in the UI.
    */
   object size extends PropertyParent {
-    val width = Property[Double](0.0)
-    val height = Property[Double](0.0)
-    val depth = Property[Double](0.0)
+    val width = NumericProperty(0.0)
+    val height = NumericProperty(0.0)
+    val depth = NumericProperty(0.0)
     /**
      * The algorithm used to update the actual size when the measured size changes.
      *
@@ -125,9 +125,9 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * The measured size of the text.
    */
   object measured extends PropertyParent {
-    val width = Property[Double](0.0)
-    val height = Property[Double](0.0)
-    val depth = Property[Double](0.0)
+    val width = NumericProperty(0.0)
+    val height = NumericProperty(0.0)
+    val depth = NumericProperty(0.0)
   }
 
   /**
@@ -238,9 +238,9 @@ trait Component extends PropertyParent with Listenable with Element with Updater
 }
 
 class Property3D(dx: Double, dy: Double, dz: Double) extends PropertyParent {
-  val x = Property[Double](dx)
-  val y = Property[Double](dy)
-  val z = Property[Double](dz)
+  val x = NumericProperty(dx)
+  val y = NumericProperty(dy)
+  val z = NumericProperty(dz)
 
   /**
    * Assigns the default value to these properties.
