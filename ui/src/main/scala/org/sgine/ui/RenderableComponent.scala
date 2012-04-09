@@ -17,7 +17,10 @@ trait RenderableComponent extends Component {
    * onRender listeners, and calls the draw method.
    */
   final def render() = {
-    UI().camera()(Gdx.gl11)
+    ui match {
+      case null => // Rendering outside of UI
+      case root => root.camera()(Gdx.gl11)
+    }
     Gdx.gl11.glMultMatrixf(matrix.getValues, 0)
     Gdx.gl11.glColor4f(1.0f, 1.0f, 1.0f, multipliedAlpha())
     renderAsync.invokeNow()
@@ -36,8 +39,8 @@ trait RenderableComponent extends Component {
    */
   def onRender(listenables: Listenable*)(f: => Unit) = {
     val function = () => f
-    listenables.foreach(l => l.listeners.synchronous.filtered[ChangeEvent[_]] {
-      case event => renderAsync.invokeLater(function)
+    listenables.foreach(l => l.listeners.synchronous {
+      case event: ChangeEvent[_] => renderAsync.invokeLater(function)
     })
   }
 }

@@ -1,9 +1,9 @@
 package org.sgine.ui
 
 import org.sgine.property.MutableProperty
-import org.sgine.workflow.{Asynchronous, WorkflowItem, Workflow}
 import org.sgine.workflow.item.Delay
 import org.sgine.{Enumerated, EnumEntry}
+import org.sgine.workflow.{Looping, Asynchronous, WorkflowItem, Workflow}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -18,7 +18,7 @@ object AnimationExample extends UI {
   val image = Image("sgine.png")
   contents += image
 
-  val time = 1.0
+  val time = 0.4
   val wf = image.location.x and image.location.y moveTo 200.0 in time then
     image.location.x and image.location.y moveTo 0.0 in time then
     image.location.x moveTo -200.0 and image.location.y moveTo 200.0 in time then
@@ -28,8 +28,9 @@ object AnimationExample extends UI {
     image.location.x moveTo 200.0 and image.location.y moveTo -200.0 in time then
     image.location.x and image.location.y moveTo 0.0 in time then
     image.rotation.z moveTo 360.0 in time then
+    image.rotation.z moveTo 0.0 in time pause time then
     image.alpha moveTo 0.0 in time then
-    image.alpha moveTo 1.0 in time repeat all
+    image.alpha moveTo 1.0 in time loop Int.MaxValue
   image.updates += wf
 }
 
@@ -49,6 +50,7 @@ class WorkflowBuilder {
 
   case class AnimatedProperty(property: MutableProperty[Double], destination: Option[Double] = None, time: Option[Double] = None)
 
+  private var loopCount = 0
   private var workflowItems = List.empty[WorkflowItem]
   private var current = List.empty[AnimatedProperty]
 
@@ -84,6 +86,7 @@ class WorkflowBuilder {
   }
 
   def pause(time: Double) = {
+    updateWorkflowItems()
     workflowItems = Delay(time.toFloat) :: workflowItems
     this
   }
@@ -100,12 +103,19 @@ class WorkflowBuilder {
     this
   }
 
+  def loop(count: Int) = {
+    loopCount = count
+    this
+  }
+
   def workflow = {
     var list: List[WorkflowItem] = workflowItems
     if (current.nonEmpty) {
       list = new Workflow(animators(current)) with Asynchronous :: list
     }
-    new Workflow(list.reverse)
+    new Workflow(list.reverse) with Looping {
+      val loops = loopCount
+    }
   }
 
   private def animators(aps: List[AnimatedProperty]) = aps.map(ap => PropertyAnimator(ap.property, ap.destination.getOrElse(0.0), ap.time.getOrElse(0.0)))

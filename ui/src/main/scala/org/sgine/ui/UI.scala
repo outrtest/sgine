@@ -8,7 +8,6 @@ import org.sgine.input.event._
 import scala.math._
 import org.sgine.Updatable
 import org.sgine.property.{Property, ImmutableProperty}
-import java.lang.ThreadLocal
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.math.collision.Ray
 
@@ -42,16 +41,9 @@ class UI extends Container with DelayedInit {
   /**
    * Whether vertical synchronization should be enabled.
    *
-   * Defaults to true.
+   * Defaults to false.
    */
-  lazy val verticalSync = Property[Boolean](true)
-
-  onUpdate(camera) {
-    camera().update()
-  }
-  onUpdate(verticalSync) {
-    Gdx.graphics.setVSync(verticalSync())
-  }
+  lazy val verticalSync = Property[Boolean](false)
 
   private var initialize: () => Unit = _
 
@@ -154,8 +146,6 @@ class UI extends Container with DelayedInit {
 
   private object listener extends ApplicationListener with InputProcessor {
     def create() = {
-      UI.instance.set(UI.this)
-      Gdx.graphics.setVSync(verticalSync())
       Gdx.gl11.glShadeModel(GL10.GL_SMOOTH)
       Gdx.gl11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
       Gdx.gl11.glClearDepthf(1.0f)
@@ -169,6 +159,14 @@ class UI extends Container with DelayedInit {
       if (initialize != null) {
         initialize()
       }
+      onUpdate(camera) {
+        camera().update()
+      }
+      onUpdate(verticalSync) {
+        Gdx.graphics.setVSync(verticalSync())
+      }
+
+      Gdx.graphics.setVSync(verticalSync())
     }
 
     def resize(width: Int, height: Int) = {
@@ -256,13 +254,4 @@ class UI extends Container with DelayedInit {
     }
   }
 
-}
-
-object UI {
-  private val instance = new ThreadLocal[UI]
-
-  /**
-   * Returns UI the instance associated with the current thread.
-   */
-  def apply() = instance.get()
 }
