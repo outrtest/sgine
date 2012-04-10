@@ -1,5 +1,6 @@
 package org.sgine.ui.render
 
+
 /**
  * Vertex is a convenience object for generating vertices for common scenarios.
  *
@@ -96,5 +97,65 @@ object Vertex {
       -w, -h, d,
       w, -h, -d
     )
+  }
+
+  def scale9(x1: Double, y1: Double, x2: Double, y2: Double, z: Double, textureWidth: Double, textureHeight: Double, width: Double, height: Double) = {
+    val sx0 = width / -2.0
+    val sx1 = sx0 + x1
+    val sx3 = width / 2.0
+    val sx2 = sx3 - (textureWidth - x2)
+    val sy0 = height / 2.0
+    val sy1 = sy0 - y1
+    val sy3 = height / -2.0
+    val sy2 = sy3 + (textureHeight - y2)
+
+    quad(sx0, sy0, sx1, sy1, z) :::      // Top-Left
+    quad(sx1, sy0, sx2, sy1, z) :::      // Top
+    quad(sx2, sy0, sx3, sy1, z) :::      // Top-Right
+    quad(sx0, sy1, sx1, sy2, z) :::      // Left
+    quad(sx1, sy1, sx2, sy2, z) :::      // Center
+    quad(sx2, sy1, sx3, sy2, z) :::      // Right
+    quad(sx0, sy2, sx1, sy3, z) :::      // Bottom-Left
+    quad(sx1, sy2, sx2, sy3, z) :::      // Bottom
+    quad(sx2, sy2, sx3, sy3, z)          // Bottom-Right
+
+//    List(
+//      sx0, sy1, z,      // Top-Left
+//      sx1, sy1, z,
+//      sx1, sy0, z,
+//      sx0, sy0, z,
+//      sx1, sy1, z,      // Top
+//      sx2, sy1, z,
+//      sx2, sy0, z,
+//      sx1, sy0, z,
+//      sx2, sy1, z,      // Top-Right
+//      sx3, sy1, z,
+//      sx3, sy0, z,
+//      sx2, sy0, z,
+//      sx0, sy2, z,      // Left
+//      sx1, sy2, z,
+//      sx1, sy1, z,
+//      sx0, sy1, z,
+//      sx1, sy2, z,      // Center
+//      sx2, sy2, z,
+//      sx2, sy1, z,
+//      sx1, sy1, z,
+//      sx2, sy2, z,      // Right
+//      sx3, sy2, z,
+//      sx3, sy1, z,
+//      sx2, sy1, z,
+//      sx0, sy3, z,      // Bottom-Left
+//      sx1, sy3, z,
+//      sx1, sy2, z,
+//      sx0, sy2, z,
+//      sx1, sy3, z,      // Bottom
+//      sx2, sy3, z,
+//      sx2, sy2, z,
+//      sx1, sy2, z,
+//      sx2, sy3, z,      // Bottom-Right
+//      sx3, sy3, z,
+//      sx3, sy2, z,
+//      sx2, sy2, z
+//    )
   }
 }
