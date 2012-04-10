@@ -37,7 +37,7 @@ class UI extends Container with DelayedInit {
    *
    * Defaults to an OrthographicCamera with the width and height defined by the UI.
    */
-  lazy val camera = Property[Camera](new OrthographicCamera(width, height))
+  lazy val camera = Property[Camera](createOrtho(width, height))
   /**
    * Whether vertical synchronization should be enabled.
    *
@@ -111,7 +111,16 @@ class UI extends Container with DelayedInit {
    * Convenience method to replace the camera with an OrthographicCamera.
    */
   final def orthographic(width: Double = this.width, height: Double = this.height) = {
-    camera := new OrthographicCamera(width.toFloat, height.toFloat)
+    camera := createOrtho(width, height)
+  }
+
+  private def createOrtho(width: Double, height: Double) = {
+    val c = new OrthographicCamera(width.toFloat, height.toFloat)
+    c.near = 0.1f
+    c.far = 1000.0f
+    c.translate(0.0f, 0.0f, 1.0f)
+    c.update()
+    c
   }
 
   /**
