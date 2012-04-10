@@ -65,7 +65,7 @@ class Image extends ShapeComponent {
   }
 
   /**
-   * Loads the resource suppled as a Texture for this Image.
+   * Loads the resource supplied as a Texture for this Image.
    */
   def load(resource: Resource) = {
     texture := new Texture(resource)
