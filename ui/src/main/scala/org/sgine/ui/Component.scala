@@ -19,7 +19,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The parent associated with this Component.
    */
-  override def parent = super.parent.asInstanceOf[Container]
+  override def parent = super.parent.asInstanceOf[AbstractContainer]
 
   /**
    * Return the root UI for this Component or null if not attached to a UI.
