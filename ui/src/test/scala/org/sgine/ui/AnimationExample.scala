@@ -29,8 +29,8 @@ object AnimationExample extends UI {
     image.location.x and image.location.y moveTo 0.0 in time then
     image.rotation.z moveTo 360.0 in time then
     image.rotation.z moveTo 0.0 in time pause time then
-    image.alpha moveTo 0.0 in time then
-    image.alpha moveTo 1.0 in time loop Int.MaxValue
+    image.color.alpha moveTo 0.0 in time then
+    image.color.alpha moveTo 1.0 in time loop Int.MaxValue
   image.updates += wf
 }
 

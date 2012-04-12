@@ -22,7 +22,7 @@ trait RenderableComponent extends Component {
       case root => root.camera()(Gdx.gl11)
     }
     Gdx.gl11.glMultMatrixf(matrix.getValues, 0)
-    Gdx.gl11.glColor4f(1.0f, 1.0f, 1.0f, multipliedAlpha())
+    Gdx.gl11.glColor4f(color.actual.red().toFloat, color.actual.green().toFloat, color.actual.blue().toFloat, color.actual.alpha().toFloat)
     renderAsync.invokeNow()
     draw()
   }

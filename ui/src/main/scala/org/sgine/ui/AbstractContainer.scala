@@ -15,14 +15,14 @@ class AbstractContainer extends AbstractMutableContainer[Component] with Compone
     contents.foreach(AbstractContainer.updateChildMatrix)
   }
 
-  override protected[ui] def updateAlpha() = {
-    super.updateAlpha()
+  override protected[ui] def updateColor() = {
+    super.updateColor()
 
-    contents.foreach(AbstractContainer.updateChildAlpha)
+    contents.foreach(AbstractContainer.updateChildColor)
   }
 }
 
 object AbstractContainer {
   private val updateChildMatrix = (child: Component) => child.updateMatrix()
-  private val updateChildAlpha = (child: Component) => child.updateAlpha()
+  private val updateChildColor = (child: Component) => child.updateColor()
 }

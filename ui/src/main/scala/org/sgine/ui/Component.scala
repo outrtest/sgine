@@ -4,11 +4,11 @@ import align.{DepthAlignment, HorizontalAlignment, VerticalAlignment}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
 import org.sgine.event.{ChangeEvent, Listenable}
-import org.sgine.{Updater, Updatable, AsynchronousInvocation}
 
 import scala.math._
 import org.sgine.hierarchy.Element
 import org.sgine.property.{NumericProperty, PropertyParent, Property}
+import org.sgine._
 
 /**
  * Component is the base class for all visual elements in UI.
@@ -36,7 +36,6 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * World matrix for this component.
    */
   protected[ui] val matrix = new Matrix4()
-  protected val multipliedAlpha = Property[Float](1.0f)
 
   private val updateAsync = new AsynchronousInvocation()
 
@@ -46,12 +45,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * Defaults to true.
    */
   val visible = Property[Boolean](true)
-  /**
-   * The transparency value assigned to the component.
-   *
-   * Defaults to 1.0 (opaque)
-   */
-  val alpha = NumericProperty(1.0)
+
   /**
    * True if mouse events should occur on this Component.
    *
@@ -119,6 +113,12 @@ trait Component extends PropertyParent with Listenable with Element with Updater
      * Defaults to SizeAlgorithm.measured
      */
     val algorithm = Property[SizeAlgorithm](SizeAlgorithm.measured)
+
+    def apply(width: Double = this.width(), height: Double = this.height(), depth: Double = this.depth()) = {
+      this.width := width
+      this.height := height
+      this.depth := depth
+    }
   }
 
   /**
@@ -140,17 +140,76 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    */
   object rotation extends Property3D(0.0, 0.0, 0.0)
 
+  /**
+   * The color of this component.
+   */
+  object color extends PropertyParent {
+    val red = NumericProperty(1.0)
+    val green = NumericProperty(1.0)
+    val blue = NumericProperty(1.0)
+    /**
+     * The transparency value assigned to the component.
+     *
+     * Defaults to 1.0 (opaque)
+     */
+    val alpha = NumericProperty(1.0)
+
+    def apply(color: Color, updateAlpha: Boolean = true) = {
+      red := color.red
+      green := color.green
+      blue := color.blue
+      if (updateAlpha) {
+        alpha := color.alpha
+      }
+    }
+
+    def update(color: MutableColor) = {
+      color.red = red()
+      color.green = green()
+      color.blue = blue()
+      color.alpha = alpha()
+    }
+
+    object actual extends PropertyParent {
+      val red = NumericProperty(1.0)
+      val green = NumericProperty(1.0)
+      val blue = NumericProperty(1.0)
+      val alpha = NumericProperty(1.0)
+    }
+  }
+
   object updates {
     def +=(updatable: Updatable) = add(updatable)
 
     def -=(updatable: Updatable) = remove(updatable)
+
+    /**
+     * Invokes supplied function with the elapsed time when <code>time</code> has elapsed.
+     */
+    def every(time: Double)(f: Double => Unit) = {
+      add(new Updatable {
+        private var elapsed = 0.0
+
+        override def update(delta: Double) = {
+          elapsed += delta
+          if (elapsed >= time) {
+            f(elapsed)
+            elapsed = 0.0
+          }
+        }
+      })
+    }
   }
 
-  def resolution(width: Double, height: Double) = {
+  def resolution(width: Double, height: Double, maintainAspectRatio: Boolean = true) = {
     val w = 0.8275 / width
     val h = 0.8275 / height
     localizeMatrix := true
-    scale.set(min(w, h))
+    if (maintainAspectRatio) {
+      scale.set(min(w, h))
+    } else {
+      scale(w, h, 1.0)
+    }
   }
 
   onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z, localizeMatrix) {
@@ -164,12 +223,15 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     }
   }
 
-  protected[ui] def updateAlpha(): Unit = {
-    val parentAlpha = parent match {
-      case null => 1.0
-      case p => p.alpha()
+  protected[ui] def updateColor(): Unit = {
+    parent match {
+      case null => Component.tempColor(Color.White)
+      case p => p.color.update(Component.tempColor)
     }
-    multipliedAlpha := (alpha() * parentAlpha).toFloat
+    color.actual.red := color.red() * Component.tempColor.red
+    color.actual.green := color.green() * Component.tempColor.green
+    color.actual.blue := color.blue() * Component.tempColor.blue
+    color.actual.alpha := color.alpha() * Component.tempColor.alpha
   }
 
   // Update size when measured size is modified in the case of autoSize being true.
@@ -192,8 +254,8 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     location.updateActual()
   }
 
-  onChange(alpha) {
-    updateAlpha()
+  onChange(color.red, color.green, color.blue, color.alpha) {
+    updateColor()
   }
 
   /**
@@ -280,6 +342,7 @@ object Component {
   private val tempBoundingBox = new BoundingBox()
   private val tempVector1 = new Vector3()
   private val tempVector2 = new Vector3()
+  private val tempColor = new MutableColor(1.0, 1.0, 1.0, 1.0)
 
   /**
    * The Component the mouse is current over.
