@@ -199,14 +199,26 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * Tests whether the supplied Ray intersects with this Component.
    */
-  def hitTest(ray: Ray) = {
+  def hitTest(ray: Ray, intersection: Vector3) = {
     val w = (size.width() / 2.0).toFloat
     val h = (size.height() / 2.0).toFloat
-    Component.tempVector1.set(-w, -h, 0.0f)
-    Component.tempVector2.set(w, h, 0.0f)
+    Component.tempVector1.set(-w, -h, 0.0f).mul(matrix)
+    Component.tempVector2.set(w, h, 0.0f).mul(matrix)
     Component.tempBoundingBox.set(Component.tempVector1, Component.tempVector2)
-    Component.tempBoundingBox.mul(matrix)
-    Intersector.intersectRayBoundsFast(ray, Component.tempBoundingBox)
+//    Component.tempBoundingBox.mul(matrix)
+//    Component.tempVector1.set(0.0f, 0.0f, 0.0f)
+//    Component.tempVector1.mul(matrix)
+    Intersector.intersectRayBoundsFast(ray, Component.tempBoundingBox) match {
+      case true => {
+        if (intersection != null) {
+//          println("Intersected: %s".format(Component.tempVector1))
+          val radius = Component.tempBoundingBox.getDimensions.len() / 2.0f
+          Intersector.intersectRaySphere(ray, Component.tempBoundingBox.getCenter, radius, intersection)
+        }
+        true
+      }
+      case false => false
+    }
   }
 
   override def update(delta: Double) = {

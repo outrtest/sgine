@@ -8,6 +8,7 @@ import org.sgine.input.event.MouseEvent
  */
 object MousePickingExample extends UI {
   val image = Image("sgine.png")
+  image.location.x := 200.0
   image.listeners.synchronous {
     case evt: MouseEvent => println(evt)
   }
