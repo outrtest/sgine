@@ -1,7 +1,6 @@
 package org.sgine
 
-import naming.{NamingFilter, NamingParent}
-import reflect.EnhancedMethod
+import collection.mutable.ArrayBuffer
 import util.Random
 
 /**
@@ -9,7 +8,9 @@ import util.Random
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
+trait Enumerated[E <: EnumEntry[E]] {
+  implicit val instance = this
+  private val array = new ArrayBuffer[E]()
   private lazy val r = new Random()
 
   /**
@@ -18,33 +19,41 @@ trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
   lazy val name = getClass.getSimpleName.replaceAll("\\$", "")
 
   /**
-   * Retrieve an enum by index.
+   * Retrieve the EnumEntry by name.
+   *
+   * @param name the name of the EnumEntry as defined by the field.
+   * @return EnumEntry or null if not found
    */
-  def apply(index: Int) = values(index)
+  def apply(name: String) = array.find(e => e.name == name).getOrElse(null)
 
   /**
-   * Retrieve an enum by name.
+   * Retrieve the EnumEntry by index.
+   *
+   * @param index of the EnumEntry.
+   * @return EnumEntry or IndexOutOfBoundsException
    */
-  def apply(name: String) = values.find(e => e.name == name)
+  def apply(index: Int) = array(index)
 
   /**
-   * Collection of all the enums associated with this Enumerated.
+   * All EnumEntries for this Enumerated instance.
    */
-  object values extends NamingFilter[E](this) {
-    override def apply(index: Int) = {
-      fields.map(m => m.invoke[E](parent)).find(v => v.ordinal == index)
-        .getOrElse(throw new IndexOutOfBoundsException("No entry at ordinal %s".format(index)))
-    }
-  }
+  def values: Seq[E] = array
 
   /**
    * Retrieves a random enum.
    */
   def random = values(r.nextInt(values.length))
 
-  override protected def accept(method: EnhancedMethod) = if (method.name == "random") {
-    false
-  } else {
-    super.accept(method)
+  protected[sgine] def add(e: E) = synchronized {
+    array += e
   }
+
+  protected[sgine] def name(e: E) = getClass.getDeclaredFields.find(f => if (classOf[EnumEntry[_]].isAssignableFrom(f.getType)) {
+    f.setAccessible(true)
+    f.get(this) == e
+  } else {
+    false
+  }).map(f => f.getName).getOrElse(throw new NullPointerException("Unable to find name for %s".format(e.getClass)))
+
+  protected[sgine] def index(e: E) = array.indexOf(e)
 }

@@ -5,7 +5,8 @@ import org.sgine.ui.{ShapeComponent, Container, UI}
 import org.sgine.ui.render.Vertex
 import org.sgine.{Color, Compass}
 import org.sgine.ui.align.{VerticalAlignment, HorizontalAlignment}
-import org.sgine.input.Key
+import org.sgine.input.{Keyboard, Key}
+import org.sgine.input.event.KeyDownEvent
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -16,18 +17,15 @@ object Snake extends UI {
 
   val direction = Property[Compass](Compass.East)
 
-  Key.values.foreach(println)
-  println(Key.values.size)
-
-//  Keyboard.listeners.synchronous {
-//    case event: KeyDownEvent => event.key match {
-//      case Key.Up => direction := Compass.North
-//      case Key.Down => direction := Compass.South
-//      case Key.Right => direction := Compass.East
-//      case Key.Left => direction := Compass.West
-//      case _ => // Ignore
-//    }
-//  }
+  Keyboard.listeners.synchronous {
+    case event: KeyDownEvent => event.key match {
+      case Key.Up => direction := Compass.North
+      case Key.Down => direction := Compass.South
+      case Key.Right => direction := Compass.East
+      case Key.Left => direction := Compass.West
+      case _ => // Ignore
+    }
+  }
 
   perspective()
   resolution(resolutionWidth, resolutionHeight, false)

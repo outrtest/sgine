@@ -1,6 +1,7 @@
 package org.sgine.input
 
-import org.sgine.EnumEntry
+import org.sgine.{Enumerated, EnumEntry}
+
 
 /**
  * KeyState is an enum that represents the current state of a Key.
@@ -9,7 +10,7 @@ import org.sgine.EnumEntry
  */
 sealed class KeyState extends EnumEntry[KeyState]
 
-object KeyState {
+object KeyState extends Enumerated[KeyState] {
   val Down = new KeyState()
   val Up = new KeyState()
   val Typed = new KeyState()
