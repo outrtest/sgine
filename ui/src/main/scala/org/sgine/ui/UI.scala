@@ -10,6 +10,7 @@ import org.sgine.Updatable
 import org.sgine.property.{Property, ImmutableProperty}
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.math.collision.Ray
+import com.badlogic.gdx.math.Vector3
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -68,8 +69,9 @@ class UI extends Container with DelayedInit {
   def delta = listener.delta
 
   private var currentRay: Ray = _
+  private lazy val intersection = new Vector3
 
-  lazy val pickFunction = (current: Component, c: Component) => if (c.hitTest(currentRay)) {
+  lazy val pickFunction = (current: Component, c: Component) => if (c.hitTest(currentRay, intersection)) {
     c
   } else {
     current
@@ -80,18 +82,21 @@ class UI extends Container with DelayedInit {
     val y = abs(evt.y - height)
     currentRay = camera().getPickRay(x.toFloat, y.toFloat)
     val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
+    val localEvent: MouseEvent = hit match {
+      case null => null
+      case _ => evt.duplicate(hit, intersection.x, intersection.y, intersection.z)
+    }
     if (hit != null) {
-      // TODO: translate to component-local coordinates
-      hit.fire(evt.duplicate(hit))
+      hit.fire(localEvent)
     }
     if (evt.isInstanceOf[MouseMoveEvent] && Component.mouse() != hit) {
       val old = Component.mouse()
       Component.mouse := hit
       if (old != null) {
-        old.fire(MouseOutEvent(evt.x, evt.y, evt.deltaX, evt.deltaY))
+        old.fire(MouseOutEvent(intersection.x, intersection.y, intersection.z, evt.deltaX, evt.deltaY))
       }
       if (hit != null) {
-        hit.fire(MouseOverEvent(evt.x, evt.y, evt.deltaX, evt.deltaY))
+        hit.fire(MouseOverEvent(intersection.x, intersection.y, intersection.z, evt.deltaX, evt.deltaY))
       }
     }
   }
@@ -222,14 +227,14 @@ class UI extends Container with DelayedInit {
     }
 
     def scrolled(amount: Int) = {
-      Mouse.fire(MouseWheelEvent(amount, Mouse.x(), Mouse.x(), 0.0, 0.0))
+      Mouse.fire(MouseWheelEvent(amount, Mouse.x(), Mouse.x(), 0.0, 0.0, 0.0))
       true
     }
 
     def touchDown(x: Int, y: Int, pointer: Int, button: Int) = {
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
-      Mouse.fire(MousePressEvent(MouseButton(button), x, y, dx, dy))
+      Mouse.fire(MousePressEvent(MouseButton(button), x, y, 0.0, dx, dy))
       Mouse.x := x
       Mouse.y := y
       true
@@ -238,7 +243,7 @@ class UI extends Container with DelayedInit {
     def touchDragged(x: Int, y: Int, pointer: Int) = {
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
-      Mouse.fire(MouseDragEvent(x, y, dx, dy))
+      Mouse.fire(MouseDragEvent(x, y, 0.0, dx, dy))
       Mouse.x := x
       Mouse.y := y
       true
@@ -248,7 +253,7 @@ class UI extends Container with DelayedInit {
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
       // TODO: support deferred mouse events
-      Mouse.fire(MouseMoveEvent(x, y, dx, dy))
+      Mouse.fire(MouseMoveEvent(x, y, 0.0, dx, dy))
       Mouse.x := x
       Mouse.y := y
       true
@@ -257,7 +262,7 @@ class UI extends Container with DelayedInit {
     def touchUp(x: Int, y: Int, pointer: Int, button: Int) = {
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
-      Mouse.fire(MouseReleaseEvent(MouseButton(button), x, y, dx, dy))
+      Mouse.fire(MouseReleaseEvent(MouseButton(button), x, y, 0.0, dx, dy))
       Mouse.x := x
       Mouse.y := y
       true
