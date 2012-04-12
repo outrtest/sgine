@@ -14,7 +14,7 @@ object EnumDataObjectConverter extends DataObjectConverter {
   def fromDBObject(db: MongoDBObject) = {
     val clazz: EnhancedClass = Class.forName(db("class").toString)
     val companion = clazz.companion.getOrElse(throw new RuntimeException("No companion for %s".format(clazz))).instance.get
-    companion.asInstanceOf[Enumerated[_]](db("name").toString).get.asInstanceOf[AnyRef]
+    companion.asInstanceOf[Enumerated[_]](db("name").toString).asInstanceOf[AnyRef]
   }
 
   def toDBObject(obj: AnyRef) = {

@@ -7,10 +7,10 @@ import org.sgine.{Enumerated, EnumEntry}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-sealed class MouseButton(override val ordinal: Int) extends EnumEntry[MouseButton]
+sealed class MouseButton extends EnumEntry[MouseButton]
 
 object MouseButton extends Enumerated[MouseButton] {
-  val Left = new MouseButton(0)
-  val Right = new MouseButton(1)
-  val Middle = new MouseButton(2)
+  val Left = new MouseButton
+  val Right = new MouseButton
+  val Middle = new MouseButton
 }
