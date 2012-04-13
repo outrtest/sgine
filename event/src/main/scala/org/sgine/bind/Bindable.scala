@@ -12,15 +12,13 @@ import org.sgine.event.Listenable
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Bindable[T] extends Function1[T, Unit] with Listenable {
-  //  private lazy val binding = new Binding[T](this, targetFilter)
-
   /**
    * Binds this instance to get changes to <code>listenable</code> when they occur.
    *
    * @param listenable what to bind to
    */
   def bind(listenable: Listenable) = {
-    val binding = new Binding[T](this, listenable.targetFilter)
+    val binding = new Binding[T](this, listenable.filters.target)
     listenable.listeners.synchronous += binding
     binding
   }
@@ -32,7 +30,7 @@ trait Bindable[T] extends Function1[T, Unit] with Listenable {
    * @param listenable what to bind to
    */
   def bindTo[S](listenable: Listenable)(implicit conversion: S => T) = {
-    val binding = new Binding[S](conversion.andThen(this), listenable.targetFilter)
+    val binding = new Binding[S](conversion.andThen(this), listenable.filters.target)
     listenable.listeners.synchronous += binding
     binding
   }
@@ -43,10 +41,10 @@ trait Bindable[T] extends Function1[T, Unit] with Listenable {
    * @param listenable to unbind from
    */
   def unbind(listenable: Listenable) = {
-    listenable.listeners.synchronous.values.find(l => l match {
-      case binding: Binding[_] => binding.acceptFilter == listenable.targetFilter
+    listenable.listeners.values.find(l => l match {
+      case binding: Binding[_] => binding.acceptFilter == listenable.filters.target
     }) match {
-      case Some(listener) => listenable.listeners.synchronous -= listener
+      case Some(listener) => listenable.listeners -= listener
       case None => // Not found
     }
   }

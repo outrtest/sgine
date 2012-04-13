@@ -1,6 +1,5 @@
 package org.sgine.event
 
-import org.sgine.concurrent.Executor
 import org.sgine.Priority
 import org.sgine.bus.{Routing, TypedNode}
 
@@ -31,24 +30,6 @@ trait Listener extends TypedNode[Event] with Function1[Event, Any] {
 
 case class TargetFilter(target: Listenable) extends Function1[Event, Boolean] {
   def apply(event: Event) = event.target == target
-}
-
-class FunctionalListener[T <: Event](f: (T) => Any, val acceptFilter: Event => Boolean)(implicit manifest2: Manifest[T]) extends Listener {
-  def apply(event: Event) = if (manifest2.erasure.isAssignableFrom(event.getClass)) {
-    received(event.asInstanceOf[T])
-  }
-
-  def received(event: T) = f(event)
-}
-
-class ConcurrentListener(listener: Listener, val acceptFilter: Event => Boolean) extends Listener {
-  def apply(event: Event) = Executor.invoke {
-    listener.process(event)
-  }
-}
-
-class AsynchronousListener(listener: Listener, val acceptFilter: Event => Boolean, listenable: Listenable) extends Listener {
-  def apply(event: Event) = listenable.asynchronousActor ! event -> listener
 }
 
 object Listener {
