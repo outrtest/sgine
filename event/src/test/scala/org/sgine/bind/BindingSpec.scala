@@ -18,15 +18,15 @@ class BindingSpec extends WordSpec with ShouldMatchers {
         BindTest3.value = "0"
       }
       "have no listeners on either BindTest1 or BindTest2" in {
-        BindTest1.listeners.synchronous.isEmpty should equal(true)
-        BindTest2.listeners.synchronous.isEmpty should equal(true)
+        BindTest1.listeners.values.isEmpty should equal(true)
+        BindTest2.listeners.values.isEmpty should equal(true)
       }
       "bind BindTest1 to BindTest2 successfully" in {
         BindTest1 bind BindTest2
       }
       "have one listener on BindTest2" in {
-        BindTest1.listeners.synchronous.isEmpty should equal(true)
-        BindTest2.listeners.synchronous.isEmpty should equal(false)
+        BindTest1.listeners.values.isEmpty should equal(true)
+        BindTest2.listeners.values.isEmpty should equal(false)
       }
       "have the correct initial values" in {
         BindTest1.value should equal(0)
@@ -45,8 +45,8 @@ class BindingSpec extends WordSpec with ShouldMatchers {
         BindTest1 unbind BindTest2
       }
       "have no listeners on either test" in {
-        BindTest1.listeners.synchronous.isEmpty should equal(true)
-        BindTest2.listeners.synchronous.isEmpty should equal(true)
+        BindTest1.listeners.values.isEmpty should equal(true)
+        BindTest2.listeners.values.isEmpty should equal(true)
       }
     }
     "conversion binding" should {
@@ -56,16 +56,16 @@ class BindingSpec extends WordSpec with ShouldMatchers {
         BindTest3.value = "0"
       }
       "have no listeners on either BindTest1 or BindTest3" in {
-        BindTest1.listeners.synchronous.isEmpty should equal(true)
-        BindTest3.listeners.synchronous.isEmpty should equal(true)
+        BindTest1.listeners.values.isEmpty should equal(true)
+        BindTest3.listeners.values.isEmpty should equal(true)
       }
       "bind BindTest1 to BindTest3 successfully" in {
         implicit val s2i = (s: String) => s.toInt
         BindTest1.bindTo[String](BindTest3)
       }
       "have one listener on BindTest3" in {
-        BindTest1.listeners.synchronous.isEmpty should equal(true)
-        BindTest3.listeners.synchronous.isEmpty should equal(false)
+        BindTest1.listeners.values.isEmpty should equal(true)
+        BindTest3.listeners.values.isEmpty should equal(false)
       }
       "have the correct initial values" in {
         BindTest1.value should equal(0)
@@ -84,8 +84,8 @@ class BindingSpec extends WordSpec with ShouldMatchers {
         BindTest1.unbind(BindTest3)
       }
       "have no listeners on either test" in {
-        BindTest1.listeners.synchronous.isEmpty should equal(true)
-        BindTest3.listeners.synchronous.isEmpty should equal(true)
+        BindTest1.listeners.values.isEmpty should equal(true)
+        BindTest3.listeners.values.isEmpty should equal(true)
       }
     }
   }

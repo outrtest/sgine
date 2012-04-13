@@ -26,7 +26,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "have one listener" in {
-        TestListenable.listeners.synchronous.length should equal(1)
+        TestListenable.listeners.values.length should equal(1)
       }
       "fire an event" in {
         TestListenable.fire(Event(TestListenable))
@@ -38,7 +38,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.synchronous -= listener
       }
       "have no listeners" in {
-        TestListenable.listeners.synchronous.isEmpty should equal(true)
+        TestListenable.listeners.values.isEmpty should equal(true)
       }
       "have no nodes on the Bus" in {
         Bus.isEmpty should equal(true)
@@ -56,7 +56,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "have one listener" in {
-        TestListenable.listeners.asynchronous.length should equal(1)
+        TestListenable.listeners.values.length should equal(1)
       }
       "fire an event" in {
         TestListenable.fire(Event(TestListenable))
@@ -73,7 +73,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.asynchronous -= listener
       }
       "have no listeners" in {
-        TestListenable.listeners.asynchronous.isEmpty should equal(true)
+        TestListenable.listeners.values.isEmpty should equal(true)
       }
       "have no nodes on the Bus" in {
         Bus.isEmpty should equal(true)
@@ -91,7 +91,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "have one listener" in {
-        TestListenable.listeners.concurrent.length should equal(1)
+        TestListenable.listeners.values.length should equal(1)
       }
       "fire an event" in {
         TestListenable.fire(Event(TestListenable))
@@ -108,7 +108,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.concurrent -= listener
       }
       "have no listeners" in {
-        TestListenable.listeners.concurrent.isEmpty should equal(true)
+        TestListenable.listeners.values.isEmpty should equal(true)
       }
       "have no nodes on the Bus" in {
         Bus.isEmpty should equal(true)
@@ -118,14 +118,14 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       val received = new AtomicInt(0)
       var listener: Listener = null
       "add a listener" in {
-        listener = TestListenable.listeners.synchronous.once[Event] {
+        listener = TestListenable.listeners.synchronous.once {
           case event => {
             received += 1
           }
         }
       }
       "have one listener" in {
-        TestListenable.listeners.synchronous.length should equal(1)
+        TestListenable.listeners.values.length should equal(1)
       }
       "fire an event" in {
         TestListenable.fire(Event(TestListenable))
@@ -140,7 +140,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         received() should equal(1)
       }
       "have no listeners attached" in {
-        TestListenable.listeners.synchronous.isEmpty should equal(true)
+        TestListenable.listeners.values.isEmpty should equal(true)
       }
       "have no nodes on the Bus" in {
         Bus.isEmpty should equal(true)
@@ -155,7 +155,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
           }
         }
         Time.waitFor(2.0) {
-          TestListenable.listeners.synchronous.nonEmpty
+          TestListenable.listeners.values.nonEmpty
         }
       }
       "fire an event" in {
@@ -171,7 +171,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         received() should equal(1)
       }
       "have no listeners attached" in {
-        TestListenable.listeners.synchronous.isEmpty should equal(true)
+        TestListenable.listeners.values.isEmpty should equal(true)
       }
       "have no nodes on the Bus" in {
         Bus.isEmpty should equal(true)
@@ -181,7 +181,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       var received = false
       var listener: Listener = null
       "add an ancestor listener to the child" in {
-        listener = TestChildListenable.listeners.synchronous.ancestor {
+        listener = TestChildListenable.listeners.synchronous.filter(TestChildListenable.filters.ancestor()) {
           case event => received = true
         }
       }
@@ -208,7 +208,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       var received = false
       var listener: Listener = null
       "add an ancestor listener to the child" in {
-        listener = TestChildListenable.listeners.synchronous.parent {
+        listener = TestChildListenable.listeners.synchronous.filter(TestChildListenable.filters.parent()) {
           case event => received = true
         }
       }
@@ -235,7 +235,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       var received = false
       var listener: Listener = null
       "add a descendant listener to the parent" in {
-        listener = TestParentListenable.listeners.synchronous.descendant {
+        listener = TestParentListenable.listeners.synchronous.filter(TestParentListenable.filters.descendant()) {
           case event => received = true
         }
       }
@@ -252,7 +252,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         received should equal(true)
       }
       "remove the listener" in {
-        TestChildListenable.listeners.synchronous -= listener
+        TestChildListenable.listeners -= listener
       }
       "have no nodes on the Bus" in {
         Bus.isEmpty should equal(true)
@@ -262,7 +262,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
       var received = false
       var listener: Listener = null
       "add a descendant listener to the parent" in {
-        listener = TestParentListenable.listeners.synchronous.child {
+        listener = TestParentListenable.listeners.synchronous.filter(TestParentListenable.filters.child()) {
           case event => received = true
         }
       }

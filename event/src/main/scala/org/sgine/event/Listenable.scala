@@ -2,6 +2,8 @@ package org.sgine.event
 
 import actors.DaemonActor
 import org.sgine.bus._
+import org.sgine.hierarchy.{Parent, Element}
+import org.sgine.ref.ReferenceType
 
 /**
  * Listenable can be mixed in to provide the ability for event management on an object.
@@ -10,25 +12,55 @@ import org.sgine.bus._
  * Date: 12/2/11
  */
 trait Listenable {
+  protected[event] var listenersList: List[Listener] = Nil
+
   protected[event] val asynchronousActor = new DaemonActor {
     def act() {
       loop {
         react {
-          case (event: Event, listener: Listener) => listener.process(event)
+          case f: Function0[_] => f()
         }
       }
     }
   }.start()
 
-  val targetFilter = TargetFilter(this)
+  protected[event] def addListener(listener: Listener, referenceType: ReferenceType = ReferenceType.Hard) = synchronized {
+    listenersList = (listener :: listenersList.reverse).reverse
+    Bus.add(listener, referenceType)
+    listener
+  }
 
-  object listeners {
-    val synchronous = new Listeners(Listenable.this)
-    val asynchronous = new Listeners(Listenable.this) {
-      override protected def createListener(listener: Listener) = new AsynchronousListener(listener, targetFilter, Listenable.this)
+  protected[event] def removeListener(listener: Listener) = synchronized {
+    listenersList = listenersList.filterNot(l => l == listener)
+    Bus.remove(listener)
+    listener
+  }
+
+  lazy val listeners = EventListenerBuilder(this)
+
+  object filters {
+    val target = TargetFilter(Listenable.this)
+
+    def descendant(depth: Int = Int.MaxValue): Event => Boolean = {
+      case event => event.target match {
+        case child: Element if (child.hierarchy.hasAncestor(Listenable.this, depth)) => true
+        case _ => false
+      }
     }
-    val concurrent = new Listeners(Listenable.this) {
-      override protected def createListener(listener: Listener) = new ConcurrentListener(listener, targetFilter)
+
+    def child() = descendant(1)
+
+    def ancestor(depth: Int = Int.MaxValue): Event => Boolean = {
+      case event => event.target match {
+        case parent: Parent if (parent.hierarchy.hasDescendant(Listenable.this, depth)) => true
+        case _ => false
+      }
+    }
+
+    def parent() = ancestor(1)
+
+    def thread(thread: Thread): Event => Boolean = {
+      case event => event.thread == thread
     }
   }
 
