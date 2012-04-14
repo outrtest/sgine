@@ -20,17 +20,36 @@ case class EventListenerBuilder(private val listenable: Listenable,
   def maximum(max: Int) = copy(maxInvocation = max)
   object filter {
     def apply(f: Event => Boolean) = copy(_filter = f)
-    def or(f: Event => Boolean) = {
-      val oldFilter = _filter
-      copy(_filter = {
-        case event => oldFilter(event) || f(event)
-      })
+    def descendant(depth: Int = Int.MaxValue) = apply(listenable.filters.descendant(depth))
+    def child = apply(listenable.filters.child())
+    def ancestor(depth: Int = Int.MaxValue) = apply(listenable.filters.ancestor(depth))
+    def parent = apply(listenable.filters.parent())
+    def thread(thread: Thread) = apply(listenable.filters.thread(thread))
+    object or {
+      def apply(f: Event => Boolean) = {
+        val oldFilter = _filter
+        copy(_filter = {
+          case event => oldFilter(event) || f(event)
+        })
+      }
+      def descendant(depth: Int = Int.MaxValue) = apply(listenable.filters.descendant(depth))
+      def child = apply(listenable.filters.child())
+      def ancestor(depth: Int = Int.MaxValue) = apply(listenable.filters.ancestor(depth))
+      def parent = apply(listenable.filters.parent())
+      def thread(thread: Thread) = apply(listenable.filters.thread(thread))
     }
-    def and(f: Event => Boolean) = {
-      val oldFilter = _filter
-      copy(_filter = {
-        case event => oldFilter(event) && f(event)
-      })
+    object and {
+      def apply(f: Event => Boolean) = {
+        val oldFilter = _filter
+        copy(_filter = {
+          case event => oldFilter(event) && f(event)
+        })
+      }
+      def descendant(depth: Int = Int.MaxValue) = apply(listenable.filters.descendant(depth))
+      def child = apply(listenable.filters.child())
+      def ancestor(depth: Int = Int.MaxValue) = apply(listenable.filters.ancestor(depth))
+      def parent = apply(listenable.filters.parent())
+      def thread(thread: Thread) = apply(listenable.filters.thread(thread))
     }
   }
   def reference(referenceType: ReferenceType) = copy(referenceType = referenceType)
