@@ -24,7 +24,7 @@ trait Enumerated[E <: EnumEntry[E]] {
    * @param name the name of the EnumEntry as defined by the field.
    * @return EnumEntry or null if not found
    */
-  def apply(name: String) = array.find(e => e.name == name).getOrElse(null)
+  def apply(name: String) = array.find(e => e.name == name).getOrElse(null.asInstanceOf[E])
 
   /**
    * Retrieve the EnumEntry by index.
