@@ -212,7 +212,11 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     }
   }
 
-  onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z, localizeMatrix) {
+  onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z, localizeMatrix)(validateMatrix)
+
+  def invalidateMatrix() = updateAsync.invokeLater(validateMatrix)
+
+  private val validateMatrix = () => {
     updateMatrix()
   }
 
@@ -338,7 +342,7 @@ class Property3D(dx: Double, dy: Double, dz: Double) extends PropertyParent {
   def set(value: Double) = apply(value, value, value)
 }
 
-object Component {
+object Component extends PropertyParent {
   private val tempBoundingBox = new BoundingBox()
   private val tempVector1 = new Vector3()
   private val tempVector2 = new Vector3()

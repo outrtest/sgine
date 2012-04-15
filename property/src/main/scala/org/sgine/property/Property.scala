@@ -1,11 +1,15 @@
 package org.sgine.property
 
 import backing.{LocalBacking, AtomicBacking, VolatileVariableBacking, VariableBacking}
+import org.sgine.hierarchy.{Named, Child}
 
 /**
  * Property represents an object containing a value.
  */
-trait Property[T] extends Function0[T] {
+trait Property[T] extends Function0[T] with Child with Named {
+  def parent: PropertyParent = null
+  def name: String = null
+
   /**
    * Retrieves the value of the property.
    */
@@ -16,13 +20,13 @@ object Property {
   /**
    * Creates a new StandardProperty with VariableBacking.
    */
-  def apply[T]() = new StandardProperty[T] with VariableBacking[T]
+  def apply[T]()(implicit parent: PropertyParent) = new StandardProperty[T]()(parent) with VariableBacking[T]
 
   /**
    * Creates a new StandardProperty with VariableBacking and the value supplied.
    */
-  def apply[T](value: T) = {
-    val p = apply[T]()
+  def apply[T](value: T)(implicit parent: PropertyParent) = {
+    val p = apply[T]()(parent)
     p.value = value
     p
   }
@@ -37,15 +41,15 @@ object Property {
   /**
    * Creates a new StandardProperty with VolatileVariableBacking.
    */
-  def volatile[T]() = new StandardProperty[T] with VolatileVariableBacking[T]
+  def volatile[T]()(implicit parent: PropertyParent) = new StandardProperty[T]()(parent) with VolatileVariableBacking[T]
 
   /**
    * Creates a new StandardProperty with AtomicBacking.
    */
-  def atomic[T]() = new StandardProperty[T] with AtomicBacking[T]
+  def atomic[T]()(implicit parent: PropertyParent) = new StandardProperty[T]()(parent) with AtomicBacking[T]
 
   /**
    * Creates a new StandardProperty with LocalBacking.
    */
-  def local[T]() = new StandardProperty[T] with LocalBacking[T]
+  def local[T]()(implicit parent: PropertyParent) = new StandardProperty[T]()(parent) with LocalBacking[T]
 }

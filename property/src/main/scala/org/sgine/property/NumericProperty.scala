@@ -21,13 +21,13 @@ object NumericProperty {
   /**
    * Creates a new StandardProperty with VariableBacking.
    */
-  def apply(): NumericProperty = new StandardProperty[Double] with VariableBacking[Double] with NumericProperty
+  def apply()(implicit parent: PropertyParent): NumericProperty = new StandardProperty[Double]()(parent) with VariableBacking[Double] with NumericProperty
 
   /**
    * Creates a new StandardProperty with VariableBacking and the value supplied.
    */
-  def apply(value: Double): NumericProperty = {
-    val p = apply()
+  def apply(value: Double)(implicit parent: PropertyParent): NumericProperty = {
+    val p = apply()(parent)
     p.value = value
     p
   }
@@ -35,15 +35,15 @@ object NumericProperty {
   /**
    * Creates a new StandardProperty with VolatileVariableBacking.
    */
-  def volatile() = new StandardProperty[Double] with VolatileVariableBacking[Double] with NumericProperty
+  def volatile()(implicit parent: PropertyParent) = new StandardProperty[Double]()(parent) with VolatileVariableBacking[Double] with NumericProperty
 
   /**
    * Creates a new StandardProperty with AtomicBacking.
    */
-  def atomic() = new StandardProperty[Double] with AtomicBacking[Double] with NumericProperty
+  def atomic()(implicit parent: PropertyParent) = new StandardProperty[Double]()(parent) with AtomicBacking[Double] with NumericProperty
 
   /**
    * Creates a new StandardProperty with LocalBacking.
    */
-  def local() = new StandardProperty[Double] with LocalBacking[Double] with NumericProperty
+  def local()(implicit parent: PropertyParent) = new StandardProperty[Double]()(parent) with LocalBacking[Double] with NumericProperty
 }
