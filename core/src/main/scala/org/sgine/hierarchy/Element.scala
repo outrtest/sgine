@@ -4,7 +4,7 @@ package org.sgine.hierarchy
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Element {
+trait Element extends Child {
   private var _parent: Parent = _
   def parent = _parent
 
@@ -86,7 +86,9 @@ trait Element {
     /**
      * Returns true if the value passed is in the ancestry hierarchy for this Child.
      */
-    def hasAncestor[T](value: T, maxDepth: Int = Int.MaxValue)(implicit manifest: Manifest[T]) = ancestor((t: T) => t == value, maxDepth)(manifest) != None
+    def hasAncestor[T](value: T, maxDepth: Int = Int.MaxValue)(implicit manifest: Manifest[T]) = {
+      Child.hasAncestor[T](Element.this, value, maxDepth)
+    }
 
     /**
      * Returns true if the value passed is the parent of this Child.
@@ -98,48 +100,8 @@ trait Element {
      * match is found.
      */
     def ancestor[T](matcher: T => Boolean, maxDepth: Int = Int.MaxValue)(implicit manifest: Manifest[T]): Option[T] = {
-      val p = parent
-      if (p != null) {
-        if (manifest.erasure.isAssignableFrom(p.asInstanceOf[AnyRef].getClass) && matcher(p.asInstanceOf[T])) {
-          Option(p.asInstanceOf[T])
-        } else if (maxDepth > 1) {
-          p.hierarchy.ancestor[T](matcher, maxDepth - 1)(manifest)
-        } else {
-          None
-        }
-      } else {
-        None
-      }
+      Child.ancestor[T](Element.this, matcher, maxDepth)(manifest)
     }
-
-//    /**
-//     * Processes up the ancestry tree through parents to find the first matching ancestor of the
-//     * generic type T and invokes the supplied function on it.
-//     */
-//    def ancestor[T](f: T => Unit)(implicit manifest: Manifest[T]): Unit = {
-//      val p = parent
-//      if (p != null) {
-//        if (manifest.erasure.isAssignableFrom(p.getClass)) {
-//          f(p.asInstanceOf[T])
-//        } else {
-//          p.hierarchy.ancestor(f)(manifest)
-//        }
-//      }
-//    }
-
-    /**
-     * Processes up the ancestry tree through parents executing the supplied function on all parents
-     * that match the supplied generic type.
-     */
-//    def ancestors[T](f: T => Unit)(implicit manifest: Manifest[T]): Unit = {
-//      val p = parent
-//      if (p != null) {
-//        if (manifest.erasure.isAssignableFrom(p.getClass)) {
-//          f(p.asInstanceOf[T])
-//        }
-//        p.hierarchy.ancestor[T](f)(manifest)
-//      }
-//    }
   }
 }
 

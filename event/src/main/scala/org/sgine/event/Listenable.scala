@@ -2,8 +2,8 @@ package org.sgine.event
 
 import actors.DaemonActor
 import org.sgine.bus._
-import org.sgine.hierarchy.{Parent, Element}
 import org.sgine.ref.ReferenceType
+import org.sgine.hierarchy.{Child, Parent}
 
 /**
  * Listenable can be mixed in to provide the ability for event management on an object.
@@ -43,7 +43,7 @@ trait Listenable {
 
     def descendant(depth: Int = Int.MaxValue): Event => Boolean = {
       case event => event.target match {
-        case child: Element if (child.hierarchy.hasAncestor(Listenable.this, depth)) => true
+        case child: Child if (Child.hasAncestor(child, Listenable.this, depth)) => true
         case _ => false
       }
     }

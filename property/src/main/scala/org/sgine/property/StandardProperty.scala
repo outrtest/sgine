@@ -10,7 +10,8 @@ import org.sgine.event.{ChangeEvent, Listenable}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait StandardProperty[T] extends MutableProperty[T] with Listenable with ChangeInterceptor[T] with Bindable[T] {
+abstract class StandardProperty[T](implicit override val parent: PropertyParent)
+               extends MutableProperty[T] with Listenable with ChangeInterceptor[T] with Bindable[T] {
   protected def getValue: T
 
   protected def setValue(value: T): Unit

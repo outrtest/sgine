@@ -34,7 +34,7 @@ package org.sgine.input
 
 import org.sgine.event.Listenable
 import org.sgine.{Enumerated, EnumEntry}
-import org.sgine.property.Property
+import org.sgine.property.{PropertyParent, Property}
 
 /**
  * Mouse represents the singleton of the mouse object.
@@ -43,7 +43,7 @@ import org.sgine.property.Property
  */
 sealed class Mouse extends EnumEntry[Mouse]
 
-object Mouse extends Listenable with Enumerated[Mouse] {
+object Mouse extends Listenable with Enumerated[Mouse] with PropertyParent {
   val x = Property[Int](0)
   val y = Property[Int](0)
 

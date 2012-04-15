@@ -1,6 +1,7 @@
 package org.sgine.property
 
 import org.sgine.naming.{NamingFilter, NamingParent}
+import org.sgine.hierarchy.Child
 
 
 /**
@@ -9,7 +10,11 @@ import org.sgine.naming.{NamingFilter, NamingParent}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait PropertyParent extends NamingParent {
+trait PropertyParent extends NamingParent with Child {
+  def parent: PropertyParent = null
+
+  implicit val childrenParent = this
+
   /**
    * Access all the properties associated with this class.
    */
