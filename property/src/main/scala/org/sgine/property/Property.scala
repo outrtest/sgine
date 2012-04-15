@@ -1,14 +1,14 @@
 package org.sgine.property
 
 import backing.{LocalBacking, AtomicBacking, VolatileVariableBacking, VariableBacking}
-import org.sgine.hierarchy.{Named, Child}
+import org.sgine.hierarchy.Child
+import org.sgine.naming.NamedChild
 
 /**
  * Property represents an object containing a value.
  */
-trait Property[T] extends Function0[T] with Child with Named {
+trait Property[T] extends Function0[T] with Child with NamedChild {
   def parent: PropertyParent = null
-  def name: String = null
 
   /**
    * Retrieves the value of the property.
