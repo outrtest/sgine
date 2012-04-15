@@ -41,7 +41,7 @@ import org.sgine.property.{PropertyParent, Property}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-sealed class Mouse extends EnumEntry[Mouse]
+sealed class Mouse extends EnumEntry[Mouse]()(Mouse)
 
 object Mouse extends Listenable with Enumerated[Mouse] with PropertyParent {
   val x = Property[Int](0)

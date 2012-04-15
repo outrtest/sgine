@@ -1,6 +1,6 @@
 package org.sgine
 
-import collection.mutable.ArrayBuffer
+import naming.{NamingFilter, NamingParent}
 import util.Random
 
 /**
@@ -8,9 +8,9 @@ import util.Random
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Enumerated[E <: EnumEntry[E]] {
-  implicit val instance = this
-  private val array = new ArrayBuffer[E]()
+trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
+  implicit val enumerated = this
+
   private lazy val r = new Random()
 
   /**
@@ -24,7 +24,7 @@ trait Enumerated[E <: EnumEntry[E]] {
    * @param name the name of the EnumEntry as defined by the field.
    * @return EnumEntry or null if not found
    */
-  def apply(name: String) = array.find(e => e.name == name).getOrElse(null.asInstanceOf[E])
+  def apply(name: String) = values.find(e => e.name == name).getOrElse(null.asInstanceOf[E])
 
   /**
    * Retrieve the EnumEntry by index.
@@ -32,28 +32,15 @@ trait Enumerated[E <: EnumEntry[E]] {
    * @param index of the EnumEntry.
    * @return EnumEntry or IndexOutOfBoundsException
    */
-  def apply(index: Int) = array(index)
+  def apply(index: Int) = values(index)
 
   /**
    * All EnumEntries for this Enumerated instance.
    */
-  def values: Seq[E] = array
+  lazy val values = new NamingFilter[E](this)
 
   /**
    * Retrieves a random enum.
    */
   def random = values(r.nextInt(values.length))
-
-  protected[sgine] def add(e: E) = synchronized {
-    array += e
-  }
-
-  protected[sgine] def name(e: E) = getClass.getDeclaredFields.find(f => if (classOf[EnumEntry[_]].isAssignableFrom(f.getType)) {
-    f.setAccessible(true)
-    f.get(this) == e
-  } else {
-    false
-  }).map(f => f.getName).getOrElse(throw new NullPointerException("Unable to find name for %s".format(e.getClass)))
-
-  protected[sgine] def index(e: E) = array.indexOf(e)
 }

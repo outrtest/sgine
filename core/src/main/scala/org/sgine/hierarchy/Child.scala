@@ -23,7 +23,6 @@ object Child {
    * match is found.
    */
   def ancestor[T](child: Child, matcher: T => Boolean, maxDepth: Int = Int.MaxValue)(implicit manifest: Manifest[T]): Option[T] = {
-    println("Checking ancestry: %s, %s, %s".format(child.getClass, child.parent, manifest.erasure))
     child.parent match {
       case p: Child if (manifest.erasure.isAssignableFrom(p.asInstanceOf[AnyRef].getClass) && matcher(p.asInstanceOf[T])) => Option(p.asInstanceOf[T])
       case p: Child if (maxDepth > 1) => ancestor[T](p, matcher, maxDepth - 1)(manifest)
