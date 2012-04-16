@@ -1,7 +1,6 @@
 package org.sgine.ui
 
 import org.sgine.Resource
-import org.sgine.property.PropertyParent
 import org.sgine.property.NumericProperty
 import render.{Vertex, TextureCoordinates}
 import com.badlogic.gdx.graphics.Texture
@@ -22,7 +21,7 @@ class Scale9 extends ShapeComponent {
   /**
    * Defines slice points for the Scale-9 texture.
    */
-  object slice extends PropertyParent {
+  object slice extends ComponentPropertyParent(this) {
     val x1 = NumericProperty(0.0)
     val y1 = NumericProperty(0.0)
     val x2 = NumericProperty(0.0)

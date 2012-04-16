@@ -210,8 +210,7 @@ class UI extends Container with DelayedInit {
     }
 
     def keyDown(keyCode: Int) = {
-      Keyboard.fire(KeyDownEvent(Key.byKeyCode(keyCode)
-        .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      Keyboard.fire(KeyDownEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 
@@ -221,8 +220,7 @@ class UI extends Container with DelayedInit {
     }
 
     def keyUp(keyCode: Int) = {
-      Keyboard.fire(KeyUpEvent(Key.byKeyCode(keyCode)
-        .getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      Keyboard.fire(KeyUpEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 

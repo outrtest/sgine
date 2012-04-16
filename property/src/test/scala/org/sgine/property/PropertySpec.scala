@@ -60,6 +60,8 @@ class PropertySpec extends WordSpec with ShouldMatchers {
 }
 
 object PropertyTester extends PropertyParent with Listenable {
+  val parent: PropertyParent = null
+
   object inner extends PropertyParent with Listenable {
     override def parent = PropertyTester
 

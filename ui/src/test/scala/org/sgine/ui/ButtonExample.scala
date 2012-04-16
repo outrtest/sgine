@@ -7,7 +7,7 @@ import org.sgine.Resource
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object ButtonExample extends UI {
+object ButtonExample extends UI with Debug {
   val button = new Button()
   button.alignment.horizontal := HorizontalAlignment.Left
   button.label.text := "Hello World!"

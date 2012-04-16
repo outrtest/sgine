@@ -32,6 +32,7 @@
 
 package org.sgine.input
 
+import event.{MouseReleaseEvent, MousePressEvent}
 import org.sgine.event.Listenable
 import org.sgine.{Enumerated, EnumEntry}
 import org.sgine.property.{PropertyParent, Property}
@@ -44,6 +45,14 @@ import org.sgine.property.{PropertyParent, Property}
 sealed class Mouse extends EnumEntry[Mouse]()(Mouse)
 
 object Mouse extends Listenable with Enumerated[Mouse] with PropertyParent {
+  val parent: PropertyParent = null
+
+  // Update the mouse button state
+  listeners.synchronous {
+    case evt: MousePressEvent => evt.button._down = true
+    case evt: MouseReleaseEvent => evt.button._down = false
+  }
+
   val x = Property[Int](0)
   val y = Property[Int](0)
 
