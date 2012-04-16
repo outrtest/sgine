@@ -7,7 +7,11 @@ import org.sgine.{Enumerated, EnumEntry}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-sealed class Key(val keyCode: Int) extends EnumEntry[Key]
+sealed class Key(val keyCode: Int) extends EnumEntry[Key] {
+  protected[input] var _down = false
+
+  def pressed = _down
+}
 
 object Key extends Enumerated[Key] {
   val AnyKey = new Key(-1)
@@ -151,5 +155,15 @@ object Key extends Enumerated[Key] {
   val F11 = new Key(254)
   val F12 = new Key(255)
 
+  /**
+   * Looks up the key by the keyCode provided.
+   */
   def byKeyCode(keyCode: Int) = values.find(k => k.keyCode == keyCode)
+
+  /**
+   * Returns all the keys that are currently pressed.
+   */
+  def pressed() = values.collect {
+    case key if (key.pressed) => key
+  }
 }

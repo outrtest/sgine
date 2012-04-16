@@ -69,8 +69,8 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The local location of this component in the UI.
    */
-  object location extends Property3D(0.0, 0.0, 0.0) {
-    val actual = new Property3D(0.0, 0.0, 0.0)
+  object location extends Property3D(this, 0.0, 0.0, 0.0) {
+    val actual = new Property3D(this, 0.0, 0.0, 0.0)
 
     def updateActual() = {
       alignment.horizontal() match {
@@ -94,7 +94,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The alignment of this component
    */
-  object alignment extends PropertyParent {
+  object alignment extends ComponentPropertyParent(this) {
     val horizontal = Property[HorizontalAlignment](HorizontalAlignment.Center)
     val vertical = Property[VerticalAlignment](VerticalAlignment.Middle)
     val depth = Property[DepthAlignment](DepthAlignment.Middle)
@@ -103,7 +103,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The size of this component in the UI.
    */
-  object size extends PropertyParent {
+  object size extends ComponentPropertyParent(this) {
     val width = NumericProperty(0.0)
     val height = NumericProperty(0.0)
     val depth = NumericProperty(0.0)
@@ -124,7 +124,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The measured size of the text.
    */
-  object measured extends PropertyParent {
+  object measured extends ComponentPropertyParent(this) {
     val width = NumericProperty(0.0)
     val height = NumericProperty(0.0)
     val depth = NumericProperty(0.0)
@@ -133,17 +133,17 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The scale of this component in the UI.
    */
-  object scale extends Property3D(1.0, 1.0, 1.0)
+  object scale extends Property3D(this, 1.0, 1.0, 1.0)
 
   /**
    * The rotation of this component in the UI.
    */
-  object rotation extends Property3D(0.0, 0.0, 0.0)
+  object rotation extends Property3D(this, 0.0, 0.0, 0.0)
 
   /**
    * The color of this component.
    */
-  object color extends PropertyParent {
+  object color extends ComponentPropertyParent(this) {
     val red = NumericProperty(1.0)
     val green = NumericProperty(1.0)
     val blue = NumericProperty(1.0)
@@ -170,7 +170,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
       color.alpha = alpha()
     }
 
-    object actual extends PropertyParent {
+    object actual extends ComponentPropertyParent(this) {
       val red = NumericProperty(1.0)
       val green = NumericProperty(1.0)
       val blue = NumericProperty(1.0)
@@ -212,13 +212,13 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     }
   }
 
-  onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z, localizeMatrix)(validateMatrix)
+  onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z, localizeMatrix) {
+    validateMatrix()
+  }
 
   def invalidateMatrix() = updateAsync.invokeLater(validateMatrix)
 
-  private val validateMatrix = () => {
-    updateMatrix()
-  }
+  private val validateMatrix = () => updateMatrix()
 
   protected[ui] def updateMatrix() = {
     matrixUpdater() match {
@@ -315,7 +315,9 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   }
 }
 
-class Property3D(dx: Double, dy: Double, dz: Double) extends PropertyParent {
+class ComponentPropertyParent(val parent: PropertyParent) extends PropertyParent
+
+class Property3D(parent: PropertyParent, dx: Double, dy: Double, dz: Double) extends ComponentPropertyParent(parent) {
   val x = NumericProperty(dx)
   val y = NumericProperty(dy)
   val z = NumericProperty(dz)
@@ -343,6 +345,8 @@ class Property3D(dx: Double, dy: Double, dz: Double) extends PropertyParent {
 }
 
 object Component extends PropertyParent {
+  val parent: PropertyParent = null
+
   private val tempBoundingBox = new BoundingBox()
   private val tempVector1 = new Vector3()
   private val tempVector2 = new Vector3()

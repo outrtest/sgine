@@ -11,7 +11,7 @@ import org.sgine.hierarchy.Child
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait PropertyParent extends NamingParent with Child {
-  def parent: PropertyParent = null
+  def parent: PropertyParent
 
   implicit val childrenParent = this
 
