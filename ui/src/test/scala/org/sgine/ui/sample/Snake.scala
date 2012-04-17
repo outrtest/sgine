@@ -15,7 +15,7 @@ object Snake extends UI {
   val resolutionWidth = 1500.0
   val resolutionHeight = 1200.0
 
-  val direction = Property[Compass](Compass.East)
+  val direction = Property[Compass]("direction", Compass.East)
 
   Keyboard.listeners.synchronous {
     case event: KeyDownEvent => event.key match {

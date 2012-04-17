@@ -25,10 +25,10 @@ class Image extends ShapeComponent {
    * texture when the texture property is changed.
    */
   object textureRegion extends ComponentPropertyParent(this) {
-    val x = Property[Int](0)
-    val y = Property[Int](0)
-    val width = Property[Int](0)
-    val height = Property[Int](0)
+    val x = Property[Int]("x", 0)
+    val y = Property[Int]("y", 0)
+    val width = Property[Int]("width", 0)
+    val height = Property[Int]("height", 0)
   }
 
   texture.onChange {

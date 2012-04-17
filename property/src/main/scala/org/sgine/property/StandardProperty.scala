@@ -1,5 +1,6 @@
 package org.sgine.property
 
+import backing.{VariableBacking, Backing}
 import org.sgine.ChangeInterceptor
 import org.sgine.bind.Bindable
 import org.sgine.event.{ChangeEvent, Listenable}
@@ -10,28 +11,30 @@ import org.sgine.event.{ChangeEvent, Listenable}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-abstract class StandardProperty[T](implicit override val parent: PropertyParent)
-               extends MutableProperty[T] with Listenable with ChangeInterceptor[T] with Bindable[T] {
-  protected def getValue: T
-
-  protected def setValue(value: T): Unit
-
+class StandardProperty[T](val name: String, backing: Backing[T] = new VariableBacking[T])
+                                  (implicit override val parent: PropertyParent)
+                                    extends MutableProperty[T]
+                                    with Listenable
+                                    with ChangeInterceptor[T]
+                                    with Bindable[T] {
   def apply(v: T) = {
-    val oldValue = getValue
+    val oldValue = backing.getValue
     val newValue = change(oldValue, v)
     if (oldValue != newValue) {
-      setValue(newValue)
+      backing.setValue(newValue)
       fire(ChangeEvent(this, oldValue, newValue))
     }
   }
 
-  def apply() = getValue
+  def apply() = backing.getValue
 
   def onChange(f: => Unit) = listeners.synchronous {
     case evt: ChangeEvent[_] => f
   }
 
   def readOnly: Property[T] = this
+
+  override def toString() = "Property[%s](%s)".format(name, value)
 }
 
 

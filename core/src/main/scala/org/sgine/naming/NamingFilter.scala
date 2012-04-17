@@ -1,12 +1,17 @@
 package org.sgine.naming
 
+import org.sgine.hierarchy.Named
+import util.Random
+
 /**
  * NamingFilter is used in conjunction with a NamingParent to represent a subset of fields within
  * the NamingParent of a specific type.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class NamingFilter[T <: NamedChild](protected val parent: NamingParent)(implicit manifest: Manifest[T] = null) extends Seq[T] {
+class NamingFilter[T <: Named](protected val parent: NamingParent)(implicit manifest: Manifest[T] = null) extends Seq[T] {
+  private lazy val r = new Random()
+
   private lazy val classType = if (manifest != null) {
     manifest.erasure
   } else {
@@ -36,4 +41,9 @@ class NamingFilter[T <: NamedChild](protected val parent: NamingParent)(implicit
    * Iterate over field values on this filter.
    */
   def iterator = fields.iterator
+
+  /**
+   * Retrieves a random enum.
+   */
+  def random = apply(r.nextInt(length))
 }

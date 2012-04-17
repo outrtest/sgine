@@ -5,6 +5,6 @@ package org.sgine.property
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class ImmutableProperty[T](v: T) extends Property[T] {
+case class ImmutableProperty[T](v: T, name: String = null) extends Property[T] {
   def apply() = v
 }

@@ -1,7 +1,6 @@
 package org.sgine
 
 import naming.{NamingFilter, NamingParent}
-import util.Random
 
 /**
  * Enumerated represents the companion object for EnumEntry instances.
@@ -10,8 +9,6 @@ import util.Random
  */
 trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
   implicit val enumerated = this
-
-  private lazy val r = new Random()
 
   /**
    * The name of this Enumerated.
@@ -38,9 +35,4 @@ trait Enumerated[E <: EnumEntry[E]] extends NamingParent {
    * All EnumEntries for this Enumerated instance.
    */
   lazy val values = new NamingFilter[E](this)
-
-  /**
-   * Retrieves a random enum.
-   */
-  def random = values(r.nextInt(values.length))
 }

@@ -1,13 +1,12 @@
 package org.sgine.property
 
-import backing.{LocalBacking, AtomicBacking, VolatileVariableBacking, VariableBacking}
-import org.sgine.hierarchy.Child
-import org.sgine.naming.NamedChild
+import backing._
+import org.sgine.hierarchy.{Named, Child}
 
 /**
  * Property represents an object containing a value.
  */
-trait Property[T] extends Function0[T] with Child with NamedChild {
+trait Property[T] extends Function0[T] with Child with Named {
   def parent: PropertyParent = null
 
   /**
@@ -20,13 +19,15 @@ object Property {
   /**
    * Creates a new StandardProperty with VariableBacking.
    */
-  def apply[T]()(implicit parent: PropertyParent) = new StandardProperty[T]()(parent) with VariableBacking[T]
+  def apply[T](name: String, backing: Backing[T] = new VariableBacking[T])(implicit parent: PropertyParent) = {
+    new StandardProperty[T](name, backing)(parent)
+  }
 
   /**
    * Creates a new StandardProperty with VariableBacking and the value supplied.
    */
-  def apply[T](value: T)(implicit parent: PropertyParent) = {
-    val p = apply[T]()(parent)
+  def apply[T](name: String, value: T)(implicit parent: PropertyParent) = {
+    val p = apply[T](name)(parent)
     p.value = value
     p
   }
@@ -34,22 +35,24 @@ object Property {
   /**
    * Creates a new Property with a value tied to the function supplied.
    */
-  def apply[T](f: => T) = new Property[T] {
+  def apply[T](_name: String, f: => T) = new Property[T] {
+    def name = _name
+
     def apply() = f
   }
 
   /**
    * Creates a new StandardProperty with VolatileVariableBacking.
    */
-  def volatile[T]()(implicit parent: PropertyParent) = new StandardProperty[T]()(parent) with VolatileVariableBacking[T]
+  def volatile[T](name: String)(implicit parent: PropertyParent) = apply(name, new VolatileVariableBacking[T])(parent)
 
   /**
    * Creates a new StandardProperty with AtomicBacking.
    */
-  def atomic[T]()(implicit parent: PropertyParent) = new StandardProperty[T]()(parent) with AtomicBacking[T]
+  def atomic[T](name: String)(implicit parent: PropertyParent) = apply(name, new AtomicBacking[T])(parent)
 
   /**
    * Creates a new StandardProperty with LocalBacking.
    */
-  def local[T]()(implicit parent: PropertyParent) = new StandardProperty[T]()(parent) with LocalBacking[T]
+  def local[T](name: String)(implicit parent: PropertyParent) = apply(name, new LocalBacking[T])(parent)
 }
