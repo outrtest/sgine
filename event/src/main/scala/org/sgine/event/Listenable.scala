@@ -66,5 +66,5 @@ trait Listenable {
     }
   }
 
-  def fire(event: Event) = Bus(event)
+  def fire(event: Event) = Event.fire(event, this)
 }

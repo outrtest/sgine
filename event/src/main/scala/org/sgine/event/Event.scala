@@ -1,5 +1,7 @@
 package org.sgine.event
 
+import org.sgine.bus.Bus
+
 /**
  * Event is the core object sent to listeners.
  *
@@ -7,13 +9,21 @@ package org.sgine.event
  * Date: 12/3/11
  */
 trait Event {
-  def target: Listenable
+  private var _target: Listenable = _
+
+  final def target = _target
 
   val thread = Thread.currentThread()
 }
 
 object Event {
-  def apply(target: Listenable) = BasicEvent(target)
+  def apply(target: Listenable) = new BasicEvent
+
+  def fire(event: Event, target: Listenable) = {
+    if (event._target != null) throw new RuntimeException("Events can only be fired once!")
+    event._target = target
+    Bus(event)
+  }
 }
 
-case class BasicEvent(target: Listenable) extends Event
+class BasicEvent extends Event

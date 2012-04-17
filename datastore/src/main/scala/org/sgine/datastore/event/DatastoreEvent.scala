@@ -10,8 +10,6 @@ trait DatastoreEvent[T <: Identifiable] extends Event {
   def obj: T
 
   def datastore: Datastore[T]
-
-  def target = datastore
 }
 
 case class DatastorePersist[T <: Identifiable](datastore: Datastore[T], obj: T) extends DatastoreEvent[T]

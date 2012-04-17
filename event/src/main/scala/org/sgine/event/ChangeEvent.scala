@@ -7,7 +7,7 @@ import org.sgine.Priority
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class ChangeEvent(target: Listenable, oldValue: Any, newValue: Any) extends Event
+case class ChangeEvent(oldValue: Any, newValue: Any) extends Event
 
 object ChangeEvent {
   private val allFilter = (l: Listenable) => true

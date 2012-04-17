@@ -33,7 +33,7 @@
 package org.sgine.scene.event
 
 import org.sgine.scene.Container
-import org.sgine.event.{Listenable, Event}
+import org.sgine.event.Event
 import org.sgine.hierarchy.Element
 
 /**
@@ -41,12 +41,12 @@ import org.sgine.hierarchy.Element
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-abstract class ContainerEvent(val target: Listenable) extends Event {
+abstract class ContainerEvent extends Event {
   def parent: Container[_ <: Element]
 
   def child: Any
 }
 
-case class ChildAddedEvent(parent: Container[_ <: Element], child: Any) extends ContainerEvent(parent)
+case class ChildAddedEvent(parent: Container[_ <: Element], child: Any) extends ContainerEvent
 
-case class ChildRemovedEvent(parent: Container[_ <: Element], child: Any) extends ContainerEvent(parent)
+case class ChildRemovedEvent(parent: Container[_ <: Element], child: Any) extends ContainerEvent
