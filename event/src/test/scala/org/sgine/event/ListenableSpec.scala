@@ -29,7 +29,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.values.length should equal(1)
       }
       "fire an event" in {
-        TestListenable.fire(Event(TestListenable))
+        TestListenable.fire(Event())
       }
       "have received the event on the listener" in {
         received should equal(true)
@@ -59,7 +59,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.values.length should equal(1)
       }
       "fire an event" in {
-        TestListenable.fire(Event(TestListenable))
+        TestListenable.fire(Event())
       }
       "not have received the event on the listener" in {
         received should equal(false)
@@ -94,7 +94,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.values.length should equal(1)
       }
       "fire an event" in {
-        TestListenable.fire(Event(TestListenable))
+        TestListenable.fire(Event())
       }
       "not have received the event on the listener" in {
         received should equal(false)
@@ -128,13 +128,13 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         TestListenable.listeners.values.length should equal(1)
       }
       "fire an event" in {
-        TestListenable.fire(Event(TestListenable))
+        TestListenable.fire(Event())
       }
       "have received one message" in {
         received() should equal(1)
       }
       "fire another event" in {
-        TestListenable.fire(Event(TestListenable))
+        TestListenable.fire(Event())
       }
       "not have received any additional messages on the original listener" in {
         received() should equal(1)
@@ -159,13 +159,13 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "fire an event" in {
-        TestListenable.fire(Event(TestListenable))
+        TestListenable.fire(Event())
       }
       "should have received an event" in {
         received() should equal(1)
       }
       "fire another event" in {
-        TestListenable.fire(Event(TestListenable))
+        TestListenable.fire(Event())
       }
       "should not have received another event" in {
         received() should equal(1)
@@ -186,13 +186,13 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "fire an event on the child" in {
-        TestChildListenable.fire(Event(TestChildListenable))
+        TestChildListenable.fire(Event())
       }
       "not have received an event on the child" in {
         received should equal(false)
       }
       "fire an event on the parent" in {
-        TestParentListenable.fire(Event(TestParentListenable))
+        TestParentListenable.fire(Event())
       }
       "have received an event on the child" in {
         received should equal(true)
@@ -213,13 +213,13 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "fire an event on the child" in {
-        TestChildListenable.fire(Event(TestChildListenable))
+        TestChildListenable.fire(Event())
       }
       "not have received an event on the child" in {
         received should equal(false)
       }
       "fire an event on the parent" in {
-        TestParentListenable.fire(Event(TestParentListenable))
+        TestParentListenable.fire(Event())
       }
       "have received an event on the child" in {
         received should equal(true)
@@ -240,13 +240,13 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "fire an event on the parent" in {
-        TestParentListenable.fire(Event(TestParentListenable))
+        TestParentListenable.fire(Event())
       }
       "not receive an event on the child" in {
         received should equal(false)
       }
       "fire an event on the child" in {
-        TestChildListenable.fire(Event(TestChildListenable))
+        TestChildListenable.fire(Event())
       }
       "have received an event on the parent" in {
         received should equal(true)
@@ -267,13 +267,13 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "fire an event on the parent" in {
-        TestParentListenable.fire(Event(TestParentListenable))
+        TestParentListenable.fire(Event())
       }
       "not receive an event on the child" in {
         received should equal(false)
       }
       "fire an event on the child" in {
-        TestChildListenable.fire(Event(TestChildListenable))
+        TestChildListenable.fire(Event())
       }
       "have received an event on the parent" in {
         received should equal(true)
@@ -306,7 +306,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "fire an event" in {
-        TestListenable.fire(Event(TestListenable)) should equal(Routing.Stop)
+        TestListenable.fire(Event()) should equal(Routing.Stop)
       }
       "message should have been received on first listener" in {
         received1 should equal(true)
@@ -343,7 +343,7 @@ class ListenableSpec extends WordSpec with ShouldMatchers {
         }
       }
       "fire an event" in {
-        routing = TestListenable.fire(Event(TestListenable))
+        routing = TestListenable.fire(Event())
       }
       "message should be a Routing.Results of List(1, 2, 3)" in {
         routing.name should equal("Results")

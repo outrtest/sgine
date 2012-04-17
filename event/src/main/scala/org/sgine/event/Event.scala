@@ -10,19 +10,28 @@ import org.sgine.bus.Bus
  */
 trait Event {
   private var _target: Listenable = _
+  private var _cause: Event = _
 
   final def target = _target
+  final def cause = _cause
 
   val thread = Thread.currentThread()
 }
 
 object Event {
-  def apply(target: Listenable) = new BasicEvent
+  private val _current = new ThreadLocal[Event]()
+  def current = _current.get()
+
+  def apply() = new BasicEvent
 
   def fire(event: Event, target: Listenable) = {
     if (event._target != null) throw new RuntimeException("Events can only be fired once!")
+    event._cause = current
     event._target = target
-    Bus(event)
+    _current.set(event)
+    val routing = Bus(event)
+    _current.set(event.cause)
+    routing
   }
 }
 
