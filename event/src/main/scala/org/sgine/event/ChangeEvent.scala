@@ -12,19 +12,20 @@ case class ChangeEvent(oldValue: Any, newValue: Any) extends Event
 object ChangeEvent {
   private val allFilter = (l: Listenable) => true
 
-  // TODO: ignore side-effects of changes? Event.cause stack?
   def record(listenable: Listenable, depth: Int = Int.MaxValue, filter: Listenable => Boolean = allFilter)(action: => Any) = {
     var list = List.empty[Change]
     val listener = listenable.listeners.filter.descendant(depth).priority(Priority.High).synchronous {
       case evt: ChangeEvent => {
-        val change = list.find(c => c.listenable == evt.target) match {
-          case Some(c) => {
-            list = list.filterNot(i => i == c)    // Remove existing entry
-            c.copy(newValue = evt.newValue)       // Duplicate with new value
+        if (evt.cause == null) {
+          val change = list.find(c => c.listenable == evt.target) match {
+            case Some(c) => {
+              list = list.filterNot(i => i == c)    // Remove existing entry
+              c.copy(newValue = evt.newValue)       // Duplicate with new value
+            }
+            case None => Change(evt.target, evt.oldValue, evt.newValue)   // Create a new change
           }
-          case None => Change(evt.target, evt.oldValue, evt.newValue)   // Create a new change
+          list = change :: list
         }
-        list = change :: list
       }
     }
     try {
