@@ -187,11 +187,6 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     val red = NumericProperty("red", 1.0)
     val green = NumericProperty("green", 1.0)
     val blue = NumericProperty("blue", 1.0)
-    /**
-     * The transparency value assigned to the component.
-     *
-     * Defaults to 1.0 (opaque)
-     */
     val alpha = NumericProperty("alpha", 1.0)
 
     def apply(color: Color, updateAlpha: Boolean = true) = {
@@ -203,12 +198,20 @@ trait Component extends PropertyParent with Listenable with Element with Updater
       }
     }
 
+    /**
+     * Updates the supplied MutableColor to this color value.
+     */
     def update(color: MutableColor) = {
       color.red = red()
       color.green = green()
       color.blue = blue()
       color.alpha = alpha()
     }
+
+    /**
+     * Creates an immutable Color from this color value.
+     */
+    def get() = Color.immutable(red(), green(), blue(), alpha())
 
     object actual extends ComponentPropertyParent(this) {
       val red = NumericProperty("red", 1.0)
@@ -349,7 +352,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   def onUpdate(listenables: Listenable*)(f: => Unit) = {
     val function = () => f
     listenables.foreach(l => l.listeners.synchronous {
-      case event: ChangeEvent[_] => updateAsync.invokeLater(function)
+      case event: ChangeEvent => updateAsync.invokeLater(function)
     })
   }
 
@@ -358,7 +361,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * change occurs.
    */
   def onChange(listenables: Listenable*)(f: => Unit) = listenables.foreach(l => l.listeners.synchronous {
-    case event: ChangeEvent[_] => f
+    case event: ChangeEvent => f
   })
 
   /**
@@ -369,7 +372,9 @@ trait Component extends PropertyParent with Listenable with Element with Updater
 }
 
 class ComponentPropertyParent(val parent: PropertyParent) extends PropertyParent {
-  val name = getClass.getSimpleName.substring(getClass.getSimpleName.indexOf('$') + 1).replaceAll("\\$", "")
+  val name = getClass.getSimpleName.substring(0, getClass.getSimpleName.length - 1) match {
+    case s => s.substring(s.lastIndexOf('$') + 1)
+  }
 }
 
 class Property3D(parent: PropertyParent, dx: Double, dy: Double, dz: Double) extends ComponentPropertyParent(parent) {

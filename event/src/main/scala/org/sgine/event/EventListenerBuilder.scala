@@ -58,9 +58,7 @@ case class EventListenerBuilder(private val listenable: Listenable,
   def apply(f: PartialFunction[Event, Any]) = {
     val function = Listener.withFallthrough(f)
     val filter: Event => Boolean = _filter match {
-      case null => {
-        case event => event.target == listenable
-      }
+      case null => listenable.filters.target
       case existingFilter => existingFilter
     }
     val listener = EventListener(listenable, function, filter, maxInvocation, processingMode, priority)

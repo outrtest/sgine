@@ -40,7 +40,7 @@ trait RenderableComponent extends Component {
   def onRender(listenables: Listenable*)(f: => Unit) = {
     val function = () => f
     listenables.foreach(l => l.listeners.synchronous {
-      case event: ChangeEvent[_] => renderAsync.invokeLater(function)
+      case event: ChangeEvent => renderAsync.invokeLater(function)
     })
   }
 }

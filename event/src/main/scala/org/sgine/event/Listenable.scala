@@ -43,6 +43,7 @@ trait Listenable {
 
     def descendant(depth: Int = Int.MaxValue): Event => Boolean = {
       case event => event.target match {
+        case _ if (depth == 0) => target(event)
         case child: Child if (Child.hasAncestor(child, Listenable.this, depth)) => true
         case _ => false
       }
@@ -52,6 +53,7 @@ trait Listenable {
 
     def ancestor(depth: Int = Int.MaxValue): Event => Boolean = {
       case event => event.target match {
+        case _ if (depth == 0) => target(event)
         case parent: Parent if (parent.hierarchy.hasDescendant(Listenable.this, depth)) => true
         case _ => false
       }
