@@ -22,10 +22,10 @@ class Scale9 extends ShapeComponent {
    * Defines slice points for the Scale-9 texture.
    */
   object slice extends ComponentPropertyParent(this) {
-    val x1 = NumericProperty(0.0)
-    val y1 = NumericProperty(0.0)
-    val x2 = NumericProperty(0.0)
-    val y2 = NumericProperty(0.0)
+    val x1 = NumericProperty("x1", 0.0)
+    val y1 = NumericProperty("y1", 0.0)
+    val x2 = NumericProperty("x2", 0.0)
+    val y2 = NumericProperty("y2", 0.0)
 
     def set(x1: Double, y1: Double, x2: Double, y2: Double) = {
       this.x1 := x1

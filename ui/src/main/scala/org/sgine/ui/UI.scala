@@ -7,7 +7,7 @@ import org.sgine.input.event._
 
 import scala.math._
 import org.sgine.Updatable
-import org.sgine.property.{Property, ImmutableProperty}
+import org.sgine.property.Property
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.math.Vector3
@@ -23,28 +23,29 @@ class UI extends Container with DelayedInit {
   /**
    * ContainerView of all Components within this UI hierarchy.
    */
-  lazy val componentsView = new ImmutableProperty(new ContainerView[Component](this))
+  lazy val componentsView = new ContainerView[Component](this)
   /**
    * ContainerView of all RenderableComponents within this UI hierarchy.
    */
-  lazy val rendererView = new ImmutableProperty(new ContainerView[RenderableComponent](this))
+  lazy val rendererView = new ContainerView[RenderableComponent](this)
   /**
    * ContainerView of all Updatables within this UI hierarchy.
    */
-  lazy val updatablesView = new ImmutableProperty(new ContainerView[Updatable](this))
+  lazy val updatablesView = new ContainerView[Updatable](this)
 
   /**
    * The camera to be used for displaying this UI.
    *
    * Defaults to an OrthographicCamera with the width and height defined by the UI.
    */
-  lazy val camera = Property[Camera](createOrtho(width, height))
+  lazy val camera = Property[Camera]("camera", createOrtho(width, height))
+
   /**
    * Whether vertical synchronization should be enabled.
    *
    * Defaults to false.
    */
-  lazy val verticalSync = Property[Boolean](false)
+  lazy val verticalSync = Property[Boolean]("verticalSync", false)
 
   private var initialize: () => Unit = _
 
@@ -108,7 +109,7 @@ class UI extends Container with DelayedInit {
     initialize = () => x
 
     Mouse.listeners.synchronous {
-      case evt: MouseEvent => pickComponents(evt, componentsView())
+      case evt: MouseEvent => pickComponents(evt, componentsView)
     }
   }
 
@@ -190,8 +191,8 @@ class UI extends Container with DelayedInit {
       Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT) // TODO: optional?
       delta = Gdx.graphics.getDeltaTime.toDouble
       update(delta)
-      updatablesView.value.foreach(updateUpdatables)
-      rendererView.value.foreach(renderRenderable)
+      updatablesView.foreach(updateUpdatables)
+      rendererView.foreach(renderRenderable)
     }
 
     protected[ui] var delta = 0.0

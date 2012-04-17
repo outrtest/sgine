@@ -1,6 +1,8 @@
 package org.sgine.ui
 
 import org.sgine.scene.AbstractMutableContainer
+import org.sgine.event.ChangeEvent
+import org.sgine.property.Property
 
 /**
  * AbstractContainer provides all the functionality for a Component container, but the mutability of its children is
@@ -9,10 +11,12 @@ import org.sgine.scene.AbstractMutableContainer
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class AbstractContainer extends AbstractMutableContainer[Component] with Component {
-//  println("Adding listener...")
-//  listeners.synchronous.filter.descendant() {
-//    case event: ChangeEvent[_] => println("Changed: " + event)
-//  }
+  listeners.synchronous.filter.descendant() {
+    case event: ChangeEvent[_] => event.target match {
+      case property: Property[_] if (property.name != null) => println("Changed: " + event.target.getClass + " / " + event)
+      case _ => // Ignore
+    }
+  }
 
   override protected[ui] def updateMatrix() = {
     super.updateMatrix()

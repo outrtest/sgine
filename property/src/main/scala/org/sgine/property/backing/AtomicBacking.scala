@@ -7,12 +7,12 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait AtomicBacking[T] {
+class AtomicBacking[T] extends Backing[T] {
   private val v = new AtomicReference[T]()
 
-  protected final def getValue = v.get()
+  protected[property] final def getValue = v.get()
 
-  protected final def setValue(value: T) {
+  protected[property] final def setValue(value: T) {
     v.set(value)
   }
 }

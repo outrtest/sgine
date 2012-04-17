@@ -3,6 +3,7 @@ package org.sgine.property
 import org.scalatest.WordSpec
 import org.scalatest.matchers.ShouldMatchers
 import org.sgine.event.{Listenable, ChangeEvent}
+import org.sgine.naming.NamedChild
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -10,8 +11,8 @@ import org.sgine.event.{Listenable, ChangeEvent}
 class PropertySpec extends WordSpec with ShouldMatchers {
   "Property values" when {
     "created without a default value" should {
-      val sp = Property[String]()(null)
-      val ip = Property[Int]()(null)
+      val sp = Property[String]("sp")(null)
+      val ip = Property[Int]("ip")(null)
       "have the correct default values" in {
         sp() should equal(null)
         ip() should equal(0)
@@ -59,12 +60,12 @@ class PropertySpec extends WordSpec with ShouldMatchers {
   }
 }
 
-object PropertyTester extends PropertyParent with Listenable {
+object PropertyTester extends PropertyParent with Listenable with NamedChild {
   val parent: PropertyParent = null
 
-  object inner extends PropertyParent with Listenable {
+  object inner extends PropertyParent with Listenable with NamedChild {
     override def parent = PropertyTester
 
-    val p = Property[Int]()
+    val p = Property[Int]("p")
   }
 }

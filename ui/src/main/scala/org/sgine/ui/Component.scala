@@ -9,6 +9,8 @@ import scala.math._
 import org.sgine.hierarchy.Element
 import org.sgine.property.{NumericProperty, PropertyParent, Property}
 import org.sgine._
+import concurrent.AtomicInt
+import naming.NamedChild
 
 /**
  * Component is the base class for all visual elements in UI.
@@ -20,6 +22,20 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * The parent associated with this Component.
    */
   override def parent = super.parent.asInstanceOf[AbstractContainer]
+
+  /**
+   * Unique identifier in this runtime for this specific component instance.
+   */
+  val id = Component.nextId()
+
+  private var _name: String = null
+
+  def name: String = _name match {
+    case null => "%s%s".format(getClass.getSimpleName, id)
+    case n => n
+  }
+
+  def name_=(name: String) = _name = name
 
   /**
    * Return the root UI for this Component or null if not attached to a UI.
@@ -44,27 +60,27 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    *
    * Defaults to true.
    */
-  val visible = Property[Boolean](true)
+  val visible = Property[Boolean]("visible", true)
 
   /**
    * True if mouse events should occur on this Component.
    *
    * Defaults to true.
    */
-  val mouseEnabled = Property[Boolean](true)
+  val mouseEnabled = Property[Boolean]("mouseEnabled", true)
   /**
    * If true the translation will be independent from the parent matrix.
    *
    * Defaults to false.
    */
-  val localizeMatrix = Property[Boolean](false)
+  val localizeMatrix = Property[Boolean]("localizeMatrix", false)
   /**
    * Updater function called when a translation value of the component is modified to apply properly to the backing
    * Matrix4.
    *
    * Defaults to Component.DefaultMatrixUpdater
    */
-  val matrixUpdater = Property[(Component, Matrix4) => Unit](Component.DefaultMatrixUpdater)
+  val matrixUpdater = Property[(Component, Matrix4) => Unit]("matrixUpdater", Component.DefaultMatrixUpdater)
 
   /**
    * The local location of this component in the UI.
@@ -95,24 +111,24 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * The alignment of this component
    */
   object alignment extends ComponentPropertyParent(this) {
-    val horizontal = Property[HorizontalAlignment](HorizontalAlignment.Center)
-    val vertical = Property[VerticalAlignment](VerticalAlignment.Middle)
-    val depth = Property[DepthAlignment](DepthAlignment.Middle)
+    val horizontal = Property[HorizontalAlignment]("horizontal", HorizontalAlignment.Center)
+    val vertical = Property[VerticalAlignment]("vertical", VerticalAlignment.Middle)
+    val depth = Property[DepthAlignment]("depth", DepthAlignment.Middle)
   }
 
   /**
    * The size of this component in the UI.
    */
   object size extends ComponentPropertyParent(this) {
-    val width = NumericProperty(0.0)
-    val height = NumericProperty(0.0)
-    val depth = NumericProperty(0.0)
+    val width = NumericProperty("width", 0.0)
+    val height = NumericProperty("height", 0.0)
+    val depth = NumericProperty("depth", 0.0)
     /**
      * The algorithm used to update the actual size when the measured size changes.
      *
      * Defaults to SizeAlgorithm.measured
      */
-    val algorithm = Property[SizeAlgorithm](SizeAlgorithm.measured)
+    val algorithm = Property[SizeAlgorithm]("algorithm", SizeAlgorithm.measured)
 
     def apply(width: Double = this.width(), height: Double = this.height(), depth: Double = this.depth()) = {
       this.width := width
@@ -125,9 +141,9 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * The measured size of the text.
    */
   object measured extends ComponentPropertyParent(this) {
-    val width = NumericProperty(0.0)
-    val height = NumericProperty(0.0)
-    val depth = NumericProperty(0.0)
+    val width = NumericProperty("width", 0.0)
+    val height = NumericProperty("height", 0.0)
+    val depth = NumericProperty("depth", 0.0)
   }
 
   /**
@@ -144,15 +160,15 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * The color of this component.
    */
   object color extends ComponentPropertyParent(this) {
-    val red = NumericProperty(1.0)
-    val green = NumericProperty(1.0)
-    val blue = NumericProperty(1.0)
+    val red = NumericProperty("red", 1.0)
+    val green = NumericProperty("green", 1.0)
+    val blue = NumericProperty("blue", 1.0)
     /**
      * The transparency value assigned to the component.
      *
      * Defaults to 1.0 (opaque)
      */
-    val alpha = NumericProperty(1.0)
+    val alpha = NumericProperty("alpha", 1.0)
 
     def apply(color: Color, updateAlpha: Boolean = true) = {
       red := color.red
@@ -171,10 +187,10 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     }
 
     object actual extends ComponentPropertyParent(this) {
-      val red = NumericProperty(1.0)
-      val green = NumericProperty(1.0)
-      val blue = NumericProperty(1.0)
-      val alpha = NumericProperty(1.0)
+      val red = NumericProperty("red", 1.0)
+      val green = NumericProperty("green", 1.0)
+      val blue = NumericProperty("blue", 1.0)
+      val alpha = NumericProperty("alpha", 1.0)
     }
   }
 
@@ -315,12 +331,14 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   }
 }
 
-class ComponentPropertyParent(val parent: PropertyParent) extends PropertyParent
+class ComponentPropertyParent(val parent: PropertyParent) extends PropertyParent {
+  val name = getClass.getSimpleName.substring(getClass.getSimpleName.indexOf('$') + 1).replaceAll("\\$", "")
+}
 
 class Property3D(parent: PropertyParent, dx: Double, dy: Double, dz: Double) extends ComponentPropertyParent(parent) {
-  val x = NumericProperty(dx)
-  val y = NumericProperty(dy)
-  val z = NumericProperty(dz)
+  val x = NumericProperty("x", dx)
+  val y = NumericProperty("y", dy)
+  val z = NumericProperty("z", dz)
 
   /**
    * Assigns the default value to these properties.
@@ -344,7 +362,7 @@ class Property3D(parent: PropertyParent, dx: Double, dy: Double, dz: Double) ext
   def set(value: Double) = apply(value, value, value)
 }
 
-object Component extends PropertyParent {
+object Component extends PropertyParent with NamedChild {
   val parent: PropertyParent = null
 
   private val tempBoundingBox = new BoundingBox()
@@ -352,10 +370,14 @@ object Component extends PropertyParent {
   private val tempVector2 = new Vector3()
   private val tempColor = new MutableColor(1.0, 1.0, 1.0, 1.0)
 
+  private val identifiers = new AtomicInt(0)
+
+  def nextId() = identifiers.addAndGet(1)
+
   /**
    * The Component the mouse is current over.
    */
-  val mouse = Property[Component]()
+  val mouse = Property[Component]("mouse")
 
   /**
    * Default MatrixUpdater used by Components to apply translation, rotation, and scale.

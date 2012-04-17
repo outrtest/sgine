@@ -13,9 +13,9 @@ import com.badlogic.gdx.graphics.Texture
 class ShapeComponent extends RenderableComponent {
   private val arrayBuffer = new ArrayBuffer(false)
 
-  protected[ui] val _vertices = Property[List[Double]](Nil)
-  protected[ui] val _texture = Property[Texture](null)
-  protected[ui] val _textureCoordinates = Property[List[Double]](Nil)
+  protected[ui] val _vertices = Property[List[Double]]("_vertices", Nil)
+  protected[ui] val _texture = Property[Texture]("_texture")
+  protected[ui] val _textureCoordinates = Property[List[Double]]("_textureCoordinates", Nil)
 
   private var verticesLength = 0
 

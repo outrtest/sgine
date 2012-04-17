@@ -84,7 +84,11 @@ class EnhancedMethod protected[reflect](val parent: EnhancedClass, val declaring
       throw new IllegalArgumentException("%s arguments supplied, %s expected".format(args.length, this.args.length))
     }
     javaMethod.setAccessible(true)
-    javaMethod.invoke(instance, args.map(a => a.asInstanceOf[AnyRef]): _*).asInstanceOf[R]
+    try {
+      javaMethod.invoke(instance, args.map(a => a.asInstanceOf[AnyRef]): _*).asInstanceOf[R]
+    } catch {
+      case exc => throw new RuntimeException("Error(%s) attempting to invoke %s on %s with arguments: %s".format(exc.getClass.getSimpleName, this, instance, args), exc)
+    }
   }
 
   /**

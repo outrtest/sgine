@@ -5,12 +5,12 @@ package org.sgine.property.backing
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait LocalBacking[T] {
+class LocalBacking[T] extends Backing[T] {
   private val v = new ThreadLocal[T]()
 
-  protected final def getValue = v.get()
+  protected[property] final def getValue = v.get()
 
-  protected final def setValue(value: T) {
+  protected[property] final def setValue(value: T) {
     v.set(value)
   }
 }

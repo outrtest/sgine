@@ -8,15 +8,16 @@ import annotation.tailrec
 trait Named {
   def name: String
 
-  def hierarchicalName = Named.buildHierarchicalName(this)
+  def hierarchicalNames = Named.buildHierarchicalName(this)
+  def hierarchicalName = hierarchicalNames.mkString(".")
 }
 
 object Named {
   @tailrec
   def buildHierarchicalName(current: Any, tail: List[String] = Nil): List[String] = current match {
-    case child: Child with Named => buildHierarchicalName(child.parent, child.name :: tail)
+    case child: Child with Named => buildHierarchicalName(child.parent, if (child.name != null) child.name :: tail else tail)
     case child: Child => buildHierarchicalName(child.parent, tail)
-    case named: Named => named.name :: tail
+    case named: Named => if (named.name != null) named.name :: tail else tail
     case _ => tail
   }
 }

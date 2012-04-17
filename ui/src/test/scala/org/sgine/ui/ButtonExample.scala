@@ -4,14 +4,16 @@ import align.HorizontalAlignment
 import font.BitmapFont
 import org.sgine.Resource
 
+
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object ButtonExample extends UI with Debug {
   val button = new Button()
   button.alignment.horizontal := HorizontalAlignment.Left
-  button.label.text := "Hello World!"
   contents += button
+
+  button.label.text := "Hello World!"
 }
 
 class Button extends AbstractContainer {
@@ -20,12 +22,18 @@ class Button extends AbstractContainer {
 
   implicit val font = BitmapFont(Resource("arial64.fnt"))
   val label = Label("")
+  label.size.width.listeners.synchronous {
+    case evt => println("Width changed! " + label.size.width.name)
+  }
   label.location.z := 0.01
   addChild(label)
 
-  onChange(label.size.width, label.size.height) {
-    println("Label size changed!")
-    background.size.width := label.size.width()
-    background.size.height := label.size.height()
-  }
+  println(label.size.width.parent)
+  println(label.size.width.name)
+
+//  onChange(label.size.width, label.size.height) {
+//    println("Label size changed!")
+//    background.size.width := label.size.width()
+//    background.size.height := label.size.height()
+//  }
 }

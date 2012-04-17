@@ -7,7 +7,7 @@ import uk.co.caprica.vlcj.player._
 import org.sgine.concurrent.Time
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.ConcurrentLinkedQueue
-import org.sgine.property.{PropertyParent, Property}
+import org.sgine.property.Property
 import com.badlogic.gdx.graphics.{Texture, Pixmap}
 
 import scala.collection.JavaConversions._
@@ -16,14 +16,14 @@ import scala.collection.JavaConversions._
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Media extends Image {
-  val resource = Property[String]()
-  val buffers = Property[Int](2)
+  val resource = Property[String]("resource")
+  val buffers = Property[Int]("buffers", 2)
 
-  object information extends PropertyParent {
-    val length = Property[Long]()
+  object information extends ComponentPropertyParent(this) {
+    val length = Property[Long]("length")
   }
 
-  private val mediaPlayer = Property[MediaPlayer]()
+  private val mediaPlayer = Property[MediaPlayer]("mediaPlayer")
   private val currentBuffer = new AtomicReference[Pixmap](null)
   private val availableBuffers = new ConcurrentLinkedQueue[Pixmap]()
   @volatile private var usedBuffers = 0

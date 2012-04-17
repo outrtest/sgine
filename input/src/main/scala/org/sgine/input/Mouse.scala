@@ -53,8 +53,8 @@ object Mouse extends Listenable with Enumerated[Mouse] with PropertyParent {
     case evt: MouseReleaseEvent => evt.button._down = false
   }
 
-  val x = Property[Int](0)
-  val y = Property[Int](0)
+  val x = Property[Int]("x", 0)
+  val y = Property[Int]("y", 0)
 
   val Move = new Mouse
   val Press = new Mouse

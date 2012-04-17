@@ -16,12 +16,11 @@ trait NamingParent {
     fields += child
   }
 
-  protected[naming] def name(child: NamedChild) = getClass.getDeclaredFields.find(f => if (classOf[NamedChild].isAssignableFrom(f.getType)) {
-    f.setAccessible(true)
-    f.get(this) == child
+  protected[naming] def name(child: NamedChild) = getClass.methods.find(m => if (m.args.isEmpty && m.returnType.`type`.name != "Unit") {
+    m[Any](this) == child
   } else {
     false
-  }).map(f => f.getName).getOrElse(throw new NullPointerException("Unable to find name for %s".format(child)))
+  }).map(m => m.name).getOrElse(null)
 
   protected[naming] def notFound(name: String) = {
     throw new NullPointerException("Unable to find %s.%s".format(getClass.name, name))
