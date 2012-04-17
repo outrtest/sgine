@@ -19,8 +19,8 @@ class AbstractContainer extends AbstractMutableContainer[Component] with Compone
   this match {
     case ui: UI => // Ignore UI
     case _ => listeners.synchronous.filter.descendant(3) {
-      case event: ChangeEvent[_] => event.target match {
-        case property: Property[_] if (property.name != null && property.hierarchicalName.matches(childSizeChangeRegex)) => {
+      case event: ChangeEvent => event.target match {
+        case property: Property[_] if (property.name != null && property.hierarchicalName().matches(childSizeChangeRegex)) => {
           val component = Component.parentComponent(property)
           if (component.parent == this && component.includeInLayout()) {
             updateLayout()

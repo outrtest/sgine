@@ -29,7 +29,7 @@ class StandardProperty[T](val name: String, backing: Backing[T] = new VariableBa
   def apply() = backing.getValue
 
   def onChange(f: => Unit) = listeners.synchronous {
-    case evt: ChangeEvent[_] => f
+    case evt: ChangeEvent => f
   }
 
   def readOnly: Property[T] = this

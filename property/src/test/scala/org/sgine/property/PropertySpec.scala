@@ -24,13 +24,13 @@ class PropertySpec extends WordSpec with ShouldMatchers {
     var inner = 0
     var outter = 0
     PropertyTester.inner.p.listeners.synchronous {
-      case event: ChangeEvent[_] => direct += 1
+      case event: ChangeEvent => direct += 1
     }
     PropertyTester.inner.listeners.filter.descendant().synchronous {
-      case event: ChangeEvent[_] => inner += 1
+      case event: ChangeEvent => inner += 1
     }
     PropertyTester.listeners.filter.descendant().synchronous {
-      case event: ChangeEvent[_] => outter += 1
+      case event: ChangeEvent => outter += 1
     }
     "hierarchy is validate" should {
       "have the correct parent for the property" in {

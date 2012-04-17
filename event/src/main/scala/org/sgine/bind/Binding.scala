@@ -11,7 +11,7 @@ import org.sgine.event._
  */
 class Binding[T](binded: Function1[T, Unit], val acceptFilter: Event => Boolean) extends Listener {
   def apply(event: Event) = event match {
-    case changeEvent: ChangeEvent[_] => binded(changeEvent.newValue.asInstanceOf[T])
+    case changeEvent: ChangeEvent => binded(changeEvent.newValue.asInstanceOf[T])
     case _ => // Ignore everything else
   }
 }
