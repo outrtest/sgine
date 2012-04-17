@@ -14,8 +14,8 @@ trait SizeAlgorithm {
 object SizeAlgorithm {
   val measured = new SizeAlgorithm {
     def apply(component: Component) = {
-      component.size.width := component.measured.width()
-      component.size.height := component.measured.height()
+      component.size.width := component.padding.left() + component.measured.width() + component.padding.right()
+      component.size.height := component.padding.top() + component.measured.height() + component.padding.bottom()
       component.size.depth := component.measured.depth()
     }
   }

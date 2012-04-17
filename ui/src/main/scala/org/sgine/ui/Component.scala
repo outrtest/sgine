@@ -6,11 +6,12 @@ import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
 import org.sgine.event.{ChangeEvent, Listenable}
 
 import scala.math._
-import org.sgine.hierarchy.Element
 import org.sgine.property.{NumericProperty, PropertyParent, Property}
 import org.sgine._
 import concurrent.AtomicInt
+import hierarchy.{Child, Element}
 import naming.NamedChild
+import annotation.tailrec
 
 /**
  * Component is the base class for all visual elements in UI.
@@ -81,6 +82,12 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * Defaults to Component.DefaultMatrixUpdater
    */
   val matrixUpdater = Property[(Component, Matrix4) => Unit]("matrixUpdater", Component.DefaultMatrixUpdater)
+  /**
+   * Determines whether containers that are laying out components should include this component in the layout.
+   *
+   * Defaults to true.
+   */
+  val includeInLayout = Property[Boolean]("includeInLayout", true)
 
   /**
    * The local location of this component in the UI.
@@ -114,6 +121,23 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     val horizontal = Property[HorizontalAlignment]("horizontal", HorizontalAlignment.Center)
     val vertical = Property[VerticalAlignment]("vertical", VerticalAlignment.Middle)
     val depth = Property[DepthAlignment]("depth", DepthAlignment.Middle)
+  }
+
+  /**
+   * Padding to this component
+   */
+  object padding extends ComponentPropertyParent(this) {
+    val top = NumericProperty("top", 0.0)
+    val bottom = NumericProperty("bottom", 0.0)
+    val left = NumericProperty("left", 0.0)
+    val right = NumericProperty("right", 0.0)
+
+    def apply(top: Double = this.top(), bottom: Double = this.bottom(), left: Double = this.left(), right: Double = this.right()) = {
+      this.top := top
+      this.bottom := bottom
+      this.left := left
+      this.right := right
+    }
   }
 
   /**
@@ -228,7 +252,20 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     }
   }
 
-  onUpdate(location.actual.x, location.actual.y, location.actual.z, rotation.x, rotation.y, rotation.z, scale.x, scale.y, scale.z, localizeMatrix) {
+  onUpdate(location.actual.x,
+           location.actual.y,
+           location.actual.z,
+           rotation.x,
+           rotation.y,
+           rotation.z,
+           scale.x,
+           scale.y,
+           scale.z,
+           padding.top,
+           padding.bottom,
+           padding.left,
+           padding.right,
+           localizeMatrix) {
     validateMatrix()
   }
 
@@ -390,9 +427,34 @@ object Component extends PropertyParent with NamedChild {
         case false => matrix.set(p.matrix)
       }
     }
-    matrix.translate(component.location.actual.x().toFloat, component.location.actual.y().toFloat, component.location.actual.z().toFloat)
+    var padTop = 0.0
+    var padBottom = 0.0
+    var padLeft = 0.0
+    var padRight = 0.0
+    if (component.includeInLayout() && component.parent != null) {
+      padLeft = component.parent.padding.left()
+      padRight = component.parent.padding.right()
+      padTop = component.parent.padding.top()
+      padBottom = component.parent.padding.bottom()
+    }
+    val x = component.location.actual.x() + padLeft - padRight
+    val y = component.location.actual.y() + padBottom - padTop
+    val z = component.location.actual.z()
+    matrix.translate(x.toFloat, y.toFloat, z.toFloat)
     val maxRotation = max(max(component.rotation.x(), component.rotation.y()), component.rotation.z())
     matrix.rotate((component.rotation.x() / maxRotation).toFloat, (component.rotation.y() / maxRotation).toFloat, (component.rotation.z() / maxRotation).toFloat, maxRotation.toFloat)
     matrix.scale(component.scale.x().toFloat, component.scale.y().toFloat, component.scale.z().toFloat)
+  }
+
+  @tailrec
+  def parentComponent(child: Child): Component = {
+    child match {
+      case null => null
+      case component: Component => component
+      case c => c.parent match {
+        case p: Child => parentComponent(p)
+        case _ => null
+      }
+    }
   }
 }
