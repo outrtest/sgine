@@ -22,7 +22,7 @@ class StandardProperty[T](val name: String, backing: Backing[T] = new VariableBa
     val newValue = change(oldValue, v)
     if (oldValue != newValue) {
       backing.setValue(newValue)
-      fire(ChangeEvent(this, oldValue, newValue))
+      fire(ChangeEvent(oldValue, newValue))
     }
   }
 

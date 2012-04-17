@@ -33,7 +33,7 @@
 package org.sgine.input.event
 
 import org.sgine.input.{MouseButton, Mouse}
-import org.sgine.event.{Listenable, Event}
+import org.sgine.event.Event
 
 /**
  * MouseEvents
@@ -53,58 +53,58 @@ trait MouseEvent extends Event {
 
   def deltaY: Double
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z): MouseEvent
+  def duplicate(x: Double = x, y: Double = y, z: Double = z): MouseEvent
 }
 
 trait MouseButtonEvent extends MouseEvent {
   def button: MouseButton
 }
 
-case class MousePressEvent(button: MouseButton, x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double, target: Listenable = Mouse) extends MouseButtonEvent {
+case class MousePressEvent(button: MouseButton, x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Press
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z) = copy(target = newTarget, x = x, y = y, z = z)
+  def duplicate(x: Double = x, y: Double = y, z: Double = z) = copy(x = x, y = y, z = z)
 }
 
-case class MouseReleaseEvent(button: MouseButton, x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double, target: Listenable = Mouse) extends MouseButtonEvent {
+case class MouseReleaseEvent(button: MouseButton, x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Release
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z) = copy(target = newTarget, x = x, y = y, z = z)
+  def duplicate(x: Double = x, y: Double = y, z: Double = z) = copy(x = x, y = y, z = z)
 }
 
-case class MouseClickEvent(button: MouseButton, x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double, target: Listenable = Mouse) extends MouseButtonEvent {
+case class MouseClickEvent(button: MouseButton, x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double) extends MouseButtonEvent {
   val state = Mouse.Click
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z) = copy(target = newTarget, x = x, y = y, z = z)
+  def duplicate(x: Double = x, y: Double = y, z: Double = z) = copy(x = x, y = y, z = z)
 }
 
-case class MouseMoveEvent(x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double, target: Listenable = Mouse) extends MouseEvent {
+case class MouseMoveEvent(x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Move
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z) = copy(target = newTarget, x = x, y = y, z = z)
+  def duplicate(x: Double = x, y: Double = y, z: Double = z) = copy(x = x, y = y, z = z)
 }
 
-case class MouseDragEvent(x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double, target: Listenable = Mouse) extends MouseEvent {
+case class MouseDragEvent(x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Drag
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z) = copy(target = newTarget, x = x, y = y, z = z)
+  def duplicate(x: Double = x, y: Double = y, z: Double = z) = copy(x = x, y = y, z = z)
 }
 
-case class MouseOverEvent(x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double, target: Listenable = Mouse) extends MouseEvent {
+case class MouseOverEvent(x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Over
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z) = copy(target = newTarget, x = x, y = y, z = z)
+  def duplicate(x: Double = x, y: Double = y, z: Double = z) = copy(x = x, y = y, z = z)
 }
 
-case class MouseOutEvent(x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double, target: Listenable = Mouse) extends MouseEvent {
+case class MouseOutEvent(x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double) extends MouseEvent {
   val state = Mouse.Out
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z) = copy(target = newTarget, x = x, y = y, z = z)
+  def duplicate(x: Double = x, y: Double = y, z: Double = z) = copy(x = x, y = y, z = z)
 }
 
-case class MouseWheelEvent(wheel: Int, x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double, target: Listenable = Mouse)
+case class MouseWheelEvent(wheel: Int, x: Double, y: Double, z: Double, deltaX: Double, deltaY: Double)
   extends MouseEvent {
   val state = Mouse.Wheel
 
-  def duplicate(newTarget: Listenable, x: Double = x, y: Double = y, z: Double = z) = copy(target = newTarget, x = x, y = y, z = z)
+  def duplicate(x: Double = x, y: Double = y, z: Double = z) = copy(x = x, y = y, z = z)
 }

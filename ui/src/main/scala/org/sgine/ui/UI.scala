@@ -85,7 +85,7 @@ class UI extends Container with DelayedInit {
     val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
     val localEvent: MouseEvent = hit match {
       case null => null
-      case _ => evt.duplicate(hit, intersection.x, intersection.y, intersection.z)
+      case _ => evt.duplicate(intersection.x, intersection.y, intersection.z)
     }
     if (hit != null) {
       hit.fire(localEvent)

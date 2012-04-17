@@ -97,7 +97,7 @@ class BindTest[T] extends Bindable[T] {
   def value = _value
 
   def value_=(_value: T) = {
-    val evt = ChangeEvent(this, this._value, _value)
+    val evt = ChangeEvent(this._value, _value)
     this._value = _value
     fire(evt)
   }
