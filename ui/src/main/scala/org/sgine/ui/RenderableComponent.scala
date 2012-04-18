@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import org.sgine.AsynchronousInvocation
 import org.sgine.event.{ChangeEvent, Listenable}
 import org.sgine.concurrent.Time
+import org.sgine.property.Property
 
 /**
  * RenderableComponent is mixed into Components that render something to the screen.
@@ -14,14 +15,21 @@ trait RenderableComponent extends Component {
   private val renderAsync = new AsynchronousInvocation()
 
   /**
+   * Defines whether the camera positioning should be used to determine rendering placement of this component.
+   *
+   * Defaults to true.
+   */
+  val useCamera = Property[Boolean]("useCamera", true)    // TODO: make this work correctly
+
+  /**
    * This final method updates the screen coordinates for the Component's matrix, invokes all
    * onRender listeners, and calls the draw method.
    */
   final def render() = {
     renderAsync.thread = Thread.currentThread()
     ui match {
-      case null => // Rendering outside of UI
-      case root => root.camera()(Gdx.gl11)
+      case root: UI if (useCamera()) => root.camera()(Gdx.gl11)
+      case _ => Gdx.gl11.glLoadIdentity()
     }
     Gdx.gl11.glMultMatrixf(matrix.getValues, 0)
     Gdx.gl11.glColor4f(color.actual.red().toFloat, color.actual.green().toFloat, color.actual.blue().toFloat, color.actual.alpha().toFloat)
