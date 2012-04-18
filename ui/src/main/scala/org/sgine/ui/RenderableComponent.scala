@@ -3,6 +3,7 @@ package org.sgine.ui
 import com.badlogic.gdx.Gdx
 import org.sgine.AsynchronousInvocation
 import org.sgine.event.{ChangeEvent, Listenable}
+import org.sgine.concurrent.Time
 
 /**
  * RenderableComponent is mixed into Components that render something to the screen.
@@ -17,6 +18,7 @@ trait RenderableComponent extends Component {
    * onRender listeners, and calls the draw method.
    */
   final def render() = {
+    renderAsync.thread = Thread.currentThread()
     ui match {
       case null => // Rendering outside of UI
       case root => root.camera()(Gdx.gl11)
@@ -42,5 +44,22 @@ trait RenderableComponent extends Component {
     listenables.foreach(l => l.listeners.synchronous {
       case event: ChangeEvent => renderAsync.invokeLater(function)
     })
+  }
+
+  def invokeAtRender(f: => Unit) = {
+    val function = () => f
+    renderAsync.invokeLater(function)
+  }
+
+  def invokeAtRenderAndWait(f: => Unit, time: Double = Double.MaxValue) = {
+    var finished = false
+    val function = () => {
+      f
+      finished = true
+    }
+    renderAsync.invokeLater(function)
+    Time.waitFor(time) {
+      finished
+    }
   }
 }
