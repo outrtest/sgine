@@ -1,6 +1,5 @@
 package org.sgine.ui
 
-import font.BitmapFont
 
 /**
  * Label represents a single line of text.
@@ -23,10 +22,9 @@ object Label {
   /**
    * Convenience method to create a Label.
    */
-  def apply(text: String)(implicit font: BitmapFont) = {
+  def apply(text: String) = {
     val l = new Label()
     l.text := text
-    l.font := font
     l
   }
 }

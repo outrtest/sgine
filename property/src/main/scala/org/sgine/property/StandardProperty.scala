@@ -17,6 +17,8 @@ class StandardProperty[T](val name: String, backing: Backing[T] = new VariableBa
                                     with Listenable
                                     with ChangeInterceptor[T]
                                     with Bindable[T] {
+  initialize()
+
   def apply(v: T) = {
     val oldValue = backing.getValue
     val newValue = change(oldValue, v)

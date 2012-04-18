@@ -2,6 +2,7 @@ package org.sgine.naming
 
 import org.sgine.reflect._
 import collection.mutable.ArrayBuffer
+import org.sgine.hierarchy.Named
 
 /**
  * NamingParent can be mixed into a class to access fields from their names.
@@ -10,10 +11,12 @@ import collection.mutable.ArrayBuffer
  */
 trait NamingParent {
   implicit val instance = this
-  protected[naming] val fields = new ArrayBuffer[NamedChild]()
+  protected[naming] val fields = new ArrayBuffer[Named]()
 
-  protected[naming] def add(child: NamedChild) = synchronized {
-    fields += child
+  protected[sgine] def add(child: Named) = synchronized {
+    if (!fields.contains(child)) {
+      fields += child
+    }
   }
 
   protected[naming] def name(child: NamedChild) = getClass.methods.find(m => if (m.args.isEmpty && m.returnType.`type`.name != "Unit") {

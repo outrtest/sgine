@@ -2,12 +2,20 @@ package org.sgine.property
 
 import backing._
 import org.sgine.hierarchy.{Named, Child}
+import org.sgine.naming.NamingParent
 
 /**
  * Property represents an object containing a value.
  */
 trait Property[T] extends Function0[T] with Child with Named {
   def parent: PropertyParent = null
+
+  protected def initialize(): Unit = {
+    parent match {
+      case p: NamingParent => p.add(this)
+      case _ => // Missed
+    }
+  }
 
   /**
    * Retrieves the value of the property.

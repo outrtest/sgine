@@ -10,6 +10,31 @@ trait Named {
 
   def hierarchicalNames(from: Any = null) = Named.buildHierarchicalName(this, from)
   def hierarchicalName(from: Any = null) = hierarchicalNames(from).mkString(".")
+  def hierarchicalMatch(names: String) = hierarchicalMatchCheck(names.split("[.]").toList.reverse)
+
+  @tailrec
+  private def hierarchicalMatchCheck(names: List[String]): Boolean = {
+    if (names.nonEmpty) {
+      val n = names.head
+      println("Checking: " + n + " - " + name + " - " + getClass.getSimpleName)
+      if (n == name || n == getClass.getSimpleName) {
+        names.tail match {
+          case Nil => true
+          case others => this match {
+            case child: Child => child.parent match {
+              case named: Named => named.hierarchicalMatchCheck(others)
+              case _ => false
+            }
+            case _ => false
+          }
+        }
+      } else {
+        false
+      }
+    } else {
+      false
+    }
+  }
 }
 
 object Named {

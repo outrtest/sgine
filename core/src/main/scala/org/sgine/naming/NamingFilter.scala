@@ -27,6 +27,8 @@ class NamingFilter[T <: Named](protected val parent: NamingParent)(implicit mani
    */
   def apply(name: String) = fields.find(m => m.name == name).getOrElse(parent.notFound(name))
 
+  def get(name: String) = fields.find(m => m.name == name)
+
   /**
    * The number of fields on this filter.
    */
