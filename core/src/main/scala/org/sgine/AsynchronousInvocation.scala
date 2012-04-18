@@ -11,6 +11,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class AsynchronousInvocation {
+  /**
+   * The thread for asynchronous invocation.
+   */
+  @volatile var thread: Thread = _
   private val set = new ConcurrentLinkedQueue[() => Unit]()
 
   /**
@@ -19,9 +23,14 @@ class AsynchronousInvocation {
   def invokeNow() = processSet()
 
   /**
-   * Invokes the supplied function later when invokeNow() is called.
+   * Invokes the supplied function later when invokeNow() is called unless it is currently in the correct thread for
+   * activation in which case it will be invoked immediately.
    */
-  def invokeLater(f: () => Unit) = set.add(f)
+  def invokeLater(f: () => Unit) = if (thread == Thread.currentThread()) {
+    f()
+  } else {
+    set.add(f)
+  }
 
   @tailrec
   private def processSet(): Unit = {

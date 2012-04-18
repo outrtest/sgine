@@ -12,11 +12,12 @@ case class ChangeEvent(oldValue: Any, newValue: Any) extends Event
 object ChangeEvent {
   private val allFilter = (l: Listenable) => true
 
-  def record(listenable: Listenable, depth: Int = Int.MaxValue, filter: Listenable => Boolean = allFilter)(action: => Any) = {
+  def record(listenable: Listenable, sideffects: Boolean = false, depth: Int = Int.MaxValue, filter: Listenable => Boolean = allFilter)(action: => Any) = {
+    val currentCause = Event.current
     var list = List.empty[Change]
     val listener = listenable.listeners.filter.descendant(depth).priority(Priority.High).synchronous {
       case evt: ChangeEvent => {
-        if (evt.cause == null) {
+        if (sideffects || evt.cause == currentCause) {
           val change = list.find(c => c.listenable == evt.target) match {
             case Some(c) => {
               list = list.filterNot(i => i == c)    // Remove existing entry

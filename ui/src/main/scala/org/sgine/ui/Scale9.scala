@@ -1,9 +1,9 @@
 package org.sgine.ui
 
 import org.sgine.Resource
-import org.sgine.property.NumericProperty
 import render.{Vertex, TextureCoordinates}
 import com.badlogic.gdx.graphics.Texture
+import org.sgine.property.{Property, NumericProperty}
 
 /**
  * Displays Scale-9 images for rendering at different sizes.
@@ -11,9 +11,18 @@ import com.badlogic.gdx.graphics.Texture
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Scale9 extends ShapeComponent {
+  val resource = Property[Resource]("resource")
+
+  onUpdate(resource) {
+    load(resource())
+  }
+
   def this(resource: Resource, x1: Double, y1: Double, x2: Double, y2: Double) = {
     this()
-    load(resource, x1, y1, x2, y2)
+//    load(resource, x1, y1, x2, y2)
+
+    this.resource := resource
+    slice.set(x1, y1, x2, y2)
   }
 
   def texture = _texture
@@ -60,7 +69,7 @@ class Scale9 extends ShapeComponent {
   /**
    * Loads the resource supplied as a Texture and slices as a Scale-9.
    */
-  def load(resource: Resource, x1: Double, y1: Double, x2: Double, y2: Double) = {
+  private def load(resource: Resource, x1: Double = slice.x1(), y1: Double = slice.y1(), x2: Double = slice.x2(), y2: Double = slice.y2()) = {
     texture := new Texture(resource)
 
     slice.set(x1, y1, x2, y2)
