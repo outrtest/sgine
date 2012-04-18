@@ -6,7 +6,7 @@ import annotation.tailrec
 import org.sgine.property.Property
 
 /**
- * Style is defined as a val in Components that want to leverage styles.
+ * Style is defined in Stylized trait.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
