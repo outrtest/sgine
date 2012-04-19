@@ -3,8 +3,7 @@ package org.sgine.ui
 import org.sgine.Resource
 import render.{Vertex, TextureCoordinates}
 import com.badlogic.gdx.graphics.Texture
-import org.sgine.property.{StandardProperty, NumericProperty}
-import theme.ThemableProperty
+import org.sgine.property.{Property, ObjectPropertyParent, NumericProperty}
 
 /**
  * Displays Scale-9 images for rendering at different sizes.
@@ -12,7 +11,7 @@ import theme.ThemableProperty
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Scale9 extends ShapeComponent {
-  val resource = new StandardProperty[Resource]("resource") with ThemableProperty[Resource]
+  val resource = Property[Resource]("resource")
 
   onUpdate(resource) {
     load(resource())
@@ -31,7 +30,7 @@ class Scale9 extends ShapeComponent {
   /**
    * Defines slice points for the Scale-9 texture.
    */
-  object slice extends ComponentPropertyParent(this) {
+  object slice extends ObjectPropertyParent(this) {
     val x1 = NumericProperty("x1", 0.0)
     val y1 = NumericProperty("y1", 0.0)
     val x2 = NumericProperty("x2", 0.0)

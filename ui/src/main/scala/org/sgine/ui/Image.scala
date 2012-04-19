@@ -24,7 +24,7 @@ class Image extends ShapeComponent {
    * This defines the region of the texture to be displayed. This is reset to the bounds of the
    * texture when the texture property is changed.
    */
-  object textureRegion extends ComponentPropertyParent(this) {
+  object textureRegion extends ObjectPropertyParent(this) {
     val x = Property[Int]("x", 0)
     val y = Property[Int]("y", 0)
     val width = Property[Int]("width", 0)

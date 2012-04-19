@@ -7,10 +7,10 @@ import uk.co.caprica.vlcj.player._
 import org.sgine.concurrent.Time
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.ConcurrentLinkedQueue
-import org.sgine.property.Property
 import com.badlogic.gdx.graphics.{Texture, Pixmap}
 
 import scala.collection.JavaConversions._
+import org.sgine.property.{ObjectPropertyParent, Property}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -19,7 +19,7 @@ class Media extends Image {
   val resource = Property[String]("resource")
   val buffers = Property[Int]("buffers", 2)
 
-  object information extends ComponentPropertyParent(this) {
+  object information extends ObjectPropertyParent(this) {
     val length = Property[Long]("length")
   }
 

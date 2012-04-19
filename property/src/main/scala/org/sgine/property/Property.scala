@@ -10,11 +10,9 @@ import org.sgine.naming.NamingParent
 trait Property[T] extends Function0[T] with Child with Named {
   def parent: PropertyParent = null
 
-  protected def initialize(): Unit = {
-    parent match {
-      case p: NamingParent => p.add(this)
-      case _ => // Missed
-    }
+  parent match {
+    case p: NamingParent => p.add(this)
+    case _ => // Missed
   }
 
   /**

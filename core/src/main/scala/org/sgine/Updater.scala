@@ -8,9 +8,21 @@ import annotation.tailrec
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Updater extends Updatable {
+  private var initialized = false
   private var updatables: List[Updatable] = Nil
 
+  /**
+   * Allow initialization of content to occur before first update.
+   */
+  protected def initialize() = {
+  }
+
   override def update(delta: Double) = {
+    if (!initialized) {
+      initialize()
+      initialized = true
+    }
+
     super.update(delta)
 
     doUpdate(delta, updatables)

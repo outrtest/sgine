@@ -9,7 +9,8 @@ import util.Random
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class NamingFilter[T <: Named](protected val parent: NamingParent)(implicit manifest: Manifest[T] = null) extends Seq[T] {
+class NamingFilter[T <: Named](protected val parent: NamingParent, filter: PartialFunction[Named, List[T]] = null)
+                              (implicit manifest: Manifest[T] = null) extends Seq[T] {
   private lazy val r = new Random()
 
   private lazy val classType = if (manifest != null) {
@@ -17,10 +18,14 @@ class NamingFilter[T <: Named](protected val parent: NamingParent)(implicit mani
   } else {
     Class.forName(parent.getClass.getName.substring(0, parent.getClass.getName.length - 1))
   }
-//  protected lazy val fields = parent.fields.filter(v => classType.isAssignableFrom(v.getClass)).toList
-  protected lazy val fields = parent.fields.collect {
-    case v if (classType.isAssignableFrom(v.getClass)) => v.asInstanceOf[T]
-  }.toList
+  protected lazy val fields = filter match {
+    case null => {
+      parent.fields.collect {
+        case v if (classType.isAssignableFrom(v.getClass)) => v.asInstanceOf[T]
+      }.toList
+    }
+    case f => parent.fields.flatMap(filter).toList
+  }
 
   /**
    * Finds the field by the provided name or throws a RuntimeException if not found.

@@ -6,12 +6,13 @@ import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
 import org.sgine.event.{ChangeEvent, Listenable}
 
 import scala.math._
-import org.sgine.property.{NumericProperty, PropertyParent, Property}
 import org.sgine._
 import concurrent.AtomicInt
 import hierarchy.{Child, Element}
 import naming.NamedChild
 import annotation.tailrec
+import property.{ObjectPropertyParent, NumericProperty, PropertyParent, Property}
+import theme.Theme
 
 /**
  * Component is the base class for all visual elements in UI.
@@ -88,12 +89,18 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    * Defaults to true.
    */
   val includeInLayout = Property[Boolean]("includeInLayout", true)
+  /**
+   * Determines whether this Component can be themed.
+   *
+   * Defaults to true.
+   */
+  val themable = Property[Boolean]("themable", true)
 
   /**
    * The local location of this component in the UI.
    */
   object location extends Property3D(this, 0.0, 0.0, 0.0) {
-    val actual = new Property3D(this, 0.0, 0.0, 0.0)
+    object actual extends Property3D(this, 0.0, 0.0, 0.0)
 
     def updateActual() = {
       alignment.horizontal() match {
@@ -117,7 +124,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The alignment of this component
    */
-  object alignment extends ComponentPropertyParent(this) {
+  object alignment extends ObjectPropertyParent(this) {
     val horizontal = Property[HorizontalAlignment]("horizontal", HorizontalAlignment.Center)
     val vertical = Property[VerticalAlignment]("vertical", VerticalAlignment.Middle)
     val depth = Property[DepthAlignment]("depth", DepthAlignment.Middle)
@@ -126,7 +133,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * Padding to this component
    */
-  object padding extends ComponentPropertyParent(this) {
+  object padding extends ObjectPropertyParent(this) {
     val top = NumericProperty("top", 0.0)
     val bottom = NumericProperty("bottom", 0.0)
     val left = NumericProperty("left", 0.0)
@@ -143,7 +150,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The size of this component in the UI.
    */
-  object size extends ComponentPropertyParent(this) {
+  object size extends ObjectPropertyParent(this) {
     val width = NumericProperty("width", 0.0)
     val height = NumericProperty("height", 0.0)
     val depth = NumericProperty("depth", 0.0)
@@ -164,7 +171,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The measured size of the text.
    */
-  object measured extends ComponentPropertyParent(this) {
+  object measured extends ObjectPropertyParent(this) {
     val width = NumericProperty("width", 0.0)
     val height = NumericProperty("height", 0.0)
     val depth = NumericProperty("depth", 0.0)
@@ -183,7 +190,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The color of this component.
    */
-  object color extends ComponentPropertyParent(this) {
+  object color extends ObjectPropertyParent(this) {
     val red = NumericProperty("red", 1.0)
     val green = NumericProperty("green", 1.0)
     val blue = NumericProperty("blue", 1.0)
@@ -213,7 +220,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
      */
     def get() = Color.immutable(red(), green(), blue(), alpha())
 
-    object actual extends ComponentPropertyParent(this) {
+    object actual extends ObjectPropertyParent(this) {
       val red = NumericProperty("red", 1.0)
       val green = NumericProperty("green", 1.0)
       val blue = NumericProperty("blue", 1.0)
@@ -347,6 +354,14 @@ trait Component extends PropertyParent with Listenable with Element with Updater
     }
   }
 
+  override protected def initialize() = {
+    super.initialize()
+
+    if (themable()) {
+      Theme(this)       // Apply theme to this component
+    }
+  }
+
   override def update(delta: Double) = {
     super.update(delta)
 
@@ -375,13 +390,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   }
 }
 
-class ComponentPropertyParent(val parent: PropertyParent) extends PropertyParent {
-  val name = getClass.getSimpleName.substring(0, getClass.getSimpleName.length - 1) match {
-    case s => s.substring(s.lastIndexOf('$') + 1)
-  }
-}
-
-class Property3D(parent: PropertyParent, dx: Double, dy: Double, dz: Double) extends ComponentPropertyParent(parent) {
+class Property3D(parent: PropertyParent, dx: Double, dy: Double, dz: Double) extends ObjectPropertyParent(parent) {
   val x = NumericProperty("x", dx)
   val y = NumericProperty("y", dy)
   val z = NumericProperty("z", dz)

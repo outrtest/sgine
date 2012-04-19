@@ -3,7 +3,6 @@ package org.sgine.ui
 import font.{BitmapFontGlyph, BitmapFont, TextGenerator}
 import org.sgine.property._
 import collection.mutable.ListBuffer
-import theme.ThemableProperty
 
 /**
  * TextComponent is a base class for all Components needing to draw text to the screen.
@@ -12,7 +11,7 @@ import theme.ThemableProperty
  */
 class TextComponent extends ShapeComponent {
   protected[ui] val _text = Property[String]("_text")
-  protected[ui] val _font = new StandardProperty[BitmapFont]("_font") with ThemableProperty[BitmapFont]
+  protected[ui] val _font = Property[BitmapFont]("_font")
   protected[ui] val _wrapWidth = NumericProperty("_wrapWidth", Double.MaxValue)
 
   protected val generator = new TextGenerator(_font())

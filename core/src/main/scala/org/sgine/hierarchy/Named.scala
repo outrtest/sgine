@@ -16,7 +16,6 @@ trait Named {
   private def hierarchicalMatchCheck(names: List[String]): Boolean = {
     if (names.nonEmpty) {
       val n = names.head
-      println("Checking: " + n + " - " + name + " - " + getClass.getSimpleName)
       if (n == name || n == getClass.getSimpleName) {
         names.tail match {
           case Nil => true
