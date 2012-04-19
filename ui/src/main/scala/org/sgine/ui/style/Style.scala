@@ -1,16 +1,16 @@
 package org.sgine.ui.style
 
-import org.sgine.ui.{ComponentPropertyParent, Component}
+import org.sgine.ui.Component
 import org.sgine.event.{ChangeEvent, Change}
 import annotation.tailrec
-import org.sgine.property.Property
+import org.sgine.property.{ObjectPropertyParent, Property}
 
 /**
  * Style is defined in Stylized trait.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Style(val component: Component) extends ComponentPropertyParent(component) {
+class Style(val component: Component) extends ObjectPropertyParent(component) {
   override val name = "style"
 
   private val changed = Property[List[Change]]("changed", Nil)
@@ -23,7 +23,7 @@ class Style(val component: Component) extends ComponentPropertyParent(component)
 
   def apply(f: => Any) = {
     val p = StyleProperty("temp")
-    p := (() => f)
+    p := ((component: Component) => f)
     set(p)
   }
 
@@ -70,7 +70,10 @@ class Style(val component: Component) extends ComponentPropertyParent(component)
   private def applyStyles(styles: List[StyleProperty]): Unit = {
     if (styles.nonEmpty) {
       val s = styles.head
-      s()()
+      s() match {
+        case null =>
+        case style => style(component)
+      }
       applyStyles(styles.tail)
     }
   }

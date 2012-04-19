@@ -1,6 +1,8 @@
 package org.sgine.ui.theme
 
 import org.sgine.property.{MutableProperty, StandardProperty, PropertyParent, Property}
+import org.sgine.ui.Component
+import annotation.tailrec
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -8,7 +10,17 @@ import org.sgine.property.{MutableProperty, StandardProperty, PropertyParent, Pr
 object Theme extends StandardProperty[Theme]("Theme")(null) with PropertyParent {
   this := WindowsTheme
 
-  def apply(property: ThemableProperty[_]) = {
+  def apply(component: Component) = {
+    value match {
+      case null =>                                                     // Do nothing - no theme is active
+      case theme => {
+        theme.updateProperties(component.allProperties)                // Update properties
+        theme(component)
+      }
+    }
+  }
+
+  def apply(property: MutableProperty[_]) = {
     value match {
       case null =>                        // Do nothing - no theme is active
       case theme => {
@@ -25,7 +37,20 @@ object Theme extends StandardProperty[Theme]("Theme")(null) with PropertyParent 
 class Theme(val name: String) extends PropertyParent {
   val parent = Theme
 
-  private def updateProperty(property: ThemableProperty[_], themeProperties: Seq[Property[_]] = properties): Unit = {
+  @tailrec
+  private def updateProperties(properties: Seq[Property[_]]): Unit = {
+    if (properties.nonEmpty) {
+      val property = properties.head
+      property match {
+        case mutable: MutableProperty[_] => updateProperty(mutable)
+        case _ => // Not mutable
+      }
+      apply(property)
+      updateProperties(properties.tail)
+    }
+  }
+
+  private def updateProperty(property: MutableProperty[_], themeProperties: Seq[Property[_]] = allProperties): Unit = {
     if (themeProperties.nonEmpty) {
       val themeProperty = themeProperties.head
       if (property.hierarchicalMatch(themeProperty.name)) {
@@ -37,7 +62,13 @@ class Theme(val name: String) extends PropertyParent {
   }
 
   /**
-   * Can be overridden to apply values to a Property during the creation process directly.
+   * Can be overridden to apply values to a Component during the theming process.
+   */
+  protected def apply(component: Component) = {
+  }
+
+  /**
+   * Can be overridden to apply values to a Property during the theming process.
    */
   protected def apply(property: Property[_]) = {
   }

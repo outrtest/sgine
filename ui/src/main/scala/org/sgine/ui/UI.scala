@@ -47,7 +47,7 @@ class UI extends Container with DelayedInit {
    */
   lazy val verticalSync = Property[Boolean]("verticalSync", false)
 
-  private var initialize: () => Unit = _
+  private var delayedInitialize: () => Unit = _
 
   /**
    * Window title
@@ -106,7 +106,7 @@ class UI extends Container with DelayedInit {
     size.width := width
     size.height := height
 
-    initialize = () => x
+    delayedInitialize = () => x
 
     Mouse.listeners.synchronous {
       case evt: MouseEvent => pickComponents(evt, componentsView)
@@ -171,8 +171,8 @@ class UI extends Container with DelayedInit {
       Gdx.gl11.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA)
       camera().update()
       Gdx.input.setInputProcessor(this)
-      if (initialize != null) {
-        initialize()
+      if (delayedInitialize != null) {
+        delayedInitialize()
       }
       onUpdate(camera) {
         camera().update()
