@@ -7,6 +7,11 @@ package org.sgine.ui
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Label extends TextComponent {
+  def this(text: String) = {
+    this()
+    this.text := text
+  }
+
   /**
    * The text to be displayed.
    */
@@ -22,9 +27,5 @@ object Label {
   /**
    * Convenience method to create a Label.
    */
-  def apply(text: String) = {
-    val l = new Label()
-    l.text := text
-    l
-  }
+  def apply(text: String) = new Label(text)
 }
