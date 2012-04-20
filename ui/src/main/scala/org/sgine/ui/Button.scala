@@ -1,6 +1,8 @@
 package org.sgine.ui
 
 import style.Stylized
+import org.sgine.input.event.MousePressEvent
+import org.sgine.event.ActionEvent
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -25,5 +27,9 @@ class Button extends AbstractContainer with Stylized {
 
   onChange(size.width, size.height) {
     background.size(size.width(), size.height())
+  }
+
+  listeners.synchronous {
+    case evt: MousePressEvent => fire(ActionEvent("click"))
   }
 }
