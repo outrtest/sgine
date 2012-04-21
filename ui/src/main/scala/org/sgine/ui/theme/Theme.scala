@@ -4,6 +4,8 @@ import org.sgine.property.{MutableProperty, StandardProperty, PropertyParent, Pr
 import org.sgine.ui.Component
 import annotation.tailrec
 
+import org.sgine.reflect._
+
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
@@ -41,11 +43,14 @@ class Theme(val name: String) extends PropertyParent {
   private def updateProperties(properties: Seq[Property[_]]): Unit = {
     if (properties.nonEmpty) {
       val property = properties.head
-      property match {
-        case mutable: MutableProperty[_] => updateProperty(mutable)
-        case _ => // Not mutable
+      val previous = property()
+      if (previous == null || previous == previous.asInstanceOf[AnyRef].getClass.defaultForType) {
+        property match {
+          case mutable: MutableProperty[_] => updateProperty(mutable)
+          case _ => // Not mutable
+        }
+        apply(property)
       }
-      apply(property)
       updateProperties(properties.tail)
     }
   }

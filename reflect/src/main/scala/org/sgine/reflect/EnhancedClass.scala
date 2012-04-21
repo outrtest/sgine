@@ -175,6 +175,7 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
     case "Long" => 0.longValue()
     case "Float" => 0.floatValue()
     case "Double" => 0.doubleValue()
+    case "List" => Nil
     case _ => null
   }
 }
@@ -197,14 +198,21 @@ object EnhancedClass {
    */
   def convertClass(c: Class[_]) = c.getName match {
     case "boolean" => "Boolean"
+    case "java.lang.Boolean" => "Boolean"
     case "byte" => "Byte"
+    case "java.lang.Byte" => "Byte"
     case "int" => "Int"
+    case "java.lang.Integer" => "Int"
     case "long" => "Long"
+    case "java.lang.Long" => "Long"
     case "float" => "Float"
+    case "java.lang.Float" => "Float"
     case "double" => "Double"
+    case "java.lang.Double" => "Double"
     case "void" => "Unit"
     case "java.lang.String" => "String"
     case "[I" => "Array[Int]"
+    case "scala.collection.immutable.Nil$" => "List"
     case s => s
   }
 }

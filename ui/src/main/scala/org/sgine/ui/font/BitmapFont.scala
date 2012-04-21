@@ -45,6 +45,7 @@ object BitmapFont {
    * Currently only works with XML defined fonts.
    */
   def apply(resource: Resource): BitmapFont = {
+    // TODO: cache in UI
     val xml = XML.load(resource.read())
     val info = (xml \ "info").head
     val face = (info \ "@face").text
