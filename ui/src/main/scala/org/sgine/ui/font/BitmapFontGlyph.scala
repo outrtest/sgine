@@ -21,8 +21,9 @@ case class BitmapFontGlyph(id: Int,
   /**
    * Generates the texture coordinates for this glyph based on the texture size supplied.
    */
-  def coords(textureWidth: Double, textureHeight: Double) = TextureCoordinates
-      .rectCoords(this.x, this.y, width, height, textureWidth, textureHeight)
+  def coords(textureWidth: Double, textureHeight: Double) = {
+    TextureCoordinates.rectCoords(x, y, width, height, textureWidth, textureHeight)
+  }
 }
 
 object BitmapFontGlyph {
