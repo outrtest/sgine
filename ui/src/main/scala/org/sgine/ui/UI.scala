@@ -11,7 +11,6 @@ import org.sgine.property.Property
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.backends.lwjgl.{LwjglApplicationConfiguration, LwjglApplication}
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -146,31 +145,24 @@ class UI extends Container with DelayedInit {
   final def main(args: Array[String]): Unit = {
     Texture.setEnforcePotImages(false) // No need to enforce power-of-two images
 
-    val config = new LwjglApplicationConfiguration()
-//    config.r = 8
-//    config.g = 8
-//    config.b = 8
-//    config.a = 8
-//    config.stencil = 8
-//    config.samples = 8
-    config.width = width
-    config.height = height
-    config.useGL20 = false
-    config.title = title
-    val application = new LwjglApplication(listener, config)
-
     // Work-around so we don't need LWJGL functionality in separate project
-//    val clazz = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplication")
-//    val constructor = clazz.getConstructor(classOf[ApplicationListener],
-//      classOf[String],
-//      classOf[Int],
-//      classOf[Int],
-//      classOf[Boolean])
-//    constructor.newInstance(listener,
-//      title,
-//      width.asInstanceOf[AnyRef],
-//      height.asInstanceOf[AnyRef],
-//      false.asInstanceOf[AnyRef])
+
+    val configClass = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration")
+    val config = configClass.newInstance().asInstanceOf[AnyRef]
+    configClass.getField("r").set(config, 8)
+    configClass.getField("g").set(config, 8)
+    configClass.getField("b").set(config, 8)
+    configClass.getField("a").set(config, 0)
+    configClass.getField("stencil").set(config, 8)
+    configClass.getField("samples").set(config, 8)
+    configClass.getField("width").set(config, width)
+    configClass.getField("height").set(config, height)
+    configClass.getField("useGL20").set(config, false)
+    configClass.getField("title").set(config, title)
+
+    val clazz = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplication")
+    val constructor = clazz.getConstructor(classOf[ApplicationListener], configClass)
+    constructor.newInstance(List[AnyRef](listener, config): _*)
   }
 
   private object listener extends ApplicationListener with InputProcessor {

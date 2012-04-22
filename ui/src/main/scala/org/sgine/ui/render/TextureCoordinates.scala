@@ -11,11 +11,10 @@ object TextureCoordinates {
    * the texture supplied.
    */
   def rectCoords(x: Double, y: Double, width: Double, height: Double, textureWidth: Double, textureHeight: Double) = {
-    val precision = 0.000001
-    val left = (x / textureWidth) - precision
-    val right = ((x + width) / textureWidth) + precision
-    val top = (y / textureHeight) - precision
-    val bottom = ((y + height) / textureHeight) + precision
+    val left = x / textureWidth
+    val right = (x + width) / textureWidth
+    val top = y / textureHeight
+    val bottom = (y + height) / textureHeight
     List(
       left, top,
       right, top,
