@@ -65,6 +65,55 @@ class UI extends Container with DelayedInit {
   def height = 768
 
   /**
+   * Bits for red channel.
+   *
+   * Defaults to 8
+   */
+  def red = 8
+
+  /**
+   * Bits for green channel.
+   *
+   * Defaults to 8
+   */
+  def green = 8
+
+  /**
+   * Bits for blue channel.
+   *
+   * Defaults to 8
+   */
+  def blue = 8
+
+  /**
+   * Bits for alpha channel.
+   *
+   * Defaults to 8
+   */
+  def alpha = 8
+
+  /**
+   * Depth bits.
+   *
+   * Defaults to 16
+   */
+  def depth = 16
+
+  /**
+   * Stencil buffer.
+   *
+   * Defaults to 8
+   */
+  def stencil = 8
+
+  /**
+   * Samples for MSAA
+   *
+   * Defaults to 16
+   */
+  def samples = 16
+
+  /**
    * The delta in seconds for the current render.
    */
   def delta = listener.delta
@@ -149,12 +198,13 @@ class UI extends Container with DelayedInit {
 
     val configClass = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration")
     val config = configClass.newInstance().asInstanceOf[AnyRef]
-    configClass.getField("r").set(config, 8)
-    configClass.getField("g").set(config, 8)
-    configClass.getField("b").set(config, 8)
-    configClass.getField("a").set(config, 0)
-    configClass.getField("stencil").set(config, 8)
-    configClass.getField("samples").set(config, 8)
+    configClass.getField("r").set(config, red)
+    configClass.getField("g").set(config, green)
+    configClass.getField("b").set(config, blue)
+    configClass.getField("a").set(config, alpha)
+    configClass.getField("depth").set(config, depth)
+    configClass.getField("stencil").set(config, stencil)
+    configClass.getField("samples").set(config, samples)
     configClass.getField("width").set(config, width)
     configClass.getField("height").set(config, height)
     configClass.getField("useGL20").set(config, false)

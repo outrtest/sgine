@@ -14,7 +14,7 @@ object ResolutionExample extends UI {
 
   val image1024 = Image("1024.jpg")
   image1024.color.alpha := 0.5
-  image1024.resolution(1024.0, 768.0)
+  image1024.resolution(1024.0, 768.0, false)
   contents += image1024
 
   val image200 = Image("200.jpg")
