@@ -11,6 +11,7 @@ import org.sgine.property.Property
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.math.Vector3
+import org.sgine.concurrent.Time
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -250,10 +251,16 @@ class UI extends Container with DelayedInit {
     def resize(width: Int, height: Int) = {
     }
 
+    private var previousTime = System.nanoTime()
     def render() = {
       Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT) // TODO: optional?
       delta = fixedTimestep() match {
-        case 0.0 => Gdx.graphics.getDeltaTime.toDouble
+        case 0.0 => {
+          val currentTime = System.nanoTime()
+          val d = Time.fromNanos(currentTime - previousTime)
+          previousTime = currentTime
+          d
+        }
         case d => d
       }
       update(delta)
