@@ -15,7 +15,7 @@ object AnimationExample extends UI {
   contents += image
 
   var count = 0
-  val time = 0.8
+  val time = 0.4
   val wf = image.location.x and image.location.y moveTo 200.0 in time then
     invoke {
       image.color(Color.Red)
