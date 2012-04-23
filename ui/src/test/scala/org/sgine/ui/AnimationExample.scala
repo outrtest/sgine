@@ -9,6 +9,9 @@ import org.sgine.workflow.{Looping, Asynchronous, WorkflowItem, Workflow}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 object AnimationExample extends UI {
+  verticalSync := true
+  fixedTimestep := 1.0 / 60.0
+
   implicit def p2wb(property: MutableProperty[Double]) = new WorkflowBuilder(property)
 
   implicit def wb2w(builder: WorkflowBuilder) = builder.workflow
