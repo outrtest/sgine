@@ -1,6 +1,7 @@
 package org.sgine
 
-import workflow.item.InvokeFunction
+import workflow.item.{WaitFor, InvokeFunction}
+
 
 package object workflow {
   val all = Repeat.All
@@ -10,4 +11,6 @@ package object workflow {
   implicit def builder2workflow(builder: WorkflowBuilder) = builder.workflow
 
   def invoke(f: => Any) = InvokeFunction(() => f)
+
+  def waitFor(condition: => Boolean) = WaitFor(() => condition)
 }
