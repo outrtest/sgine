@@ -13,10 +13,17 @@ object AnimationExample extends UI {
   val image = Image("sgine.png")
   contents += image
 
+  var count = 0
   val time = 0.8
   val wf = image.location.x and image.location.y moveTo 200.0 in time then
     invoke {
       image.color(Color.Red)
+      count = 0
+    } then
+    waitFor {
+      println("Count: %s".format(count))
+      count += 1
+      count >= 10
     } then
     image.location.x and image.location.y moveTo 0.0 in time then
     invoke {
