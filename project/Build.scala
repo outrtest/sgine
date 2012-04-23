@@ -7,7 +7,7 @@ object SgineBuild extends Build {
   val baseSettings = Defaults.defaultSettings ++ Seq(
     version := "1.0-SNAPSHOT",
     organization := "org.sgine",
-    scalaVersion := "2.9.1",
+    scalaVersion := "2.9.2",
     libraryDependencies ++= Seq(
       scalaTest
     ),
@@ -92,6 +92,6 @@ object SgineBuild extends Build {
 object Dependencies {
   val neodatisOdb = "org.neodatis.odb" % "neodatis-odb" % "1.9.30.689"
   val paranamer = "com.thoughtworks.paranamer" % "paranamer" % "2.4"
-  val scalaTest = "org.scalatest" % "scalatest_2.9.1" % "1.6.1" % "test"
-  val casbah = "com.mongodb.casbah" %% "casbah" % "2.1.5-1"
+  val scalaTest = "org.scalatest" % "scalatest_2.9.2" % "1.7.1" % "test"
+  val casbah = "com.mongodb.casbah" % "casbah_2.9.1" % "2.1.5-1"
 }
