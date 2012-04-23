@@ -251,13 +251,17 @@ class UI extends Container with DelayedInit {
     def resize(width: Int, height: Int) = {
     }
 
-    private var previousTime = System.nanoTime()
+    private var previousTime = 0L
     def render() = {
       Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT) // TODO: optional?
       delta = fixedTimestep() match {
         case 0.0 => {
           val currentTime = System.nanoTime()
-          val d = Time.fromNanos(currentTime - previousTime)
+          val d = if (previousTime == 0L) {
+            0.0
+          } else {
+            Time.fromNanos(currentTime - previousTime)
+          }
           previousTime = currentTime
           d
         }
