@@ -23,17 +23,10 @@ trait Property[T] extends Function0[T] with Child with Named {
 
 object Property {
   /**
-   * Creates a new StandardProperty with VariableBacking.
-   */
-  def apply[T](name: String, backing: Backing[T] = new VariableBacking[T])(implicit parent: PropertyParent) = {
-    new StandardProperty[T](name, backing)(parent)
-  }
-
-  /**
    * Creates a new StandardProperty with VariableBacking and the value supplied.
    */
-  def apply[T](name: String, value: T)(implicit parent: PropertyParent) = {
-    val p = apply[T](name)(parent)
+  def apply[T](name: String, value: T, backing: Backing[T] = new VariableBacking[T])(implicit parent: PropertyParent) = {
+    val p = new StandardProperty[T](name, backing)(parent)
     p.value = value
     p
   }
@@ -41,7 +34,7 @@ object Property {
   /**
    * Creates a new Property with a value tied to the function supplied.
    */
-  def apply[T](_name: String, f: => T) = new Property[T] {
+  def function[T](_name: String, f: => T) = new Property[T] {
     def name = _name
 
     def apply() = f
@@ -50,15 +43,15 @@ object Property {
   /**
    * Creates a new StandardProperty with VolatileVariableBacking.
    */
-  def volatile[T](name: String)(implicit parent: PropertyParent) = apply(name, new VolatileVariableBacking[T])(parent)
+  def volatile[T](name: String, value: T)(implicit parent: PropertyParent) = apply(name, value, new VolatileVariableBacking[T])(parent)
 
   /**
    * Creates a new StandardProperty with AtomicBacking.
    */
-  def atomic[T](name: String)(implicit parent: PropertyParent) = apply(name, new AtomicBacking[T])(parent)
+  def atomic[T](name: String, value: T)(implicit parent: PropertyParent) = apply(name, value, new AtomicBacking[T])(parent)
 
   /**
    * Creates a new StandardProperty with LocalBacking.
    */
-  def local[T](name: String)(implicit parent: PropertyParent) = apply(name, new LocalBacking[T])(parent)
+  def local[T](name: String, value: T)(implicit parent: PropertyParent) = apply(name, value, new LocalBacking[T])(parent)
 }

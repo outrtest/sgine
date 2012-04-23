@@ -432,7 +432,7 @@ object Component extends PropertyParent with NamedChild {
   /**
    * The Component the mouse is current over.
    */
-  val mouse = Property[Component]("mouse")
+  val mouse = Property[Component]("mouse", null)
 
   /**
    * Default MatrixUpdater used by Components to apply translation, rotation, and scale.

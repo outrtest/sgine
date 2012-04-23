@@ -10,8 +10,8 @@ import collection.mutable.ListBuffer
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class TextComponent extends ShapeComponent {
-  protected[ui] val _text = Property[String]("_text")
-  protected[ui] val _font = Property[BitmapFont]("_font")
+  protected[ui] val _text = Property[String]("_text", null)
+  protected[ui] val _font = Property[BitmapFont]("_font", null)
   protected[ui] val _wrapWidth = NumericProperty("_wrapWidth", Double.MaxValue)
 
   protected val generator = new TextGenerator(_font())

@@ -11,8 +11,8 @@ import org.sgine.naming.NamedChild
 class PropertySpec extends WordSpec with ShouldMatchers {
   "Property values" when {
     "created without a default value" should {
-      val sp = Property[String]("sp")(null)
-      val ip = Property[Int]("ip")(null)
+      val sp = Property[String]("sp", null)(null)
+      val ip = Property[Int]("ip", 0)(null)
       "have the correct default values" in {
         sp() should equal(null)
         ip() should equal(0)
@@ -66,6 +66,6 @@ object PropertyTester extends PropertyParent with Listenable with NamedChild {
   object inner extends PropertyParent with Listenable with NamedChild {
     override def parent = PropertyTester
 
-    val p = Property[Int]("p")
+    val p = Property[Int]("p", 0)
   }
 }

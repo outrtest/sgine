@@ -11,7 +11,7 @@ import org.sgine.property.{Property, ObjectPropertyParent, NumericProperty}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Scale9 extends ShapeComponent {
-  val resource = Property[Resource]("resource")
+  val resource = Property[Resource]("resource", null)
 
   onUpdate(resource) {
     load(resource())
