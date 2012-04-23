@@ -2,17 +2,24 @@ package org.sgine.ui
 
 import com.badlogic.gdx.{Gdx, ApplicationListener}
 import com.badlogic.gdx.graphics.{FPSLogger, OrthographicCamera, Texture, GL10}
+import render.{ArrayBuffer, Vertex, TextureCoordinates}
+import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
 
-/**
- * @author Matt Hicks <mhicks@sgine.org>
- */
 object RawTest extends ApplicationListener {
   lazy val camera = new OrthographicCamera(1024, 768)
-  lazy val image = Image("sgine.png")
+  lazy val texture = new Texture("sgine.png")
   lazy val framerate = new FPSLogger()
 
+  lazy val coords = TextureCoordinates.rect()
+  lazy val vertices = Vertex.rect(texture.getWidth, texture.getHeight)
+  lazy val verticesLength = vertices.length
+  lazy val buffer = new ArrayBuffer(vertices ::: coords)
+
+  val deltas = new Array[Float](60)
+  var position = 0
+  var previous = 0.0f
+
   def create() = {
-    Gdx.graphics.setVSync(false)
     Gdx.gl11.glShadeModel(GL10.GL_SMOOTH)
     Gdx.gl11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
     Gdx.gl11.glClearDepthf(1.0f)
@@ -30,12 +37,27 @@ object RawTest extends ApplicationListener {
   def render() = {
     Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT)
 
+//    val delta = 1.0f / 60.0f
+    val delta = Gdx.graphics.getDeltaTime
+    camera.rotate(delta * 150.0f, 0.0f, 0.0f, 1.0f)
+    camera.update()
     camera(Gdx.gl11)
-    image.update(Gdx.graphics.getDeltaTime.toDouble)
-    image.render()
 
-    image.rotation.z := image.rotation.z() + (200.0 * Gdx.graphics.getDeltaTime)
+    texture.bind()
+    buffer.bind()
+    buffer.bindTextureCoordinates(verticesLength)
+    buffer.drawVertices(0, verticesLength / 3)
 
+//    deltas(position) = Gdx.graphics.getDeltaTime
+//    position += 1
+//    if (position == deltas.length) {
+//      position = 0
+//      val total = deltas.foldLeft(0.0f)((total, current) => current + total)
+//      val average = total / 60.0f
+//      val deviation = total - previous
+//      previous = total
+//      println("Time: %s (%s) - Deviation: %s".format(total, average, deviation))
+//    }
     framerate.log()
   }
 
@@ -48,17 +70,14 @@ object RawTest extends ApplicationListener {
   def main(args: Array[String]): Unit = {
     Texture.setEnforcePotImages(false) // No need to enforce power-of-two images
 
-    // Work-around so we don't need LWJGL functionality in separate project
-    val clazz = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplication")
-    val constructor = clazz.getConstructor(classOf[ApplicationListener],
-      classOf[String],
-      classOf[Int],
-      classOf[Int],
-      classOf[Boolean])
-    constructor.newInstance(this,
-      "Raw Test",
-      1024.asInstanceOf[AnyRef],
-      768.asInstanceOf[AnyRef],
-      false.asInstanceOf[AnyRef])
+    val config = new LwjglApplicationConfiguration()
+    config.title = "Raw Test"
+    config.width = 1024
+    config.height = 768
+    config.useGL20 = false
+    config.useCPUSynch = true
+    config.vSyncEnabled = true
+
+    new LwjglApplication(this, config)
   }
 }

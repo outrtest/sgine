@@ -47,6 +47,13 @@ class UI extends Container with DelayedInit {
    */
   lazy val verticalSync = Property[Boolean]("verticalSync", false)
 
+  /**
+   * Defines a fixed timestep to use instead of delta from previous render.
+   *
+   * Defaults to 0.0 (disabled)
+   */
+  lazy val fixedTimestep = Property[Double]("fixedTimestep", 0.0)
+
   private var delayedInitialize: () => Unit = _
 
   /**
@@ -245,7 +252,10 @@ class UI extends Container with DelayedInit {
 
     def render() = {
       Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT) // TODO: optional?
-      delta = Gdx.graphics.getDeltaTime.toDouble
+      delta = fixedTimestep() match {
+        case 0.0 => Gdx.graphics.getDeltaTime.toDouble
+        case d => d
+      }
       update(delta)
       updatablesView.foreach(updateUpdatables)
       rendererView.foreach(renderRenderable)

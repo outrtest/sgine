@@ -16,7 +16,7 @@ class ArrayBuffer(val dynamic: Boolean) {
   private var _size = 0
 
   def this(_data: Seq[Double]) = {
-    this (false)
+    this(false)
     data = _data
   }
 
