@@ -3,7 +3,6 @@ package org.sgine.ui
 import com.badlogic.gdx.{Gdx, ApplicationListener}
 import com.badlogic.gdx.graphics.{FPSLogger, OrthographicCamera, Texture, GL10}
 import render.{ArrayBuffer, Vertex, TextureCoordinates}
-import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
 
 object RawTest extends ApplicationListener {
   lazy val camera = new OrthographicCamera(1024, 768)
@@ -70,14 +69,15 @@ object RawTest extends ApplicationListener {
   def main(args: Array[String]): Unit = {
     Texture.setEnforcePotImages(false) // No need to enforce power-of-two images
 
-    val config = new LwjglApplicationConfiguration()
-    config.title = "Raw Test"
-    config.width = 1024
-    config.height = 768
-    config.useGL20 = false
-    config.useCPUSynch = true
-    config.vSyncEnabled = true
+    val configClass = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration")
+    val config = configClass.newInstance().asInstanceOf[AnyRef]
+    configClass.getField("width").set(config, 1024)
+    configClass.getField("height").set(config, 768)
+    configClass.getField("useGL20").set(config, false)
+    configClass.getField("title").set(config, "Raw Test")
 
-    new LwjglApplication(this, config)
+    val clazz = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplication")
+    val constructor = clazz.getConstructor(classOf[ApplicationListener], configClass)
+    constructor.newInstance(List[AnyRef](this, config): _*).asInstanceOf[com.badlogic.gdx.Application]
   }
 }
