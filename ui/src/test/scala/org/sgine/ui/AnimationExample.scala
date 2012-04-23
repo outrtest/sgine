@@ -9,6 +9,7 @@ import org.sgine.Color
  */
 object AnimationExample extends UI {
   verticalSync := true
+  fixedTimestep := 1.0 / 60.0
 
   val image = Image("sgine.png")
   contents += image
