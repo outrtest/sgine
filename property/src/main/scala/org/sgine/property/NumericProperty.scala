@@ -20,17 +20,10 @@ class NumericProperty(name: String, backing: Backing[Double])(implicit override 
 
 object NumericProperty {
   /**
-   * Creates a new StandardProperty with VariableBacking.
-   */
-  def apply(name: String, backing: Backing[Double] = new VariableBacking[Double])(implicit parent: PropertyParent) = {
-    new NumericProperty(name, backing)(parent)
-  }
-
-  /**
    * Creates a new StandardProperty with VariableBacking and the value supplied.
    */
-  def apply(name: String, value: Double)(implicit parent: PropertyParent): NumericProperty = {
-    val p = apply(name)(parent)
+  def apply(name: String, value: Double, backing: Backing[Double] = new VariableBacking[Double])(implicit parent: PropertyParent): NumericProperty = {
+    val p = new NumericProperty(name, backing)(parent)
     p.value = value
     p
   }
@@ -38,7 +31,7 @@ object NumericProperty {
   /**
    * Creates a new Property with a value tied to the function supplied.
    */
-  def apply(_name: String, f: => Double) = new Property[Double] {
+  def function(_name: String, f: => Double) = new Property[Double] {
     def name = _name
 
     def apply() = f
@@ -47,15 +40,15 @@ object NumericProperty {
   /**
    * Creates a new StandardProperty with VolatileVariableBacking.
    */
-  def volatile(name: String)(implicit parent: PropertyParent) = apply(name, new VolatileVariableBacking[Double])(parent)
+  def volatile(name: String, value: Double)(implicit parent: PropertyParent) = apply(name, value, new VolatileVariableBacking[Double])(parent)
 
   /**
    * Creates a new StandardProperty with AtomicBacking.
    */
-  def atomic(name: String)(implicit parent: PropertyParent) = apply(name, new AtomicBacking[Double])(parent)
+  def atomic(name: String, value: Double)(implicit parent: PropertyParent) = apply(name, value, new AtomicBacking[Double])(parent)
 
   /**
    * Creates a new StandardProperty with LocalBacking.
    */
-  def local(name: String)(implicit parent: PropertyParent) = apply(name, new LocalBacking[Double])(parent)
+  def local(name: String, value: Double)(implicit parent: PropertyParent) = apply(name, value, new LocalBacking[Double])(parent)
 }

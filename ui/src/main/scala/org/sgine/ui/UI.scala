@@ -148,7 +148,7 @@ class UI extends Container with DelayedInit {
 
   private def pickComponents(evt: MouseEvent, components: Iterable[Component]): Unit = {
     val x = evt.x
-    val y = abs(evt.y - height)
+    val y = abs(evt.y - height())
     currentRay = camera().getPickRay(x.toFloat, y.toFloat)
     val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
     val localEvent: MouseEvent = hit match {
@@ -201,7 +201,7 @@ class UI extends Container with DelayedInit {
    * Convenience method to replace the camera with a PerspectiveCamera.
    */
   final def perspective(fov: Double = 45.0, nearPlane: Double = 0.1, farPlane: Double = 1000.0) = {
-    val aspectRatio = width / height
+    val aspectRatio = width() / height()
     val c = new PerspectiveCamera(fov.toFloat, 2.0f * aspectRatio, 2.0f)
     c.near = nearPlane.toFloat
     c.far = farPlane.toFloat

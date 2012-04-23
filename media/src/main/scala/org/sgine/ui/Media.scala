@@ -16,14 +16,14 @@ import org.sgine.property.{ObjectPropertyParent, Property}
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Media extends Image {
-  val resource = Property[String]("resource")
+  val resource = Property[String]("resource", null)
   val buffers = Property[Int]("buffers", 2)
 
   object information extends ObjectPropertyParent(this) {
-    val length = Property[Long]("length")
+    val length = Property[Long]("length", 0L)
   }
 
-  private val mediaPlayer = Property[MediaPlayer]("mediaPlayer")
+  private val mediaPlayer = Property[MediaPlayer]("mediaPlayer", null)
   private val currentBuffer = new AtomicReference[Pixmap](null)
   private val availableBuffers = new ConcurrentLinkedQueue[Pixmap]()
   @volatile private var usedBuffers = 0
