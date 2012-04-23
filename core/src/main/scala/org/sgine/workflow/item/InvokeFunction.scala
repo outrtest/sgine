@@ -7,24 +7,26 @@ import org.sgine.workflow.WorkflowItem
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class InvokeFunction private(f: () => Unit) extends WorkflowItem {
+class InvokeFunction private(f: () => Any) extends WorkflowItem {
   def act(delta: Double) = {
     f()
     true
   }
+
+  override def toString = "InvokeFunction(%s)".format(hashCode())
 }
 
 object InvokeFunction {
   /**
    * Creates an InvokeFunction instance that will call the supplied function upon execution.
    */
-  def apply(f: () => Unit) = new InvokeFunction(f)
+  def apply(f: () => Any) = new InvokeFunction(f)
 
   /**
    * Convenience method to create an InvokeFunction that will call the supplied function upon
    * execution.
    */
-  def when(f: => Unit) = {
+  def when(f: => Any) = {
     apply(() => f)
   }
 }

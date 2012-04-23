@@ -1,6 +1,7 @@
 package org.sgine.workflow
 
-import item.Delay
+import item.{InvokeFunction, Delay}
+
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -13,6 +14,10 @@ case class WorkflowBuilder(currentItems: List[WorkflowItem] = Nil,
   def delay(time: Double) = pause(time)
 
   def loop(count: Int) = copy(loopCount = count)
+
+  def then(item: WorkflowItem) = nextStep().add(item)
+
+  def add(item: WorkflowItem) = copy(currentItems = item :: currentItems)
 
   def repeat(r: Repeat) = {
     val b = nextStep()
@@ -37,6 +42,21 @@ case class WorkflowBuilder(currentItems: List[WorkflowItem] = Nil,
     new Workflow(builder.workflowItems.reverse) with Looping {
       val loops = loopCount
     }
+  }
+
+  override def toString = {
+    val b = new StringBuilder("WorkflowBuilder(\r\n")
+    b.append("\tcurrentItems:\r\n")
+    currentItems.foreach {
+      case item => b.append("\t\t%s\r\n".format(item))
+    }
+    b.append("\tworkflowItems:\r\n")
+    workflowItems.foreach {
+      case item => b.append("\t\t%s\r\n".format(item))
+    }
+    b.append("\tloopCount: %s\r\n".format(loopCount))
+    b.append(')')
+    b.toString()
   }
 }
 

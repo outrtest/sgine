@@ -39,7 +39,7 @@ class UI extends Container with DelayedInit {
    *
    * Defaults to an OrthographicCamera with the width and height defined by the UI.
    */
-  lazy val camera = Property[Camera]("camera", createOrtho(width, height))
+  lazy val camera = Property[Camera]("camera", createOrtho(width(), height()))
 
   /**
    * Whether vertical synchronization should be enabled.
@@ -64,13 +64,24 @@ class UI extends Container with DelayedInit {
 
   /**
    * Window width
+   *
+   * Defaults to 1024
    */
-  def width = 1024
+  lazy val width = Property[Int]("width", 1024)
 
   /**
    * Window height
+   *
+   * Defaults to 768
    */
-  def height = 768
+  lazy val height = Property[Int]("height", 768)
+
+  /**
+   * Fullscreen mode
+   *
+   * Defaults to false
+   */
+  lazy val fullscreen = Property[Boolean]("fullscreen", false)
 
   /**
    * Bits for red channel.
@@ -160,8 +171,8 @@ class UI extends Container with DelayedInit {
   }
 
   def delayedInit(x: => Unit) = {
-    size.width := width
-    size.height := height
+    size.width := width()
+    size.height := height()
 
     delayedInitialize = () => x
 
@@ -173,7 +184,7 @@ class UI extends Container with DelayedInit {
   /**
    * Convenience method to replace the camera with an OrthographicCamera.
    */
-  final def orthographic(width: Double = this.width, height: Double = this.height) = {
+  final def orthographic(width: Double = this.width(), height: Double = this.height()) = {
     camera := createOrtho(width, height)
   }
 
@@ -213,14 +224,20 @@ class UI extends Container with DelayedInit {
     configClass.getField("depth").set(config, depth)
     configClass.getField("stencil").set(config, stencil)
     configClass.getField("samples").set(config, samples)
-    configClass.getField("width").set(config, width)
-    configClass.getField("height").set(config, height)
+    configClass.getField("width").set(config, width())
+    configClass.getField("height").set(config, height())
+    configClass.getField("fullscreen").set(config, fullscreen())
     configClass.getField("useGL20").set(config, false)
+    configClass.getField("useCPUSynch").set(config, false)
     configClass.getField("title").set(config, title)
 
     val clazz = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplication")
     val constructor = clazz.getConstructor(classOf[ApplicationListener], configClass)
-    constructor.newInstance(List[AnyRef](listener, config): _*)
+    val instance = constructor.newInstance(List[AnyRef](listener, config): _*).asInstanceOf[com.badlogic.gdx.Application]
+    val graphics = instance.getGraphics
+    onUpdate(width, height, fullscreen) {
+      graphics.setDisplayMode(width(), height(), fullscreen())
+    }
   }
 
   private object listener extends ApplicationListener with InputProcessor {

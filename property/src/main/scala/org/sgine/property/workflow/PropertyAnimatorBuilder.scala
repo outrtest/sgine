@@ -8,14 +8,7 @@ import org.sgine.workflow.WorkflowBuilder
  */
 class PropertyAnimatorBuilder(builder: WorkflowBuilder) {
   def and(property: MutableProperty[Double]) = {
-    builder.copy(PropertyAnimator(property,
-                                  Double.NegativeInfinity,
-                                  Double.NegativeInfinity
-                                 ) :: builder.currentItems)
-  }
-
-  def then(property: MutableProperty[Double]) = {
-    builder.nextStep().and(property)
+    builder.add(PropertyAnimator(property, Double.NegativeInfinity, Double.NegativeInfinity))
   }
 
   def moveTo(destination: Double) = {
