@@ -21,7 +21,7 @@ object AnimationExample extends UI {
   val image = Image("sgine.png")
   contents += image
 
-  val time = 0.4
+  val time = 0.8
   val wf = image.location.x and image.location.y moveTo 200.0 in time then
     image.location.x and image.location.y moveTo 0.0 in time then
     image.location.x moveTo -200.0 and image.location.y moveTo 200.0 in time then

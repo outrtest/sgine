@@ -184,6 +184,16 @@ object Time extends Enumerated[Time] {
   def millis(time: Double) = round((time * 1000.0).toFloat)
 
   /**
+   * Converts time in nanoseconds to seconds.
+   */
+  def fromNanos(nanoseconds: Long) = nanoseconds / 1000000000.0
+
+  /**
+   * Converts time in milliseconds to seconds.
+   */
+  def fromMillis(milliseconds: Long) = milliseconds / 1000.0
+
+  /**
    * Waits for <code>condition</code> to return true. This method will wait
    * <code>time</code> (in seconds) for the condition and will return false
    * if the condition is not met within that time. Further, a negative value
