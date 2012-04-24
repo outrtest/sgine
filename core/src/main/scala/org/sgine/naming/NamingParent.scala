@@ -10,7 +10,7 @@ import org.sgine.hierarchy.Named
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait NamingParent {
-  implicit val instance = this
+  implicit val namingParentInstance = this
   protected[naming] val fields = new ArrayBuffer[Named]()
 
   protected[sgine] def add(child: Named) = synchronized {

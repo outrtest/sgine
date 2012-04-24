@@ -1,6 +1,7 @@
 package org.sgine.ui
 
 import com.badlogic.gdx.{InputProcessor, Gdx, ApplicationListener}
+import layout.LayoutableContainer
 import org.sgine.scene.ContainerView
 import org.sgine.input.{Mouse, MouseButton, Key, Keyboard}
 import org.sgine.input.event._
@@ -20,7 +21,7 @@ import org.sgine.concurrent.Time
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class UI extends Container with DelayedInit {
+class UI extends Container with LayoutableContainer with DelayedInit {
   /**
    * ContainerView of all Components within this UI hierarchy.
    */
