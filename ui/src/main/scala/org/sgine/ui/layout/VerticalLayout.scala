@@ -9,7 +9,8 @@ import org.sgine.ui.align.{VerticalAlignment, HorizontalAlignment}
 case class VerticalLayout(horizontalAlignment: HorizontalAlignment = HorizontalAlignment.Center,
                           spacing: Double = 0.0) extends Layout {
   def layout(container: AbstractContainer) = {
-    var offset: Double = 0.0
+    val height = container.contents.foldLeft(0.0)((h, c) => h + c.size.height() + spacing) - spacing
+    var offset: Double = height / 2.0
     container.contents.foreach {
       case component => {
         component.location.y := offset
