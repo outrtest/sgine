@@ -16,7 +16,7 @@ trait Named {
   private def hierarchicalMatchCheck(names: List[String]): Boolean = {
     if (names.nonEmpty) {
       val n = names.head
-      if (n == name || n == getClass.getSimpleName) {
+      if (n == name || classMatch(n, getClass)) {
         names.tail match {
           case Nil => true
           case others => this match {
@@ -30,6 +30,18 @@ trait Named {
       } else {
         false
       }
+    } else {
+      false
+    }
+  }
+
+  private def classMatch(value: String, clazz: Class[_]): Boolean = {
+    if (clazz.getSimpleName == value) {
+      true
+    } else if (clazz.getInterfaces.find(c => classMatch(value, c)) != None) {
+      true
+    } else if (clazz.getSuperclass != null) {
+      classMatch(value, clazz.getSuperclass)
     } else {
       false
     }

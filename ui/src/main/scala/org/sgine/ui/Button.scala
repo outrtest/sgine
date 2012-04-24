@@ -8,6 +8,11 @@ import org.sgine.event.ActionEvent
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class Button extends AbstractContainer with Stylized {
+  def this(text: String) = {
+    this()
+    this.text := text
+  }
+
   protected[ui] val background = new Scale9() {
     override def name = "background"
     mouseEnabled := false

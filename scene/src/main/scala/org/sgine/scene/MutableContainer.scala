@@ -33,6 +33,7 @@
 package org.sgine.scene
 
 import org.sgine.hierarchy.Element
+import annotation.tailrec
 
 /**
  * MutableContainer as the name suggests is a mutable implementation of Container.
@@ -69,6 +70,16 @@ trait MutableContainer[T <: Element] extends AbstractMutableContainer[T] {
      * Element.
      */
     def -=(child: T) = removeChild(child)
-  }
 
+    /**
+     * Adds all the supplied children to this container.
+     */
+    @tailrec
+    final def addAll(children: T*): Unit = {
+      if (children.nonEmpty) {
+        this += children.head
+        addAll(children.tail: _*)
+      }
+    }
+  }
 }

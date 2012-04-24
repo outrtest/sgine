@@ -1,5 +1,6 @@
 package org.sgine.ui
 
+import layout.Layout
 import org.sgine.scene.AbstractMutableContainer
 import org.sgine.event.ChangeEvent
 import org.sgine.property.Property
@@ -14,16 +15,27 @@ import scala.math._
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class AbstractContainer extends AbstractMutableContainer[Component] with Component {
+  protected val _layout = Property[Layout]("_layout", null)
+
   private val childSizeChangeRegex = ".*[.]size[.](width|height|depth)"
 
+  private val validateLayout = () => {
+    _layout() match {
+      case null => // No layout manager
+      case l => l.layout(this)
+    }
+    updateSizeFromChildren()
+  }
+
   this match {
-    case ui: UI => // Ignore UI
     case _ => listeners.synchronous.filter.descendant(3) {
       case event: ChangeEvent => event.target match {
         case property: Property[_] if (property.name != null && property.hierarchicalName().matches(childSizeChangeRegex)) => {
           val component = Component.parentComponent(property)
-          if (component.parent == this && component.includeInLayout()) {
-            updateLayout()
+          if (component.parent != null) {
+            if (component.parent == this && component.includeInLayout()) {
+              validateLayout()
+            }
           }
         }
         case _ => // Ignore
@@ -31,10 +43,10 @@ class AbstractContainer extends AbstractMutableContainer[Component] with Compone
     }
   }
 
-  protected def updateLayout() = updateLayoutAbsolute()
+  def invalidateLayout() = updateAsync.invokeLater(validateLayout)
 
   @tailrec
-  private def updateLayoutAbsolute(children: Seq[Component] = contents,
+  private def updateSizeFromChildren(children: Seq[Component] = contents,
                              minX: Double = 0.0,
                              maxX: Double = 0.0,
                              minY: Double = 0.0,
@@ -54,9 +66,9 @@ class AbstractContainer extends AbstractMutableContainer[Component] with Compone
         val maxy = max(maxY, current.location.actual.y() + (current.size.height() / 2.0))
         val minz = min(minZ, current.location.actual.z() - (current.size.depth() / 2.0))
         val maxz = max(maxZ, current.location.actual.z() + (current.size.depth() / 2.0))
-        updateLayoutAbsolute(children.tail, minx, maxx, miny, maxy, minz, maxz)
+        updateSizeFromChildren(children.tail, minx, maxx, miny, maxy, minz, maxz)
       } else {
-        updateLayoutAbsolute(children.tail, minX, maxX, minY, maxY, minZ, maxZ)
+        updateSizeFromChildren(children.tail, minX, maxX, minY, maxY, minZ, maxZ)
       }
     }
   }
@@ -71,6 +83,10 @@ class AbstractContainer extends AbstractMutableContainer[Component] with Compone
     super.updateColor()
 
     contents.foreach(AbstractContainer.updateChildColor)
+  }
+
+  _layout.listeners.synchronous {
+    case evt: ChangeEvent => invalidateLayout()
   }
 }
 

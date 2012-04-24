@@ -55,7 +55,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    */
   protected[ui] val matrix = new Matrix4()
 
-  private val updateAsync = new AsynchronousInvocation()
+  protected val updateAsync = new AsynchronousInvocation()
 
   /**
    * The visibility of this component.
