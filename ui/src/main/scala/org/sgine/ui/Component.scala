@@ -459,9 +459,21 @@ object Component extends PropertyParent with NamedChild {
     val y = component.location.actual.y() + padBottom - padTop
     val z = component.location.actual.z()
     matrix.translate(x.toFloat, y.toFloat, z.toFloat)
-    val maxRotation = max(max(component.rotation.x(), component.rotation.y()), component.rotation.z())
-    matrix.rotate((component.rotation.x() / maxRotation).toFloat, (component.rotation.y() / maxRotation).toFloat, (component.rotation.z() / maxRotation).toFloat, maxRotation.toFloat)
+    val rx = correctRotation(component.rotation.x())
+    val ry = correctRotation(component.rotation.y())
+    val rz = correctRotation(component.rotation.z())
+    val maxRotation = max(max(rx, ry), rz)
+    matrix.rotate((rx / maxRotation).toFloat, (ry / maxRotation).toFloat, (rz / maxRotation).toFloat, maxRotation.toFloat)
     matrix.scale(component.scale.x().toFloat, component.scale.y().toFloat, component.scale.z().toFloat)
+  }
+
+  @tailrec
+  private def correctRotation(value: Double): Double = {
+    if (value >= 0.0) {
+      value
+    } else {
+      correctRotation(value + 360.0)
+    }
   }
 
   @tailrec

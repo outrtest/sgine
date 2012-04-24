@@ -211,7 +211,18 @@ class UI extends Container with LayoutableContainer with DelayedInit {
     camera := c
   }
 
+  private lazy val applicationInstance = createInstance()
+
   final def main(args: Array[String]): Unit = {
+    val graphics = applicationInstance.getGraphics
+    onUpdate(width, height, fullscreen) {
+      graphics.setDisplayMode(width(), height(), fullscreen())
+    }
+  }
+
+  def exit() = applicationInstance.exit()
+
+  private def createInstance() = {
     Texture.setEnforcePotImages(false) // No need to enforce power-of-two images
 
     // Work-around so we don't need LWJGL functionality in separate project
@@ -230,15 +241,12 @@ class UI extends Container with LayoutableContainer with DelayedInit {
     configClass.getField("fullscreen").set(config, fullscreen())
     configClass.getField("useGL20").set(config, false)
     configClass.getField("useCPUSynch").set(config, false)
+    configClass.getField("resizable").set(config, false)
     configClass.getField("title").set(config, title)
 
     val clazz = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplication")
     val constructor = clazz.getConstructor(classOf[ApplicationListener], configClass)
-    val instance = constructor.newInstance(List[AnyRef](listener, config): _*).asInstanceOf[com.badlogic.gdx.Application]
-    val graphics = instance.getGraphics
-    onUpdate(width, height, fullscreen) {
-      graphics.setDisplayMode(width(), height(), fullscreen())
-    }
+    constructor.newInstance(List[AnyRef](listener, config): _*).asInstanceOf[com.badlogic.gdx.Application]
   }
 
   private object listener extends ApplicationListener with InputProcessor {
