@@ -7,7 +7,7 @@ import org.sgine.Color
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object AnimationExample extends UI {
+object AnimationExample extends UI with Debug {
   verticalSync := true
   fixedTimestep := 1.0 / 60.0
 
