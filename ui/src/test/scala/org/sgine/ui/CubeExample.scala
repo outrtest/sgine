@@ -9,6 +9,7 @@ import org.sgine.{Updatable, Resource}
  */
 object CubeExample extends UI with Debug {
   perspective()
+  resolution(1024.0, 768.0)
 
   val texture = new Texture(Resource("sgine_256.png"))
 
@@ -16,7 +17,6 @@ object CubeExample extends UI with Debug {
   cube._texture := texture
   cube._textureCoordinates := TextureCoordinates.box()
   cube._vertices := Vertex.box(256.0, 256.0, 256.0)
-  cube.resolution(1024, 768)
   contents += cube
 
   updates += new Updatable {

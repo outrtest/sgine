@@ -192,8 +192,8 @@ class UI extends Container with LayoutableContainer with DelayedInit {
   private def createOrtho(width: Double, height: Double) = {
     val c = new OrthographicCamera(width.toFloat, height.toFloat)
     c.near = 0.1f
-    c.far = 1000.0f
-    c.translate(0.0f, 0.0f, 1.0f)
+    c.far = 10000.0f
+    c.translate(0.0f, 0.0f, 1000.0f)
     c.update()
     c
   }
