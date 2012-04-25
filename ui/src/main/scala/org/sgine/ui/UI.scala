@@ -149,7 +149,7 @@ class UI extends Container with LayoutableContainer with DelayedInit {
 
   private def pickComponents(evt: MouseEvent, components: Iterable[Component]): Unit = {
     val x = evt.x
-    val y = abs(evt.y - height())
+    val y = evt.y
     currentRay = camera().getPickRay(x.toFloat, y.toFloat)
     val hit = components.foldLeft(null.asInstanceOf[Component])(pickFunction)
     val localEvent: MouseEvent = hit match {
