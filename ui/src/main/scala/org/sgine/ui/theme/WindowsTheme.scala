@@ -28,6 +28,10 @@ object WindowsTheme extends Theme("windows") {
     case button: Button => button.background.resource := Resource("scale9/windows/button/pressed.png")
   }
   val buttonPressedStyle = Property[Component => Any]("Button.style.mousePress", pressedStyle)
+  val focusedStyle: Component => Any = {
+    case button: Button => button.background.resource := Resource("scale9/windows/button/focused.png")
+  }
+  val buttonFocusedStyle = Property[Component => Any]("Button.style.focus", focusedStyle)
 
   override protected def apply(component: Component) = {
     super.apply(component)

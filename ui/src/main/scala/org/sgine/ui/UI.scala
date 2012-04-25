@@ -21,7 +21,7 @@ import org.sgine.concurrent.Time
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class UI extends Container with LayoutableContainer with DelayedInit {
+class UI extends Container with LayoutableContainer with DelayedInit with FocusManager {
   /**
    * ContainerView of all Components within this UI hierarchy.
    */

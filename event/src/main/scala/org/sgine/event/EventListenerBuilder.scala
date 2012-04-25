@@ -20,6 +20,7 @@ case class EventListenerBuilder(private val listenable: Listenable,
   def maximum(max: Int) = copy(maxInvocation = max)
   object filter {
     def apply(f: Event => Boolean) = copy(_filter = f)
+    def targets(listenables: Listenable*) = apply(listenable.filters.targets(listenables: _*))
     def descendant(depth: Int = Int.MaxValue) = apply(listenable.filters.descendant(depth))
     def child = apply(listenable.filters.child())
     def ancestor(depth: Int = Int.MaxValue) = apply(listenable.filters.ancestor(depth))
@@ -32,6 +33,7 @@ case class EventListenerBuilder(private val listenable: Listenable,
           case event => oldFilter(event) || f(event)
         })
       }
+      def targets(listenables: Listenable*) = apply(listenable.filters.targets(listenables: _*))
       def descendant(depth: Int = Int.MaxValue) = apply(listenable.filters.descendant(depth))
       def child = apply(listenable.filters.child())
       def ancestor(depth: Int = Int.MaxValue) = apply(listenable.filters.ancestor(depth))
@@ -45,6 +47,7 @@ case class EventListenerBuilder(private val listenable: Listenable,
           case event => oldFilter(event) && f(event)
         })
       }
+      def targets(listenables: Listenable*) = apply(listenable.filters.targets(listenables: _*))
       def descendant(depth: Int = Int.MaxValue) = apply(listenable.filters.descendant(depth))
       def child = apply(listenable.filters.child())
       def ancestor(depth: Int = Int.MaxValue) = apply(listenable.filters.ancestor(depth))

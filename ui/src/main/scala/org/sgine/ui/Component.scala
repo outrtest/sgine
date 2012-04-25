@@ -373,14 +373,6 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   }
 
   /**
-   * Adds change listeners to the Listenables to invoke the supplied function immediately when a
-   * change occurs.
-   */
-  def onChange(listenables: Listenable*)(f: => Unit) = listenables.foreach(l => l.listeners.synchronous {
-    case event: ChangeEvent => f
-  })
-
-  /**
    * Called upon destruction of this Component.
    */
   def destroy() = {

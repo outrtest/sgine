@@ -38,8 +38,27 @@ trait Listenable {
 
   lazy val listeners = EventListenerBuilder(this)
 
+  /**
+   * Adds change listeners to the Listenables to invoke the supplied function immediately when a
+   * change occurs.
+   *
+   * Convenience method for Listenable.onChange.
+   */
+  def onChange(listenables: Listenable*)(f: => Unit) = Listenable.onChange(listenables: _*)(f)
+
+  /**
+   * Allows single instantiation of a listener listening to multiple Listenables simultaneously.
+   *
+   * Convenience method for Listenable.multiple.
+   */
+  def listenTo(listenables: Listenable*) = Listenable.listenTo(listenables: _*)
+
   object filters {
     val target = TargetFilter(Listenable.this)
+
+    def targets(listenables: Listenable*): Event => Boolean = {
+      case event => listenables.contains(event.target)
+    }
 
     def descendant(depth: Int = Int.MaxValue): Event => Boolean = {
       case event => event.target match {
@@ -67,4 +86,19 @@ trait Listenable {
   }
 
   def fire(event: Event) = Event.fire(event, this)
+}
+
+object Listenable {
+  /**
+   * Adds change listeners to the Listenables to invoke the supplied function immediately when a
+   * change occurs.
+   */
+  def onChange(listenables: Listenable*)(f: => Unit) = listenables.foreach(l => l.listeners.synchronous {
+    case event: ChangeEvent => f
+  })
+
+  /**
+   * Allows single instantiation of a listener listening to multiple Listenables simultaneously.
+   */
+  def listenTo(listenables: Listenable*) = listenables.head.listeners.filter.targets(listenables: _*)
 }
