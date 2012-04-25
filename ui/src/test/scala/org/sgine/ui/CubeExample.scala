@@ -7,7 +7,7 @@ import org.sgine.{Updatable, Resource}
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object CubeExample extends UI {
+object CubeExample extends UI with Debug {
   perspective()
 
   val texture = new Texture(Resource("sgine_256.png"))

@@ -1,6 +1,7 @@
 package org.sgine.property
 
 import backing.{VariableBacking, Backing}
+import event.PropertyChangeEvent
 import org.sgine.ChangeInterceptor
 import org.sgine.bind.Bindable
 import org.sgine.event.{ChangeEvent, Listenable}
@@ -22,7 +23,7 @@ class StandardProperty[T](val name: String, backing: Backing[T] = new VariableBa
     val newValue = change(oldValue, v)
     if (oldValue != newValue) {
       backing.setValue(newValue)
-      fire(ChangeEvent(oldValue, newValue))
+      fire(PropertyChangeEvent(this, oldValue, newValue))
     }
   }
 

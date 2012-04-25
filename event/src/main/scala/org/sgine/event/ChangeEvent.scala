@@ -7,10 +7,17 @@ import org.sgine.Priority
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-case class ChangeEvent(oldValue: Any, newValue: Any) extends Event
+trait ChangeEvent extends Event {
+  def oldValue: Any
+  def newValue: Any
+}
+
+case class DefaultChangeEvent(oldValue: Any, newValue: Any) extends ChangeEvent
 
 object ChangeEvent {
   private val allFilter = (l: Listenable) => true
+
+  def apply(oldValue: Any, newValue: Any) = DefaultChangeEvent(oldValue, newValue)
 
   def record(listenable: Listenable, sideffects: Boolean = false, depth: Int = Int.MaxValue, filter: Listenable => Boolean = allFilter)(action: => Any) = {
     val currentCause = Event.current
