@@ -8,11 +8,12 @@ import org.sgine.input.event._
 
 import scala.math._
 import org.sgine.Updatable
-import org.sgine.property.Property
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.math.Vector3
 import org.sgine.concurrent.Time
+import org.sgine.event.{Listenable, ChangeEvent}
+import org.sgine.property.{ObjectPropertyParent, MutableProperty, Property}
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.
@@ -83,6 +84,20 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
    * Defaults to false
    */
   lazy val fullscreen = Property[Boolean]("fullscreen", false)
+
+  /**
+   * The currently active FocusManager.
+   *
+   * Defaults to the UI.
+   */
+  lazy val focusManager = Property[FocusManager]("focusManager", this)
+
+  /**
+   * True if this UI instance is the currently active one.
+   */
+  lazy val active: Property[Boolean] with Listenable = Property[Boolean]("active", false)
+
+  def activate() = UI.current := this
 
   /**
    * Bits for red channel.
@@ -264,6 +279,7 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
       if (delayedInitialize != null) {
         delayedInitialize()
       }
+      UI.current := UI.this
       onUpdate(camera) {
         camera().update()
       }
@@ -314,61 +330,96 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
     }
 
     def keyDown(keyCode: Int) = {
+      activate()
       Keyboard.fire(KeyDownEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      fire(KeyDownEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 
     def keyTyped(c: Char) = {
+      activate()
       Keyboard.fire(KeyTypeEvent(c))
+      fire(KeyTypeEvent(c))
       true
     }
 
     def keyUp(keyCode: Int) = {
+      activate()
       Keyboard.fire(KeyUpEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      fire(KeyUpEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
       true
     }
 
     def scrolled(amount: Int) = {
+      activate()
       Mouse.fire(MouseWheelEvent(amount, Mouse.x(), Mouse.x(), 0.0, 0.0, 0.0))
+      fire(MouseWheelEvent(amount, Mouse.x(), Mouse.x(), 0.0, 0.0, 0.0))
       true
     }
 
     def touchDown(x: Int, y: Int, pointer: Int, button: Int) = {
+      activate()
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
       Mouse.fire(MousePressEvent(MouseButton(button), x, y, 0.0, dx, dy))
+      fire(MousePressEvent(MouseButton(button), x, y, 0.0, dx, dy))
       Mouse.x := x
       Mouse.y := y
       true
     }
 
     def touchDragged(x: Int, y: Int, pointer: Int) = {
+      activate()
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
-      Mouse.fire(MouseDragEvent(x, y, 0.0, dx, dy))
       Mouse.x := x
       Mouse.y := y
+      Mouse.fire(MouseDragEvent(x, y, 0.0, dx, dy))
+      fire(MouseDragEvent(x, y, 0.0, dx, dy))
       true
     }
 
     def touchMoved(x: Int, y: Int) = {
+      activate()
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
       // TODO: support deferred mouse events
-      Mouse.fire(MouseMoveEvent(x, y, 0.0, dx, dy))
       Mouse.x := x
       Mouse.y := y
+      Mouse.fire(MouseMoveEvent(x, y, 0.0, dx, dy))
+      fire(MouseMoveEvent(x, y, 0.0, dx, dy))
       true
     }
 
     def touchUp(x: Int, y: Int, pointer: Int, button: Int) = {
+      activate()
       val dx = abs(x - Mouse.x())
       val dy = abs(y - Mouse.y())
-      Mouse.fire(MouseReleaseEvent(MouseButton(button), x, y, 0.0, dx, dy))
       Mouse.x := x
       Mouse.y := y
+      Mouse.fire(MouseReleaseEvent(MouseButton(button), x, y, 0.0, dx, dy))
+      fire(MouseReleaseEvent(MouseButton(button), x, y, 0.0, dx, dy))
       true
     }
   }
+}
 
+object UI extends ObjectPropertyParent(null) {
+  /**
+   * The currently active UI
+   */
+  val current = Property[UI]("current", null)
+
+  current.listeners.synchronous {
+    case evt: ChangeEvent => {
+      evt.oldValue match {
+        case ui: UI => ui.active.asInstanceOf[MutableProperty[Boolean]] := false
+        case _ => // Nothing
+      }
+      evt.newValue match {
+        case ui: UI => ui.active.asInstanceOf[MutableProperty[Boolean]] := true
+        case _ => // Nothing
+      }
+    }
+  }
 }

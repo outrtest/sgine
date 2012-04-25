@@ -35,6 +35,9 @@ class Button extends AbstractContainer with Stylized with Focusable {
   }
 
   listeners.synchronous {
-    case evt: MousePressEvent => fire(ActionEvent("click"))
+    case evt: MousePressEvent => {
+      requestFocus()
+      fire(ActionEvent("click"))
+    }
   }
 }
