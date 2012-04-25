@@ -6,5 +6,5 @@ import org.sgine.ui.Component
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Stylized extends Component {
-  val style = new Style(this) with MouseStyle
+  val style = new Style(this) with MouseStyle with FocusStyle
 }

@@ -7,7 +7,7 @@ import org.sgine.event.ActionEvent
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Button extends AbstractContainer with Stylized {
+class Button extends AbstractContainer with Stylized with Focusable {
   def this(text: String) = {
     this()
     this.text := text
