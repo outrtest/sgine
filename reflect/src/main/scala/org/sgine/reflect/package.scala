@@ -13,11 +13,16 @@ package object reflect {
   }
 
   implicit def class2EnhancedClass(c: Class[_]): EnhancedClass = map.get(c) match {
-    case null => {
-      val ec = new EnhancedClass(c)
-      register(c, ec)
+    case null => registerEnhancedClass(c)
+    case ref if (!ref.isEnqueued) => ref.get match {
+      case Some(ec) => ec
+      case None => registerEnhancedClass(c)
     }
-    case ref if (!ref.isEnqueued) => ref()
+  }
+
+  private def registerEnhancedClass(c: Class[_]) = {
+    val ec = new EnhancedClass(c)
+    register(c, ec)
   }
 
   implicit def method2EnhancedMethod(m: Method) = class2EnhancedClass(m.getDeclaringClass)(m)
