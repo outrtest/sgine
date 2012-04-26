@@ -1,6 +1,5 @@
 package org.sgine.ui.render
 
-
 /**
  * Vertex is a convenience object for generating vertices for common scenarios.
  *
@@ -10,8 +9,7 @@ object Vertex {
   /**
    * Generates a triangle centered at x, y, z with width and height supplied.
    */
-  def triangle(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, width: Double = 2.0,
-      height: Double = 2.0) = {
+  def triangle(x: Double = 0.0, y: Double = 0.0, z: Double = 0.0, width: Double = 2.0, height: Double = 2.0) = {
     List(
       x, (y + (height / 2.0)), z, // Top point
       (x - (width / 2.0)), (y - (height / 2.0)), z, // Bottom left point
@@ -22,8 +20,7 @@ object Vertex {
   /**
    * Generates a quad from the values supplied.
    */
-  def quad(x1: Double = -1.0, y1: Double = 1.0, x2: Double = 1.0, y2: Double = -1.0,
-      z: Double = 0.0) = {
+  def quad(x1: Double = -1.0, y1: Double = 1.0, x2: Double = 1.0, y2: Double = -1.0, z: Double = 0.0) = {
     List(
       x1, y1, 0.0, // Top left
       x2, y1, 0.0, // Top right
@@ -118,44 +115,20 @@ object Vertex {
     quad(sx0, sy2, sx1, sy3, z) :::      // Bottom-Left
     quad(sx1, sy2, sx2, sy3, z) :::      // Bottom
     quad(sx2, sy2, sx3, sy3, z)          // Bottom-Right
+  }
 
-//    List(
-//      sx0, sy1, z,      // Top-Left
-//      sx1, sy1, z,
-//      sx1, sy0, z,
-//      sx0, sy0, z,
-//      sx1, sy1, z,      // Top
-//      sx2, sy1, z,
-//      sx2, sy0, z,
-//      sx1, sy0, z,
-//      sx2, sy1, z,      // Top-Right
-//      sx3, sy1, z,
-//      sx3, sy0, z,
-//      sx2, sy0, z,
-//      sx0, sy2, z,      // Left
-//      sx1, sy2, z,
-//      sx1, sy1, z,
-//      sx0, sy1, z,
-//      sx1, sy2, z,      // Center
-//      sx2, sy2, z,
-//      sx2, sy1, z,
-//      sx1, sy1, z,
-//      sx2, sy2, z,      // Right
-//      sx3, sy2, z,
-//      sx3, sy1, z,
-//      sx2, sy1, z,
-//      sx0, sy3, z,      // Bottom-Left
-//      sx1, sy3, z,
-//      sx1, sy2, z,
-//      sx0, sy2, z,
-//      sx1, sy3, z,      // Bottom
-//      sx2, sy3, z,
-//      sx2, sy2, z,
-//      sx1, sy2, z,
-//      sx2, sy3, z,      // Bottom-Right
-//      sx3, sy3, z,
-//      sx3, sy2, z,
-//      sx2, sy2, z
-//    )
+  def clip(minX: Double, minY: Double, maxX: Double, maxY: Double, points: List[Double]) = {
+    points.grouped(3).flatMap {
+      case x :: y :: z :: Nil => List(clipPoint(x, minX, maxX), clipPoint(y, minY, maxY), z)
+      case _ => throw new RuntimeException("Is not divisible by three!")
+    }.toList
+  }
+
+  private def clipPoint(value: Double, minimum: Double, maximum: Double) = if (value < minimum) {
+    minimum
+  } else if (value > maximum) {
+    maximum
+  } else {
+    value
   }
 }
