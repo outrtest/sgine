@@ -1,11 +1,12 @@
 package org.sgine.property
 
+import org.sgine.hierarchy.Named._
+
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class ObjectPropertyParent(val parent: PropertyParent) extends PropertyParent {
-  private val simpleName = getClass.getName.substring(getClass.getName.lastIndexOf('.') + 1)
-  val name = simpleName.substring(0, simpleName.length - 1) match {
+  val name = simpleName(getClass).substring(0, simpleName(getClass).length - 1) match {
     case s => s.substring(s.lastIndexOf('$') + 1)
   }
 }

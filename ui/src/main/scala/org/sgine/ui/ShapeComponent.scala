@@ -2,7 +2,8 @@ package org.sgine.ui
 
 import render.ArrayBuffer
 import org.sgine.property.Property
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.{GL10, Texture}
 
 /**
  * ShapeComponent is a base class for Components that need to render vertices and textures to the
@@ -30,6 +31,8 @@ class ShapeComponent extends RenderableComponent {
 
     if (texture != null) {
       texture.bind()
+    } else {
+      Gdx.gl11.glBindTexture(GL10.GL_TEXTURE_2D, 0)
     }
     arrayBuffer.bind()
     if (!textureCoordinates.isEmpty) {

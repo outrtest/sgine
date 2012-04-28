@@ -36,7 +36,7 @@ trait Named {
   }
 
   private def classMatch(value: String, clazz: Class[_]): Boolean = {
-    if (clazz.getSimpleName == value) {
+    if (Named.simpleName(clazz) == value) {
       true
     } else if (clazz.getInterfaces.find(c => classMatch(value, c)) != None) {
       true
@@ -57,4 +57,6 @@ object Named {
     case named: Named => if (named.name != null) named.name :: tail else tail
     case _ => tail
   }
+
+  def simpleName(clazz: Class[_]) = clazz.getName.substring(clazz.getName.lastIndexOf('.') + 1)
 }
