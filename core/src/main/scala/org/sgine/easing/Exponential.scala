@@ -1,4 +1,4 @@
-package org.sgine.ui.easing
+package org.sgine.easing
 
 import scala.math._
 
