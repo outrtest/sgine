@@ -2,6 +2,7 @@ package org.sgine.property.workflow
 
 import org.sgine.property.MutableProperty
 import org.sgine.workflow.WorkflowBuilder
+import org.sgine.easing.Easing
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -22,6 +23,14 @@ class PropertyAnimatorBuilder(builder: WorkflowBuilder) {
   def in(time: Double) = {
     val items = builder.currentItems.map {
       case item: PropertyAnimator if (item.time == Double.NegativeInfinity) => item.copy(time = time)
+      case item => item
+    }
+    builder.copy(currentItems = items)
+  }
+
+  def using(easing: Easing) = {
+    val items = builder.currentItems.map {
+      case item: PropertyAnimator if (item.easing == null) => item.copy(easing = easing)
       case item => item
     }
     builder.copy(currentItems = items)
