@@ -19,7 +19,6 @@ class Scale9 extends ShapeComponent {
 
   def this(resource: Resource, x1: Double, y1: Double, x2: Double, y2: Double) = {
     this()
-//    load(resource, x1, y1, x2, y2)
 
     this.resource := resource
     slice.set(x1, y1, x2, y2)
@@ -70,7 +69,11 @@ class Scale9 extends ShapeComponent {
    * Loads the resource supplied as a Texture and slices as a Scale-9.
    */
   private def load(resource: Resource, x1: Double = slice.x1(), y1: Double = slice.y1(), x2: Double = slice.x2(), y2: Double = slice.y2()) = {
-    texture := new Texture(resource)
+    if (resource != null) {
+      texture := new Texture(resource)
+    } else {
+      texture := null
+    }
 
     slice.set(x1, y1, x2, y2)
   }
