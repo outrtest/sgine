@@ -8,7 +8,7 @@ import org.sgine.ui.align.{VerticalAlignment, HorizontalAlignment}
  */
 case class HorizontalLayout(verticalAlignment: VerticalAlignment = VerticalAlignment.Middle,
                             spacing: Double = 0.0) extends Layout {
-  def layout(container: AbstractContainer) = {
+  protected def layoutContainer(container: AbstractContainer) = {
     val width = container.contents.foldLeft(0.0)((w, c) => if (c.includeInLayout()) {
       w + c.size.width() + spacing
     } else {

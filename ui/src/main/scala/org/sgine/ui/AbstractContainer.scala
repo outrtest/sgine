@@ -22,7 +22,7 @@ class AbstractContainer extends AbstractMutableContainer[Component] with Compone
   private val validateLayout = () => {
     _layout() match {
       case null => // No layout manager
-      case l => l.layout(this)
+      case l => Layout(l, this)
     }
     updateSizeFromChildren()
   }

@@ -6,5 +6,9 @@ import org.sgine.ui.AbstractContainer
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Layout {
-  def layout(container: AbstractContainer): Unit
+  protected def layoutContainer(container: AbstractContainer): Unit
+}
+
+object Layout {
+  def apply(layout: Layout, container: AbstractContainer) = layout.layoutContainer(container)
 }
