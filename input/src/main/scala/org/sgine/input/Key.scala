@@ -1,5 +1,6 @@
 package org.sgine.input
 
+import event.KeyPressedEvent
 import org.sgine.{Enumerated, EnumEntry}
 
 /**
@@ -11,6 +12,8 @@ sealed class Key(val keyCode: Int) extends EnumEntry[Key] {
   protected[input] var _down = false
 
   def pressed = _down
+
+  val event = new KeyPressedEvent(this)
 }
 
 object Key extends Enumerated[Key] {

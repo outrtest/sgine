@@ -1,7 +1,7 @@
 package org.sgine.ui
 
-import org.sgine.input.event.KeyDownEvent
 import org.sgine.input.{Key, Keyboard}
+import org.sgine.input.event.KeyDownEvent
 
 
 /**

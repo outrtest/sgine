@@ -15,6 +15,14 @@ trait Event {
   final def target = _target
   final def cause = _cause
 
+  /**
+   * If this returns true then this event will only fire on synchronous listeners and all other processing modes will
+   * ignore this event.
+   *
+   * Defaults to false.
+   */
+  def singleThreaded = false
+
   val thread = Thread.currentThread()
 }
 
@@ -25,7 +33,7 @@ object Event {
   def apply() = new BasicEvent
 
   def fire(event: Event, target: Listenable) = {
-    if (event._target != null) throw new RuntimeException("Events can only be fired once!")
+    if (event._target != null && !event.singleThreaded) throw new RuntimeException("Events can only be fired once!")
     event._cause = current
     event._target = target
     _current.set(event)
