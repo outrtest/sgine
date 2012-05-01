@@ -46,7 +46,7 @@ trait MutableContainer[T <: Element] extends AbstractMutableContainer[T] {
   /**
    * Represents the children of this container.
    */
-  sealed class VisibleContents extends Seq[T] {
+  class VisibleContents extends Seq[T] {
     def iterator = buffer.iterator
 
     /**
