@@ -120,10 +120,11 @@ case class EventListener(listenable: Listenable,
     count += 1
     val result = processingMode match {
       case ProcessingMode.Synchronous => function(event)
-      case ProcessingMode.Asynchronous => listenable.asynchronousActor ! (() => function(event))
-      case ProcessingMode.Concurrent => Executor.invoke {
+      case ProcessingMode.Asynchronous if (!event.singleThreaded) => listenable.asynchronousActor ! (() => function(event))
+      case ProcessingMode.Concurrent if (!event.singleThreaded) => Executor.invoke {
         function(event)
       }
+      case _ => // Ignore fall-through
     }
     if (count >= maxInvocation) {
       listenable.removeListener(this)

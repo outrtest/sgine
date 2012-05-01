@@ -309,6 +309,7 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
         }
         case d => d
       }
+      updateKeys()
       update(delta)
       updatablesView.foreach(updateUpdatables)
       rendererView.foreach(renderRenderable)
@@ -329,10 +330,22 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
     def dispose() = {
     }
 
+    private val updateKey = (key: Key) => {
+      if (key.pressed) {
+        KeyPressedEvent.update(key.event, delta, UI.this)
+      }
+    }
+
+    private def updateKeys() = {
+      Key.values.foreach(updateKey)
+    }
+
     def keyDown(keyCode: Int) = {
       activate()
-      Keyboard.fire(KeyDownEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
-      fire(KeyDownEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      val key = Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))
+      Keyboard.fire(KeyDownEvent(key))
+      fire(KeyDownEvent(key))
+      KeyPressedEvent.update(key.event, delta, UI.this)
       true
     }
 
@@ -345,8 +358,10 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
 
     def keyUp(keyCode: Int) = {
       activate()
-      Keyboard.fire(KeyUpEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
-      fire(KeyUpEvent(Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))))
+      val key = Key.byKeyCode(keyCode).getOrElse(throw new RuntimeException("Unknown keyCode %s".format(keyCode)))
+      Keyboard.fire(KeyUpEvent(key))
+      fire(KeyUpEvent(key))
+      KeyPressedEvent.released(key.event)
       true
     }
 
