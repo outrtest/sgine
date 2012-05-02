@@ -7,6 +7,7 @@ import org.sgine.property.Property
 import annotation.tailrec
 
 import scala.math._
+import org.sgine.scene.event.ContainerEvent
 
 /**
  * AbstractContainer provides all the functionality for a Component container, but the mutability of its children is
@@ -27,20 +28,21 @@ class AbstractContainer extends AbstractMutableContainer[Component] with Compone
     updateSizeFromChildren()
   }
 
-  this match {
-    case _ => listeners.synchronous.filter.descendant(3) {
-      case event: ChangeEvent => event.target match {
-        case property: Property[_] if (property.name != null && property.hierarchicalName().matches(childSizeChangeRegex)) => {
-          val component = Component.parentComponent(property)
-          if (component.parent != null) {
-            if (component.parent == this && component.includeInLayout()) {
-              validateLayout()
-            }
+  listeners.synchronous.filter.descendant(3) {
+    case event: ChangeEvent => event.target match {
+      case property: Property[_] if (property.name != null && property.hierarchicalName().matches(childSizeChangeRegex)) => {
+        val component = Component.parentComponent(property)
+        if (component.parent != null) {
+          if (component.parent == this && component.includeInLayout()) {
+            invalidateLayout()
           }
         }
-        case _ => // Ignore
       }
+      case _ => // Ignore
     }
+  }
+  listeners.synchronous {
+    case evt: ContainerEvent => invalidateLayout()
   }
 
   def invalidateLayout() = updateAsync.invokeLater(validateLayout)

@@ -72,6 +72,11 @@ trait MutableContainer[T <: Element] extends AbstractMutableContainer[T] {
     def -=(child: T) = removeChild(child)
 
     /**
+     * Removes all children from this container.
+     */
+    def clear() = removeAll()
+
+    /**
      * Adds all the supplied children to this container.
      */
     @tailrec
