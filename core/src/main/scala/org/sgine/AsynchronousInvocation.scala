@@ -28,7 +28,7 @@ class AsynchronousInvocation {
    */
   def invokeLater(f: () => Unit) = if (thread == Thread.currentThread()) {
     f()
-  } else {
+  } else if (!set.contains(f)) {
     set.add(f)
   }
 

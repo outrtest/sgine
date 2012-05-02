@@ -172,7 +172,7 @@ class SceneSpec extends WordSpec with ShouldMatchers {
     val containerView4 = new ContainerView[StringElement](container4, sort = sort)
     var filterLength = 3
     val filter = (s: StringElement) => s.name.length > filterLength
-    val containerView5 = new ContainerView[StringElement](container5, filter = filter)
+    val containerView5 = new ContainerView[StringElement](container5, filterIn = filter)
 
     val ic = new ImmutableContainer[StringElement](List(StringElement("Uno")))
 

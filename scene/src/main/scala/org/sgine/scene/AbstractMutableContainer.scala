@@ -3,6 +3,7 @@ package org.sgine.scene
 import event.{ChildRemovedEvent, ChildAddedEvent}
 import org.sgine.hierarchy.Element
 import collection.mutable.ListBuffer
+import annotation.tailrec
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -32,5 +33,22 @@ class AbstractMutableContainer[T <: Element] extends Container[T] {
     }
 
     fire(new ChildRemovedEvent(this, child))
+  }
+
+  protected def removeFirst() = synchronized {
+    if (buffer.nonEmpty) {
+      val child = buffer.head
+      removeChild(child)
+      true
+    } else {
+      false
+    }
+  }
+
+  @tailrec
+  protected final def removeAll(): Unit = {
+    if (removeFirst()) {
+      removeAll()
+    }
   }
 }
