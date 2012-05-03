@@ -22,9 +22,13 @@ class Style(val component: Component) extends PropertyParent with Listenable {
   // Update the style if the property value changes and is currently applied.
   listeners.synchronous.filter.child {
     case evt: PropertyChangeEvent if (current().contains(evt.property)) => synchronized {
-      remove(evt.property.asInstanceOf[StyleProperty])
-      add(evt.property.asInstanceOf[StyleProperty])
+      update()
     }
+  }
+
+  def update() = synchronized {
+    revert(changed())             // We need to revert the previous style before applying the new one
+    generate()                    // Generate the changed list for later reverting
   }
 
   def set(p: StyleProperty) = synchronized {
@@ -32,8 +36,7 @@ class Style(val component: Component) extends PropertyParent with Listenable {
   }
 
   def apply(f: => Any) = {
-    val p = StyleProperty("temp")
-    p := ((component: Component) => f)
+    val p = StyleProperty("temp", (component: Component) => f)
     set(p)
   }
 
@@ -47,10 +50,7 @@ class Style(val component: Component) extends PropertyParent with Listenable {
   }
 
   current.listeners.synchronous {
-    case evt: ChangeEvent => {
-      revert(changed())             // We need to revert the previous style before applying the new one
-      generate()                    // Generate the changed list for later reverting
-    }
+    case evt: ChangeEvent => update()
   }
 
   @tailrec
