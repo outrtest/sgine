@@ -41,11 +41,11 @@ trait Updater extends Updatable {
     }
   }
 
-  protected def add(updatable: Updatable) = synchronized {
+  protected[sgine] def add(updatable: Updatable) = synchronized {
     updatables = updatable :: updatables
   }
 
-  protected def remove(updatable: Updatable) = synchronized {
+  protected[sgine] def remove(updatable: Updatable) = synchronized {
     updatables = updatables.filterNot(u => u == updatable)
   }
 }

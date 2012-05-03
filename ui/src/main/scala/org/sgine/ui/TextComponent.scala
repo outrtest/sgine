@@ -22,12 +22,12 @@ class TextComponent extends ShapeComponent {
     if (t != null && !t.isEmpty && f != null) {
       generator.font = f
       generator.wrap = _wrapWidth()
-      val size = generator.measure(t)
-      measured.width := size._1
-      measured.height := size._2
+      val measuredSize = generator.measure(t)
+      size.measured.width := measuredSize._1
+      size.measured.height := measuredSize._2
     } else {
-      measured.width := 0.0
-      measured.height := 0.0
+      size.measured.width := 0.0
+      size.measured.height := 0.0
     }
   }
 
@@ -58,8 +58,8 @@ class TextComponent extends ShapeComponent {
       vertices.clear()
       coords.clear()
 
-      offsetX = -(measured.width() / 2.0)
-      offsetY = (measured.height() / 2.0)
+      offsetX = -(size.measured.width() / 2.0)
+      offsetY = (size.measured.height() / 2.0)
       val page = _font().pages.head
       tw = page.texture.getWidth
       th = page.texture.getHeight

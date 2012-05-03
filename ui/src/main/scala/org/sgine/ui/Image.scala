@@ -34,8 +34,8 @@ class Image extends ShapeComponent {
   texture.onChange {
     val texture = this.texture()
     if (texture != null) {
-      measured.width := texture.getWidth
-      measured.height := texture.getHeight
+      size.measured.width := texture.getWidth
+      size.measured.height := texture.getHeight
       textureRegion.x := 0
       textureRegion.y := 0
       textureRegion.width := texture.getWidth

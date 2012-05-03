@@ -14,6 +14,8 @@ object FocusExample extends UI with Debug {
   val b2 = new Button("Button 2")
   val b3 = new Button("Button 3")
 
+  b2.requestFocus()
+
   contents.addAll(b1, b2, b3)
 
   layout := new VerticalLayout(HorizontalAlignment.Center, 25.0)

@@ -56,9 +56,9 @@ class AbstractContainer extends AbstractMutableContainer[Component] with Compone
                              minZ: Double = 0.0,
                              maxZ: Double = 0.0): Unit = {
     if (children.isEmpty) {
-      measured.width := (maxX - minX) + padding.left() + padding.right()
-      measured.height := (maxY - minY) + padding.top() + padding.bottom()
-      measured.depth := maxZ - minZ
+      size.measured.width := (maxX - minX) + padding.left() + padding.right()
+      size.measured.height := (maxY - minY) + padding.top() + padding.bottom()
+      size.measured.depth := maxZ - minZ
     } else {
       val current = children.head
       if (current.includeInLayout()) {

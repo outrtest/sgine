@@ -46,8 +46,8 @@ class Scale9 extends ShapeComponent {
   texture.onChange {
     val texture = this.texture()
     if (texture != null) {
-      measured.width := texture.getWidth
-      measured.height := texture.getHeight
+      size.measured.width := texture.getWidth
+      size.measured.height := texture.getHeight
     }
   }
 

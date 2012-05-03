@@ -1,21 +1,31 @@
 package org.sgine.ui.style
 
 import org.sgine.ui.Component
-import org.sgine.event.{ChangeEvent, Change}
 import annotation.tailrec
-import org.sgine.property.{ObjectPropertyParent, Property}
+import org.sgine.property.{PropertyParent, Property}
+import org.sgine.event.{Listenable, ChangeEvent, Change}
+import org.sgine.property.event.PropertyChangeEvent
 
 /**
  * Style is defined in Stylized trait.
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class Style(val component: Component) extends ObjectPropertyParent(component) {
+class Style(val component: Component) extends PropertyParent with Listenable {
   override val name = "style"
+  def parent = component
 
   private val changed = Property[List[Change]]("changed", Nil)
 
   private val current = Property[List[StyleProperty]]("current", Nil)
+
+  // Update the style if the property value changes and is currently applied.
+  listeners.synchronous.filter.child {
+    case evt: PropertyChangeEvent if (current().contains(evt.property)) => synchronized {
+      remove(evt.property.asInstanceOf[StyleProperty])
+      add(evt.property.asInstanceOf[StyleProperty])
+    }
+  }
 
   def set(p: StyleProperty) = synchronized {
     current := List(p)

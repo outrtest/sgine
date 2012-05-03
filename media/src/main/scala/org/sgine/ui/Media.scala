@@ -63,8 +63,8 @@ class Media extends Image {
 
     // Determine size
     val (width, height) = Media.determineSize(resource())
-    measured.width := width
-    measured.height := height
+    size.measured.width := width
+    size.measured.height := height
 
     val w = size.width().toInt
     val h = size.height().toInt

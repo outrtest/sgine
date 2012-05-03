@@ -17,10 +17,12 @@ trait Focusable extends Component {
   }
 
   def requestFocus() = focusManager match {
-    case null => false
-    case fm => {
-      fm.focused := this
-      true
-    }
+    case null => updateAsync.invokeLater(() => {      // Update focus later
+      focusManager match {
+        case null => // No focus manager!
+        case fm => fm.focused := this
+      }
+    })
+    case fm => fm.focused := this
   }
 }
