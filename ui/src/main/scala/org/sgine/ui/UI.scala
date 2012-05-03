@@ -193,9 +193,6 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
 
     delayedInitialize = () => x
 
-    Mouse.listeners.synchronous {
-      case evt: MouseEvent => pickComponents(evt, componentsView)
-    }
   }
 
   /**
@@ -279,6 +276,9 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
       Gdx.input.setInputProcessor(this)
       if (delayedInitialize != null) {
         delayedInitialize()
+      }
+      Mouse.listeners.synchronous {
+        case evt: MouseEvent => pickComponents(evt, componentsView)
       }
       UI.current := UI.this
       onUpdate(camera) {

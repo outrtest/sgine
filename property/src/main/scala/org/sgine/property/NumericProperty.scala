@@ -8,7 +8,7 @@ import backing._
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class NumericProperty(name: String, backing: Backing[Double])(implicit override val parent: PropertyParent) extends StandardProperty[Double](name, backing) {
+class NumericProperty(name: String, default: Double, backing: Backing[Double])(implicit override val parent: PropertyParent) extends StandardProperty[Double](name, default, backing) {
   def +=(value: Double) = apply(this.value + value)
 
   def -=(value: Double) = apply(this.value - value)
@@ -23,9 +23,7 @@ object NumericProperty {
    * Creates a new StandardProperty with VariableBacking and the value supplied.
    */
   def apply(name: String, value: Double, backing: Backing[Double] = new VariableBacking[Double])(implicit parent: PropertyParent): NumericProperty = {
-    val p = new NumericProperty(name, backing)(parent)
-    p.value = value
-    p
+    new NumericProperty(name, value, backing)(parent)
   }
 
   /**

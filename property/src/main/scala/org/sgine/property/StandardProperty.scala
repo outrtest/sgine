@@ -12,12 +12,15 @@ import org.sgine.event.{ChangeEvent, Listenable}
  *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class StandardProperty[T](val name: String, backing: Backing[T] = new VariableBacking[T])
-                                  (implicit override val parent: PropertyParent)
+class StandardProperty[T](val name: String, val default: T, backing: Backing[T] = new VariableBacking[T])
+                         (implicit override val parent: PropertyParent)
                                     extends MutableProperty[T]
                                     with Listenable
                                     with ChangeInterceptor[T]
-                                    with Bindable[T] {
+                                    with Bindable[T]
+                                    with Default[T] {
+  backing.setValue(default)
+
   def apply(v: T) = {
     val oldValue = backing.getValue
     val newValue = change(oldValue, v)

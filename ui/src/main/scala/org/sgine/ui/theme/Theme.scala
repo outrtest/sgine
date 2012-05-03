@@ -1,24 +1,34 @@
 package org.sgine.ui.theme
 
-import org.sgine.property.{MutableProperty, StandardProperty, PropertyParent, Property}
 import org.sgine.ui.Component
 import annotation.tailrec
 
-import org.sgine.reflect._
+import org.sgine.property._
+import org.sgine.ui.style.Stylized
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
-object Theme extends StandardProperty[Theme]("Theme")(null) with PropertyParent {
-  this := WindowsTheme
-
+object Theme extends StandardProperty[Theme]("Theme", WindowsTheme)(null) with PropertyParent {
   def apply(component: Component) = {
     value match {
       case null =>                                                     // Do nothing - no theme is active
       case theme => {
         theme.updateProperties(component.allProperties)                // Update properties
         theme(component)
+        updateStylized(component)
       }
+    }
+  }
+
+  @tailrec
+  private def updateStylized(component: Component): Unit = {
+    component match {
+      case stylized: Stylized => stylized.style.update()
+      case _ =>
+    }
+    if (component.parent != null) {
+      updateStylized(component.parent)
     }
   }
 
@@ -43,14 +53,12 @@ class Theme(val name: String) extends PropertyParent {
   private def updateProperties(properties: Seq[Property[_]]): Unit = {
     if (properties.nonEmpty) {
       val property = properties.head
-      val previous = property()
-      if (previous == null || previous == previous.asInstanceOf[AnyRef].getClass.defaultForType) {
-        property match {
-          case mutable: MutableProperty[_] => updateProperty(mutable)
-          case _ => // Not mutable
-        }
-        apply(property)
+      property match {
+        case mutable: MutableProperty[_] with Default[_] => if (mutable() == mutable.default) updateProperty(mutable)
+        case mutable: MutableProperty[_] => updateProperty(mutable)
+        case _ => // Not mutable
       }
+      apply(property)
       updateProperties(properties.tail)
     }
   }

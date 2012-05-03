@@ -26,9 +26,7 @@ object Property {
    * Creates a new StandardProperty with VariableBacking and the value supplied.
    */
   def apply[T](name: String, value: T, backing: Backing[T] = new VariableBacking[T])(implicit parent: PropertyParent) = {
-    val p = new StandardProperty[T](name, backing)(parent)
-    p.value = value
-    p
+    new StandardProperty[T](name, value, backing)(parent)
   }
 
   /**
