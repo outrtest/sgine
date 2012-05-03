@@ -60,20 +60,22 @@ trait Listenable {
       case event => listenables.contains(event.target)
     }
 
-    def descendant(depth: Int = Int.MaxValue): Event => Boolean = {
+    def descendant(depth: Int = Int.MaxValue, includeCurrent: Boolean = false): Event => Boolean = {
       case event => event.target match {
         case _ if (depth == 0) => target(event)
         case child: Child if (Child.hasAncestor(child, Listenable.this, depth)) => true
+        case t if (includeCurrent && t == Listenable.this) => true
         case _ => false
       }
     }
 
     def child() = descendant(1)
 
-    def ancestor(depth: Int = Int.MaxValue): Event => Boolean = {
+    def ancestor(depth: Int = Int.MaxValue, includeCurrent: Boolean = false): Event => Boolean = {
       case event => event.target match {
         case _ if (depth == 0) => target(event)
         case parent: Parent if (parent.hierarchy.hasDescendant(Listenable.this, depth)) => true
+        case t if (includeCurrent && t == Listenable.this) => true
         case _ => false
       }
     }
