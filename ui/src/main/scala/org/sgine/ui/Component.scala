@@ -1,8 +1,8 @@
 package org.sgine.ui
 
-import align.{DepthAlignment, HorizontalAlignment, VerticalAlignment}
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
+import internal._
 import org.sgine.event.{ChangeEvent, Listenable}
 
 import scala.math._
@@ -11,7 +11,7 @@ import concurrent.AtomicInt
 import hierarchy.{Child, Element}
 import naming.NamedChild
 import annotation.tailrec
-import property.{ObjectPropertyParent, NumericProperty, PropertyParent, Property}
+import property.{PropertyParent, Property}
 import theme.Theme
 
 /**
@@ -99,157 +99,39 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   /**
    * The local location of this component in the UI.
    */
-  object location extends Property3D(this, 0.0, 0.0, 0.0) {
-    object actual extends Property3D(this, 0.0, 0.0, 0.0)
-
-    def updateActual() = {
-      alignment.horizontal() match {
-        case HorizontalAlignment.Center => actual.x := x()
-        case HorizontalAlignment.Left => actual.x := x() + (size.width() / 2.0)
-        case HorizontalAlignment.Right => actual.x := x() - (size.width() / 2.0)
-      }
-      alignment.vertical() match {
-        case VerticalAlignment.Middle => actual.y := y()
-        case VerticalAlignment.Top => actual.y := y() - (size.height() / 2.0)
-        case VerticalAlignment.Bottom => actual.y := y() + (size.height() / 2.0)
-      }
-      alignment.depth() match {
-        case DepthAlignment.Middle => actual.z := z()
-        case DepthAlignment.Front => actual.z := z() + (size.depth() / 2.0)
-        case DepthAlignment.Back => actual.z := z() - (size.depth() / 2.0)
-      }
-    }
-  }
+  val location = new ComponentLocation(this)
 
   /**
    * The alignment of this component
    */
-  object alignment extends ObjectPropertyParent(this) {
-    val horizontal = Property[HorizontalAlignment]("horizontal", HorizontalAlignment.Center)
-    val vertical = Property[VerticalAlignment]("vertical", VerticalAlignment.Middle)
-    val depth = Property[DepthAlignment]("depth", DepthAlignment.Middle)
-  }
+  val alignment = new ComponentAlignment(this)
 
   /**
    * Padding to this component
    */
-  object padding extends ObjectPropertyParent(this) {
-    val top = NumericProperty("top", 0.0)
-    val bottom = NumericProperty("bottom", 0.0)
-    val left = NumericProperty("left", 0.0)
-    val right = NumericProperty("right", 0.0)
-
-    def apply(top: Double = this.top(), bottom: Double = this.bottom(), left: Double = this.left(), right: Double = this.right()) = {
-      this.top := top
-      this.bottom := bottom
-      this.left := left
-      this.right := right
-    }
-  }
+  val padding = new ComponentPadding(this)
 
   /**
    * The size of this component in the UI.
    */
-  object size extends ObjectPropertyParent(this) {
-    val width = NumericProperty("width", 0.0)
-    val height = NumericProperty("height", 0.0)
-    val depth = NumericProperty("depth", 0.0)
-    /**
-     * The algorithm used to update the actual size when the measured size changes.
-     *
-     * Defaults to SizeAlgorithm.measured
-     */
-    val algorithm = Property[SizeAlgorithm]("algorithm", SizeAlgorithm.measured)
-
-    def apply(width: Double = this.width(), height: Double = this.height(), depth: Double = this.depth()) = {
-      this.width := width
-      this.height := height
-      this.depth := depth
-    }
-  }
-
-  /**
-   * The measured size of the text.
-   */
-  object measured extends ObjectPropertyParent(this) {
-    val width = NumericProperty("width", 0.0)
-    val height = NumericProperty("height", 0.0)
-    val depth = NumericProperty("depth", 0.0)
-  }
+  val size = new ComponentSize(this)
 
   /**
    * The scale of this component in the UI.
    */
-  object scale extends Property3D(this, 1.0, 1.0, 1.0)
+  val scale = new Property3D("scale", this, 1.0, 1.0, 1.0)
 
   /**
    * The rotation of this component in the UI.
    */
-  object rotation extends Property3D(this, 0.0, 0.0, 0.0)
+  val rotation = new Property3D("rotation", this, 0.0, 0.0, 0.0)
 
   /**
    * The color of this component.
    */
-  object color extends ObjectPropertyParent(this) {
-    val red = NumericProperty("red", 1.0)
-    val green = NumericProperty("green", 1.0)
-    val blue = NumericProperty("blue", 1.0)
-    val alpha = NumericProperty("alpha", 1.0)
+  val color = new ComponentColor(this)
 
-    def apply(color: Color, updateAlpha: Boolean = true) = {
-      red := color.red
-      green := color.green
-      blue := color.blue
-      if (updateAlpha) {
-        alpha := color.alpha
-      }
-    }
-
-    /**
-     * Updates the supplied MutableColor to this color value.
-     */
-    def update(color: MutableColor) = {
-      color.red = red()
-      color.green = green()
-      color.blue = blue()
-      color.alpha = alpha()
-    }
-
-    /**
-     * Creates an immutable Color from this color value.
-     */
-    def get() = Color.immutable(red(), green(), blue(), alpha())
-
-    object actual extends ObjectPropertyParent(this) {
-      val red = NumericProperty("red", 1.0)
-      val green = NumericProperty("green", 1.0)
-      val blue = NumericProperty("blue", 1.0)
-      val alpha = NumericProperty("alpha", 1.0)
-    }
-  }
-
-  object updates {
-    def +=(updatable: Updatable) = add(updatable)
-
-    def -=(updatable: Updatable) = remove(updatable)
-
-    /**
-     * Invokes supplied function with the elapsed time when <code>time</code> has elapsed.
-     */
-    def every(time: Double)(f: Double => Unit) = {
-      add(new Updatable {
-        private var elapsed = 0.0
-
-        override def update(delta: Double) = {
-          elapsed += delta
-          if (elapsed >= time) {
-            f(elapsed)
-            elapsed = 0.0
-          }
-        }
-      })
-    }
-  }
+  val updates = new ComponentUpdates(this)
 
   def resolution(width: Double, height: Double, maintainAspectRatio: Boolean = true) = {
     val w = 0.8275 / width
@@ -302,7 +184,7 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   }
 
   // Update size when measured size is modified in the case of autoSize being true.
-  onChange(measured.width, measured.height, measured.depth) {
+  onChange(size.measured.width, size.measured.height, size.measured.depth) {
     size.algorithm() match {
       case null => // Do nothing
       case algorithm => algorithm(this)
@@ -377,33 +259,6 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    */
   def destroy() = {
   }
-}
-
-class Property3D(parent: PropertyParent, dx: Double, dy: Double, dz: Double) extends ObjectPropertyParent(parent) {
-  val x = NumericProperty("x", dx)
-  val y = NumericProperty("y", dy)
-  val z = NumericProperty("z", dz)
-
-  /**
-   * Assigns the default value to these properties.
-   */
-  def default() = {
-    apply(dx, dy, dz)
-  }
-
-  /**
-   * Modifies the encapsulated values. Defaults to the current value if not specified.
-   */
-  def apply(x: Double = this.x(), y: Double = this.y(), z: Double = this.z()) = {
-    this.x := x
-    this.y := y
-    this.z := z
-  }
-
-  /**
-   * Sets x, y, and z to the value supplied.
-   */
-  def set(value: Double) = apply(value, value, value)
 }
 
 object Component extends PropertyParent with NamedChild {

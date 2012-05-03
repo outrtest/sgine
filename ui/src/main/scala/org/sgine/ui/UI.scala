@@ -151,8 +151,9 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
   /**
    * The delta in seconds for the current render.
    */
-  def delta = listener.delta
+  def delta = _delta
 
+  private var _delta: Double = 0.0
   private var currentRay: Ray = _
   private lazy val intersection = new Vector3
 
@@ -264,7 +265,7 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
     constructor.newInstance(List[AnyRef](listener, config): _*).asInstanceOf[com.badlogic.gdx.Application]
   }
 
-  private object listener extends ApplicationListener with InputProcessor {
+  private lazy val listener = new ApplicationListener with InputProcessor {
     def create() = {
       Gdx.gl11.glShadeModel(GL10.GL_SMOOTH)
       Gdx.gl11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
@@ -296,7 +297,7 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
     private var previousTime = 0L
     def render() = {
       Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT) // TODO: optional?
-      delta = fixedTimestep() match {
+      _delta = fixedTimestep() match {
         case 0.0 => {
           val currentTime = System.nanoTime()
           val d = if (previousTime == 0L) {
@@ -314,8 +315,6 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
       updatablesView.foreach(updateUpdatables)
       rendererView.foreach(renderRenderable)
     }
-
-    protected[ui] var delta = 0.0
 
     private val updateUpdatables = (updatable: Updatable) => updatable.update(delta)
 
