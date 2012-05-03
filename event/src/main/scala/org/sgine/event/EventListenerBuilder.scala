@@ -21,9 +21,13 @@ case class EventListenerBuilder(private val listenable: Listenable,
   object filter {
     def apply(f: Event => Boolean) = copy(_filter = f)
     def targets(listenables: Listenable*) = apply(listenable.filters.targets(listenables: _*))
-    def descendant(depth: Int = Int.MaxValue) = apply(listenable.filters.descendant(depth))
+    def descendant(depth: Int = Int.MaxValue, includeCurrent: Boolean = false) = {
+      apply(listenable.filters.descendant(depth, includeCurrent))
+    }
     def child = apply(listenable.filters.child())
-    def ancestor(depth: Int = Int.MaxValue) = apply(listenable.filters.ancestor(depth))
+    def ancestor(depth: Int = Int.MaxValue, includeCurrent: Boolean = false) = {
+      apply(listenable.filters.ancestor(depth))
+    }
     def parent = apply(listenable.filters.parent())
     def thread(thread: Thread) = apply(listenable.filters.thread(thread))
     object or {

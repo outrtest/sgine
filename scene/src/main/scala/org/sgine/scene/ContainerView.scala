@@ -31,7 +31,7 @@ class ContainerView[T](val container: Container[_],
 
   // Add listeners if dynamic is enabled
   if (dynamic) {
-    container.listeners.filter.descendant().synchronous {
+    container.listeners.filter.descendant(includeCurrent = true).synchronous {
       case added: ChildAddedEvent => synchronized {
         validateChild(added.child.asInstanceOf[AnyRef])
         refreshFilter()

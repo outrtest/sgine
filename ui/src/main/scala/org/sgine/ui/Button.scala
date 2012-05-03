@@ -1,8 +1,9 @@
 package org.sgine.ui
 
 import style.Stylized
-import org.sgine.input.event.MousePressEvent
 import org.sgine.event.ActionEvent
+import org.sgine.input.event.{KeyDownEvent, MousePressEvent}
+import org.sgine.input.Key
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -39,5 +40,6 @@ class Button extends AbstractContainer with Stylized with Focusable {
       requestFocus()
       fire(ActionEvent("click"))
     }
+    case evt: KeyDownEvent if (evt.key == Key.Enter || evt.key == Key.Space) => fire(ActionEvent("click"))
   }
 }
