@@ -28,9 +28,11 @@ trait FocusManager extends AbstractContainer {
     case null => false
   }
 
+  private val focusMatcher = (f: Focusable) => f.focusable()
+
   def previousFocusable(wrap: Boolean = true) = focused() match {
     case null => lastFocusable()
-    case f => f.hierarchy.backward((f: Focusable) => true) match {
+    case f => f.hierarchy.backward(focusMatcher) match {
       case null if (wrap) => lastFocusable()
       case previous => previous
     }
@@ -38,18 +40,20 @@ trait FocusManager extends AbstractContainer {
 
   def nextFocusable(wrap: Boolean = true) = focused() match {
     case null => firstFocusable()
-    case f => f.hierarchy.forward((f: Focusable) => true) match {
+    case f => f.hierarchy.forward(focusMatcher) match {
       case null if (wrap) => firstFocusable()
       case next => next
     }
   }
 
-  def firstFocusable() = hierarchy.forward((f: Focusable) => true)
+  def firstFocusable() = hierarchy.forward(focusMatcher)
 
   def lastFocusable() = {
     var last: Focusable = null
     hierarchy.forward((f: Focusable) => {
-      last = f
+      if (focusMatcher(f)) {
+        last = f
+      }
       false
     })
     last

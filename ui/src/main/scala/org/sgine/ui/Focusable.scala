@@ -1,6 +1,10 @@
 package org.sgine.ui
 
+import org.sgine.property.Property
+
 trait Focusable extends Component {
+  val focusable = Property[Boolean]("focusable", true)
+
   def focusManager = hierarchy.ancestor((fm: FocusManager) => true).getOrElse(null)
 
   def isFocused = focusManager match {
@@ -16,13 +20,15 @@ trait Focusable extends Component {
     }
   }
 
-  def requestFocus() = focusManager match {
-    case null => updateAsync.invokeLater(() => {      // Update focus later
-      focusManager match {
-        case null => // No focus manager!
-        case fm => fm.focused := this
-      }
-    })
-    case fm => fm.focused := this
+  def requestFocus() = if (focusable()) {
+    focusManager match {
+      case null => updateAsync.invokeLater(() => {      // Update focus later
+        focusManager match {
+          case null => // No focus manager!
+          case fm => fm.focused := this
+        }
+      })
+      case fm => fm.focused := this
+    }
   }
 }

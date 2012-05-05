@@ -65,6 +65,12 @@ trait Component extends PropertyParent with Listenable with Element with Updater
   val visible = Property[Boolean]("visible", true)
 
   /**
+   * Hierarchically validates the visibility of this Component where "visible" sets the property for this specific
+   * instance isVisible validates up the ancestral chain validating visibility.
+   */
+  def isVisible: Boolean = visible() && (parent == null || parent.isVisible)
+
+  /**
    * True if mouse events should occur on this Component.
    *
    * Defaults to true.
