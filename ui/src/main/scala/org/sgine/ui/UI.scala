@@ -318,7 +318,7 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
 
     private val updateUpdatables = (updatable: Updatable) => updatable.update(delta)
 
-    private val renderRenderable = (renderable: RenderableComponent) => if (renderable.visible()) renderable.render()
+    private val renderRenderable = (renderable: RenderableComponent) => if (renderable.isVisible) renderable.render()
 
     def pause() = {
     }
