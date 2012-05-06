@@ -33,11 +33,8 @@ class Media extends Image {
       case null => // No buffer to render to
       case pixmap: Pixmap => {
         val pixels = pixmap.getPixels
-        val bufferLength = (size.width().toInt * size.height().toInt * 4) + 32
+        val bufferLength = size.width().toInt * size.height().toInt * 4
         val buffer = nativeBuffer.getByteBuffer(0, bufferLength)
-        pixels.clear()
-        buffer.position(buffer.limit() - 32)
-        buffer.flip()
         pixels.put(buffer)
         pixels.flip()
         currentBuffer.getAndSet(pixmap) match {
@@ -82,6 +79,7 @@ class Media extends Image {
         val width = size.width().toInt
         val height = size.height().toInt
         val pixmap = if (p.getWidth != width || p.getHeight != height) {
+          p.dispose()
           new Pixmap(width, height, Pixmap.Format.RGBA8888)
         } else {
           p
