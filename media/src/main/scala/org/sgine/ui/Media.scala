@@ -5,12 +5,17 @@ import com.sun.jna.Memory
 import java.io.File
 import uk.co.caprica.vlcj.player._
 import org.sgine.concurrent.Time
-import java.util.concurrent.atomic.AtomicReference
-import java.util.concurrent.ConcurrentLinkedQueue
-import com.badlogic.gdx.graphics.{Texture, Pixmap}
 
 import scala.collection.JavaConversions._
 import org.sgine.property.{ObjectPropertyParent, Property}
+import com.badlogic.gdx.graphics._
+import java.nio.ByteBuffer
+import java.util.concurrent.atomic.AtomicReference
+import org.lwjgl.opengl.GL11._
+import org.lwjgl.opengl.GL15._
+import org.lwjgl.opengl.GL21._
+import java.util.concurrent.ConcurrentLinkedQueue
+import annotation.tailrec
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -24,22 +29,19 @@ class Media extends Image {
   }
 
   private val mediaPlayer = Property[MediaPlayer]("mediaPlayer", null)
-  private val currentBuffer = new AtomicReference[Pixmap](null)
-  private val availableBuffers = new ConcurrentLinkedQueue[Pixmap]()
-  @volatile private var usedBuffers = 0
+  private val readBuffer = new AtomicReference[PBO](null)
+  private val queue = new ConcurrentLinkedQueue[PBO]()
 
   private object renderCallback extends MediaPlayerEventAdapter with RenderCallback {
-    def display(nativeBuffer: Memory) = availableBuffers.poll() match {
-      case null => // No buffer to render to
-      case pixmap: Pixmap => {
-        val pixels = pixmap.getPixels
-        val bufferLength = size.width().toInt * size.height().toInt * 4
-        val buffer = nativeBuffer.getByteBuffer(0, bufferLength)
-        pixels.put(buffer)
-        pixels.flip()
-        currentBuffer.getAndSet(pixmap) match {
-          case null => // No previous set - nothing to do
-          case previous => availableBuffers.add(previous) // Unused update, recycle
+    def display(nativeBuffer: Memory) = {
+      queue.poll() match {
+        case null => // Nothing to do
+        case pbo => {
+          val bufferLength = size.width().toInt * size.height().toInt * 4
+          val videoBuffer = nativeBuffer.getByteBuffer(0, bufferLength)
+          pbo.buffer.put(videoBuffer)
+          pbo.buffer.flip()
+          readBuffer.set(pbo)
         }
       }
     }
@@ -66,45 +68,42 @@ class Media extends Image {
     val w = size.width().toInt
     val h = size.height().toInt
     mediaPlayer := Media.factory.newDirectMediaPlayer("RGBA", w, h, w * 4, renderCallback)
-    val pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888)
-    texture := null
-    availableBuffers.add(pixmap)
     mediaPlayer().prepareMedia(resource())
   }
 
+  @tailrec
+  private def clearQueue(): Unit = {
+    val pbo = queue.poll()
+    if (pbo != null) {
+      pbo.dispose()
+      clearQueue()
+    }
+  }
+
   override protected def draw() = {
-    currentBuffer.getAndSet(null) match {
-      case null => // Nothing to update
-      case p: Pixmap => {
-        val width = size.width().toInt
-        val height = size.height().toInt
-        val pixmap = if (p.getWidth != width || p.getHeight != height) {
-          p.dispose()
-          new Pixmap(width, height, Pixmap.Format.RGBA8888)
-        } else {
-          p
-        }
-        pixmap.getWidth
+    if (texture() == null) {
+      val width = size.width().toInt
+      val height = size.height().toInt
+      if (width > 0 && height > 0) {
+        texture := new Texture(width, height, Pixmap.Format.RGBA8888)
 
-        if (texture() == null) {
-          texture := new Texture(pixmap)
+        clearQueue()
+        readBuffer.getAndSet(null) match {
+          case null => // Ignore
+          case pbo => pbo.dispose()
         }
-
-        texture().draw(pixmap, 0, 0)
-
-        if (usedBuffers > buffers()) {
-          // Buffers reduced, don't recycle
-          usedBuffers -= 1
-          pixmap.dispose()
-        } else {
-          availableBuffers.add(pixmap)
-        }
+        (0 until buffers()).foreach(i => queue.add(PBO(width, height)))
       }
     }
 
-    if (usedBuffers < buffers()) {
-      availableBuffers.add(new Pixmap(size.width().toInt, size.height().toInt, Pixmap.Format.RGBA8888))
-      usedBuffers += 1
+    // Read the data back to the texture
+    readBuffer.getAndSet(null) match {
+      case null => // Nothing to read
+      case pbo => {
+        pbo.updateTexture(texture().getTextureObjectHandle)
+        pbo.updateBuffer()
+        queue.add(pbo)
+      }
     }
 
     super.draw()
@@ -164,18 +163,6 @@ object Media {
     mediaPlayer.release()
     size
   }
-
-  def main(args: Array[String]): Unit = {
-    //    val file = new File("test.avi")
-    //    val t1 = Time.elapsed {
-    //      println(determineSize(file.getAbsolutePath))
-    //    }
-    //    val t2 = Time.elapsed {
-    //      println(determineSize("test.mp4"))
-    //    }
-    //    println("Took: %s, Took: %s".format(t1, t2))
-    //    determineInformation("test.avi")
-  }
 }
 
 case class TrackInformation(id: Int,
@@ -184,3 +171,34 @@ case class TrackInformation(id: Int,
                             codec: Int,
                             profile: Int,
                             level: Int)
+
+class PBO private(val id: Int, val width: Int, val height: Int, var buffer: ByteBuffer = null) {
+  updateBuffer()
+
+  def updateBuffer() = {
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, id)
+    buffer = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY, buffer)
+  }
+
+  def updateTexture(textureId: Int) = {
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, id)
+    glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER)
+    glBindTexture(GL_TEXTURE_2D, textureId)
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, 0)
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0)
+  }
+
+  def dispose() = {
+    glDeleteBuffers(id)
+  }
+}
+
+object PBO {
+  def apply(width: Int, height: Int) = {
+    val id = glGenBuffers()
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, id)
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, width * height * 4, GL_STREAM_DRAW)
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0)
+    new PBO(id, width, height)
+  }
+}
