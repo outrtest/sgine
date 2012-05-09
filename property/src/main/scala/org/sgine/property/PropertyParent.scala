@@ -36,6 +36,8 @@ trait PropertyParent extends NamingParent with Child with Named {
   }
 }
 
+class ExplicitPropertyParent(val name: String, val parent: PropertyParent = null) extends PropertyParent
+
 object PropertyParent {
   val hierarchicalProperties: PartialFunction[Named, List[Property[_]]] = {
     case property: Property[_] => List(property)
