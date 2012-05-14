@@ -113,12 +113,12 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
       companion match {
         case Some(clazz) => clazz.method("apply") match {
           case Some(method) => method[T](clazz.instance.get)
-          case None => throw new NullPointerException("No copy method for this class and unable to find empty apply method on companion.")
+          case None => throw new NullPointerException("No copy method for this class (%s) and unable to find empty apply method on companion.".format(name))
         }
-        case None => throw new NullPointerException("No copy method for this class and unable to find companion.")
+        case None => throw new NullPointerException("No copy method for this class (%s) and unable to find companion.".format(name))
       }
     } else {
-      val cm = copyMethod.getOrElse(throw new NullPointerException("No copy method for this class"))
+      val cm = copyMethod.getOrElse(throw new NullPointerException("No copy method for this class (%s)".format(name)))
       cm[T](instance.asInstanceOf[AnyRef], args)
     }
   }
