@@ -9,6 +9,22 @@ trait Color extends EnumEntry[Color] {
   def blue: Double
   def alpha: Double
 
+  object hex {
+    def red = toHex(Color.this.red)
+    def green = toHex(Color.this.green)
+    def blue = toHex(Color.this.blue)
+    def alpha = toHex(Color.this.alpha)
+
+    def rgb = "#%s%s%s".format(red, green, blue)
+
+    private def toHex(v: Double) = {
+      java.lang.Long.toString((v * 255.0).toLong, 16) match {
+        case s if (s.length == 1) => "0%s".format(s)
+        case s => s
+      }
+    }
+  }
+
   def apply(index: Int) = index match {
     case 0 => red
     case 1 => green

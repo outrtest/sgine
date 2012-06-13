@@ -1,5 +1,6 @@
 import sbt._
 import Keys._
+import AndroidKeys._
 
 import Dependencies._
 
@@ -41,7 +42,8 @@ object SgineBuild extends Build {
             <url>http://matthicks.com</url>
           </developer>
         </developers>),
-    scalacOptions ++= Seq("-unchecked", "-deprecation")
+    scalacOptions ++= Seq("-unchecked", "-deprecation"),
+    platformName in Android := "android-7"
   )
 
   private def createSettings(_name: String) = baseSettings ++ Seq(name := _name)
@@ -86,7 +88,20 @@ object SgineBuild extends Build {
   lazy val scene = Project("scene", file("scene"), settings = createSettings("sgine-scene"))
     .dependsOn(event)
   lazy val ui = Project("ui", file("ui"), settings = createSettings("sgine-ui"))
+    .settings(publishArtifact in Test := true)
     .dependsOn(core, event, input, property, scene)
+  lazy val uiExample = Project("ui-example", file("ui/example"), settings = createSettings("sgine-ui-example") ++
+    AndroidProject.androidSettings ++
+    TypedResources.settings ++
+    AndroidMarketPublish.settings ++ Seq(
+      keyalias in Android := "sgine_example",
+      keystorePath in Android := file("../keys/sgine_example.keystore"),
+      proguardOption in Android := """-keepclassmembers enum * {
+        public static **[] values();
+        public static ** valueOf(java.lang.String);
+      }"""
+    ))
+    .dependsOn(ui)
 }
 
 object Dependencies {

@@ -34,14 +34,21 @@ class Media extends Image {
 
   private object renderCallback extends MediaPlayerEventAdapter with RenderCallback {
     def display(nativeBuffer: Memory) = {
-      queue.poll() match {
-        case null => // Nothing to do
-        case pbo => {
-          val bufferLength = size.width().toInt * size.height().toInt * 4
-          val videoBuffer = nativeBuffer.getByteBuffer(0, bufferLength)
-          pbo.buffer.put(videoBuffer)
-          pbo.buffer.flip()
-          readBuffer.set(pbo)
+      try {
+        queue.poll() match {
+          case null => // Nothing to do
+          case pbo => {
+            val bufferLength = size.width().toInt * size.height().toInt * 4
+            val videoBuffer = nativeBuffer.getByteBuffer(0, bufferLength)
+            pbo.buffer.put(videoBuffer)
+            pbo.buffer.flip()
+            readBuffer.set(pbo)
+          }
+        }
+      } catch {
+        case exc => {
+          exc.printStackTrace()
+          System.exit(1)
         }
       }
     }
