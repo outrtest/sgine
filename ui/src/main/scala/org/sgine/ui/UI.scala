@@ -259,10 +259,10 @@ class UI extends Container with LayoutableContainer with DelayedInit with FocusM
 
     val clazz = Class.forName("com.badlogic.gdx.backends.lwjgl.LwjglApplication")
     val constructor = clazz.getConstructor(classOf[ApplicationListener], configClass)
-    constructor.newInstance(List[AnyRef](listener, config): _*).asInstanceOf[com.badlogic.gdx.Application]
+    constructor.newInstance(List[AnyRef](applicationListener, config): _*).asInstanceOf[com.badlogic.gdx.Application]
   }
 
-  private lazy val listener = new ApplicationListener with InputProcessor {
+  lazy val applicationListener = new ApplicationListener with InputProcessor {
     def create() = {
       Gdx.gl11.glShadeModel(GL10.GL_SMOOTH)
       Gdx.gl11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)

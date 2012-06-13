@@ -57,7 +57,12 @@ class EnhancedClass protected[reflect](val javaClass: Class[_]) {
    * Singleton instance on the associated companion object. This can be called on the object or class to get the
    * instance for the companion object.
    */
-  lazy val instance = companion.get.javaClass.getFields.find(f => f.getName == "MODULE$").map(f => f.get(null))
+  lazy val instance = {
+    companion match {
+      case Some(clazz) => clazz.javaClass.getFields.find(f => f.getName == "MODULE$").map(f => f.get(null))
+      case None => None
+    }
+  }
 
   /**
    * True if this is a companion object.
