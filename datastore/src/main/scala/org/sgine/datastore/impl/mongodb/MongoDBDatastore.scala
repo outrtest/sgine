@@ -5,7 +5,7 @@ import org.sgine.datastore.Datastore
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
-class MongoDBDatastore(val host: String, val port: Int, val database: String) extends Datastore {
+class MongoDBDatastore(val host: String = "localhost", val port: Int = 27017, val database: String = "datastore") extends Datastore {
   override def session = super.session.asInstanceOf[MongoDBDatastoreSession]
 
   /**
