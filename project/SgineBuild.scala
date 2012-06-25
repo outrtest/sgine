@@ -1,6 +1,6 @@
 import sbt._
 import Keys._
-import AndroidKeys._
+//import AndroidKeys._
 
 import Dependencies._
 
