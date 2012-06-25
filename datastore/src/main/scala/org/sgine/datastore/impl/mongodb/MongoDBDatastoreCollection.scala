@@ -4,10 +4,10 @@ import org.sgine.datastore._
 import org.sgine.datastore.converter.DataObjectConverter
 import com.mongodb.BasicDBObject
 
+import query.{SortDirection, Operator, DatastoreQuery}
 import scala.collection.JavaConversions._
 import java.util
 import scala.Some
-import org.sgine.datastore.DatastoreQuery
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
@@ -41,12 +41,12 @@ class MongoDBDatastoreCollection[T <: Persistable](val session: MongoDBDatastore
     filters.foreach {
       case filter => {
         val value = filter.operator match {
-          case Operator.< => new BasicDBObject("$lt", filter.value)
-          case Operator.<= => new BasicDBObject("$lte", filter.value)
-          case Operator.> => new BasicDBObject("$gt", filter.value)
-          case Operator.>= => new BasicDBObject("$gte", filter.value)
-          case Operator.equal => filter.value
-          case Operator.nequal => new BasicDBObject("$ne", filter.value)
+          case Operator.< => new BasicDBObject("$lt", DataObjectConverter.toDBValue(filter.value, this))
+          case Operator.<= => new BasicDBObject("$lte", DataObjectConverter.toDBValue(filter.value, this))
+          case Operator.> => new BasicDBObject("$gt", DataObjectConverter.toDBValue(filter.value, this))
+          case Operator.>= => new BasicDBObject("$gte", DataObjectConverter.toDBValue(filter.value, this))
+          case Operator.equal => DataObjectConverter.toDBValue(filter.value, this)
+          case Operator.nequal => new BasicDBObject("$ne", DataObjectConverter.toDBValue(filter.value, this))
         }
         dbo.put(filter.field.name, value)
       }
@@ -57,6 +57,20 @@ class MongoDBDatastoreCollection[T <: Persistable](val session: MongoDBDatastore
     }
     if (query._limit > 0) {
       cursor = cursor.limit(query._limit)
+    }
+    val sort = query._sort.reverse
+    if (sort.nonEmpty) {
+      val sdbo = new BasicDBObject()
+      sort.foreach {
+        case s => {
+          val direction = s.direction match {
+            case SortDirection.Ascending => 1
+            case SortDirection.Descending => -1
+          }
+          sdbo.put(s.field.name, direction)
+        }
+      }
+      cursor = cursor.sort(sdbo)
     }
     asScalaIterator(cursor).map(entry => DataObjectConverter.fromDBValue(entry, this)).asInstanceOf[Iterator[T]]
   }

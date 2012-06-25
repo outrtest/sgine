@@ -1,46 +1,18 @@
 package org.sgine.datastore
 
-//import db4o.Db4oDatastore
-//import neodatis.NeodatisDatastore
-
-//import db4o.Db4oDatastore
 import impl.mongodb.MongoDBDatastore
-//import mongodb.MongoDBDatastore
-//import neodatis.NeodatisDatastore
+import java.util
+
 import org.scalatest.WordSpec
 import org.scalatest.matchers.ShouldMatchers
-import java.util.UUID
 import org.sgine.Precision
+import query.Field
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>
  */
 class DatastoreSpec extends WordSpec with ShouldMatchers {
   "Datastore" when {
-//    "using db4o" should {
-//      val file = new File("test.db4o")
-//      val db = Db4oEmbedded.openFile(file.getPath)
-//      val db1 = new Db4oDatastore[Test1](db)
-//      val db2 = new Db4oDatastore[Test2](db)
-//      val db3 = new Db4oDatastore[Test3](db)
-//      val db4 = new Db4oDatastore[Test4](db)
-//      test(db1, db2, db3, db4) {
-//        db.close()
-//        file.delete()
-//      }
-//    }
-//    "using neodatis" should {
-//      val file = new File("test.neodatis")
-//      val db = ODBFactory.open(file.getPath)
-//      val db1 = new NeodatisDatastore[Test1](db)
-//      val db2 = new NeodatisDatastore[Test2](db)
-//      val db3 = new NeodatisDatastore[Test3](db)
-//      val db4 = new NeodatisDatastore[Test4](db)
-//      test(db1, db2, db3, db4, false) {
-//        db.close()
-//        file.delete()
-//      }
-//    }
     "using mongodb" should {
       val datastore = new MongoDBDatastore("localhost", 27017, "DatastoreSpec")
       val (session, created) = datastore.createOrGet()
@@ -90,6 +62,34 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
       results.size should equal(1)
       results.head.name should equal("Three")
     }
+    "query 'Four' back out by example" in {
+      val example = Test1("Four")
+      val results = c1.byExample(example).toList
+      results.size should equal(1)
+      results.head.name should equal("Four")
+    }
+    "query items with name sorting ascending" in {
+      val results = c1.query.sort(Test1.name.ascending).toList
+      results.size should equal(5)
+      results.head.name should equal("Five")
+      results.last.name should equal("Two")
+    }
+    "query items with name sorting descending" in {
+      val results = c1.query.sort(Test1.name.descending).toList
+      results.size should equal(5)
+      results.head.name should equal("Two")
+      results.last.name should equal("Five")
+    }
+    "query items limiting the results" in {
+      val results = c1.query.limit(2).toList
+      results.size should equal(2)
+    }
+    "query items with name sorting ascending with skipping and limiting" in {
+      val results = c1.query.sort(Test1.name.ascending).limit(3).skip(1)
+      results.size should equal(3)
+      results.head.name should equal("Four")
+      results.last.name should equal("Three")
+    }
     "insert five Test2 objects" in {
       val o1 = Test2("One")
       val o2 = Test2("Two")
@@ -122,21 +122,21 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
   }
 }
 
-case class Test1(name: String, id: UUID = UUID.randomUUID()) extends Persistable
+case class Test1(name: String, id: util.UUID = util.UUID.randomUUID()) extends Persistable
 
 object Test1 {
   val name = Field[Test1, String]("name")
   val id = Field.id[Test1]
 }
 
-case class Test2(name: String, id: UUID = UUID.randomUUID()) extends Persistable
+case class Test2(name: String, id: util.UUID = util.UUID.randomUUID()) extends Persistable
 
 object Test2 {
   val name = Field[Test2, String]("name")
   val id = Field.id[Test2]
 }
 
-case class Test3(name: String, precision: Precision, id: UUID = UUID.randomUUID()) extends Persistable
+case class Test3(name: String, precision: Precision, id: util.UUID = util.UUID.randomUUID()) extends Persistable
 
 object Test3 {
   val name = Field[Test3, String]("name")
