@@ -1,129 +1,52 @@
 package org.sgine.datastore
 
-import event.{DatastorePersist, DatastoreDelete}
-import org.sgine.event.Listenable
-import java.util.UUID
-
 /**
- * Datastore implements functionality for working with a backing datastore.
- *
  * @author Matt Hicks <mhicks@sgine.org>
  */
-trait Datastore[T <: Identifiable] extends Listenable {
-  def manifest: Manifest[T]
+trait Datastore {
+  private val sessions = new ThreadLocal[DatastoreSession]
 
-  def layers: Seq[Datastore[_]]
+  /**
+   * @return the existing session for this thread or null if one does not exist.
+   */
+  def session = sessions.get()
 
-  protected def persistInternal(obj: T): Unit
-
-  protected def deleteInternal(id: UUID): Boolean
-
-  def transaction(f: => Unit) = try {
-    f
-    commit()
-  } catch {
-    case throwable => {
-      rollback()
-      throw throwable
+  /**
+   * Executes the supplied function within a local session. If a session already exists it will be utilized or a new one
+   * will be created and terminated upon completion of the session block.
+   *
+   * @param f the function to execute within the session
+   * @return the result from the function
+   */
+  def apply[T](f: DatastoreSession => T): T = {
+    val (currentSession, created) = createOrGet()
+    try {
+      f(currentSession)
+    } finally {
+      if (created) {
+        disconnect()
+      }
     }
   }
 
-  def canUse(obj: AnyRef) = manifest.erasure.isAssignableFrom(obj.getClass)
+  def createOrGet() = {
+    session match {
+      case null => {
+        val s = createSession()
+        sessions.set(s)
+        s -> true
+      }
+      case s => s -> false
+    }
+  }
 
-  def persist(obj: T): Unit = {
-    persistInternal(obj)
-    fire(DatastorePersist(this, obj))
-
-    layers.foreach(layer => if (layer.canUse(obj)) {
-      layer.asInstanceOf[Datastore[T]].persist(obj)
-    })
+  def disconnect() = {
+    session.disconnect()
+    sessions.set(null)
   }
 
   /**
-   * Removes the object by the same id in the datastore before persisting this one.
-   *
-   * @param obj to persist
+   * @return a new session for use with this datastore
    */
-  def update(obj: T): Unit = {
-    byId(obj.id) match {
-      case Some(instance) => delete(instance)
-      case None =>
-    }
-    persist(obj)
-
-    layers.foreach(layer => if (layer.canUse(obj)) {
-      layer.asInstanceOf[Datastore[T]].update(obj)
-    })
-  }
-
-  def persistAll(objects: T*) = objects.foreach(persist)
-
-  def delete(obj: T): Boolean = if (deleteInternal(obj.id)) {
-    fire(DatastoreDelete(this, obj))
-    layers.foreach(layer => if (layer.canUse(obj)) {
-      layer.asInstanceOf[Datastore[T]].delete(obj)
-    })
-    true
-  } else {
-    false
-  }
-
-  def clear() = all.foreach(obj => delete(obj))
-
-  def commit(): Unit
-
-  def rollback(): Unit
-
-  def byExample(obj: T): Iterator[T]
-
-  def byId(id: UUID): Option[T] = firstOption(obj => obj.id == id)
-
-  def deleteById(id: UUID) = {
-    byId(id) match {
-      case Some(instance) => delete(instance)
-      case None => false
-    }
-  }
-
-  def all: Iterator[T]
-
-  /**
-   * Queries the store for entries matching 'matcher' as a criteria.
-   *
-   * NOTE: For performance reasons this method should generally be overridden by implementations.
-   *
-   * @param matcher is used to limit the results
-   * @return Iterator[T]
-   */
-  def query(matcher: T => Boolean): Iterator[T] = all.filter(matcher)
-
-  def firstByExample(obj: T) = byExample(obj) match {
-    case results if (results.isEmpty) => null.asInstanceOf[T]
-    case results => results.next()
-  }
-
-  def firstOptionByExample(obj: T) = firstByExample(obj) match {
-    case null => None
-    case result => Some(result)
-  }
-
-  def first() = all match {
-    case results if (results.isEmpty) => null.asInstanceOf[T]
-    case results => results.next()
-  }
-
-  def firstOption() = all match {
-    case results if (results.isEmpty) => None
-    case results => Some(results.next())
-  }
-
-  def first(matcher: T => Boolean) = query(matcher) match {
-    case results if (results.isEmpty) => null.asInstanceOf[T]
-    case results => results.next()
-  }
-
-  def firstOption(matcher: T => Boolean) = query(matcher) match {
-    case results if (results.isEmpty) => None
-    case results => Some(results.next())
-  }
+  protected def createSession(): DatastoreSession
 }
