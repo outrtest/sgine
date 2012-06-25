@@ -15,6 +15,7 @@ class MongoDBDatastore(val host: String, val port: Int, val database: String) ex
    * For example, if Person class had a reference to Address and Address is Persistable, then Address will also be
    * persisted to the Address collection if globalize is set to true.
    */
+  // TODO: support
   var globalize = false
 
   protected def createSession() = new MongoDBDatastoreSession(this)

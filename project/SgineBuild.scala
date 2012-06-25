@@ -50,7 +50,7 @@ object SgineBuild extends Build {
 
   lazy val root = Project("root", file("."), settings = createSettings("sgine-root"))
     .settings(publishArtifact in Compile := false, publishArtifact in Test := false,
-    libraryDependencies ++= Seq(neodatisOdb, casbah),
+    libraryDependencies ++= Seq(neodatisOdb, mongodb),
     unmanagedSourceDirectories in Compile <<= baseDirectory apply {
       dir =>
         Seq(dir / "concurrent" / "src" / "main" / "scala",
@@ -72,7 +72,7 @@ object SgineBuild extends Build {
   lazy val core = Project("core", file("core"), settings = createSettings("sgine-core"))
     .dependsOn(reflect)
   lazy val datastore = Project("datastore", file("datastore"), settings = createSettings("sgine-datastore"))
-    .settings(libraryDependencies ++= Seq(neodatisOdb, casbah))
+    .settings(libraryDependencies ++= Seq(neodatisOdb, mongodb))
     .dependsOn(core, reflect, event)
   lazy val event = Project("event", file("event"), settings = createSettings("sgine-event"))
     .dependsOn(concurrent, core)
@@ -90,7 +90,7 @@ object SgineBuild extends Build {
   lazy val ui = Project("ui", file("ui"), settings = createSettings("sgine-ui"))
     .settings(publishArtifact in Test := true)
     .dependsOn(core, event, input, property, scene)
-  lazy val uiExample = Project("ui-example", file("ui/example"), settings = createSettings("sgine-ui-example") ++
+  /*lazy val uiExample = Project("ui-example", file("ui/example"), settings = createSettings("sgine-ui-example") ++
     AndroidProject.androidSettings ++
     TypedResources.settings ++
     AndroidMarketPublish.settings ++ Seq(
@@ -101,12 +101,12 @@ object SgineBuild extends Build {
         public static ** valueOf(java.lang.String);
       }"""
     ))
-    .dependsOn(ui)
+    .dependsOn(ui)*/
 }
 
 object Dependencies {
   val neodatisOdb = "org.neodatis.odb" % "neodatis-odb" % "1.9.30.689"
   val paranamer = "com.thoughtworks.paranamer" % "paranamer" % "2.4"
   val scalaTest = "org.scalatest" % "scalatest_2.9.1" % "1.7.1" % "test"
-  val casbah = "com.mongodb.casbah" % "casbah_2.9.1" % "2.1.5-1"
+  val mongodb = "org.mongodb" % "mongo-java-driver" % "2.8.0"
 }
