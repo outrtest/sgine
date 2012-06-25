@@ -30,6 +30,7 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
     val c1 = session[Test1]
     val c2 = session[Test2]
     val c3 = session[Test3]
+    val c4 = session[Test4]
     println("Within the session...")
     val t1 = Test1("test1")
     "have no objects in the database" in {
@@ -116,6 +117,15 @@ class DatastoreSpec extends WordSpec with ShouldMatchers {
       t.name should equal("first")
       t.precision should equal(Precision.Milliseconds)
     }
+    "insert Test4 with lazy value" in {
+      val t1 = Test1("lazy one")
+      val t4 = Test4("fourth", t1)
+      c4.persist(t4)
+      c1.query.filter(Test1.name equal "lazy one").size should equal(1)
+      val t4Again = c4.head
+      t4Again.name should equal("fourth")
+      t4Again.t1.name should equal("lazy one")
+    }
     "close resources in" in {
       finish
     }
@@ -142,4 +152,12 @@ object Test3 {
   val name = Field[Test3, String]("name")
   val precision = Field[Test3, Precision]("precision")
   val id = Field.id[Test3]
+}
+
+case class Test4(name: String, t1: Lazy[Test1], id: util.UUID = util.UUID.randomUUID()) extends Persistable
+
+object Test4 {
+  val name = Field[Test4, String]("name")
+  val t1 = Field[Test4, Test1]("t1")
+  val id = Field.id[Test4]
 }
