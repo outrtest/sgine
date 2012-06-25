@@ -3,8 +3,6 @@ package org.sgine.datastore
 import java.util.UUID
 
 /**
- * Identifiable represents a unique identifiable object.
- *
  * @author Matt Hicks <mhicks@sgine.org>
  */
 trait Identifiable {
