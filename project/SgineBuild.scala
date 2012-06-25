@@ -42,8 +42,8 @@ object SgineBuild extends Build {
             <url>http://matthicks.com</url>
           </developer>
         </developers>),
-    scalacOptions ++= Seq("-unchecked", "-deprecation"),
-    platformName in Android := "android-7"
+    scalacOptions ++= Seq("-unchecked", "-deprecation")
+//    platformName in Android := "android-7"
   )
 
   private def createSettings(_name: String) = baseSettings ++ Seq(name := _name)
