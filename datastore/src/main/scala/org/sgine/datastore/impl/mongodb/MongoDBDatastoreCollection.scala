@@ -18,7 +18,7 @@ class MongoDBDatastoreCollection[T <: Persistable](val session: MongoDBDatastore
 
   protected def persistInternal(ref: T) = {
     val dbo = DataObjectConverter.toDBObject(ref, this)
-    ref.state match {
+    ref.persistenceState match {
       case PersistenceState.NotPersisted => collection.insert(dbo)
       case PersistenceState.Persisted => {
         collection.findAndModify(new BasicDBObject("_id", ref.id), dbo)
