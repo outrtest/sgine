@@ -1,6 +1,6 @@
 package org.sgine.input
 
-import org.sgine.{Enumerated, EnumEntry}
+import org.powerscala.{Enumerated, EnumEntry}
 
 
 /**

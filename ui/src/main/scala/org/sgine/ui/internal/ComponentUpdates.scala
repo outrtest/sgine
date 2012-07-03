@@ -1,6 +1,6 @@
 package org.sgine.ui.internal
 
-import org.sgine.Updatable
+import org.powerscala.Updatable
 import org.sgine.ui.Component
 
 /**

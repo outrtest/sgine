@@ -1,6 +1,6 @@
 package org.sgine.ui.font
 
-import org.sgine.Resource
+import org.powerscala.Resource
 import org.sgine.ui._
 import xml.{Elem, XML}
 

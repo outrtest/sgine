@@ -33,9 +33,9 @@
 package org.sgine.input
 
 import event.{MouseReleaseEvent, MousePressEvent}
-import org.sgine.event.Listenable
-import org.sgine.{Enumerated, EnumEntry}
-import org.sgine.property.{PropertyParent, Property}
+import org.powerscala.event.Listenable
+import org.powerscala.{Enumerated, EnumEntry}
+import org.powerscala.property.{PropertyParent, Property}
 
 /**
  * Mouse represents the singleton of the mouse object.

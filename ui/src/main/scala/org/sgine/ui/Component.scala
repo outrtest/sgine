@@ -3,10 +3,10 @@ package org.sgine.ui
 import com.badlogic.gdx.math.collision.{BoundingBox, Ray}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Intersector}
 import internal._
-import org.sgine.event.{ChangeEvent, Listenable}
+import org.powerscala.event.{ChangeEvent, Listenable}
 
 import scala.math._
-import org.sgine._
+import org.powerscala._
 import concurrent.AtomicInt
 import hierarchy.{Child, Element}
 import naming.NamedChild
@@ -265,6 +265,14 @@ trait Component extends PropertyParent with Listenable with Element with Updater
    */
   def destroy() = {
   }
+
+  override protected[ui] def add(updatable: Updatable) {
+    super.add(updatable)
+  }
+
+  override protected[ui] def remove(updatable: Updatable) {
+    super.remove(updatable)
+  }
 }
 
 object Component extends PropertyParent with NamedChild {
@@ -337,4 +345,6 @@ object Component extends PropertyParent with NamedChild {
       }
     }
   }
+
+
 }

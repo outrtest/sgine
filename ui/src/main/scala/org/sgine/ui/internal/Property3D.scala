@@ -1,6 +1,6 @@
 package org.sgine.ui.internal
 
-import org.sgine.property.{NumericProperty, PropertyParent}
+import org.powerscala.property.{NumericProperty, PropertyParent}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>

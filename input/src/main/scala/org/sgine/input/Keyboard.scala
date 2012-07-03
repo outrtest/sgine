@@ -1,6 +1,6 @@
 package org.sgine.input
 
-import org.sgine.event.Listenable
+import org.powerscala.event.Listenable
 
 /**
  * Keyboard represents a listenable object to hear all events that happen on the keyboard.

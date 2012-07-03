@@ -2,18 +2,18 @@ package org.sgine.ui
 
 import com.badlogic.gdx.{InputProcessor, Gdx, ApplicationListener}
 import layout.LayoutableContainer
-import org.sgine.scene.ContainerView
+import org.powerscala.hierarchy.ContainerView
 import org.sgine.input.{Mouse, MouseButton, Key, Keyboard}
 import org.sgine.input.event._
 
 import scala.math._
-import org.sgine.Updatable
+import org.powerscala.Updatable
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.math.collision.Ray
 import com.badlogic.gdx.math.Vector3
-import org.sgine.concurrent.Time
-import org.sgine.event.{Listenable, ChangeEvent}
-import org.sgine.property.{ObjectPropertyParent, MutableProperty, Property}
+import org.powerscala.concurrent.Time
+import org.powerscala.event.{Listenable, ChangeEvent}
+import org.powerscala.property.{ObjectPropertyParent, MutableProperty, Property}
 
 /**
  * UI provides a base class to be extended and allow an initialization end-point for the graphical application to start.

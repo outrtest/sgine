@@ -1,9 +1,9 @@
 package org.sgine.ui.sample
 
-import org.sgine.property.Property
+import org.powerscala.property.Property
 import org.sgine.ui.{ShapeComponent, Container, UI}
 import org.sgine.ui.render.Vertex
-import org.sgine.{Color, Compass}
+import org.powerscala.{Color, Compass}
 import org.sgine.ui.align.{VerticalAlignment, HorizontalAlignment}
 import org.sgine.input.{Keyboard, Key}
 import org.sgine.input.event.KeyDownEvent

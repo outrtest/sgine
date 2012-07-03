@@ -1,9 +1,9 @@
 package org.sgine.ui.theme
 
 import org.sgine.ui.font.BitmapFont
-import org.sgine.property.Property
+import org.powerscala.property.Property
 import org.sgine.ui.{Button, Component}
-import org.sgine.{Color, Resource}
+import org.powerscala.{Color, Resource}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>

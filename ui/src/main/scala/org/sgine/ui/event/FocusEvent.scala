@@ -1,7 +1,7 @@
 package org.sgine.ui.event
 
 import org.sgine.ui.{FocusManager, Focusable}
-import org.sgine.event.Event
+import org.powerscala.event.Event
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>

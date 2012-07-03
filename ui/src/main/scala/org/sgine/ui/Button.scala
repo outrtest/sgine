@@ -1,7 +1,7 @@
 package org.sgine.ui
 
 import style.Stylized
-import org.sgine.event.ActionEvent
+import org.powerscala.event.ActionEvent
 import org.sgine.input.event.{KeyDownEvent, MousePressEvent}
 import org.sgine.input.Key
 

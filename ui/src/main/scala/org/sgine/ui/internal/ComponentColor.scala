@@ -1,7 +1,7 @@
 package org.sgine.ui.internal
 
-import org.sgine.{MutableColor, Color}
-import org.sgine.property.{PropertyParent, NumericProperty, ObjectPropertyParent}
+import org.powerscala.{MutableColor, Color}
+import org.powerscala.property.{PropertyParent, NumericProperty, ObjectPropertyParent}
 import org.sgine.ui.Component
 
 /**

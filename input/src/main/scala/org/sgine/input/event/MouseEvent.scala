@@ -33,7 +33,7 @@
 package org.sgine.input.event
 
 import org.sgine.input.{MouseButton, Mouse}
-import org.sgine.event.Event
+import org.powerscala.event.Event
 
 /**
  * MouseEvents

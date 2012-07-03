@@ -1,7 +1,7 @@
 package org.sgine.ui
 
 import font.{BitmapFontGlyph, BitmapFont, TextGenerator}
-import org.sgine.property._
+import org.powerscala.property._
 import collection.mutable.ListBuffer
 
 /**

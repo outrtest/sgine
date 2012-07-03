@@ -1,6 +1,6 @@
 package org.sgine.ui
 
-import org.sgine.property.Property
+import org.powerscala.property.Property
 
 trait Focusable extends Component {
   val focusable = Property[Boolean]("focusable", true)

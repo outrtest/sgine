@@ -1,9 +1,9 @@
 package org.sgine.ui
 
-import org.sgine.Resource
+import org.powerscala.Resource
 import render.{Vertex, TextureCoordinates}
 import com.badlogic.gdx.graphics.Texture
-import org.sgine.property.{Property, ObjectPropertyParent, NumericProperty}
+import org.powerscala.property.{Property, ObjectPropertyParent, NumericProperty}
 
 /**
  * Displays Scale-9 images for rendering at different sizes.

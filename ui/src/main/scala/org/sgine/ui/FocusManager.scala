@@ -1,8 +1,8 @@
 package org.sgine.ui
 
 import event.{FocusGained, FocusLost}
-import org.sgine.property.Property
-import org.sgine.property.event.PropertyChangeEvent
+import org.powerscala.property.Property
+import org.powerscala.property.event.PropertyChangeEvent
 import org.sgine.input.Key
 import org.sgine.input.event.{KeyEvent, KeyDownEvent}
 
