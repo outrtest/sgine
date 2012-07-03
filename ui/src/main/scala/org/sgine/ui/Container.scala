@@ -1,6 +1,6 @@
 package org.sgine.ui
 
-import org.sgine.scene.MutableContainer
+import org.powerscala.hierarchy.MutableContainer
 
 /**
  * Container is specifically targeted to contain Component children.

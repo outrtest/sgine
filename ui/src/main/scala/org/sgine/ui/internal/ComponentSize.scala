@@ -1,6 +1,6 @@
 package org.sgine.ui.internal
 
-import org.sgine.property.{PropertyParent, Property, NumericProperty}
+import org.powerscala.property.{PropertyParent, Property, NumericProperty}
 import org.sgine.ui.{Component, SizeAlgorithm}
 
 /**

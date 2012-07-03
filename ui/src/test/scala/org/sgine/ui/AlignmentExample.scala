@@ -2,7 +2,7 @@ package org.sgine.ui
 
 import align.{VerticalAlignment, HorizontalAlignment}
 import font.BitmapFont
-import org.sgine.Resource
+import org.powerscala.Resource
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>

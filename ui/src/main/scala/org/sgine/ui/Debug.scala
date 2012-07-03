@@ -4,7 +4,7 @@ import align.{VerticalAlignment, HorizontalAlignment}
 import org.sgine.input.event.KeyDownEvent
 import org.sgine.input.{Keyboard, Key}
 import com.badlogic.gdx.graphics.{OrthographicCamera, PerspectiveCamera}
-import org.sgine.property.event.PropertyChangeEvent
+import org.powerscala.property.event.PropertyChangeEvent
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>

@@ -1,9 +1,9 @@
 package org.sgine.ui
 
-import org.sgine.workflow._
-import org.sgine.property.workflow._
-import org.sgine.Color
-import org.sgine.easing.Easing
+import org.powerscala.workflow._
+import org.powerscala.property.workflow._
+import org.powerscala.Color
+import org.powerscala.easing.Easing
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>

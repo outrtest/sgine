@@ -2,9 +2,9 @@ package org.sgine.ui.style
 
 import org.sgine.ui.Component
 import annotation.tailrec
-import org.sgine.property.{PropertyParent, Property}
-import org.sgine.event.{Listenable, ChangeEvent, Change}
-import org.sgine.property.event.PropertyChangeEvent
+import org.powerscala.property.{PropertyParent, Property}
+import org.powerscala.event.{Listenable, ChangeEvent, Change}
+import org.powerscala.property.event.PropertyChangeEvent
 
 /**
  * Style is defined in Stylized trait.

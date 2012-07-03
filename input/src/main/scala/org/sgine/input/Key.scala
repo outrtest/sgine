@@ -1,7 +1,7 @@
 package org.sgine.input
 
 import event.KeyPressedEvent
-import org.sgine.{Enumerated, EnumEntry}
+import org.powerscala.{Enumerated, EnumEntry}
 
 /**
  * Key represents keys on the keyboard.

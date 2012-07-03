@@ -3,7 +3,7 @@ package org.sgine.ui
 import com.badlogic.gdx.graphics.Texture
 import render.{Vertex, TextureCoordinates}
 
-import org.sgine._
+import org.powerscala._
 
 /**
  *

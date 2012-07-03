@@ -2,7 +2,7 @@ package org.sgine.ui
 
 import com.badlogic.gdx.graphics.Texture
 import render.{Vertex, TextureCoordinates}
-import org.sgine.{Updatable, Resource}
+import org.powerscala.{Updatable, Resource}
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>

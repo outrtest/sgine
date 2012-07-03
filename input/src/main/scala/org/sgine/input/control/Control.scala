@@ -1,6 +1,6 @@
 package org.sgine.input.control
 
-import org.sgine.{Enumerated, EnumEntry}
+import org.powerscala.{Enumerated, EnumEntry}
 
 
 /**

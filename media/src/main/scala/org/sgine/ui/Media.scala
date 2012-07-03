@@ -4,10 +4,10 @@ import uk.co.caprica.vlcj.player.direct.RenderCallback
 import com.sun.jna.Memory
 import java.io.File
 import uk.co.caprica.vlcj.player._
-import org.sgine.concurrent.Time
+import org.powerscala.concurrent.Time
 
 import scala.collection.JavaConversions._
-import org.sgine.property.{ObjectPropertyParent, Property}
+import org.powerscala.property.{ObjectPropertyParent, Property}
 import com.badlogic.gdx.graphics._
 import java.nio.ByteBuffer
 import java.util.concurrent.atomic.AtomicReference

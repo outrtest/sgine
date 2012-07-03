@@ -1,7 +1,7 @@
 package org.sgine.ui
 
 import render.ArrayBuffer
-import org.sgine.property.Property
+import org.powerscala.property.Property
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.{GL10, Texture}
 

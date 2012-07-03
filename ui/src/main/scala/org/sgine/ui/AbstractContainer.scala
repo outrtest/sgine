@@ -1,13 +1,13 @@
 package org.sgine.ui
 
 import layout.Layout
-import org.sgine.scene.AbstractMutableContainer
-import org.sgine.event.ChangeEvent
-import org.sgine.property.Property
+import org.powerscala.hierarchy.AbstractMutableContainer
+import org.powerscala.event.ChangeEvent
+import org.powerscala.property.Property
 import annotation.tailrec
 
 import scala.math._
-import org.sgine.scene.event.ContainerEvent
+import org.powerscala.hierarchy.event.ContainerEvent
 
 /**
  * AbstractContainer provides all the functionality for a Component container, but the mutability of its children is

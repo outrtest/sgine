@@ -1,6 +1,6 @@
 package org.sgine.ui.style
 
-import org.sgine.property.{StandardProperty, PropertyParent}
+import org.powerscala.property.{StandardProperty, PropertyParent}
 import org.sgine.ui.Component
 
 /**

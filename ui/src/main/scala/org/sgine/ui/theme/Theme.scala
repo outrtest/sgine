@@ -3,7 +3,7 @@ package org.sgine.ui.theme
 import org.sgine.ui.Component
 import annotation.tailrec
 
-import org.sgine.property._
+import org.powerscala.property._
 import org.sgine.ui.style.Stylized
 
 /**

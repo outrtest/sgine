@@ -1,10 +1,10 @@
 package org.sgine.ui
 
 import com.badlogic.gdx.Gdx
-import org.sgine.AsynchronousInvocation
-import org.sgine.event.{ChangeEvent, Listenable}
-import org.sgine.concurrent.Time
-import org.sgine.property.Property
+import org.powerscala.AsynchronousInvocation
+import org.powerscala.event.{ChangeEvent, Listenable}
+import org.powerscala.concurrent.Time
+import org.powerscala.property.Property
 
 /**
  * RenderableComponent is mixed into Components that render something to the screen.

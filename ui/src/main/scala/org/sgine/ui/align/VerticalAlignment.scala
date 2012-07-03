@@ -1,6 +1,6 @@
 package org.sgine.ui.align
 
-import org.sgine.{Enumerated, EnumEntry}
+import org.powerscala.{Enumerated, EnumEntry}
 
 /**
  * VerticalAlignment of a component.

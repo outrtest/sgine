@@ -1,7 +1,7 @@
 package org.sgine.input.event
 
 import org.sgine.input.{Keyboard, KeyState, Key}
-import org.sgine.event.{Listenable, Event}
+import org.powerscala.event.{Listenable, Event}
 
 /**
  * KeyEvents

@@ -1,7 +1,7 @@
 package org.sgine.ui.internal
 
 import org.sgine.ui.align.{DepthAlignment, VerticalAlignment, HorizontalAlignment}
-import org.sgine.property.{PropertyParent, Property}
+import org.powerscala.property.{PropertyParent, Property}
 import org.sgine.ui.Component
 
 /**

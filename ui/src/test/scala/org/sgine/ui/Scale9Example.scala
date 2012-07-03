@@ -1,6 +1,6 @@
 package org.sgine.ui
 
-import org.sgine.Resource
+import org.powerscala.Resource
 
 /**
  * @author Matt Hicks <mhicks@sgine.org>

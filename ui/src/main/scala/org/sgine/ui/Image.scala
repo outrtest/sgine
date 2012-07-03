@@ -1,8 +1,8 @@
 package org.sgine.ui
 
 import com.badlogic.gdx.graphics.Texture
-import org.sgine.property._
-import org.sgine._
+import org.powerscala.property._
+import org.powerscala._
 import render.{TextureCoordinates, Vertex}
 
 /**
